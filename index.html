@@ -1,392 +1,771 @@
-Yes — copy this full version into your `index.html` and replace everything.
-
-```html
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8" />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>Spine Society</title>
 
 <style>
+
 :root {
-  --charcoal: #1C1C1E;
-  --card: #2A2A2D;
-  --card-dark: #1F1F22;
-  --ivory: #F5F5F2;
-  --sage: #8A9A8A;
-  --muted: #BFBAB2;
+
+  --charcoal: #1C1C1E;
+
+  --card: #2A2A2D;
+
+  --card-dark: #1F1F22;
+
+  --ivory: #F5F5F2;
+
+  --sage: #8A9A8A;
+
+  --muted: #BFBAB2;
+
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-  background: var(--charcoal);
-  color: var(--ivory);
-  min-height: 100vh;
-  padding: 24px 16px 40px;
+
+  margin: 0;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+
+  background: var(--charcoal);
+
+  color: var(--ivory);
+
+  min-height: 100vh;
+
+  padding: 24px 16px 40px;
+
 }
 
 .app {
-  max-width: 430px;
-  margin: 0 auto;
+
+  max-width: 430px;
+
+  margin: 0 auto;
+
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 24px;
+
+  text-align: center;
+
+  margin-bottom: 24px;
+
 }
 
 h1 {
-  font-family: Georgia, serif;
-  font-size: 2.6rem;
-  margin: 8px 0 4px;
-  letter-spacing: 0.5px;
+
+  font-family: Georgia, serif;
+
+  font-size: 2.6rem;
+
+  margin: 8px 0 4px;
+
 }
 
 .subtitle {
-  color: var(--muted);
-  margin: 0;
+
+  color: var(--muted);
+
+  margin: 0;
+
 }
 
 .card {
-  background: var(--card);
-  border-radius: 26px;
-  padding: 20px;
-  margin-bottom: 18px;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.28);
+
+  background: var(--card);
+
+  border-radius: 26px;
+
+  padding: 20px;
+
+  margin-bottom: 18px;
+
+  box-shadow: 0 12px 35px rgba(0,0,0,0.28);
+
 }
 
 h2 {
-  font-family: Georgia, serif;
-  margin-top: 0;
+
+  font-family: Georgia, serif;
+
+  margin-top: 0;
+
 }
 
 input, select, button {
-  width: 100%;
-  padding: 14px;
-  margin: 7px 0;
-  border-radius: 16px;
-  border: none;
-  font-size: 1rem;
+
+  width: 100%;
+
+  padding: 14px;
+
+  margin: 7px 0;
+
+  border-radius: 16px;
+
+  border: none;
+
+  font-size: 1rem;
+
 }
 
 input, select {
-  background: var(--card-dark);
-  color: var(--ivory);
-  border: 1px solid rgba(255,255,255,0.08);
+
+  background: var(--card-dark);
+
+  color: var(--ivory);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
 }
 
-input::placeholder {
-  color: #888;
-}
+input::placeholder { color: #888; }
 
 button {
-  background: var(--sage);
-  color: #111;
-  font-weight: 700;
-  cursor: pointer;
+
+  background: var(--sage);
+
+  color: #111;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
 }
 
 button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+}
+
+.secondary-btn {
+
+  background: transparent;
+
+  color: var(--muted);
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+}
+
+.danger-btn {
+
+  background: transparent;
+
+  color: #d8a1a1;
+
+  border: 1px solid rgba(216,161,161,0.28);
+
 }
 
 .spin-btn {
-  background: var(--ivory);
-  color: #111;
-  font-size: 1.1rem;
-  padding: 16px;
+
+  background: var(--ivory);
+
+  color: #111;
+
+  font-size: 1.1rem;
+
+  padding: 16px;
+
 }
 
 .sound-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 8px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  color: var(--muted);
+
+  font-size: 0.9rem;
+
+  margin-top: 8px;
+
 }
 
 .toggle {
-  width: auto;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--card-dark);
-  color: var(--ivory);
-  border: 1px solid rgba(255,255,255,0.12);
+
+  width: auto;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  background: var(--card-dark);
+
+  color: var(--ivory);
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+}
+
+.current-shelf {
+
+  color: var(--muted);
+
+  font-size: 0.9rem;
+
+  margin-top: -4px;
+
 }
 
 .book-item {
-  background: var(--card-dark);
-  padding: 14px;
-  border-radius: 18px;
-  margin: 10px 0;
-  border: 1px solid rgba(255,255,255,0.08);
-}
 
-.delete-btn {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid rgba(255,255,255,0.12);
-  margin-top: 10px;
+  background: var(--card-dark);
+
+  padding: 14px;
+
+  border-radius: 18px;
+
+  margin: 10px 0;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
 }
 
 .winner {
-  margin-top: 18px;
-  padding: 18px;
-  background: var(--card-dark);
-  border-radius: 22px;
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+
+  margin-top: 18px;
+
+  padding: 18px;
+
+  background: var(--card-dark);
+
+  border-radius: 22px;
+
+  opacity: 1;
+
+  transform: scale(1);
+
+  transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+
 }
 
 .winner.spinning {
-  opacity: 0.65;
-  transform: scale(0.98);
-  filter: blur(1px);
+
+  opacity: 0.65;
+
+  transform: scale(0.98);
+
+  filter: blur(1px);
+
 }
 
 .winner img {
-  width: 135px;
-  max-height: 205px;
-  object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+
+  width: 135px;
+
+  max-height: 205px;
+
+  object-fit: cover;
+
+  border-radius: 14px;
+
+  box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+
 }
 
 .winner h3 {
-  font-family: Georgia, serif;
-  font-size: 1.35rem;
-  margin-bottom: 4px;
+
+  font-family: Georgia, serif;
+
+  font-size: 1.35rem;
+
+  margin-bottom: 4px;
+
 }
 
 .small {
-  color: var(--muted);
-  font-size: 0.85rem;
+
+  color: var(--muted);
+
+  font-size: 0.85rem;
+
 }
 
 .empty {
-  color: var(--muted);
-  text-align: center;
+
+  color: var(--muted);
+
+  text-align: center;
+
 }
 
 footer {
-  text-align: center;
-  color: #777;
-  font-size: 0.8rem;
-  margin-top: 24px;
+
+  text-align: center;
+
+  color: #777;
+
+  font-size: 0.8rem;
+
+  margin-top: 24px;
+
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="app">
 
-  <div class="header">
-    <h1>Spine Society</h1>
-    <p class="subtitle">Choose your next read.</p>
-  </div>
+  <div class="header">
 
-  <div class="card">
-    <h2>Add Book</h2>
+    <h1>Spine Society</h1>
 
-    <input id="title" placeholder="Book title" />
-    <input id="author" placeholder="Author" />
+    <p class="subtitle">Choose your next read.</p>
 
-    <select id="category">
-      <option>Book Club Pick</option>
-      <option>Thriller</option>
-      <option>Romance</option>
-      <option>Fantasy</option>
-      <option>Mystery</option>
-      <option>Cozy Read</option>
-      <option>Wild Card</option>
-    </select>
+  </div>
 
-    <input id="image" placeholder="Book cover image URL optional" />
+  <div class="card">
 
-    <button onclick="addBook()">Add to Shelf</button>
-  </div>
+    <h2>Your Shelves</h2>
 
-  <div class="card">
-    <h2>Spin Your Shelf</h2>
+    <input id="newShelfName" placeholder="Name a new shelf or book club" />
 
-    <select id="spinCategory">
-      <option>All Books</option>
-      <option>Book Club Pick</option>
-      <option>Thriller</option>
-      <option>Romance</option>
-      <option>Fantasy</option>
-      <option>Mystery</option>
-      <option>Cozy Read</option>
-      <option>Wild Card</option>
-    </select>
+    <button onclick="createShelf()">Create Shelf</button>
 
-    <button id="spinButton" class="spin-btn" onclick="spinBook()">Spin</button>
+    <select id="shelfSelect" onchange="changeShelf()"></select>
 
-    <div class="sound-row">
-      <span>Sound</span>
-      <button class="toggle" onclick="toggleSound()" id="soundToggle">On</button>
-    </div>
+    <p class="current-shelf" id="currentShelfText"></p>
 
-    <div id="winner"></div>
-  </div>
+    <button class="danger-btn" onclick="deleteCurrentShelf()">Delete Current Shelf</button>
 
-  <div class="card">
-    <h2>Your Shelf</h2>
-    <div id="bookList"></div>
-  </div>
+  </div>
 
-  <footer>Spine Society · Your shelf, decided.</footer>
+  <div class="card">
+
+    <h2>Add Book</h2>
+
+    <input id="title" placeholder="Book title" />
+
+    <input id="author" placeholder="Author" />
+
+    <select id="category">
+
+      <option>Book Club Pick</option>
+
+      <option>Thriller</option>
+
+      <option>Romance</option>
+
+      <option>Fantasy</option>
+
+      <option>Mystery</option>
+
+      <option>Cozy Read</option>
+
+      <option>Wild Card</option>
+
+    </select>
+
+    <input id="image" placeholder="Book cover image URL optional" />
+
+    <button onclick="addBook()">Add to Selected Shelf</button>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Spin This Shelf</h2>
+
+    <select id="spinCategory">
+
+      <option>All Books</option>
+
+      <option>Book Club Pick</option>
+
+      <option>Thriller</option>
+
+      <option>Romance</option>
+
+      <option>Fantasy</option>
+
+      <option>Mystery</option>
+
+      <option>Cozy Read</option>
+
+      <option>Wild Card</option>
+
+    </select>
+
+    <button id="spinButton" class="spin-btn" onclick="spinBook()">Spin</button>
+
+    <div class="sound-row">
+
+      <span>Sound</span>
+
+      <button class="toggle" onclick="toggleSound()" id="soundToggle">On</button>
+
+    </div>
+
+    <div id="winner"></div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Selected Shelf</h2>
+
+    <div id="bookList"></div>
+
+  </div>
+
+  <footer>Spine Society · Your shelf, decided.</footer>
 
 </div>
 
 <audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
+
 <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
 <script>
-let books = JSON.parse(localStorage.getItem("spineBooks")) || [];
+
+let appData = JSON.parse(localStorage.getItem("spineSocietyData")) || {
+
+  currentShelf: "Personal Shelf",
+
+  shelves: {
+
+    "Personal Shelf": []
+
+  }
+
+};
+
 let soundOn = JSON.parse(localStorage.getItem("spineSoundOn"));
+
 if (soundOn === null) soundOn = true;
 
-function saveBooks() {
-  localStorage.setItem("spineBooks", JSON.stringify(books));
+function saveData() {
+
+  localStorage.setItem("spineSocietyData", JSON.stringify(appData));
+
+}
+
+function getCurrentBooks() {
+
+  return appData.shelves[appData.currentShelf] || [];
+
+}
+
+function renderShelves() {
+
+  const shelfSelect = document.getElementById("shelfSelect");
+
+  const shelfNames = Object.keys(appData.shelves);
+
+  shelfSelect.innerHTML = shelfNames.map(name => `
+
+    <option value="${name}" ${name === appData.currentShelf ? "selected" : ""}>
+
+      ${name}
+
+    </option>
+
+  `).join("");
+
+  document.getElementById("currentShelfText").textContent =
+
+    `Currently viewing: ${appData.currentShelf}`;
+
+  displayBooks();
+
+}
+
+function createShelf() {
+
+  const shelfName = document.getElementById("newShelfName").value.trim();
+
+  if (!shelfName) {
+
+    alert("Enter a shelf name.");
+
+    return;
+
+  }
+
+  if (appData.shelves[shelfName]) {
+
+    alert("That shelf already exists.");
+
+    return;
+
+  }
+
+  appData.shelves[shelfName] = [];
+
+  appData.currentShelf = shelfName;
+
+  document.getElementById("newShelfName").value = "";
+
+  saveData();
+
+  renderShelves();
+
+}
+
+function changeShelf() {
+
+  appData.currentShelf = document.getElementById("shelfSelect").value;
+
+  document.getElementById("winner").innerHTML = "";
+
+  saveData();
+
+  renderShelves();
+
+}
+
+function deleteCurrentShelf() {
+
+  const shelfNames = Object.keys(appData.shelves);
+
+  if (shelfNames.length === 1) {
+
+    alert("You need at least one shelf.");
+
+    return;
+
+  }
+
+  const confirmed = confirm(`Delete "${appData.currentShelf}" and all books inside it?`);
+
+  if (!confirmed) return;
+
+  delete appData.shelves[appData.currentShelf];
+
+  appData.currentShelf = Object.keys(appData.shelves)[0];
+
+  document.getElementById("winner").innerHTML = "";
+
+  saveData();
+
+  renderShelves();
+
 }
 
 function updateSoundButton() {
-  document.getElementById("soundToggle").textContent = soundOn ? "On" : "Off";
+
+  document.getElementById("soundToggle").textContent = soundOn ? "On" : "Off";
+
 }
 
 function toggleSound() {
-  soundOn = !soundOn;
-  localStorage.setItem("spineSoundOn", JSON.stringify(soundOn));
-  updateSoundButton();
+
+  soundOn = !soundOn;
+
+  localStorage.setItem("spineSoundOn", JSON.stringify(soundOn));
+
+  updateSoundButton();
+
 }
 
 function addBook() {
-  const title = document.getElementById("title").value.trim();
-  const author = document.getElementById("author").value.trim();
-  const category = document.getElementById("category").value;
-  const image = document.getElementById("image").value.trim();
 
-  if (!title) {
-    alert("Enter a book title");
-    return;
-  }
+  const title = document.getElementById("title").value.trim();
 
-  books.push({ title, author, category, image });
-  saveBooks();
-  displayBooks();
+  const author = document.getElementById("author").value.trim();
 
-  document.getElementById("title").value = "";
-  document.getElementById("author").value = "";
-  document.getElementById("image").value = "";
+  const category = document.getElementById("category").value;
+
+  const image = document.getElementById("image").value.trim();
+
+  if (!title) {
+
+    alert("Enter a book title.");
+
+    return;
+
+  }
+
+  appData.shelves[appData.currentShelf].push({ title, author, category, image });
+
+  saveData();
+
+  displayBooks();
+
+  document.getElementById("title").value = "";
+
+  document.getElementById("author").value = "";
+
+  document.getElementById("image").value = "";
+
 }
 
 function bookHTML(book, spinning = false) {
-  return `
-    <div class="winner ${spinning ? "spinning" : ""}">
-      ${book.image ? `<img src="${book.image}" alt="Book cover">` : ""}
-      <h3>${book.title}</h3>
-      <div>${book.author || ""}</div>
-      <div class="small">${book.category}</div>
-    </div>
-  `;
+
+  return `
+
+    <div class="winner ${spinning ? "spinning" : ""}">
+
+      ${book.image ? `<img src="${book.image}" alt="Book cover">` : ""}
+
+      <h3>${book.title}</h3>
+
+      <div>${book.author || ""}</div>
+
+      <div class="small">${book.category}</div>
+
+    </div>
+
+  `;
+
 }
 
 function playSound(id) {
-  if (!soundOn) return;
-  const sound = document.getElementById(id);
-  sound.currentTime = 0;
-  sound.play().catch(() => {});
+
+  if (!soundOn) return;
+
+  const sound = document.getElementById(id);
+
+  sound.currentTime = 0;
+
+  sound.play().catch(() => {});
+
 }
 
 function stopSound(id) {
-  const sound = document.getElementById(id);
-  sound.pause();
-  sound.currentTime = 0;
+
+  const sound = document.getElementById(id);
+
+  sound.pause();
+
+  sound.currentTime = 0;
+
 }
 
 function spinBook() {
-  const selectedCategory = document.getElementById("spinCategory").value;
-  const spinButton = document.getElementById("spinButton");
-  const winnerDiv = document.getElementById("winner");
 
-  let filtered = selectedCategory === "All Books"
-    ? books
-    : books.filter(b => b.category === selectedCategory);
+  const selectedCategory = document.getElementById("spinCategory").value;
 
-  if (filtered.length === 0) {
-    winnerDiv.innerHTML = "<p class='empty'>No books in this category yet.</p>";
-    return;
-  }
+  const spinButton = document.getElementById("spinButton");
 
-  spinButton.disabled = true;
-  spinButton.textContent = "Choosing...";
+  const winnerDiv = document.getElementById("winner");
 
-  playSound("spinSound");
+  const books = getCurrentBooks();
 
-  let spins = 0;
-  const maxSpins = 28;
+  let filtered = selectedCategory === "All Books"
 
-  const interval = setInterval(() => {
-    const book = filtered[Math.floor(Math.random() * filtered.length)];
-    winnerDiv.innerHTML = bookHTML(book, true);
-    spins++;
+    ? books
 
-    if (spins >= maxSpins) {
-      clearInterval(interval);
-      stopSound("spinSound");
+    : books.filter(b => b.category === selectedCategory);
 
-      const final = filtered[Math.floor(Math.random() * filtered.length)];
-      winnerDiv.innerHTML = bookHTML(final, false);
+  if (filtered.length === 0) {
 
-      playSound("winSound");
+    winnerDiv.innerHTML = "<p class='empty'>No books in this shelf/category yet.</p>";
 
-      spinButton.disabled = false;
-      spinButton.textContent = "Spin";
-    }
-  }, 85);
+    return;
+
+  }
+
+  spinButton.disabled = true;
+
+  spinButton.textContent = "Choosing...";
+
+  playSound("spinSound");
+
+  let spins = 0;
+
+  const maxSpins = 28;
+
+  const interval = setInterval(() => {
+
+    const book = filtered[Math.floor(Math.random() * filtered.length)];
+
+    winnerDiv.innerHTML = bookHTML(book, true);
+
+    spins++;
+
+    if (spins >= maxSpins) {
+
+      clearInterval(interval);
+
+      stopSound("spinSound");
+
+      const final = filtered[Math.floor(Math.random() * filtered.length)];
+
+      winnerDiv.innerHTML = bookHTML(final, false);
+
+      playSound("winSound");
+
+      spinButton.disabled = false;
+
+      spinButton.textContent = "Spin";
+
+    }
+
+  }, 85);
+
 }
 
 function displayBooks() {
-  const list = document.getElementById("bookList");
 
-  if (books.length === 0) {
-    list.innerHTML = "<p class='empty'>Your shelf is empty.</p>";
-    return;
-  }
+  const list = document.getElementById("bookList");
 
-  list.innerHTML = books.map((b, i) => `
-    <div class="book-item">
-      <strong>${b.title}</strong><br>
-      ${b.author ? `<span class="small">by ${b.author}</span><br>` : ""}
-      <span class="small">${b.category}</span><br>
-      <button class="delete-btn" onclick="deleteBook(${i})">Delete</button>
-    </div>
-  `).join("");
+  const books = getCurrentBooks();
+
+  if (books.length === 0) {
+
+    list.innerHTML = "<p class='empty'>This shelf is empty.</p>";
+
+    return;
+
+  }
+
+  list.innerHTML = books.map((b, i) => `
+
+    <div class="book-item">
+
+      <strong>${b.title}</strong><br>
+
+      ${b.author ? `<span class="small">by ${b.author}</span><br>` : ""}
+
+      <span class="small">${b.category}</span><br>
+
+      <button class="secondary-btn" onclick="deleteBook(${i})">Delete Book</button>
+
+    </div>
+
+  `).join("");
+
 }
 
 function deleteBook(i) {
-  books.splice(i, 1);
-  saveBooks();
-  displayBooks();
+
+  appData.shelves[appData.currentShelf].splice(i, 1);
+
+  saveData();
+
+  displayBooks();
+
 }
 
-displayBooks();
+saveData();
+
+renderShelves();
+
 updateSoundButton();
+
 </script>
 
 </body>
-</html>
-```
 
-This version adds the clean iPhone-style layout, sound toggle, disabled spin button while it’s choosing, and smoother fade/blur while cycling.
+</html
