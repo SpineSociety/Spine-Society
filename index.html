@@ -6,7 +6,13 @@
 
 <meta charset="UTF-8" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<meta name="apple-mobile-web-app-title" content="Spine Society" />
+
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <title>Spine Society</title>
 
@@ -14,311 +20,551 @@
 
 :root {
 
-  --charcoal:#1C1C1E;
+  --bg: #111113;
 
-  --card:#2A2A2D;
+  --card: #1f1f22;
 
-  --dark:#1F1F22;
+  --card-2: #29292d;
 
-  --ivory:#F5F5F2;
+  --ivory: #f5f1ea;
 
-  --sage:#8A9A8A;
+  --muted: #b9b2a8;
 
-  --muted:#BFBAB2;
+  --soft: #8a9a8a;
 
-  --danger:#D8A1A1;
+  --soft-dark: #6f7d70;
+
+  --danger: #d8a1a1;
+
+  --line: rgba(255,255,255,.09);
+
+  --shadow: 0 18px 45px rgba(0,0,0,.32);
 
 }
 
-* { box-sizing:border-box; }
+* { box-sizing: border-box; }
 
 body {
 
-  margin:0;
+  margin: 0;
 
-  font-family:-apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  min-height: 100vh;
 
-  background:var(--charcoal);
+  background:
 
-  color:var(--ivory);
+    radial-gradient(circle at top, rgba(138,154,138,.18), transparent 34%),
 
-  padding:24px 16px 40px;
+    var(--bg);
+
+  color: var(--ivory);
+
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif;
+
+  padding: max(22px, env(safe-area-inset-top)) 16px 42px;
 
 }
 
 .app {
 
-  max-width:430px;
+  max-width: 440px;
 
-  margin:auto;
+  margin: 0 auto;
 
 }
 
 .header {
 
-  text-align:center;
+  text-align: center;
 
-  margin-bottom:24px;
+  padding: 14px 4px 18px;
+
+}
+
+.brand-mark {
+
+  width: 54px;
+
+  height: 54px;
+
+  margin: 0 auto 12px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(145deg, var(--soft), #c9c4b5);
+
+  color: #111;
+
+  display: grid;
+
+  place-items: center;
+
+  font-family: Georgia, serif;
+
+  font-size: 1.5rem;
+
+  font-weight: bold;
+
+  box-shadow: var(--shadow);
 
 }
 
 h1 {
 
-  font-family:Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
 
-  font-size:2.6rem;
+  font-size: 2.55rem;
 
-  margin:8px 0 4px;
+  line-height: 1;
+
+  margin: 0 0 8px;
+
+  letter-spacing: -.02em;
 
 }
 
 .subtitle {
 
-  color:var(--muted);
+  color: var(--muted);
 
-  margin:0;
+  margin: 0;
+
+  font-size: .98rem;
 
 }
 
 .card {
 
-  background:var(--card);
+  background: rgba(31,31,34,.94);
 
-  border-radius:26px;
+  border: 1px solid var(--line);
 
-  padding:20px;
+  border-radius: 30px;
 
-  margin-bottom:18px;
+  padding: 20px;
 
-  box-shadow:0 12px 35px rgba(0,0,0,.28);
+  margin: 16px 0;
+
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(14px);
+
+}
+
+.card-header {
+
+  display: flex;
+
+  align-items: baseline;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
 
 }
 
 h2 {
 
-  font-family:Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
 
-  margin-top:0;
+  font-size: 1.45rem;
+
+  margin: 0;
+
+}
+
+.helper {
+
+  color: var(--muted);
+
+  font-size: .86rem;
+
+  margin: 2px 0 12px;
 
 }
 
 input, select, button {
 
-  width:100%;
+  width: 100%;
 
-  padding:14px;
+  min-height: 52px;
 
-  margin:7px 0;
+  padding: 14px 15px;
 
-  border-radius:16px;
+  margin: 8px 0;
 
-  border:none;
+  border-radius: 18px;
 
-  font-size:1rem;
+  font-size: 1rem;
+
+  font-family: inherit;
 
 }
 
 input, select {
 
-  background:var(--dark);
+  background: #151517;
 
-  color:var(--ivory);
+  color: var(--ivory);
 
-  border:1px solid rgba(255,255,255,.08);
+  border: 1px solid var(--line);
+
+  outline: none;
 
 }
+
+input:focus, select:focus {
+
+  border-color: rgba(138,154,138,.7);
+
+  box-shadow: 0 0 0 4px rgba(138,154,138,.14);
+
+}
+
+input::placeholder { color: #7f7a73; }
 
 button {
 
-  background:var(--sage);
+  border: none;
 
-  color:#111;
+  background: var(--soft);
 
-  font-weight:700;
+  color: #101012;
 
-  cursor:pointer;
+  font-weight: 750;
 
-}
+  cursor: pointer;
 
-button:disabled {
-
-  opacity:.5;
+  transition: transform .14s ease, opacity .14s ease, background .14s ease;
 
 }
 
-.secondary-btn {
+button:active { transform: scale(.985); }
 
-  background:transparent;
+button:disabled { opacity: .55; cursor: not-allowed; }
 
-  color:var(--muted);
+.primary {
 
-  border:1px solid rgba(255,255,255,.14);
+  background: var(--ivory);
 
-}
-
-.danger-btn {
-
-  background:transparent;
-
-  color:var(--danger);
-
-  border:1px solid rgba(216,161,161,.3);
+  color: #111;
 
 }
 
-.spin-btn {
+.secondary {
 
-  background:var(--ivory);
+  background: transparent;
 
-  color:#111;
+  color: var(--muted);
 
-  font-size:1.1rem;
-
-  padding:16px;
+  border: 1px solid var(--line);
 
 }
 
-.book-item, .picked-item {
+.danger {
 
-  background:var(--dark);
+  background: transparent;
 
-  padding:14px;
+  color: var(--danger);
 
-  border-radius:18px;
-
-  margin:10px 0;
-
-  border:1px solid rgba(255,255,255,.08);
+  border: 1px solid rgba(216,161,161,.28);
 
 }
 
-.small {
+.row {
 
-  color:var(--muted);
+  display: grid;
 
-  font-size:.85rem;
+  grid-template-columns: 1fr 1fr;
 
-}
-
-.empty {
-
-  color:var(--muted);
-
-  text-align:center;
+  gap: 10px;
 
 }
 
-.wheel {
+.current-pill {
 
-  margin:18px auto;
+  display: inline-flex;
 
-  width:180px;
+  max-width: 100%;
 
-  height:180px;
+  background: rgba(138,154,138,.13);
 
-  border-radius:50%;
+  color: #d8dfd2;
 
-  border:8px solid var(--sage);
+  border: 1px solid rgba(138,154,138,.22);
 
-  border-top-color:var(--ivory);
+  padding: 9px 12px;
 
-  display:flex;
+  border-radius: 999px;
 
-  align-items:center;
+  font-size: .86rem;
 
-  justify-content:center;
-
-  font-family:Georgia, serif;
-
-  background:var(--dark);
-
-  transition:transform 2.4s cubic-bezier(.15,.85,.25,1);
-
-}
-
-.wheel.spinning {
-
-  transform:rotate(1800deg);
-
-}
-
-.winner {
-
-  margin-top:18px;
-
-  padding:18px;
-
-  background:var(--dark);
-
-  border-radius:22px;
-
-  text-align:center;
-
-}
-
-.winner img {
-
-  width:135px;
-
-  max-height:205px;
-
-  object-fit:cover;
-
-  border-radius:14px;
-
-  box-shadow:0 10px 28px rgba(0,0,0,.4);
-
-}
-
-.winner h3 {
-
-  font-family:Georgia, serif;
-
-  font-size:1.35rem;
-
-  margin-bottom:4px;
+  margin-top: 4px;
 
 }
 
 .sound-row {
 
-  display:flex;
+  display: flex;
 
-  justify-content:space-between;
+  justify-content: space-between;
 
-  align-items:center;
+  align-items: center;
 
-  color:var(--muted);
+  color: var(--muted);
 
-  font-size:.9rem;
+  font-size: .92rem;
+
+  margin-top: 8px;
 
 }
 
 .toggle {
 
-  width:auto;
+  width: auto;
 
-  padding:8px 14px;
+  min-height: 38px;
 
-  border-radius:999px;
+  padding: 8px 14px;
 
-  background:var(--dark);
+  margin: 0;
 
-  color:var(--ivory);
+  border-radius: 999px;
 
-  border:1px solid rgba(255,255,255,.12);
+  background: #151517;
+
+  color: var(--ivory);
+
+  border: 1px solid var(--line);
+
+}
+
+.result-stage {
+
+  min-height: 248px;
+
+  display: grid;
+
+  place-items: center;
+
+}
+
+.winner {
+
+  width: 100%;
+
+  margin-top: 14px;
+
+  padding: 20px;
+
+  background:
+
+    linear-gradient(180deg, rgba(255,255,255,.04), transparent),
+
+    #151517;
+
+  border: 1px solid var(--line);
+
+  border-radius: 26px;
+
+  text-align: center;
+
+  animation: reveal .28s ease both;
+
+}
+
+.winner.spinning {
+
+  animation: cycle .18s ease both;
+
+  filter: blur(.35px);
+
+}
+
+@keyframes reveal {
+
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+
+  to { opacity: 1; transform: translateY(0) scale(1); }
+
+}
+
+@keyframes cycle {
+
+  from { opacity: .55; transform: translateY(4px) scale(.985); }
+
+  to { opacity: 1; transform: translateY(0) scale(1); }
+
+}
+
+.cover {
+
+  width: 140px;
+
+  height: 210px;
+
+  object-fit: cover;
+
+  border-radius: 18px;
+
+  box-shadow: 0 16px 35px rgba(0,0,0,.45);
+
+  border: 1px solid rgba(255,255,255,.1);
+
+}
+
+.cover-placeholder {
+
+  width: 140px;
+
+  height: 210px;
+
+  border-radius: 18px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  place-items: center;
+
+  background: linear-gradient(145deg, #303033, #171719);
+
+  border: 1px solid var(--line);
+
+  color: var(--muted);
+
+  font-family: Georgia, serif;
+
+  font-size: 2.4rem;
+
+}
+
+.winner h3 {
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 1.55rem;
+
+  line-height: 1.1;
+
+  margin: 16px 0 5px;
+
+}
+
+.small {
+
+  color: var(--muted);
+
+  font-size: .88rem;
+
+}
+
+.status {
+
+  color: var(--muted);
+
+  font-size: .95rem;
+
+  text-align: center;
+
+  padding: 18px 10px;
+
+}
+
+.book-item, .picked-item {
+
+  background: #151517;
+
+  border: 1px solid var(--line);
+
+  padding: 15px;
+
+  border-radius: 22px;
+
+  margin: 10px 0;
+
+}
+
+.item-title {
+
+  font-weight: 760;
+
+  font-size: 1.02rem;
+
+}
+
+.item-actions {
+
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 8px;
+
+  margin-top: 10px;
+
+}
+
+.item-actions button {
+
+  min-height: 44px;
+
+  margin: 0;
+
+}
+
+.toast {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 24px;
+
+  transform: translateX(-50%) translateY(20px);
+
+  width: min(360px, calc(100% - 32px));
+
+  background: rgba(245,241,234,.96);
+
+  color: #111;
+
+  padding: 13px 16px;
+
+  border-radius: 18px;
+
+  box-shadow: var(--shadow);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: .24s ease;
+
+  text-align: center;
+
+  font-weight: 700;
+
+}
+
+.toast.show {
+
+  opacity: 1;
+
+  transform: translateX(-50%) translateY(0);
 
 }
 
 footer {
 
-  text-align:center;
+  text-align: center;
 
-  color:#777;
+  color: #777;
 
-  font-size:.8rem;
+  font-size: .8rem;
 
-  margin-top:24px;
+  margin-top: 26px;
 
 }
 
@@ -330,123 +576,165 @@ footer {
 
 <div class="app">
 
-<div class="header">
+  <header class="header">
 
-  <h1>Spine Society</h1>
+    <div class="brand-mark">S</div>
 
-  <p class="subtitle">Choose your next read.</p>
+    <h1>Spine Society</h1>
+
+    <p class="subtitle">Choose your next read.</p>
+
+  </header>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Your Shelves</h2>
+
+    </div>
+
+    <p class="helper">Create a shelf for each book club, friend group, or personal reading list.</p>
+
+    <input id="newShelfName" placeholder="Name a new shelf" />
+
+    <button onclick="createShelf()">Create Shelf</button>
+
+    <select id="shelfSelect" onchange="changeShelf()"></select>
+
+    <div id="currentShelfText" class="current-pill"></div>
+
+    <input id="renameShelfInput" placeholder="Rename selected shelf" />
+
+    <div class="row">
+
+      <button class="secondary" onclick="renameShelf()">Rename</button>
+
+      <button class="danger" onclick="deleteCurrentShelf()">Delete</button>
+
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Add Book</h2>
+
+    </div>
+
+    <p class="helper">Books are added to the shelf currently selected above.</p>
+
+    <input id="title" placeholder="Book title" />
+
+    <input id="author" placeholder="Author" />
+
+    <select id="category">
+
+      <option>Book Club Pick</option>
+
+      <option>Thriller</option>
+
+      <option>Romance</option>
+
+      <option>Fantasy</option>
+
+      <option>Mystery</option>
+
+      <option>Cozy Read</option>
+
+      <option>Wild Card</option>
+
+    </select>
+
+    <input id="image" placeholder="Book cover image URL optional" />
+
+    <button onclick="addBook()">Add to Shelf</button>
+
+  </section>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Spin</h2>
+
+    </div>
+
+    <p class="helper">Cycle through your shelf and let Spine Society choose.</p>
+
+    <select id="spinCategory">
+
+      <option>All Books</option>
+
+      <option>Book Club Pick</option>
+
+      <option>Thriller</option>
+
+      <option>Romance</option>
+
+      <option>Fantasy</option>
+
+      <option>Mystery</option>
+
+      <option>Cozy Read</option>
+
+      <option>Wild Card</option>
+
+    </select>
+
+    <button id="spinButton" class="primary" onclick="spinBook()">Spin</button>
+
+    <div class="sound-row">
+
+      <span>Sound</span>
+
+      <button class="toggle" onclick="toggleSound()" id="soundToggle">On</button>
+
+    </div>
+
+    <div id="winner" class="result-stage">
+
+      <p class="status">Your next pick will appear here.</p>
+
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Books</h2>
+
+      <span id="bookCount" class="small"></span>
+
+    </div>
+
+    <div id="bookList"></div>
+
+  </section>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Saved Picks</h2>
+
+      <span id="pickCount" class="small"></span>
+
+    </div>
+
+    <div id="pickedList"></div>
+
+  </section>
+
+  <footer>Spine Society · Your shelf, decided.</footer>
 
 </div>
 
-<div class="card">
-
-  <h2>Your Shelves</h2>
-
-  <input id="newShelfName" placeholder="Name a new shelf or book club" />
-
-  <button onclick="createShelf()">Create Shelf</button>
-
-  <select id="shelfSelect" onchange="changeShelf()"></select>
-
-  <input id="renameShelfInput" placeholder="Rename selected shelf" />
-
-  <button class="secondary-btn" onclick="renameShelf()">Rename Shelf</button>
-
-  <button class="danger-btn" onclick="deleteCurrentShelf()">Delete Current Shelf</button>
-
-</div>
-
-<div class="card">
-
-  <h2>Add Book</h2>
-
-  <input id="title" placeholder="Book title" />
-
-  <input id="author" placeholder="Author" />
-
-  <select id="category">
-
-    <option>Book Club Pick</option>
-
-    <option>Thriller</option>
-
-    <option>Romance</option>
-
-    <option>Fantasy</option>
-
-    <option>Mystery</option>
-
-    <option>Cozy Read</option>
-
-    <option>Wild Card</option>
-
-  </select>
-
-  <input id="image" placeholder="Book cover image URL optional" />
-
-  <button onclick="addBook()">Add to Selected Shelf</button>
-
-</div>
-
-<div class="card">
-
-  <h2>Spin This Shelf</h2>
-
-  <select id="spinCategory">
-
-    <option>All Books</option>
-
-    <option>Book Club Pick</option>
-
-    <option>Thriller</option>
-
-    <option>Romance</option>
-
-    <option>Fantasy</option>
-
-    <option>Mystery</option>
-
-    <option>Cozy Read</option>
-
-    <option>Wild Card</option>
-
-  </select>
-
-  <div id="wheel" class="wheel">Spin</div>
-
-  <button id="spinButton" class="spin-btn" onclick="spinBook()">Spin</button>
-
-  <div class="sound-row">
-
-    <span>Sound</span>
-
-    <button class="toggle" onclick="toggleSound()" id="soundToggle">On</button>
-
-  </div>
-
-  <div id="winner"></div>
-
-</div>
-
-<div class="card">
-
-  <h2>Selected Shelf</h2>
-
-  <div id="bookList"></div>
-
-</div>
-
-<div class="card">
-
-  <h2>Saved Picks</h2>
-
-  <div id="pickedList"></div>
-
-</div>
-
-<footer>Spine Society · Your shelf, decided.</footer>
-
-</div>
+<div id="toast" class="toast"></div>
 
 <audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
 
@@ -456,13 +744,29 @@ footer {
 
 let appData = JSON.parse(localStorage.getItem("spineSocietyData")) || {
 
-  currentShelf: "Personal Shelf",
+  currentShelf: "My Shelf",
 
-  shelves: { "Personal Shelf": [] },
+  shelves: { "My Shelf": [] },
 
   picked: []
 
 };
+
+if (!appData.picked) appData.picked = [];
+
+if (!appData.shelves || Object.keys(appData.shelves).length === 0) {
+
+  appData.shelves = { "My Shelf": [] };
+
+  appData.currentShelf = "My Shelf";
+
+}
+
+if (!appData.currentShelf || !appData.shelves[appData.currentShelf]) {
+
+  appData.currentShelf = Object.keys(appData.shelves)[0];
+
+}
 
 let lastPick = null;
 
@@ -470,9 +774,21 @@ let soundOn = JSON.parse(localStorage.getItem("spineSoundOn"));
 
 if (soundOn === null) soundOn = true;
 
-function saveData() {
+function save() {
 
   localStorage.setItem("spineSocietyData", JSON.stringify(appData));
+
+}
+
+function toast(message) {
+
+  const t = document.getElementById("toast");
+
+  t.textContent = message;
+
+  t.classList.add("show");
+
+  setTimeout(() => t.classList.remove("show"), 1800);
 
 }
 
@@ -490,9 +806,11 @@ function renderShelves() {
 
   select.innerHTML = names.map(name =>
 
-    `<option value="${name}" ${name === appData.currentShelf ? "selected" : ""}>${name}</option>`
+    `<option value="${escapeHTML(name)}" ${name === appData.currentShelf ? "selected" : ""}>${escapeHTML(name)}</option>`
 
   ).join("");
+
+  document.getElementById("currentShelfText").textContent = `Currently viewing: ${appData.currentShelf}`;
 
   displayBooks();
 
@@ -502,21 +820,27 @@ function renderShelves() {
 
 function createShelf() {
 
-  const name = document.getElementById("newShelfName").value.trim();
+  const input = document.getElementById("newShelfName");
 
-  if (!name) return alert("Enter a shelf name.");
+  const name = input.value.trim();
 
-  if (appData.shelves[name]) return alert("That shelf already exists.");
+  if (!name) return toast("Enter a shelf name.");
+
+  if (appData.shelves[name]) return toast("That shelf already exists.");
 
   appData.shelves[name] = [];
 
   appData.currentShelf = name;
 
-  document.getElementById("newShelfName").value = "";
+  input.value = "";
 
-  saveData();
+  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
+
+  save();
 
   renderShelves();
+
+  toast("Shelf created.");
 
 }
 
@@ -524,11 +848,11 @@ function changeShelf() {
 
   appData.currentShelf = document.getElementById("shelfSelect").value;
 
-  document.getElementById("winner").innerHTML = "";
-
   lastPick = null;
 
-  saveData();
+  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
+
+  save();
 
   renderShelves();
 
@@ -536,13 +860,17 @@ function changeShelf() {
 
 function renameShelf() {
 
-  const newName = document.getElementById("renameShelfInput").value.trim();
+  const input = document.getElementById("renameShelfInput");
+
+  const newName = input.value.trim();
 
   const oldName = appData.currentShelf;
 
-  if (!newName) return alert("Enter a new shelf name.");
+  if (!newName) return toast("Enter a new shelf name.");
 
-  if (appData.shelves[newName]) return alert("That shelf name already exists.");
+  if (newName === oldName) return toast("That is already the shelf name.");
+
+  if (appData.shelves[newName]) return toast("That shelf name already exists.");
 
   appData.shelves[newName] = appData.shelves[oldName];
 
@@ -550,11 +878,13 @@ function renameShelf() {
 
   appData.currentShelf = newName;
 
-  document.getElementById("renameShelfInput").value = "";
+  input.value = "";
 
-  saveData();
+  save();
 
   renderShelves();
+
+  toast("Shelf renamed.");
 
 }
 
@@ -562,17 +892,25 @@ function deleteCurrentShelf() {
 
   const names = Object.keys(appData.shelves);
 
-  if (names.length === 1) return alert("You need at least one shelf.");
+  if (names.length === 1) return toast("You need at least one shelf.");
 
-  if (!confirm(`Delete "${appData.currentShelf}" and all books inside it?`)) return;
+  const ok = confirm(`Delete "${appData.currentShelf}" and all books inside it?`);
+
+  if (!ok) return;
 
   delete appData.shelves[appData.currentShelf];
 
   appData.currentShelf = Object.keys(appData.shelves)[0];
 
-  saveData();
+  lastPick = null;
+
+  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
+
+  save();
 
   renderShelves();
+
+  toast("Shelf deleted.");
 
 }
 
@@ -586,7 +924,7 @@ function addBook() {
 
   const image = document.getElementById("image").value.trim();
 
-  if (!title) return alert("Enter a book title.");
+  if (!title) return toast("Enter a book title.");
 
   appData.shelves[appData.currentShelf].push({ title, author, category, image });
 
@@ -596,9 +934,11 @@ function addBook() {
 
   document.getElementById("image").value = "";
 
-  saveData();
+  save();
 
   displayBooks();
+
+  toast("Book added.");
 
 }
 
@@ -606,9 +946,11 @@ function deleteBook(index) {
 
   appData.shelves[appData.currentShelf].splice(index, 1);
 
-  saveData();
+  save();
 
   displayBooks();
+
+  toast("Book removed.");
 
 }
 
@@ -625,6 +967,8 @@ function toggleSound() {
   localStorage.setItem("spineSoundOn", JSON.stringify(soundOn));
 
   updateSoundButton();
+
+  toast(soundOn ? "Sound on." : "Sound off.");
 
 }
 
@@ -650,15 +994,47 @@ function stopSound(id) {
 
 }
 
+function renderBookCard(book, spinning = false, final = false) {
+
+  const cover = book.image
+
+    ? `<img class="cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+
+    : `<div class="cover-placeholder">S</div>`;
+
+  return `
+
+    <div class="winner ${spinning ? "spinning" : ""}">
+
+      ${cover}
+
+      <h3>${escapeHTML(book.title)}</h3>
+
+      ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
+
+      <div class="small">${escapeHTML(book.category || "Uncategorized")}</div>
+
+      ${final ? `
+
+        <button onclick="savePick()">Save Pick</button>
+
+        <button class="secondary" onclick="sharePick()">Share Pick</button>
+
+      ` : ""}
+
+    </div>
+
+  `;
+
+}
+
 function spinBook() {
 
   const selectedCategory = document.getElementById("spinCategory").value;
 
-  const spinButton = document.getElementById("spinButton");
+  const button = document.getElementById("spinButton");
 
-  const winnerDiv = document.getElementById("winner");
-
-  const wheel = document.getElementById("wheel");
+  const winner = document.getElementById("winner");
 
   const books = getCurrentBooks();
 
@@ -666,81 +1042,93 @@ function spinBook() {
 
     ? books
 
-    : books.filter(b => b.category === selectedCategory);
+    : books.filter(book => book.category === selectedCategory);
 
   if (filtered.length === 0) {
 
-    winnerDiv.innerHTML = "<p class='empty'>No books in this shelf/category yet.</p>";
+    winner.innerHTML = `<p class="status">This shelf/category is waiting for its first story.</p>`;
 
     return;
 
   }
 
-  spinButton.disabled = true;
+  button.disabled = true;
 
-  spinButton.textContent = "Choosing...";
-
-  wheel.classList.add("spinning");
+  button.textContent = "Choosing your next read...";
 
   playSound("spinSound");
 
-  setTimeout(() => {
+  let spins = 0;
 
-    stopSound("spinSound");
+  let delay = 55;
 
-    const final = filtered[Math.floor(Math.random() * filtered.length)];
+  const totalSpins = 34 + Math.floor(Math.random() * 8);
 
-    lastPick = { ...final, shelf: appData.currentShelf, date: new Date().toLocaleDateString() };
+  function cycle() {
 
-    winnerDiv.innerHTML = `
+    const book = filtered[Math.floor(Math.random() * filtered.length)];
 
-      <div class="winner">
+    winner.innerHTML = renderBookCard(book, true, false);
 
-        ${final.image ? `<img src="${final.image}" alt="Book cover">` : ""}
+    spins++;
 
-        <h3>${final.title}</h3>
+    delay += Math.max(2, Math.floor(spins / 4));
 
-        <div>${final.author ? "by " + final.author : ""}</div>
+    if (spins < totalSpins) {
 
-        <div class="small">${final.category}</div>
+      setTimeout(cycle, delay);
 
-        <button onclick="savePicked()">Save Pick</button>
+    } else {
 
-        <button class="secondary-btn" onclick="sharePick()">Share Pick</button>
+      stopSound("spinSound");
 
-      </div>
+      const final = filtered[Math.floor(Math.random() * filtered.length)];
 
-    `;
+      lastPick = {
 
-    playSound("winSound");
+        ...final,
 
-    wheel.classList.remove("spinning");
+        shelf: appData.currentShelf,
 
-    spinButton.disabled = false;
+        date: new Date().toLocaleDateString()
 
-    spinButton.textContent = "Spin";
+      };
 
-  }, 2500);
+      winner.innerHTML = renderBookCard(final, false, true);
+
+      playSound("winSound");
+
+      if (navigator.vibrate) navigator.vibrate(50);
+
+      button.disabled = false;
+
+      button.textContent = "Spin";
+
+    }
+
+  }
+
+  cycle();
 
 }
 
-function savePicked() {
+function savePick() {
 
-  if (!lastPick) return;
+  if (!lastPick) return toast("Spin first.");
 
   appData.picked.unshift(lastPick);
 
-  saveData();
+  save();
 
   displayPicked();
 
-  alert("Saved to picked books.");
+  toast("Pick saved.");
 
 }
 
 async function sharePick() {
 
-  if (!lastPick) return;
+  if (!lastPick) return toast("Spin first.");
 
   const text = `Spine Society picked: "${lastPick.title}"${lastPick.author ? " by " + lastPick.author : ""} from ${lastPick.shelf}.`;
 
@@ -748,7 +1136,7 @@ async function sharePick() {
 
     await navigator.clipboard.writeText(text);
 
-    alert("Pick copied to clipboard.");
+    toast("Pick copied.");
 
   } catch {
 
@@ -764,25 +1152,31 @@ function displayBooks() {
 
   const books = getCurrentBooks();
 
+  document.getElementById("bookCount").textContent = `${books.length} book${books.length === 1 ? "" : "s"}`;
+
   if (books.length === 0) {
 
-    list.innerHTML = "<p class='empty'>This shelf is empty.</p>";
+    list.innerHTML = `<p class="status">Your shelf is waiting for its first story.</p>`;
 
     return;
 
   }
 
-  list.innerHTML = books.map((b, i) => `
+  list.innerHTML = books.map((book, index) => `
 
     <div class="book-item">
 
-      <strong>${b.title}</strong><br>
+      <div class="item-title">${escapeHTML(book.title)}</div>
 
-      ${b.author ? `<span class="small">by ${b.author}</span><br>` : ""}
+      ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
 
-      <span class="small">${b.category}</span><br>
+      <div class="small">${escapeHTML(book.category || "Uncategorized")}</div>
 
-      <button class="secondary-btn" onclick="deleteBook(${i})">Delete Book</button>
+      <div class="item-actions">
+
+        <button class="secondary" onclick="deleteBook(${index})">Delete Book</button>
+
+      </div>
 
     </div>
 
@@ -794,25 +1188,33 @@ function displayPicked() {
 
   const list = document.getElementById("pickedList");
 
-  if (!appData.picked || appData.picked.length === 0) {
+  const picks = appData.picked || [];
 
-    list.innerHTML = "<p class='empty'>No saved picks yet.</p>";
+  document.getElementById("pickCount").textContent = `${picks.length} pick${picks.length === 1 ? "" : "s"}`;
+
+  if (picks.length === 0) {
+
+    list.innerHTML = `<p class="status">No saved picks yet. Spin your first one.</p>`;
 
     return;
 
   }
 
-  list.innerHTML = appData.picked.map((p, i) => `
+  list.innerHTML = picks.map((pick, index) => `
 
     <div class="picked-item">
 
-      <strong>${p.title}</strong><br>
+      <div class="item-title">${escapeHTML(pick.title)}</div>
 
-      ${p.author ? `<span class="small">by ${p.author}</span><br>` : ""}
+      ${pick.author ? `<div class="small">by ${escapeHTML(pick.author)}</div>` : ""}
 
-      <span class="small">${p.shelf} · ${p.date}</span><br>
+      <div class="small">${escapeHTML(pick.shelf || "Shelf")} · ${escapeHTML(pick.date || "")}</div>
 
-      <button class="danger-btn" onclick="deletePicked(${i})">Remove Pick</button>
+      <div class="item-actions">
+
+        <button class="danger" onclick="deletePicked(${index})">Remove Pick</button>
+
+      </div>
 
     </div>
 
@@ -824,13 +1226,37 @@ function deletePicked(index) {
 
   appData.picked.splice(index, 1);
 
-  saveData();
+  save();
 
   displayPicked();
 
+  toast("Pick removed.");
+
 }
 
-saveData();
+function escapeHTML(value) {
+
+  return String(value || "")
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+function escapeAttr(value) {
+
+  return escapeHTML(value).replaceAll("`", "&#096;");
+
+}
+
+save();
 
 renderShelves();
 
@@ -840,4 +1266,4 @@ updateSoundButton();
 
 </body>
 
-</html
+</html>
