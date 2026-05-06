@@ -695,7 +695,7 @@ footer {
     <div id="pickedList"></div>
 
   </section>
-
+<button onclick="testDatabase()">Test Database</button>
   <footer>Spine Society · Your shelf, decided.</footer>
 
 </div>
@@ -1446,7 +1446,21 @@ import {
   window.logoutUser = async function () {
     await signOut(auth);
   };
+window.testDatabase = async function () {
+  const user = auth.currentUser;
 
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  await set(ref(database, 'users/' + user.uid), {
+    email: user.email,
+    connected: true
+  });
+
+  alert("Database connected!");
+};
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
     const mainApp = document.getElementById("mainApp");
