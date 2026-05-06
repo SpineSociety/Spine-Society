@@ -1379,7 +1379,14 @@ updateSoundButton();
     onAuthStateChanged,
     signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  push,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
   const firebaseConfig = {
     apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
     authDomain: "spine-society-b2a3c.firebaseapp.com",
@@ -1392,6 +1399,7 @@ updateSoundButton();
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const database = getDatabase(app);
   const provider = new GoogleAuthProvider();
 
   window.signUpWithEmail = async function () {
