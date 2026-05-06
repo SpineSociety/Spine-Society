@@ -1331,7 +1331,23 @@ renderShelves();
 updateSoundButton();
 
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
+    authDomain: "spine-society-b2a3c.firebaseapp.com",
+    projectId: "spine-society-b2a3c",
+    storageBucket: "spine-society-b2a3c.firebasestorage.app",
+    messagingSenderId: "873293049506",
+    appId: "1:873293049506:web:11e8406d7d6d38bfb8b1fb",
+    measurementId: "G-FPB0PRLR5G"
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  console.log("Firebase connected!");
+</script>
 </body>
 
 </html>
