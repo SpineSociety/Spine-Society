@@ -1447,6 +1447,7 @@ import {
     await signOut(auth);
   };
 window.testDatabase = async function () {
+  const user = auth.currentUser;
   window.createClub = async function () {
   const user = auth.currentUser;
 
@@ -1472,8 +1473,7 @@ window.testDatabase = async function () {
   });
 
   alert("Club created! Club ID: " + clubRef.key);
-};
-  const user = auth.currentUser;
+}
 
   if (!user) {
     alert("Not logged in");
