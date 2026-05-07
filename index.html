@@ -846,11 +846,29 @@ function listenToUserClubs() {
       if (!club) continue;
 
       html += `
-        <div class="club-card">
-          <div class="item-title">${club.name}</div>
-          <div class="small">Book club</div>
-          <button onclick="openClub('${clubId}')">Open Club</button>
-        </div>
+       <div class="club-card">
+
+  <div class="item-title">
+    ${club.name}
+  </div>
+
+  <div class="small">
+    Book club
+  </div>
+
+  <button onclick="openClub('${clubId}')">
+    Open Club
+  </button>
+
+  <button
+    class="danger"
+    onclick="removeClub('${clubId}')">
+
+    Remove Club
+
+  </button>
+
+</div>
       `;
     }
 
@@ -1596,6 +1614,25 @@ if (!book) {
   );
 
   alert("Book updated.");
+};
+window.removeClub = async function (clubId) {
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const confirmRemove = confirm(
+    "Remove this book club from your list?"
+  );
+
+  if (!confirmRemove) return;
+
+  await set(
+    ref(database, "users/" + currentUser.uid + "/clubs/" + clubId),
+    null
+  );
+
+  alert("Club removed from your list.");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
