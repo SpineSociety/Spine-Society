@@ -374,6 +374,27 @@ footer {
   justify-content: center;
   text-align: center;
 }
+.club-subnav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.club-subnav button {
+  min-height: 42px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  font-size: .82rem;
+}
+
+.club-section {
+  display: none;
+}
+
+.club-section.active {
+  display: block;
+}
 </style>
 
 </head>
@@ -715,7 +736,19 @@ let currentClubBooks = [];
 function toast(message) {
   alert(message);
 }
+window.showClubSection = function (section) {
 
+  document.querySelectorAll(".club-section").forEach(sec => {
+    sec.classList.remove("active");
+  });
+
+  const selected =
+    document.getElementById(section + "Section");
+
+  if (selected) {
+    selected.classList.add("active");
+  }
+};
 function showScreen(screenName) {
   document.querySelectorAll(".screen").forEach(screen => {
     screen.classList.remove("active");
@@ -961,7 +994,27 @@ window.openClub = async function (clubId) {
   document.getElementById("activeClubSubtitle").textContent = club.name;
 
   document.getElementById("clubScreen").innerHTML = `
-    <div class="card">
+   <div class="club-subnav">
+
+  <button onclick="showClubSection('overview')">
+    Overview
+  </button>
+
+  <button onclick="showClubSection('shelf')">
+    Shelf
+  </button>
+
+  <button onclick="showClubSection('spin')">
+    Spin
+  </button>
+
+  <button onclick="showClubSection('talk')">
+    Book Talk
+  </button>
+
+</div>
+<div id="overviewSection" class="club-section active">
+     <div class="card">
       <div class="card-header">
         <h2>${club.name}</h2>
       </div>
@@ -1001,7 +1054,9 @@ window.openClub = async function (clubId) {
         <p class="status">No next read set yet.</p>
       </div>
     </div>
-
+</div>
+<div id="spinSection" class="club-section">
+</div>
     <div class="card">
       <div class="card-header">
         <h2>Spin</h2>
@@ -1033,6 +1088,8 @@ window.openClub = async function (clubId) {
 
     <div class="card">
       <div class="card-header">
+      <div id="shelfSection" class="club-section">
+      </div>
         <h2>Add Book</h2>
       </div>
 
@@ -1058,6 +1115,8 @@ window.openClub = async function (clubId) {
     </div>
 <div class="card">
   <div class="card-header">
+  <div id="talkSection" class="club-section">
+  </div>
     <h2>Marginalia</h2>
   </div>
 
