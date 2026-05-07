@@ -1131,42 +1131,6 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
       </div>
     `).join("");
 });
-onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
-  const memberList = document.getElementById("memberList");
-  const memberCount = document.getElementById("memberCount");
-
-  if (!memberList || !memberCount) {
-    console.log("Members HTML not found yet.");
-    return;
-  }
-
-  const members = snapshot.val() || {};
-  const memberIds = Object.keys(members);
-
-  memberCount.textContent =
-    memberIds.length + " member" + (memberIds.length === 1 ? "" : "s");
-
-  if (memberIds.length === 0) {
-    memberList.innerHTML = `<p class="status">No members yet.</p>`;
-    return;
-  }
-
-  let html = "";
-
-  for (const uid of memberIds) {
-    const userSnapshot = await get(ref(database, "users/" + uid));
-    const userData = userSnapshot.val();
-
-    html += `
-      <div class="book-item">
-        <div class="item-title">${userData && userData.email ? userData.email : "Book club member"}</div>
-        <div class="small">Member</div>
-      </div>
-    `;
-  }
-
-  memberList.innerHTML = html;
-});
   showScreen("club");
 };
 window.addBookToClub = async function () {
