@@ -928,7 +928,16 @@ window.openClub = async function (clubId) {
         Copy Invite
       </button>
     </div>
+<div class="card">
+  <div class="card-header">
+    <h2>Members</h2>
+    <span id="memberCount" class="small"></span>
+  </div>
 
+  <div id="memberList">
+    <p class="status">Loading members...</p>
+  </div>
+</div>
     <div class="card">
       <div class="card-header">
         <h2>Next Read</h2>
@@ -1121,6 +1130,35 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
         <div class="small">${book.category || "Uncategorized"}</div>
       </div>
     `).join("");
+});
+onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
+  const members = snapshot.val() || {};
+  const memberIds = Object.keys(members);
+
+  document.getElementById("memberCount").textContent =
+    memberIds.length + " member" + (memberIds.length === 1 ? "" : "s");
+
+  if (memberIds.length === 0) {
+    document.getElementById("memberList").innerHTML =
+      `<p class="status">No members yet.</p>`;
+    return;
+  }
+
+  let html = "";
+
+  for (const uid of memberIds) {
+    const userSnapshot = await get(ref(database, "users/" + uid));
+    const userData = userSnapshot.val();
+
+    html += `
+      <div class="book-item">
+        <div class="item-title">${userData?.email || "Book club member"}</div>
+        <div class="small">Member</div>
+      </div>
+    `;
+  }
+
+  document.getElementById("memberList").innerHTML = html;
 });
   showScreen("club");
 };
