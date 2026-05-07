@@ -1131,6 +1131,42 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
       </div>
     `).join("");
 });
+const memberList = document.getElementById("memberList");
+const memberCount = document.getElementById("memberCount");
+
+onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
+
+  const members = snapshot.val() || {};
+  const memberIds = Object.keys(members);
+
+  memberCount.textContent =
+    memberIds.length + " member" +
+    (memberIds.length === 1 ? "" : "s");
+
+  let html = "";
+
+  for (const uid of memberIds) {
+
+    const userSnapshot =
+      await get(ref(database, "users/" + uid));
+
+    const userData = userSnapshot.val();
+
+    html += `
+      <div class="book-item">
+        <div class="item-title">
+          ${userData?.email || "Member"}
+        </div>
+
+        <div class="small">
+          Book Club Member
+        </div>
+      </div>
+    `;
+  }
+
+  memberList.innerHTML = html;
+});
   showScreen("club");
 };
 window.addBookToClub = async function () {
