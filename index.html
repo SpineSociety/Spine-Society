@@ -564,6 +564,7 @@ footer {
 
     <button onclick="createShelf()">Create Shelf</button>
 <button class="secondary" onclick="createClub()">Create Shared Club</button>
+<button class="secondary" onclick="shareCurrentClubInvite()">Share Invite</button>
     <select id="shelfSelect" onchange="changeShelf()"></select>
 
     <div id="currentShelfText" class="current-pill"></div>
@@ -1496,6 +1497,29 @@ window.createClub = async function () {
   };
 
   alert("Club created! Now click Share Invite.");
+};
+window.shareCurrentClubInvite = async function () {
+  const invite = window.currentClubInvite;
+
+  if (!invite) {
+    alert("Create a club first.");
+    return;
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Join my Spine Society book club",
+        text: invite.inviteText,
+        url: invite.inviteLink
+      });
+      return;
+    } catch (error) {
+      console.log("Share failed:", error);
+    }
+  }
+
+  prompt("Copy this invite:", invite.inviteText);
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
