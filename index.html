@@ -1488,18 +1488,13 @@ window.createClub = async function () {
 
   const clubId = clubRef.key;
   const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
-
   const shareText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
 
-  if (navigator.share) {
-    await navigator.share({
-      title: "Join my Spine Society book club",
-      text: shareText,
-      url: inviteLink
-    });
-  } else {
+  try {
     await navigator.clipboard.writeText(shareText);
-    alert("Invite copied to clipboard!");
+    alert("Invite copied! You can paste it into a text message.");
+  } catch (error) {
+    prompt("Copy this invite link:", shareText);
   }
 };
   onAuthStateChanged(auth, (user) => {
