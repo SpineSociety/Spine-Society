@@ -994,27 +994,15 @@ window.openClub = async function (clubId) {
   document.getElementById("activeClubSubtitle").textContent = club.name;
 
   document.getElementById("clubScreen").innerHTML = `
-   <div class="club-subnav">
+  <div class="club-subnav">
+    <button onclick="showClubSection('overview')">Overview</button>
+    <button onclick="showClubSection('shelf')">Shelf</button>
+    <button onclick="showClubSection('spin')">Spin</button>
+    <button onclick="showClubSection('talk')">Marginalia</button>
+  </div>
 
-  <button onclick="showClubSection('overview')">
-    Overview
-  </button>
-
-  <button onclick="showClubSection('shelf')">
-    Shelf
-  </button>
-
-  <button onclick="showClubSection('spin')">
-    Spin
-  </button>
-
-  <button onclick="showClubSection('talk')">
-    Book Talk
-  </button>
-
-</div>
-<div id="overviewSection" class="club-section active">
-     <div class="card">
+  <div id="overviewSection" class="club-section active">
+    <div class="card">
       <div class="card-header">
         <h2>${club.name}</h2>
       </div>
@@ -1035,16 +1023,18 @@ window.openClub = async function (clubId) {
         Copy Invite
       </button>
     </div>
-<div class="card">
-  <div class="card-header">
-    <h2>Members</h2>
-    <span id="memberCount" class="small"></span>
-  </div>
 
-  <div id="memberList">
-    <p class="status">Loading members...</p>
-  </div>
-</div>
+    <div class="card">
+      <div class="card-header">
+        <h2>Members</h2>
+        <span id="memberCount" class="small"></span>
+      </div>
+
+      <div id="memberList">
+        <p class="status">Loading members...</p>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header">
         <h2>Next Read</h2>
@@ -1054,9 +1044,58 @@ window.openClub = async function (clubId) {
         <p class="status">No next read set yet.</p>
       </div>
     </div>
-</div>
-<div id="spinSection" class="club-section">
-</div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Books Read</h2>
+        <span id="booksReadCount" class="small"></span>
+      </div>
+
+      <div id="booksReadList">
+        <p class="status">No books finished yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="shelfSection" class="club-section">
+    <div class="card">
+      <div class="card-header">
+        <h2>Add Book</h2>
+      </div>
+
+      <input id="bookTitle" placeholder="Book title" />
+      <input id="bookAuthor" placeholder="Author" />
+
+      <select id="bookCategory">
+        <option>Book Club Pick</option>
+        <option>Thriller</option>
+        <option>Romance</option>
+        <option>Fantasy</option>
+        <option>Mystery</option>
+        <option>Cozy Read</option>
+        <option>Wild Card</option>
+      </select>
+
+      <input id="bookImage" placeholder="Book cover image URL optional" />
+
+      <button onclick="addBookToClub()">
+        Add Book
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Books</h2>
+        <span id="bookCount" class="small"></span>
+      </div>
+
+      <div id="bookList">
+        <p class="status">No books added yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="spinSection" class="club-section">
     <div class="card">
       <div class="card-header">
         <h2>Spin</h2>
@@ -1081,83 +1120,37 @@ window.openClub = async function (clubId) {
         Spin
       </button>
 
-    <div id="winner" class="result-stage spin-display">
+      <div id="winner" class="result-stage spin-display">
         <p class="status">Your next pick will appear here.</p>
       </div>
     </div>
+  </div>
 
-    <div class="card">
-      <div class="card-header">
-      <div id="shelfSection" class="club-section">
-      </div>
-        <h2>Add Book</h2>
-      </div>
-
-      <input id="bookTitle" placeholder="Book title" />
-
-      <input id="bookAuthor" placeholder="Author" />
-
-      <select id="bookCategory">
-        <option>Book Club Pick</option>
-        <option>Thriller</option>
-        <option>Romance</option>
-        <option>Fantasy</option>
-        <option>Mystery</option>
-        <option>Cozy Read</option>
-        <option>Wild Card</option>
-      </select>
-
-      <input id="bookImage" placeholder="Book cover image URL optional" />
-
-      <button onclick="addBookToClub()">
-        Add Book
-      </button>
-    </div>
-<div class="card">
-  <div class="card-header">
   <div id="talkSection" class="club-section">
-  </div>
-    <h2>Marginalia</h2>
-  </div>
-
-  <p class="helper">
-    Chat about the current read with your book club.
-  </p>
-
-  <input
-    id="discussionInput"
-    placeholder="Add a thought, question, or reaction..."
-  />
-
-  <button onclick="postDiscussionComment()">
-    Post Comment
-  </button>
-
-  <div id="discussionList">
-    <p class="status">No comments yet.</p>
-  </div>
-</div>
     <div class="card">
       <div class="card-header">
-        <h2>Books</h2>
-        <span id="bookCount" class="small"></span>
+        <h2>Marginalia</h2>
       </div>
 
-      <div id="bookList">
-        <p class="status">No books added yet.</p>
+      <p class="helper">
+        Chat about the current read with your book club.
+      </p>
+
+      <input
+        id="discussionInput"
+        placeholder="Add a thought, question, or reaction..."
+      />
+
+      <button onclick="postDiscussionComment()">
+        Post Comment
+      </button>
+
+      <div id="discussionList">
+        <p class="status">No comments yet.</p>
       </div>
     </div>
-    <div class="card">
-  <div class="card-header">
-    <h2>Books Read</h2>
-    <span id="booksReadCount" class="small"></span>
   </div>
-
-  <div id="booksReadList">
-    <p class="status">No books finished yet.</p>
-  </div>
-</div>
-  `;
+`;
 onValue(
   ref(database, "clubs/" + clubId + "/books"),
   (snapshot) => {
