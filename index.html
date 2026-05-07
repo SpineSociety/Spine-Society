@@ -1566,8 +1566,6 @@ window.editBook = async function (bookId) {
 
 const book = currentClubBooks.find(b => b.id === bookId);
 
-console.log("Editing book:", book);
-alert("Editing: " + JSON.stringify(book));
 
 if (!book) {
   alert("Book not found.");
