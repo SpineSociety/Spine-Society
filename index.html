@@ -15,7 +15,35 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <title>Spine Society</title>
+.top-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 14px 0 18px;
+}
 
+.nav-btn {
+  min-height: 44px;
+  padding: 10px 8px;
+  border-radius: 16px;
+  background: #151517;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  font-size: .88rem;
+}
+
+.nav-btn.active {
+  background: var(--ivory);
+  color: #111;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
 <style>
 
 :root {
@@ -553,7 +581,15 @@ footer {
     <p class="subtitle">Choose your next read.</p>
 <button class="secondary" onclick="logoutUser()">Log Out</button>
   </header>
+<nav class="top-nav">
+  <button class="nav-btn active" onclick="showScreen('home', this)">Home</button>
 
+  <button class="nav-btn" onclick="showScreen('club', this)">Club</button>
+
+  <button class="nav-btn" onclick="showScreen('picks', this)">Picks</button>
+
+  <button class="nav-btn" onclick="showScreen('account', this)">Account</button>
+</nav>
   <section class="card">
 
     <div class="card-header"><h2>Your Shelves</h2></div>
