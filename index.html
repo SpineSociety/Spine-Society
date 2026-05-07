@@ -1487,64 +1487,15 @@ window.createClub = async function () {
 
   const clubId = clubRef.key;
   const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
-  const inviteText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
+  const inviteText = "Join my Spine Society book club shelf: " + clubName + "\n" + inviteLink;
 
   window.currentClubInvite = {
-    clubName,
-    inviteLink,
-    inviteText
+    clubName: clubName,
+    inviteLink: inviteLink,
+    inviteText: inviteText
   };
 
-  document.getElementById("winner").innerHTML = `
-    <div class="winner">
-      <h3>${escapeHTML(clubName)}</h3>
-      <div class="small">Shared club created.</div>
-      <button onclick="shareCurrentClubInvite()">Share Invite</button>
-      <button class="secondary" onclick="emailCurrentClubInvite()">Email Invite</button>
-      <button class="secondary" onclick="copyCurrentClubInvite()">Copy Invite</button>
-    </div>
-  `;
-};
-
-window.shareCurrentClubInvite = async function () {
-  const invite = window.currentClubInvite;
-  if (!invite) return alert("Create a club first.");
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "Join my Spine Society book club",
-        text: `Join my Spine Society book club shelf: ${invite.clubName}`,
-        url: invite.inviteLink
-      });
-      return;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  await copyCurrentClubInvite();
-};
-
-window.emailCurrentClubInvite = function () {
-  const invite = window.currentClubInvite;
-  if (!invite) return alert("Create a club first.");
-
-  const subject = `Join my Spine Society book club: ${invite.clubName}`;
-  window.location.href =
-    `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(invite.inviteText)}`;
-};
-
-window.copyCurrentClubInvite = async function () {
-  const invite = window.currentClubInvite;
-  if (!invite) return alert("Create a club first.");
-
-  try {
-    await navigator.clipboard.writeText(invite.inviteText);
-    alert("Invite copied! Paste it into a text or message.");
-  } catch (error) {
-    prompt("Copy this invite:", invite.inviteText);
-  }
+  alert("Club created! Now click Share Invite.");
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
