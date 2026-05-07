@@ -1185,6 +1185,13 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
         <div class="item-title">${book.title}</div>
         ${book.author ? `<div class="small">by ${book.author}</div>` : ""}
         <div class="small">${book.category || "Uncategorized"}</div>
+        <button
+  class="danger"
+  onclick="deleteFinishedBook('${book.id}')">
+
+  Remove
+
+</button>
       </div>
     `).join("");
 });
@@ -1478,6 +1485,31 @@ window.postDiscussionComment = async function () {
   });
 
   input.value = "";
+};
+  window.deleteFinishedBook = async function (bookId) {
+
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const confirmDelete =
+    confirm("Remove this finished book?");
+
+  if (!confirmDelete) return;
+
+  await set(
+    ref(
+      database,
+      "clubs/" +
+      window.currentClubId +
+      "/booksRead/" +
+      bookId
+    ),
+    null
+  );
+
+  alert("Finished book removed.");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
