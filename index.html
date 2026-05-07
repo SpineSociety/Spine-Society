@@ -812,6 +812,9 @@ window.openClub = async function (clubId) {
     return;
   }
 
+  window.currentClubId = clubId;
+  window.currentClubName = club.name;
+
   document.getElementById("activeClubSubtitle").textContent = club.name;
 
   document.getElementById("clubScreen").innerHTML = `
@@ -821,7 +824,7 @@ window.openClub = async function (clubId) {
       </div>
 
       <p class="helper">
-        This is your club hub. Next we’ll move spin, add book, next read, and invites here cleanly.
+        Manage books, spin for the next read, and invite friends to this club.
       </p>
 
       <button onclick="textCurrentClubInvite('${clubId}', '${club.name}')">
@@ -838,18 +841,79 @@ window.openClub = async function (clubId) {
     </div>
 
     <div class="card">
-      <h2>Next Read</h2>
-      <p class="status">Next Read tools will live here.</p>
+      <div class="card-header">
+        <h2>Next Read</h2>
+      </div>
+
+      <div id="nextReadArea">
+        <p class="status">No next read set yet.</p>
+      </div>
     </div>
 
     <div class="card">
-      <h2>Spin</h2>
-      <p class="status">Spin tools will live here.</p>
+      <div class="card-header">
+        <h2>Spin</h2>
+      </div>
+
+      <p class="helper">
+        Spin from the books added to this club.
+      </p>
+
+      <select id="spinCategory">
+        <option>All Books</option>
+        <option>Book Club Pick</option>
+        <option>Thriller</option>
+        <option>Romance</option>
+        <option>Fantasy</option>
+        <option>Mystery</option>
+        <option>Cozy Read</option>
+        <option>Wild Card</option>
+      </select>
+
+      <button id="spinButton" class="primary" onclick="spinBook()">
+        Spin
+      </button>
+
+      <div id="winner" class="result-stage">
+        <p class="status">Your next pick will appear here.</p>
+      </div>
     </div>
 
     <div class="card">
-      <h2>Add Book</h2>
-      <p class="status">Add Book tools will live here.</p>
+      <div class="card-header">
+        <h2>Add Book</h2>
+      </div>
+
+      <input id="bookTitle" placeholder="Book title" />
+
+      <input id="bookAuthor" placeholder="Author" />
+
+      <select id="bookCategory">
+        <option>Book Club Pick</option>
+        <option>Thriller</option>
+        <option>Romance</option>
+        <option>Fantasy</option>
+        <option>Mystery</option>
+        <option>Cozy Read</option>
+        <option>Wild Card</option>
+      </select>
+
+      <input id="bookImage" placeholder="Book cover image URL optional" />
+
+      <button onclick="addBookToClub()">
+        Add Book
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Books</h2>
+        <span id="bookCount" class="small"></span>
+      </div>
+
+      <div id="bookList">
+        <p class="status">No books added yet.</p>
+      </div>
     </div>
   `;
 
