@@ -284,7 +284,36 @@ footer {
   font-size:.8rem;
   margin-top:26px;
 }
+.spin-display {
+  min-height: 390px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.spin-card {
+  width: 100%;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.spin-card .cover,
+.spin-card .cover-placeholder {
+  width: 130px;
+  height: 195px;
+  flex-shrink: 0;
+}
+
+.spin-card h3 {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 </style>
 
 </head>
@@ -874,7 +903,7 @@ window.openClub = async function (clubId) {
         Spin
       </button>
 
-      <div id="winner" class="result-stage">
+    <div id="winner" class="result-stage spin-display">
         <p class="status">Your next pick will appear here.</p>
       </div>
     </div>
@@ -1049,7 +1078,7 @@ window.spinBook = function () {
       filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
 
     winnerDiv.innerHTML = `
-      <div class="winner spinning">
+      <div class="winner spin-card spinning">
         ${
           randomBook.image
             ? `<img class="cover" src="${randomBook.image}" alt="Book cover">`
@@ -1079,7 +1108,7 @@ window.spinBook = function () {
       window.lastPick = finalBook;
 
       winnerDiv.innerHTML = `
-        <div class="winner">
+        <div class="winner spin-card">
           ${
             finalBook.image
               ? `<img class="cover" src="${finalBook.image}" alt="Book cover">`
