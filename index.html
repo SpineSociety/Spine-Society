@@ -1448,7 +1448,21 @@ import {
   };
 window.testDatabase = async function () {
   const user = auth.currentUser;
-  window.createClub = async function () {
+
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  await set(ref(database, "users/" + user.uid), {
+    email: user.email,
+    connected: true
+  });
+
+  alert("Database connected!");
+};
+
+window.createClub = async function () {
   const user = auth.currentUser;
 
   if (!user) {
@@ -1460,7 +1474,7 @@ window.testDatabase = async function () {
 
   if (!clubName) return;
 
-  const clubRef = push(ref(database, 'clubs'));
+  const clubRef = push(ref(database, "clubs"));
 
   await set(clubRef, {
     name: clubName,
@@ -1473,19 +1487,6 @@ window.testDatabase = async function () {
   });
 
   alert("Club created! Club ID: " + clubRef.key);
-}
-
-  if (!user) {
-    alert("Not logged in");
-    return;
-  }
-
-  await set(ref(database, 'users/' + user.uid), {
-    email: user.email,
-    connected: true
-  });
-
-  alert("Database connected!");
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
