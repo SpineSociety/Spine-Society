@@ -1489,39 +1489,62 @@ window.createClub = async function () {
   const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
   const inviteText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
 
+  window.currentClubInvite = {
+    clubName,
+    inviteLink,
+    inviteText
+  };
+
   document.getElementById("winner").innerHTML = `
     <div class="winner">
-      <h3>${clubName}</h3>
+      <h3>${escapeHTML(clubName)}</h3>
       <div class="small">Shared club created.</div>
-
-      <button onclick="shareClubInvite('${clubName}', '${inviteLink}')">Share Invite</button>
-      <button class="secondary" onclick="textClubInvite('${inviteText.replaceAll("'", "\\'")}')">Text Invite</button>
-      <button class="secondary" onclick="emailClubInvite('${clubName.replaceAll("'", "\\'")}', '${inviteText.replaceAll("'", "\\'")}')">Email Invite</button>
+      <button onclick="shareCurrentClubInvite()">Share Invite</button>
+      <button class="secondary" onclick="emailCurrentClubInvite()">Email Invite</button>
+      <button class="secondary" onclick="copyCurrentClubInvite()">Copy Invite</button>
     </div>
   `;
 };
-window.shareClubInvite = async function (clubName, inviteLink) {
-  const text = `Join my Spine Society book club shelf: ${clubName}`;
+
+window.shareCurrentClubInvite = async function () {
+  const invite = window.currentClubInvite;
+  if (!invite) return alert("Create a club first.");
 
   if (navigator.share) {
-    await navigator.share({
-      title: "Join my Spine Society book club",
-      text: text,
-      url: inviteLink
-    });
-  } else {
-    await navigator.clipboard.writeText(`${text}\n${inviteLink}`);
-    alert("Invite copied!");
+    try {
+      await navigator.share({
+        title: "Join my Spine Society book club",
+        text: `Join my Spine Society book club shelf: ${invite.clubName}`,
+        url: invite.inviteLink
+      });
+      return;
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+  await copyCurrentClubInvite();
 };
 
-window.textClubInvite = function (inviteText) {
-  window.location.href = `sms:&body=${encodeURIComponent(inviteText)}`;
+window.emailCurrentClubInvite = function () {
+  const invite = window.currentClubInvite;
+  if (!invite) return alert("Create a club first.");
+
+  const subject = `Join my Spine Society book club: ${invite.clubName}`;
+  window.location.href =
+    `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(invite.inviteText)}`;
 };
 
-window.emailClubInvite = function (clubName, inviteText) {
-  const subject = `Join my Spine Society book club: ${clubName}`;
-  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(inviteText)}`;
+window.copyCurrentClubInvite = async function () {
+  const invite = window.currentClubInvite;
+  if (!invite) return alert("Create a club first.");
+
+  try {
+    await navigator.clipboard.writeText(invite.inviteText);
+    alert("Invite copied! Paste it into a text or message.");
+  } catch (error) {
+    prompt("Copy this invite:", invite.inviteText);
+  }
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
