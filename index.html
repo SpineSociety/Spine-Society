@@ -1599,23 +1599,34 @@ window.copyCurrentClubInvite = async function () {
   }
 };
 window.showScreen = function (screenName, button) {
+  const screens = ["homeScreen", "clubScreen", "picksScreen", "accountScreen"];
 
-  document.querySelectorAll(".screen").forEach(screen => {
-    screen.classList.remove("active");
+  screens.forEach(id => {
+    const screen = document.getElementById(id);
+    if (screen) {
+      screen.style.display = "none";
+    }
   });
+
+  const selectedScreen = document.getElementById(screenName + "Screen");
+
+  if (selectedScreen) {
+    selectedScreen.style.display = "block";
+  } else {
+    alert("Screen not found: " + screenName + "Screen");
+  }
 
   document.querySelectorAll(".nav-btn").forEach(btn => {
     btn.classList.remove("active");
   });
 
-  const screen = document.getElementById(screenName + "Screen");
-
-  if (screen) {
-    screen.classList.add("active");
+  if (button) {
+    button.classList.add("active");
   }
-
-  button.classList.add("active");
 };
+document.addEventListener("DOMContentLoaded", function () {
+  window.showScreen("home", document.querySelector(".nav-btn"));
+});
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
     const mainApp = document.getElementById("mainApp");
