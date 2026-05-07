@@ -374,13 +374,6 @@ footer {
   justify-content: center;
   text-align: center;
 }
-  .edit-panel {
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 14px;
-  margin-top: 12px;
-}
 </style>
 
 </head>
@@ -1134,23 +1127,21 @@ onValue(
     ${book.category || "Uncategorized"}
   </div>
 
- <button
-  class="secondary"
-  onclick="showEditBookForm('${book.id}')">
+  <button
+    class="secondary"
+    onclick="editBook('${book.id}')">
 
-  Edit Book
+    Edit Book
 
-</button>
+  </button>
 
-<button
-  class="danger"
-  onclick="deleteBook('${book.id}')">
+  <button
+    class="danger"
+    onclick="deleteBook('${book.id}')">
 
-  Delete Book
+    Delete Book
 
-</button>
-
-<div id="editBookForm-${book.id}"></div>
+  </button>
 
 </div>
       `).join("");
@@ -1567,7 +1558,62 @@ window.postDiscussionComment = async function () {
   alert("Book deleted.");
 };
 
+window.editBook = async function (bookId) {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
 
+const book = currentClubBooks.find(b => b.id === bookId);
+
+console.log("Editing book:", book);
+alert("Editing: " + JSON.stringify(book));
+
+if (!book) {
+  alert("Book not found.");
+  return;
+}
+
+  const newTitle = prompt("Edit book title:", book.title || "");
+  if (newTitle === null) return;
+
+  const newAuthor = prompt("Edit author name:", book.author || "");
+  if (newAuthor === null) return;
+
+  const newCategory = prompt("Edit category:", book.category || "Book Club Pick");
+  if (newCategory === null) return;
+
+  const newImage = prompt("Edit cover image URL:", book.image || "");
+  if (newImage === null) return;
+
+  await update(
+    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
+    {
+      title: newTitle.trim(),
+      author: newAuthor.trim(),
+      category: newCategory.trim(),
+      image: newImage.trim(),
+      updatedAt: Date.now()
+    }
+  );
+
+  alert("Book updated.");
+};
+function buildInviteText(clubId, clubName) {
+  const inviteLink =
+    window.location.origin +
+    window.location.pathname +
+    "?club=" +
+    clubId;
+
+  return {
+    inviteLink,
+    inviteText:
+      "Join my Spine Society book club shelf: " +
+      clubName +
+      "\n" +
+      inviteLink
+  };
 }
 
 window.textCurrentClubInvite = function (clubId, clubName) {
