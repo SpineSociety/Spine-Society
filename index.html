@@ -1471,7 +1471,6 @@ window.createClub = async function () {
   }
 
   const clubName = prompt("Enter your club name:");
-
   if (!clubName) return;
 
   const clubRef = push(ref(database, "clubs"));
@@ -1488,14 +1487,41 @@ window.createClub = async function () {
 
   const clubId = clubRef.key;
   const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
-  const shareText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
+  const inviteText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
 
-  try {
-    await navigator.clipboard.writeText(shareText);
-    alert("Invite copied! You can paste it into a text message.");
-  } catch (error) {
-    prompt("Copy this invite link:", shareText);
+  document.getElementById("winner").innerHTML = `
+    <div class="winner">
+      <h3>${clubName}</h3>
+      <div class="small">Shared club created.</div>
+
+      <button onclick="shareClubInvite('${clubName}', '${inviteLink}')">Share Invite</button>
+      <button class="secondary" onclick="textClubInvite('${inviteText.replaceAll("'", "\\'")}')">Text Invite</button>
+      <button class="secondary" onclick="emailClubInvite('${clubName.replaceAll("'", "\\'")}', '${inviteText.replaceAll("'", "\\'")}')">Email Invite</button>
+    </div>
+  `;
+};
+window.shareClubInvite = async function (clubName, inviteLink) {
+  const text = `Join my Spine Society book club shelf: ${clubName}`;
+
+  if (navigator.share) {
+    await navigator.share({
+      title: "Join my Spine Society book club",
+      text: text,
+      url: inviteLink
+    });
+  } else {
+    await navigator.clipboard.writeText(`${text}\n${inviteLink}`);
+    alert("Invite copied!");
   }
+};
+
+window.textClubInvite = function (inviteText) {
+  window.location.href = `sms:&body=${encodeURIComponent(inviteText)}`;
+};
+
+window.emailClubInvite = function (clubName, inviteText) {
+  const subject = `Join my Spine Society book club: ${clubName}`;
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(inviteText)}`;
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
