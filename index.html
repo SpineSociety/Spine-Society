@@ -1182,17 +1182,38 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
   document.getElementById("booksReadList").innerHTML =
     finishedBooks.map(book => `
       <div class="book-item">
-        <div class="item-title">${book.title}</div>
-        ${book.author ? `<div class="small">by ${book.author}</div>` : ""}
-        <div class="small">${book.category || "Uncategorized"}</div>
-        <button
-  class="danger"
-  onclick="deleteFinishedBook('${book.id}')">
 
-  Remove
+  <div class="item-title">
+    ${book.title}
+  </div>
 
-</button>
-      </div>
+  ${
+    book.author
+      ? `<div class="small">by ${book.author}</div>`
+      : ""
+  }
+
+  <div class="small">
+    ${book.category || "Uncategorized"}
+  </div>
+
+  <button
+    class="secondary"
+    onclick="editBook('${book.id}')">
+
+    Edit Book
+
+  </button>
+
+  <button
+    class="danger"
+    onclick="deleteBook('${book.id}')">
+
+    Delete Book
+
+  </button>
+
+</div>
     `).join("");
 });
 const memberList = document.getElementById("memberList");
@@ -1510,6 +1531,58 @@ window.postDiscussionComment = async function () {
   );
 
   alert("Finished book removed.");
+};
+  window.deleteBook = async function (bookId) {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const confirmDelete = confirm("Delete this book from the club?");
+
+  if (!confirmDelete) return;
+
+  await set(
+    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
+    null
+  );
+
+  alert("Book deleted.");
+};
+
+window.editBook = async function (bookId) {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const book = currentClubBooks.find(b => b.id === bookId);
+
+  if (!book) {
+    alert("Book not found.");
+    return;
+  }
+
+  const newTitle = prompt("Edit book title:", book.title || "");
+  if (newTitle === null) return;
+
+  const newAuthor = prompt("Edit author name:", book.author || "");
+  if (newAuthor === null) return;
+
+  const newImage = prompt("Edit cover image URL:", book.image || "");
+  if (newImage === null) return;
+
+  await update(
+    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
+    {
+      title: newTitle.trim(),
+      author: newAuthor.trim(),
+      image: newImage.trim(),
+      updatedAt: Date.now()
+    }
+  );
+
+  alert("Book updated.");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
