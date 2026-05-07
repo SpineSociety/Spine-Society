@@ -1055,6 +1055,36 @@ onValue(
       `).join("");
   }
 );
+onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
+  const nextRead = snapshot.val();
+
+  const area = document.getElementById("nextReadArea");
+
+  if (!nextRead) {
+    area.innerHTML = `<p class="status">No next read set yet.</p>`;
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="next-read-card" style="text-align:center;">
+      ${
+        nextRead.image
+          ? `<img class="cover" src="${nextRead.image}" alt="Book cover">`
+          : `<div class="cover-placeholder">S</div>`
+      }
+
+      <h3>${nextRead.title}</h3>
+
+      ${
+        nextRead.author
+          ? `<div class="small">by ${nextRead.author}</div>`
+          : ""
+      }
+
+      <div class="small">${nextRead.category || "Uncategorized"}</div>
+    </div>
+  `;
+});
   showScreen("club");
 };
 window.addBookToClub = async function () {
@@ -1190,6 +1220,27 @@ window.spinBook = function () {
     spinButton.disabled = false;
     spinButton.textContent = "Spin";
   }, 2500);
+};
+window.setNextRead = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  if (!window.lastPick) {
+    alert("Spin first.");
+    return;
+  }
+
+  await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
+    title: window.lastPick.title || "",
+    author: window.lastPick.author || "",
+    category: window.lastPick.category || "",
+    image: window.lastPick.image || "",
+    setAt: Date.now()
+  });
+
+  alert("Next read set!");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
