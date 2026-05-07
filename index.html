@@ -641,7 +641,18 @@ footer {
         Signed in.
 
       </p>
+<input
+  id="usernameInput"
+  placeholder="Choose your Reader Alias"
+/>
 
+<button onclick="saveUsername()">
+  Save Reader Alias
+</button>
+
+<p class="helper" id="currentUsername">
+  No Reader Alias set yet.
+</p>
       <button
         class="danger"
         onclick="logoutUser()">
@@ -777,7 +788,32 @@ window.loginWithGoogle = async function () {
 window.logoutUser = async function () {
   await signOut(auth);
 };
+window.saveUsername = async function () {
 
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const username =
+    document.getElementById("usernameInput").value.trim();
+
+  if (!username) {
+    alert("Enter a Reader Alias.");
+    return;
+  }
+
+  await update(ref(database, "users/" + currentUser.uid), {
+    username: username,
+    email: currentUser.email || "",
+    updatedAt: Date.now()
+  });
+
+  document.getElementById("currentUsername").textContent =
+    "Reader Alias: " + username;
+
+  alert("Reader Alias saved.");
+};
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
     email: user.email || "",
@@ -1433,7 +1469,15 @@ onAuthStateChanged(auth, async (user) => {
       "Signed in as " + (user.email || "Google user");
 
     await ensureUserRecord(user);
+const userSnapshot = await get(ref(database, "users/" + user.uid));
+const userData = userSnapshot.val();
 
+if (userData && userData.username) {
+  document.getElementById("usernameInput").value = userData.username;
+
+  document.getElementById("currentUsername").textContent =
+    "Reader Alias: " + userData.username;
+}
     listenToUserClubs();
 
     handleInviteLink();
