@@ -341,6 +341,39 @@ footer {
     transform: scale(1) translateY(0);
   }
 }
+.slot-window {
+  height: 360px;
+  overflow: hidden;
+  border-radius: 26px;
+  background: #151517;
+  border: 1px solid var(--line);
+  margin-top: 14px;
+}
+
+.slot-track {
+  transition: transform 2.4s cubic-bezier(.12,.82,.22,1);
+}
+
+.slot-item {
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.slot-card {
+  width: 100%;
+  text-align: center;
+}
+
+.slot-card h3 {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 </style>
 
 </head>
@@ -1097,69 +1130,66 @@ window.spinBook = function () {
   spinButton.disabled = true;
   spinButton.textContent = "Choosing...";
 
-  let spins = 0;
-  const maxSpins = 22;
+  const spinList = [];
 
-  const interval = setInterval(() => {
-    const randomBook =
-      filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+  for (let i = 0; i < 18; i++) {
+    spinList.push(filteredBooks[Math.floor(Math.random() * filteredBooks.length)]);
+  }
+
+  const finalBook = filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+  spinList.push(finalBook);
+
+  winnerDiv.innerHTML = `
+    <div class="slot-window">
+      <div class="slot-track" id="slotTrack">
+        ${spinList.map(book => `
+          <div class="slot-item">
+            <div class="slot-card">
+              ${
+                book.image
+                  ? `<img class="cover" src="${book.image}" alt="Book cover">`
+                  : `<div class="cover-placeholder">S</div>`
+              }
+              <h3>${book.title}</h3>
+              ${book.author ? `<div class="small">by ${book.author}</div>` : ""}
+              <div class="small">${book.category || "Uncategorized"}</div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+
+  requestAnimationFrame(() => {
+    const track = document.getElementById("slotTrack");
+    track.style.transform =
+      `translateY(-${360 * (spinList.length - 1)}px)`;
+  });
+
+  setTimeout(() => {
+    window.lastPick = finalBook;
 
     winnerDiv.innerHTML = `
-      <div class="winner spin-card spinning">
+      <div class="winner spin-card final-result">
         ${
-          randomBook.image
-            ? `<img class="cover" src="${randomBook.image}" alt="Book cover">`
+          finalBook.image
+            ? `<img class="cover" src="${finalBook.image}" alt="Book cover">`
             : `<div class="cover-placeholder">S</div>`
         }
 
-        <h3>${randomBook.title}</h3>
+        <h3>${finalBook.title}</h3>
 
-        ${
-          randomBook.author
-            ? `<div class="small">by ${randomBook.author}</div>`
-            : ""
-        }
+        ${finalBook.author ? `<div class="small">by ${finalBook.author}</div>` : ""}
 
-        <div class="small">${randomBook.category || "Uncategorized"}</div>
+        <div class="small">${finalBook.category || "Uncategorized"}</div>
+
+        <button onclick="setNextRead()">Set as Next Read</button>
       </div>
     `;
 
-    spins++;
-
-    if (spins >= maxSpins) {
-      clearInterval(interval);
-
-      const finalBook =
-        filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
-
-      window.lastPick = finalBook;
-
-      winnerDiv.innerHTML = `
-      <div class="winner spin-card final-result">
-          ${
-            finalBook.image
-              ? `<img class="cover" src="${finalBook.image}" alt="Book cover">`
-              : `<div class="cover-placeholder">S</div>`
-          }
-
-          <h3>${finalBook.title}</h3>
-
-          ${
-            finalBook.author
-              ? `<div class="small">by ${finalBook.author}</div>`
-              : ""
-          }
-
-          <div class="small">${finalBook.category || "Uncategorized"}</div>
-
-          <button onclick="setNextRead()">Set as Next Read</button>
-        </div>
-      `;
-
-      spinButton.disabled = false;
-      spinButton.textContent = "Spin";
-    }
-  }, 140);
+    spinButton.disabled = false;
+    spinButton.textContent = "Spin";
+  }, 2500);
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
