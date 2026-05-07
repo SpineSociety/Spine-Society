@@ -1564,12 +1564,15 @@ window.editBook = async function (bookId) {
     return;
   }
 
-  const book = currentClubBooks.find(b => b.id === bookId);
+const book = currentClubBooks.find(b => b.id === bookId);
 
-  if (!book) {
-    alert("Book not found.");
-    return;
-  }
+console.log("Editing book:", book);
+alert("Editing: " + JSON.stringify(book));
+
+if (!book) {
+  alert("Book not found.");
+  return;
+}
 
   const newTitle = prompt("Edit book title:", book.title || "");
   if (newTitle === null) return;
