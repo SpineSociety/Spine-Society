@@ -1004,6 +1004,16 @@ window.openClub = async function (clubId) {
         <p class="status">No books added yet.</p>
       </div>
     </div>
+    <div class="card">
+  <div class="card-header">
+    <h2>Books Read</h2>
+    <span id="booksReadCount" class="small"></span>
+  </div>
+
+  <div id="booksReadList">
+    <p class="status">No books finished yet.</p>
+  </div>
+</div>
   `;
 onValue(
   ref(database, "clubs/" + clubId + "/books"),
@@ -1082,8 +1092,35 @@ onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
       }
 
       <div class="small">${nextRead.category || "Uncategorized"}</div>
+      <button onclick="markNextReadFinished()">Mark as Finished</button>
     </div>
   `;
+});
+onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
+  const booksRead = snapshot.val() || {};
+
+  const finishedBooks = Object.entries(booksRead).map(([id, value]) => ({
+    id,
+    ...value
+  }));
+
+  document.getElementById("booksReadCount").textContent =
+    finishedBooks.length + " read";
+
+  if (finishedBooks.length === 0) {
+    document.getElementById("booksReadList").innerHTML =
+      `<p class="status">No books finished yet.</p>`;
+    return;
+  }
+
+  document.getElementById("booksReadList").innerHTML =
+    finishedBooks.map(book => `
+      <div class="book-item">
+        <div class="item-title">${book.title}</div>
+        ${book.author ? `<div class="small">by ${book.author}</div>` : ""}
+        <div class="small">${book.category || "Uncategorized"}</div>
+      </div>
+    `).join("");
 });
   showScreen("club");
 };
@@ -1241,6 +1278,42 @@ window.setNextRead = async function () {
   });
 
   alert("Next read set!");
+};
+window.markNextReadFinished = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const nextReadSnapshot = await get(
+    ref(database, "clubs/" + window.currentClubId + "/nextRead")
+  );
+
+  const nextRead = nextReadSnapshot.val();
+
+  if (!nextRead) {
+    alert("No next read to finish.");
+    return;
+  }
+
+  const finishedRef = push(
+    ref(database, "clubs/" + window.currentClubId + "/booksRead")
+  );
+
+  await set(finishedRef, {
+    title: nextRead.title || "",
+    author: nextRead.author || "",
+    category: nextRead.category || "",
+    image: nextRead.image || "",
+    finishedAt: Date.now()
+  });
+
+  await set(
+    ref(database, "clubs/" + window.currentClubId + "/nextRead"),
+    null
+  );
+
+  alert("Moved to Books Read!");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
