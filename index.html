@@ -1567,71 +1567,7 @@ window.postDiscussionComment = async function () {
   alert("Book deleted.");
 };
 
-window.showEditBookForm = function (bookId) {
-  const book = currentClubBooks.find(b => b.id === bookId);
 
-  if (!book) {
-    alert("Book not found.");
-    return;
-  }
-
-  const formArea = document.getElementById("editBookForm-" + bookId);
-
-  formArea.innerHTML = `
-    <div class="edit-panel">
-      <input id="editTitle-${bookId}" value="${book.title || ""}" placeholder="Book title" />
-      <input id="editAuthor-${bookId}" value="${book.author || ""}" placeholder="Author" />
-      <input id="editCategory-${bookId}" value="${book.category || ""}" placeholder="Category" />
-      <input id="editImage-${bookId}" value="${book.image || ""}" placeholder="Cover image URL" />
-
-      <button onclick="saveBookEdits('${bookId}')">Save Changes</button>
-      <button class="secondary" onclick="cancelBookEdit('${bookId}')">Cancel</button>
-    </div>
-  `;
-};
-
-window.cancelBookEdit = function (bookId) {
-  document.getElementById("editBookForm-" + bookId).innerHTML = "";
-};
-
-window.saveBookEdits = async function (bookId) {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
-
-  await update(
-    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
-    {
-      title: document.getElementById("editTitle-" + bookId).value.trim(),
-      author: document.getElementById("editAuthor-" + bookId).value.trim(),
-      category: document.getElementById("editCategory-" + bookId).value.trim(),
-      image: document.getElementById("editImage-" + bookId).value.trim(),
-      updatedAt: Date.now()
-    }
-  );
-
-  cancelBookEdit(bookId);
-  alert("Book updated.");
-};
-
-  alert("Book updated.");
-};
-function buildInviteText(clubId, clubName) {
-  const inviteLink =
-    window.location.origin +
-    window.location.pathname +
-    "?club=" +
-    clubId;
-
-  return {
-    inviteLink,
-    inviteText:
-      "Join my Spine Society book club shelf: " +
-      clubName +
-      "\n" +
-      inviteLink
-  };
 }
 
 window.textCurrentClubInvite = function (clubId, clubName) {
