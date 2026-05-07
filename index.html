@@ -1276,7 +1276,10 @@ window.setNextRead = async function () {
     image: window.lastPick.image || "",
     setAt: Date.now()
   });
-
+await set(
+  ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id),
+  null
+);
   alert("Next read set!");
 };
 window.markNextReadFinished = async function () {
