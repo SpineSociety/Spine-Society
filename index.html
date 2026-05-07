@@ -1017,6 +1017,27 @@ window.openClub = async function (clubId) {
       <div class="card-header">
         <h2>Add Book</h2>
       </div>
+
+      <input id="bookTitle" placeholder="Book title" />
+
+      <input id="bookAuthor" placeholder="Author" />
+
+      <select id="bookCategory">
+        <option>Book Club Pick</option>
+        <option>Thriller</option>
+        <option>Romance</option>
+        <option>Fantasy</option>
+        <option>Mystery</option>
+        <option>Cozy Read</option>
+        <option>Wild Card</option>
+      </select>
+
+      <input id="bookImage" placeholder="Book cover image URL optional" />
+
+      <button onclick="addBookToClub()">
+        Add Book
+      </button>
+    </div>
 <div class="card">
   <div class="card-header">
     <h2>Discussion</h2>
@@ -1039,27 +1060,6 @@ window.openClub = async function (clubId) {
     <p class="status">No comments yet.</p>
   </div>
 </div>
-      <input id="bookTitle" placeholder="Book title" />
-
-      <input id="bookAuthor" placeholder="Author" />
-
-      <select id="bookCategory">
-        <option>Book Club Pick</option>
-        <option>Thriller</option>
-        <option>Romance</option>
-        <option>Fantasy</option>
-        <option>Mystery</option>
-        <option>Cozy Read</option>
-        <option>Wild Card</option>
-      </select>
-
-      <input id="bookImage" placeholder="Book cover image URL optional" />
-
-      <button onclick="addBookToClub()">
-        Add Book
-      </button>
-    </div>
-
     <div class="card">
       <div class="card-header">
         <h2>Books</h2>
