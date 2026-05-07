@@ -1,547 +1,288 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8" />
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
 <meta name="apple-mobile-web-app-capable" content="yes" />
-
 <meta name="apple-mobile-web-app-title" content="Spine Society" />
-
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <title>Spine Society</title>
-.top-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 14px 0 18px;
-}
 
-.nav-btn {
-  min-height: 44px;
-  padding: 10px 8px;
-  border-radius: 16px;
-  background: #151517;
-  color: var(--muted);
-  border: 1px solid var(--line);
-  font-size: .88rem;
-}
-
-.nav-btn.active {
-  background: var(--ivory);
-  color: #111;
-}
-
-.screen {
-  display: none;
-}
-
-.screen.active {
-  display: block;
-}
 <style>
 
 :root {
-
-  --bg: #111113;
-
-  --card: #1f1f22;
-
-  --ivory: #f5f1ea;
-
-  --muted: #b9b2a8;
-
-  --soft: #8a9a8a;
-
-  --danger: #d8a1a1;
-
-  --line: rgba(255,255,255,.09);
-
-  --shadow: 0 18px 45px rgba(0,0,0,.32);
-
+  --bg:#111113;
+  --card:#1f1f22;
+  --dark:#151517;
+  --ivory:#f5f1ea;
+  --muted:#b9b2a8;
+  --soft:#8a9a8a;
+  --danger:#d8a1a1;
+  --line:rgba(255,255,255,.09);
+  --shadow:0 18px 45px rgba(0,0,0,.32);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing:border-box;
+}
 
 body {
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,
+    rgba(138,154,138,.18),
+    transparent 34%),
+    var(--bg);
 
-  margin: 0;
+  color:var(--ivory);
 
-  min-height: 100vh;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Inter",
+    "Helvetica Neue",
+    sans-serif;
 
-  background: radial-gradient(circle at top, rgba(138,154,138,.18), transparent 34%), var(--bg);
-
-  color: var(--ivory);
-
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif;
-
-  padding: max(22px, env(safe-area-inset-top)) 16px 42px;
-
+  padding:
+    max(22px, env(safe-area-inset-top))
+    16px
+    42px;
 }
 
-.app { max-width: 440px; margin: 0 auto; }
+.app {
+  max-width:440px;
+  margin:0 auto;
+}
 
 .header {
-
-  text-align: center;
-
-  padding: 14px 4px 18px;
-
+  text-align:center;
+  padding:14px 4px 18px;
 }
 
 .brand-mark {
+  width:54px;
+  height:54px;
+  margin:0 auto 12px;
 
-  width: 54px;
+  border-radius:18px;
 
-  height: 54px;
+  background:
+    linear-gradient(
+      145deg,
+      var(--soft),
+      #c9c4b5
+    );
 
-  margin: 0 auto 12px;
+  color:#111;
 
-  border-radius: 18px;
+  display:grid;
+  place-items:center;
 
-  background: linear-gradient(145deg, var(--soft), #c9c4b5);
+  font-family:Georgia,serif;
+  font-size:1.5rem;
+  font-weight:bold;
 
-  color: #111;
-
-  display: grid;
-
-  place-items: center;
-
-  font-family: Georgia, serif;
-
-  font-size: 1.5rem;
-
-  font-weight: bold;
-
-  box-shadow: var(--shadow);
-
+  box-shadow:var(--shadow);
 }
 
 h1 {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
-  font-family: Georgia, "Times New Roman", serif;
+  font-size:2.55rem;
+  line-height:1;
 
-  font-size: 2.55rem;
-
-  line-height: 1;
-
-  margin: 0 0 8px;
-
+  margin:0 0 8px;
 }
 
-.subtitle { color: var(--muted); margin: 0; font-size: .98rem; }
+.subtitle {
+  color:var(--muted);
+  margin:0;
+  font-size:.98rem;
+}
+
+.top-nav {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:10px 0 18px;
+}
+
+.nav-btn {
+  min-height:44px;
+  padding:10px 6px;
+
+  margin:0;
+
+  border-radius:16px;
+
+  background:var(--dark);
+  color:var(--muted);
+
+  border:1px solid var(--line);
+
+  font-size:.86rem;
+}
+
+.nav-btn.active {
+  background:var(--ivory);
+  color:#111;
+}
+
+.screen {
+  display:none;
+}
+
+.screen.active {
+  display:block;
+}
 
 .card {
+  background:
+    rgba(31,31,34,.94);
 
-  background: rgba(31,31,34,.94);
+  border:1px solid var(--line);
 
-  border: 1px solid var(--line);
+  border-radius:30px;
 
-  border-radius: 30px;
+  padding:20px;
+  margin:16px 0;
 
-  padding: 20px;
+  box-shadow:var(--shadow);
 
-  margin: 16px 0;
-
-  box-shadow: var(--shadow);
-
-  backdrop-filter: blur(14px);
-
+  backdrop-filter:blur(14px);
 }
 
 .card-header {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
 
-  display: flex;
+  gap:12px;
 
-  align-items: baseline;
-
-  justify-content: space-between;
-
-  gap: 12px;
-
-  margin-bottom: 12px;
-
+  margin-bottom:12px;
 }
 
 h2 {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
-  font-family: Georgia, "Times New Roman", serif;
+  font-size:1.45rem;
 
-  font-size: 1.45rem;
-
-  margin: 0;
-
+  margin:0;
 }
 
 .helper {
-
-  color: var(--muted);
-
-  font-size: .86rem;
-
-  margin: 2px 0 12px;
-
+  color:var(--muted);
+  font-size:.86rem;
+  margin:2px 0 12px;
 }
 
-input, select, button {
+input,
+select,
+button {
 
-  width: 100%;
+  width:100%;
+  min-height:52px;
 
-  min-height: 52px;
+  padding:14px 15px;
 
-  padding: 14px 15px;
+  margin:8px 0;
 
-  margin: 8px 0;
+  border-radius:18px;
 
-  border-radius: 18px;
-
-  font-size: 1rem;
-
-  font-family: inherit;
-
+  font-size:1rem;
+  font-family:inherit;
 }
 
-input, select {
+input,
+select {
 
-  background: #151517;
+  background:var(--dark);
+  color:var(--ivory);
 
-  color: var(--ivory);
+  border:1px solid var(--line);
 
-  border: 1px solid var(--line);
-
-  outline: none;
-
+  outline:none;
 }
-
-input:focus, select:focus {
-
-  border-color: rgba(138,154,138,.7);
-
-  box-shadow: 0 0 0 4px rgba(138,154,138,.14);
-
-}
-
-input::placeholder { color: #7f7a73; }
 
 button {
 
-  border: none;
+  border:none;
 
-  background: var(--soft);
+  background:var(--soft);
 
-  color: #101012;
+  color:#101012;
 
-  font-weight: 750;
+  font-weight:750;
 
-  cursor: pointer;
-
-  transition: transform .14s ease, opacity .14s ease;
-
+  cursor:pointer;
 }
 
-button:active { transform: scale(.985); }
-
-button:disabled { opacity: .55; cursor: not-allowed; }
-
-.primary { background: var(--ivory); color: #111; }
+.primary {
+  background:var(--ivory);
+  color:#111;
+}
 
 .secondary {
-
-  background: transparent;
-
-  color: var(--muted);
-
-  border: 1px solid var(--line);
-
+  background:transparent;
+  color:var(--muted);
+  border:1px solid var(--line);
 }
 
 .danger {
-
-  background: transparent;
-
-  color: var(--danger);
-
-  border: 1px solid rgba(216,161,161,.28);
-
+  background:transparent;
+  color:var(--danger);
+  border:1px solid rgba(216,161,161,.28);
 }
 
-.row {
+.club-card,
+.book-item,
+.picked-item,
+.winner,
+.next-read-card {
 
-  display: grid;
+  background:var(--dark);
 
-  grid-template-columns: 1fr 1fr;
+  border:1px solid var(--line);
 
-  gap: 10px;
+  padding:15px;
 
+  border-radius:22px;
+
+  margin:10px 0;
 }
 
-.current-pill {
-
-  display: inline-flex;
-
-  max-width: 100%;
-
-  background: rgba(138,154,138,.13);
-
-  color: #d8dfd2;
-
-  border: 1px solid rgba(138,154,138,.22);
-
-  padding: 9px 12px;
-
-  border-radius: 999px;
-
-  font-size: .86rem;
-
-  margin-top: 4px;
-
+.item-title {
+  font-weight:760;
+  font-size:1.02rem;
 }
 
-.sound-row {
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  color: var(--muted);
-
-  font-size: .92rem;
-
-  margin-top: 8px;
-
+.small {
+  color:var(--muted);
+  font-size:.88rem;
 }
-
-.toggle {
-
-  width: auto;
-
-  min-height: 38px;
-
-  padding: 8px 14px;
-
-  margin: 0;
-
-  border-radius: 999px;
-
-  background: #151517;
-
-  color: var(--ivory);
-
-  border: 1px solid var(--line);
-
-}
-
-.result-stage {
-
-  min-height: 248px;
-
-  display: grid;
-
-  place-items: center;
-
-}
-
-.winner, .next-read-card {
-
-  width: 100%;
-
-  margin-top: 14px;
-
-  padding: 20px;
-
-  background: linear-gradient(180deg, rgba(255,255,255,.04), transparent), #151517;
-
-  border: 1px solid var(--line);
-
-  border-radius: 26px;
-
-  text-align: center;
-
-  animation: reveal .28s ease both;
-
-}
-
-.winner.spinning {
-
-  animation: cycle .18s ease both;
-
-  filter: blur(.35px);
-
-}
-
-@keyframes reveal {
-
-  from { opacity: 0; transform: translateY(8px) scale(.985); }
-
-  to { opacity: 1; transform: translateY(0) scale(1); }
-
-}
-
-@keyframes cycle {
-
-  from { opacity: .55; transform: translateY(4px) scale(.985); }
-
-  to { opacity: 1; transform: translateY(0) scale(1); }
-
-}
-
-.cover {
-
-  width: 140px;
-
-  height: 210px;
-
-  object-fit: cover;
-
-  border-radius: 18px;
-
-  box-shadow: 0 16px 35px rgba(0,0,0,.45);
-
-  border: 1px solid rgba(255,255,255,.1);
-
-}
-
-.cover-placeholder {
-
-  width: 140px;
-
-  height: 210px;
-
-  border-radius: 18px;
-
-  margin: 0 auto;
-
-  display: grid;
-
-  place-items: center;
-
-  background: linear-gradient(145deg, #303033, #171719);
-
-  border: 1px solid var(--line);
-
-  color: var(--muted);
-
-  font-family: Georgia, serif;
-
-  font-size: 2.4rem;
-
-}
-
-.winner h3, .next-read-card h3 {
-
-  font-family: Georgia, "Times New Roman", serif;
-
-  font-size: 1.55rem;
-
-  line-height: 1.1;
-
-  margin: 16px 0 5px;
-
-}
-
-.small { color: var(--muted); font-size: .88rem; }
 
 .status {
-
-  color: var(--muted);
-
-  font-size: .95rem;
-
-  text-align: center;
-
-  padding: 18px 10px;
-
-}
-
-.book-item, .picked-item {
-
-  background: #151517;
-
-  border: 1px solid var(--line);
-
-  padding: 15px;
-
-  border-radius: 22px;
-
-  margin: 10px 0;
-
-}
-
-.item-title { font-weight: 760; font-size: 1.02rem; }
-
-.item-actions {
-
-  display: grid;
-
-  grid-template-columns: 1fr;
-
-  gap: 8px;
-
-  margin-top: 10px;
-
-}
-
-.item-actions button { min-height: 44px; margin: 0; }
-
-.toast {
-
-  position: fixed;
-
-  left: 50%;
-
-  bottom: 24px;
-
-  transform: translateX(-50%) translateY(20px);
-
-  width: min(360px, calc(100% - 32px));
-
-  background: rgba(245,241,234,.96);
-
-  color: #111;
-
-  padding: 13px 16px;
-
-  border-radius: 18px;
-
-  box-shadow: var(--shadow);
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transition: .24s ease;
-
-  text-align: center;
-
-  font-weight: 700;
-
-}
-
-.toast.show {
-
-  opacity: 1;
-
-  transform: translateX(-50%) translateY(0);
-
+  color:var(--muted);
+  font-size:.95rem;
+  text-align:center;
+  padding:18px 10px;
 }
 
 footer {
-
-  text-align: center;
-
-  color: #777;
-
-  font-size: .8rem;
-
-  margin-top: 26px;
-
+  text-align:center;
+  color:#777;
+  font-size:.8rem;
+  margin-top:26px;
 }
 
 </style>
@@ -551,26 +292,6 @@ footer {
 <body>
 
 <div id="authScreen" class="app">
-  <header class="header">
-    <div class="brand-mark">S</div>
-    <h1>Spine Society</h1>
-    <p class="subtitle">Sign in to continue.</p>
-  </header>
-
-  <section class="card">
-    <h2>Login</h2>
-    <input id="loginEmail" type="email" placeholder="Email" />
-    <input id="loginPassword" type="password" placeholder="Password" />
-
-    <button onclick="loginWithEmail()">Log In</button>
-    <button class="secondary" onclick="signUpWithEmail()">Create Account</button>
-    <button class="primary" onclick="loginWithGoogle()">Continue with Google</button>
-
-    <p class="helper">Your shelves will stay private to your account once cloud saving is added.</p>
-  </section>
-</div>
-
-<div id="mainApp" class="app" style="display:none;">
 
   <header class="header">
 
@@ -578,1003 +299,589 @@ footer {
 
     <h1>Spine Society</h1>
 
-    <p class="subtitle">Choose your next read.</p>
-<button class="secondary" onclick="logoutUser()">Log Out</button>
+    <p class="subtitle">
+      Sign in to manage your book clubs.
+    </p>
+
   </header>
-<nav class="top-nav">
-  <button class="nav-btn active" onclick="showScreen('home', this)">Home</button>
-
-  <button class="nav-btn" onclick="showScreen('club', this)">Club</button>
-
-  <button class="nav-btn" onclick="showScreen('picks', this)">Picks</button>
-
-  <button class="nav-btn" onclick="showScreen('account', this)">Account</button>
-</nav>
-<div id="homeScreen" class="screen active">
-  <section class="card">
-
-    <div class="card-header"><h2>Your Shelves</h2></div>
-
-    <p class="helper">Create a shelf for each book club, friend group, or personal reading list.</p>
-
-    <input id="newShelfName" placeholder="Name a new shelf" />
-
-    <button onclick="createShelf()">Create Shelf</button>
-<button class="secondary" onclick="createClub()">Create Shared Club</button>
-<button class="secondary" onclick="textCurrentClubInvite()">Text Invite</button>
-<button class="secondary" onclick="emailCurrentClubInvite()">Email Invite</button>
-<button class="secondary" onclick="copyCurrentClubInvite()">Copy Invite</button>
-    <select id="shelfSelect" onchange="changeShelf()"></select>
-
-    <div id="currentShelfText" class="current-pill"></div>
-
-    <input id="renameShelfInput" placeholder="Rename selected shelf" />
-
-    <div class="row">
-
-      <button class="secondary" onclick="renameShelf()">Rename</button>
-
-      <button class="danger" onclick="deleteCurrentShelf()">Delete</button>
-
-    </div>
-
-  </section>
-</div>
-<nav class="top-nav">
-  <button id="homeTab" class="nav-btn active" onclick="window.showScreen('home', this)">Home</button>
-
-  <button id="clubTab" class="nav-btn" onclick="window.showScreen('club', this)">Club</button>
-
-  <button id="picksTab" class="nav-btn" onclick="window.showScreen('picks', this)">Picks</button>
-
-  <button id="accountTab" class="nav-btn" onclick="window.showScreen('account', this)">Account</button>
-</nav>
-
-<div id="accountScreen" class="screen">
-  <section class="card">
-    <h2>Account</h2>
-    <p class="status">Account screen test.</p>
-  </section>
-</div>
-  <section class="card">
-
-    <div class="card-header"><h2>Next Read</h2></div>
-
-    <p class="helper">Set the official next book for the selected shelf or book club.</p>
-
-    <div id="nextReadArea"></div>
-
-  </section>
 
   <section class="card">
 
-    <div class="card-header"><h2>Add Book</h2></div>
+    <h2>Welcome</h2>
 
-    <p class="helper">Books are added to the shelf currently selected above.</p>
+    <p class="helper">
+      Create or join book clubs,
+      add books,
+      spin for the next read,
+      and invite friends.
+    </p>
 
-    <input id="title" placeholder="Book title" />
+    <input
+      id="loginEmail"
+      type="email"
+      placeholder="Email"
+    />
 
-    <input id="author" placeholder="Author" />
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="Password"
+    />
 
-    <select id="category">
+    <button onclick="loginWithEmail()">
+      Log In
+    </button>
 
-      <option>Book Club Pick</option>
+    <button
+      class="secondary"
+      onclick="signUpWithEmail()">
 
-      <option>Thriller</option>
+      Create Account
 
-      <option>Romance</option>
+    </button>
 
-      <option>Fantasy</option>
+    <button
+      class="primary"
+      onclick="loginWithGoogle()">
 
-      <option>Mystery</option>
+      Continue with Google
 
-      <option>Cozy Read</option>
-
-      <option>Wild Card</option>
-
-    </select>
-
-    <input id="image" placeholder="Book cover image URL optional" />
-
-    <button onclick="addBook()">Add to Shelf</button>
-
-  </section>
-
-  <section class="card">
-
-    <div class="card-header"><h2>Spin</h2></div>
-
-    <p class="helper">Cycle through your shelf and let Spine Society choose.</p>
-
-    <select id="spinCategory">
-
-      <option>All Books</option>
-
-      <option>Book Club Pick</option>
-
-      <option>Thriller</option>
-
-      <option>Romance</option>
-
-      <option>Fantasy</option>
-
-      <option>Mystery</option>
-
-      <option>Cozy Read</option>
-
-      <option>Wild Card</option>
-
-    </select>
-
-    <button id="spinButton" class="primary" onclick="spinBook()">Spin</button>
-
-    <div class="sound-row">
-
-      <span>Sound</span>
-
-      <button class="toggle" onclick="toggleSound()" id="soundToggle">On</button>
-
-    </div>
-
-    <div id="winner" class="result-stage">
-
-      <p class="status">Your next pick will appear here.</p>
-
-    </div>
+    </button>
 
   </section>
-
-  <section class="card">
-
-    <div class="card-header">
-
-      <h2>Books</h2>
-
-      <span id="bookCount" class="small"></span>
-
-    </div>
-
-    <div id="bookList"></div>
-
-  </section>
-
-  <section class="card">
-
-    <div class="card-header">
-
-      <h2>Saved Picks</h2>
-
-      <span id="pickCount" class="small"></span>
-
-    </div>
-
-    <div id="pickedList"></div>
-
-  </section>
-<button onclick="testDatabase()">Test Database</button>
-  <footer>Spine Society · Your shelf, decided.</footer>
 
 </div>
 
-<div id="toast" class="toast"></div>
+<div
+  id="mainApp"
+  class="app"
+  style="display:none;"
+>
 
-<audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
+  <header class="header">
 
-<audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <div class="brand-mark">S</div>
 
-<script>
+    <h1>Spine Society</h1>
 
-let appData = JSON.parse(localStorage.getItem("spineSocietyData")) || {
+    <p
+      class="subtitle"
+      id="activeClubSubtitle">
 
-  currentShelf: "My Shelf",
+      Home
 
-  shelves: { "My Shelf": [] },
+    </p>
 
-  picked: [],
+  </header>
 
-  nextReads: {}
+  <nav class="top-nav">
 
-};
+    <button
+      id="homeTab"
+      class="nav-btn active">
 
-if (!appData.picked) appData.picked = [];
+      Home
 
-if (!appData.nextReads) appData.nextReads = {};
+    </button>
 
-if (!appData.shelves || Object.keys(appData.shelves).length === 0) {
+    <button
+      id="clubTab"
+      class="nav-btn">
 
-  appData.shelves = { "My Shelf": [] };
+      Club
 
-  appData.currentShelf = "My Shelf";
+    </button>
 
-}
+    <button
+      id="picksTab"
+      class="nav-btn">
 
-if (!appData.currentShelf || !appData.shelves[appData.currentShelf]) {
+      Picks
 
-  appData.currentShelf = Object.keys(appData.shelves)[0];
+    </button>
 
-}
+    <button
+      id="accountTab"
+      class="nav-btn">
 
-let lastPick = null;
+      Account
 
-let soundOn = JSON.parse(localStorage.getItem("spineSoundOn"));
+    </button>
 
-if (soundOn === null) soundOn = true;
+  </nav>
 
-function save() {
+  <!-- HOME SCREEN -->
 
-  localStorage.setItem("spineSocietyData", JSON.stringify(appData));
+  <section
+    id="homeScreen"
+    class="screen active"
+  >
 
-}
+    <div class="card">
 
-function toast(message) {
+      <div class="card-header">
 
-  const t = document.getElementById("toast");
+        <h2>Home</h2>
 
-  t.textContent = message;
+      </div>
 
-  t.classList.add("show");
+      <p class="helper">
+        Create a book club,
+        join one from an invite,
+        or open one of your clubs.
+      </p>
 
-  setTimeout(() => t.classList.remove("show"), 1800);
+      <input
+        id="newClubName"
+        placeholder="New book club name"
+      />
 
-}
+      <button onclick="createClub()">
+        Create Book Club
+      </button>
 
-function getCurrentBooks() {
+      <input
+        id="joinClubId"
+        placeholder="Paste club invite code or link"
+      />
 
-  return appData.shelves[appData.currentShelf] || [];
+      <button
+        class="secondary"
+        onclick="joinClubFromInput()">
 
-}
+        Join Book Club
 
-function renderShelves() {
-
-  const select = document.getElementById("shelfSelect");
-
-  const names = Object.keys(appData.shelves);
-
-  select.innerHTML = names.map(name =>
-
-    `<option value="${escapeAttr(name)}" ${name === appData.currentShelf ? "selected" : ""}>${escapeHTML(name)}</option>`
-
-  ).join("");
-
-  document.getElementById("currentShelfText").textContent = `Currently viewing: ${appData.currentShelf}`;
-
-  displayNextRead();
-
-  displayBooks();
-
-  displayPicked();
-
-}
-
-function createShelf() {
-
-  const input = document.getElementById("newShelfName");
-
-  const name = input.value.trim();
-
-  if (!name) return toast("Enter a shelf name.");
-
-  if (appData.shelves[name]) return toast("That shelf already exists.");
-
-  appData.shelves[name] = [];
-
-  appData.currentShelf = name;
-
-  input.value = "";
-
-  lastPick = null;
-
-  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
-
-  save();
-
-  renderShelves();
-
-  toast("Shelf created.");
-
-}
-
-function changeShelf() {
-
-  appData.currentShelf = document.getElementById("shelfSelect").value;
-
-  lastPick = null;
-
-  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
-
-  save();
-
-  renderShelves();
-
-}
-
-function renameShelf() {
-
-  const input = document.getElementById("renameShelfInput");
-
-  const newName = input.value.trim();
-
-  const oldName = appData.currentShelf;
-
-  if (!newName) return toast("Enter a new shelf name.");
-
-  if (newName === oldName) return toast("That is already the shelf name.");
-
-  if (appData.shelves[newName]) return toast("That shelf name already exists.");
-
-  appData.shelves[newName] = appData.shelves[oldName];
-
-  delete appData.shelves[oldName];
-
-  if (appData.nextReads[oldName]) {
-
-    appData.nextReads[newName] = appData.nextReads[oldName];
-
-    delete appData.nextReads[oldName];
-
-  }
-
-  appData.currentShelf = newName;
-
-  input.value = "";
-
-  save();
-
-  renderShelves();
-
-  toast("Shelf renamed.");
-
-}
-
-function deleteCurrentShelf() {
-
-  const names = Object.keys(appData.shelves);
-
-  if (names.length === 1) return toast("You need at least one shelf.");
-
-  const ok = confirm(`Delete "${appData.currentShelf}" and all books inside it?`);
-
-  if (!ok) return;
-
-  delete appData.shelves[appData.currentShelf];
-
-  delete appData.nextReads[appData.currentShelf];
-
-  appData.currentShelf = Object.keys(appData.shelves)[0];
-
-  lastPick = null;
-
-  document.getElementById("winner").innerHTML = `<p class="status">Your next pick will appear here.</p>`;
-
-  save();
-
-  renderShelves();
-
-  toast("Shelf deleted.");
-
-}
-
-function addBook() {
-
-  const title = document.getElementById("title").value.trim();
-
-  const author = document.getElementById("author").value.trim();
-
-  const category = document.getElementById("category").value;
-
-  const image = document.getElementById("image").value.trim();
-
-  if (!title) return toast("Enter a book title.");
-
-  appData.shelves[appData.currentShelf].push({ title, author, category, image });
-
-  document.getElementById("title").value = "";
-
-  document.getElementById("author").value = "";
-
-  document.getElementById("image").value = "";
-
-  save();
-
-  displayBooks();
-
-  toast("Book added.");
-
-}
-
-function deleteBook(index) {
-
-  appData.shelves[appData.currentShelf].splice(index, 1);
-
-  save();
-
-  displayBooks();
-
-  toast("Book removed.");
-
-}
-
-function updateSoundButton() {
-
-  document.getElementById("soundToggle").textContent = soundOn ? "On" : "Off";
-
-}
-
-function toggleSound() {
-
-  soundOn = !soundOn;
-
-  localStorage.setItem("spineSoundOn", JSON.stringify(soundOn));
-
-  updateSoundButton();
-
-  toast(soundOn ? "Sound on." : "Sound off.");
-
-}
-
-function playSound(id) {
-
-  if (!soundOn) return;
-
-  const sound = document.getElementById(id);
-
-  sound.currentTime = 0;
-
-  sound.play().catch(() => {});
-
-}
-
-function stopSound(id) {
-
-  const sound = document.getElementById(id);
-
-  sound.pause();
-
-  sound.currentTime = 0;
-
-}
-
-function renderBookCard(book, spinning = false, final = false) {
-
-  const cover = book.image
-
-    ? `<img class="cover" src="${escapeAttr(book.image)}" alt="Book cover">`
-
-    : `<div class="cover-placeholder">S</div>`;
-
-  return `
-
-    <div class="winner ${spinning ? "spinning" : ""}">
-
-      ${cover}
-
-      <h3>${escapeHTML(book.title)}</h3>
-
-      ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-
-      <div class="small">${escapeHTML(book.category || "Uncategorized")}</div>
-
-      ${final ? `
-
-        <button onclick="setNextRead()">Set as Next Read</button>
-
-        <button class="secondary" onclick="savePick()">Save Pick</button>
-
-        <button class="secondary" onclick="sharePick()">Share Pick</button>
-
-      ` : ""}
+      </button>
 
     </div>
 
-  `;
+    <div class="card">
 
-}
+      <div class="card-header">
 
-function spinBook() {
+        <h2>My Book Clubs</h2>
 
-  const selectedCategory = document.getElementById("spinCategory").value;
+        <span
+          id="clubCount"
+          class="small">
 
-  const button = document.getElementById("spinButton");
+        </span>
 
-  const winner = document.getElementById("winner");
+      </div>
 
-  const books = getCurrentBooks();
+      <div id="clubList">
 
-  const filtered = selectedCategory === "All Books"
-
-    ? books
-
-    : books.filter(book => book.category === selectedCategory);
-
-  if (filtered.length === 0) {
-
-    winner.innerHTML = `<p class="status">This shelf/category is waiting for its first story.</p>`;
-
-    return;
-
-  }
-
-  button.disabled = true;
-
-  button.textContent = "Choosing your next read...";
-
-  playSound("spinSound");
-
-  let spins = 0;
-
-  let delay = 55;
-
-  const totalSpins = 34 + Math.floor(Math.random() * 8);
-
-  function cycle() {
-
-    const book = filtered[Math.floor(Math.random() * filtered.length)];
-
-    winner.innerHTML = renderBookCard(book, true, false);
-
-    spins++;
-
-    delay += Math.max(2, Math.floor(spins / 4));
-
-    if (spins < totalSpins) {
-
-      setTimeout(cycle, delay);
-
-    } else {
-
-      stopSound("spinSound");
-
-      const final = filtered[Math.floor(Math.random() * filtered.length)];
-
-      lastPick = {
-
-        ...final,
-
-        shelf: appData.currentShelf,
-
-        date: new Date().toLocaleDateString()
-
-      };
-
-      winner.innerHTML = renderBookCard(final, false, true);
-
-      playSound("winSound");
-
-      if (navigator.vibrate) navigator.vibrate(50);
-
-      button.disabled = false;
-
-      button.textContent = "Spin";
-
-    }
-
-  }
-
-  cycle();
-
-}
-
-function setNextRead() {
-
-  if (!lastPick) return toast("Spin first.");
-
-  appData.nextReads[appData.currentShelf] = {
-
-    title: lastPick.title,
-
-    author: lastPick.author,
-
-    category: lastPick.category,
-
-    image: lastPick.image,
-
-    date: new Date().toLocaleDateString()
-
-  };
-
-  save();
-
-  displayNextRead();
-
-  toast("Next read set.");
-
-}
-
-function clearNextRead() {
-
-  delete appData.nextReads[appData.currentShelf];
-
-  save();
-
-  displayNextRead();
-
-  toast("Next read cleared.");
-
-}
-
-function displayNextRead() {
-
-  const area = document.getElementById("nextReadArea");
-
-  const next = appData.nextReads[appData.currentShelf];
-
-  if (!next) {
-
-    area.innerHTML = `<p class="status">No official next read yet. Spin a book, then tap “Set as Next Read.”</p>`;
-
-    return;
-
-  }
-
-  const cover = next.image
-
-    ? `<img class="cover" src="${escapeAttr(next.image)}" alt="Book cover">`
-
-    : `<div class="cover-placeholder">S</div>`;
-
-  area.innerHTML = `
-
-    <div class="next-read-card">
-
-      ${cover}
-
-      <h3>${escapeHTML(next.title)}</h3>
-
-      ${next.author ? `<div class="small">by ${escapeHTML(next.author)}</div>` : ""}
-
-      <div class="small">${escapeHTML(appData.currentShelf)} · Set ${escapeHTML(next.date || "")}</div>
-
-      <button class="secondary" onclick="shareNextRead()">Share Next Read</button>
-
-      <button class="danger" onclick="clearNextRead()">Clear Next Read</button>
-
-    </div>
-
-  `;
-
-}
-
-async function shareNextRead() {
-
-  const next = appData.nextReads[appData.currentShelf];
-
-  if (!next) return toast("No next read set.");
-
-  const text = `Next read for ${appData.currentShelf}: "${next.title}"${next.author ? " by " + next.author : ""}.`;
-
-  try {
-
-    await navigator.clipboard.writeText(text);
-
-    toast("Next read copied.");
-
-  } catch {
-
-    alert(text);
-
-  }
-
-}
-
-function savePick() {
-
-  if (!lastPick) return toast("Spin first.");
-
-  appData.picked.unshift(lastPick);
-
-  save();
-
-  displayPicked();
-
-  toast("Pick saved.");
-
-}
-
-async function sharePick() {
-
-  if (!lastPick) return toast("Spin first.");
-
-  const text = `Spine Society picked: "${lastPick.title}"${lastPick.author ? " by " + lastPick.author : ""} from ${lastPick.shelf}.`;
-
-  try {
-
-    await navigator.clipboard.writeText(text);
-
-    toast("Pick copied.");
-
-  } catch {
-
-    alert(text);
-
-  }
-
-}
-
-function displayBooks() {
-
-  const list = document.getElementById("bookList");
-
-  const books = getCurrentBooks();
-
-  document.getElementById("bookCount").textContent = `${books.length} book${books.length === 1 ? "" : "s"}`;
-
-  if (books.length === 0) {
-
-    list.innerHTML = `<p class="status">Your shelf is waiting for its first story.</p>`;
-
-    return;
-
-  }
-
-  list.innerHTML = books.map((book, index) => `
-
-    <div class="book-item">
-
-      <div class="item-title">${escapeHTML(book.title)}</div>
-
-      ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-
-      <div class="small">${escapeHTML(book.category || "Uncategorized")}</div>
-
-      <div class="item-actions">
-
-        <button class="secondary" onclick="deleteBook(${index})">Delete Book</button>
+        <p class="status">
+          Loading clubs...
+        </p>
 
       </div>
 
     </div>
 
-  `).join("");
+  </section>
 
-}
+  <!-- CLUB SCREEN -->
 
-function displayPicked() {
+  <section
+    id="clubScreen"
+    class="screen"
+  >
 
-  const list = document.getElementById("pickedList");
+    <div
+      id="noClubSelected"
+      class="card"
+    >
 
-  const picks = appData.picked || [];
+      <h2>No Club Selected</h2>
 
-  document.getElementById("pickCount").textContent = `${picks.length} pick${picks.length === 1 ? "" : "s"}`;
+      <p class="status">
+        Choose or create a book club from Home first.
+      </p>
 
-  if (picks.length === 0) {
+    </div>
 
-    list.innerHTML = `<p class="status">No saved picks yet. Spin your first one.</p>`;
+  </section>
 
-    return;
+  <!-- PICKS SCREEN -->
 
-  }
+  <section
+    id="picksScreen"
+    class="screen"
+  >
 
-  list.innerHTML = picks.map((pick, index) => `
+    <div class="card">
 
-    <div class="picked-item">
+      <div class="card-header">
 
-      <div class="item-title">${escapeHTML(pick.title)}</div>
+        <h2>Saved Picks</h2>
 
-      ${pick.author ? `<div class="small">by ${escapeHTML(pick.author)}</div>` : ""}
+      </div>
 
-      <div class="small">${escapeHTML(pick.shelf || "Shelf")} · ${escapeHTML(pick.date || "")}</div>
+      <div id="pickedList">
 
-      <div class="item-actions">
-
-        <button class="danger" onclick="deletePicked(${index})">Remove Pick</button>
+        <p class="status">
+          No saved picks yet.
+        </p>
 
       </div>
 
     </div>
 
-  `).join("");
+  </section>
 
-}
+  <!-- ACCOUNT SCREEN -->
 
-function deletePicked(index) {
+  <section
+    id="accountScreen"
+    class="screen"
+  >
 
-  appData.picked.splice(index, 1);
+    <div class="card">
 
-  save();
+      <div class="card-header">
 
-  displayPicked();
+        <h2>Account</h2>
 
-  toast("Pick removed.");
+      </div>
 
-}
+      <p
+        class="helper"
+        id="accountEmail">
 
-function escapeHTML(value) {
+        Signed in.
 
-  return String(value || "")
+      </p>
 
-    .replaceAll("&", "&amp;")
+      <button
+        class="danger"
+        onclick="logoutUser()">
 
-    .replaceAll("<", "&lt;")
+        Log Out
 
-    .replaceAll(">", "&gt;")
+      </button>
 
-    .replaceAll('"', "&quot;")
+    </div>
 
-    .replaceAll("'", "&#039;");
+  </section>
 
-}
+  <footer>
+    Spine Society · Your shelf, decided.
+  </footer>
 
-function escapeAttr(value) {
-
-  return escapeHTML(value).replaceAll("`", "&#096;");
-
-}
-
-save();
-
-renderShelves();
-
-updateSoundButton();
-
-</script>
+</div>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
-    authDomain: "spine-society-b2a3c.firebaseapp.com",
-    projectId: "spine-society-b2a3c",
-    storageBucket: "spine-society-b2a3c.firebasestorage.app",
-    messagingSenderId: "873293049506",
-    appId: "1:873293049506:web:11e8406d7d6d38bfb8b1fb",
-    measurementId: "G-FPB0PRLR5G"
-  };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-  const app = initializeApp(firebaseConfig);
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  console.log("Firebase connected!");
-</script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    GoogleAuthProvider,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase,
   ref,
   set,
   get,
   push,
+  update,
   onValue
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
-    authDomain: "spine-society-b2a3c.firebaseapp.com",
-    projectId: "spine-society-b2a3c",
-    storageBucket: "spine-society-b2a3c.firebasestorage.app",
-    messagingSenderId: "873293049506",
-    appId: "1:873293049506:web:11e8406d7d6d38bfb8b1fb",
-    measurementId: "G-FPB0PRLR5G"
-  };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const database = getDatabase(app);
-  const provider = new GoogleAuthProvider();
+const firebaseConfig = {
+  apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
+  authDomain: "spine-society-b2a3c.firebaseapp.com",
+  databaseURL: "https://spine-society-b2a3c-default-rtdb.firebaseio.com/",
+  projectId: "spine-society-b2a3c",
+  storageBucket: "spine-society-b2a3c.firebasestorage.app",
+  messagingSenderId: "873293049506",
+  appId: "1:873293049506:web:11e8406d7d6d38bfb8b1fb",
+  measurementId: "G-FPB0PRLR5G"
+};
 
-  window.signUpWithEmail = async function () {
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const database = getDatabase(app);
 
-    if (!email || !password) {
-      alert("Enter email and password.");
-      return;
-    }
+let currentUser = null;
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Account created!");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+function toast(message) {
+  alert(message);
+}
 
-  window.loginWithEmail = async function () {
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
+function showScreen(screenName) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
 
-    if (!email || !password) {
-      alert("Enter email and password.");
-      return;
-    }
+  document.querySelectorAll(".nav-btn").forEach(button => {
+    button.classList.remove("active");
+  });
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  document.getElementById(screenName + "Screen").classList.add("active");
+  document.getElementById(screenName + "Tab").classList.add("active");
+}
 
-  window.loginWithGoogle = async function () {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+document.getElementById("homeTab").addEventListener("click", () => {
+  showScreen("home");
+});
 
-  window.logoutUser = async function () {
-    await signOut(auth);
-  };
-window.testDatabase = async function () {
-  const user = auth.currentUser;
+document.getElementById("clubTab").addEventListener("click", () => {
+  showScreen("club");
+});
 
-  if (!user) {
-    alert("Not logged in");
+document.getElementById("picksTab").addEventListener("click", () => {
+  showScreen("picks");
+});
+
+document.getElementById("accountTab").addEventListener("click", () => {
+  showScreen("account");
+});
+
+window.signUpWithEmail = async function () {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  if (!email || !password) {
+    alert("Enter email and password.");
     return;
   }
 
-  await set(ref(database, "users/" + user.uid), {
-    email: user.email,
-    connected: true
-  });
-
-  alert("Database connected!");
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    alert(error.message);
+  }
 };
 
-window.createClub = async function () {
-  const user = auth.currentUser;
+window.loginWithEmail = async function () {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-  if (!user) {
+  if (!email || !password) {
+    alert("Enter email and password.");
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+window.loginWithGoogle = async function () {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+window.logoutUser = async function () {
+  await signOut(auth);
+};
+
+async function ensureUserRecord(user) {
+  await update(ref(database, "users/" + user.uid), {
+    email: user.email || "",
+    updatedAt: Date.now()
+  });
+}
+
+function listenToUserClubs() {
+  const userClubsRef = ref(database, "users/" + currentUser.uid + "/clubs");
+
+  onValue(userClubsRef, async (snapshot) => {
+    const clubs = snapshot.val() || {};
+    const clubIds = Object.keys(clubs);
+
+    document.getElementById("clubCount").textContent =
+      clubIds.length + " club" + (clubIds.length === 1 ? "" : "s");
+
+    if (clubIds.length === 0) {
+      document.getElementById("clubList").innerHTML =
+        `<p class="status">No book clubs yet. Create or join one to get started.</p>`;
+      return;
+    }
+
+    let html = "";
+
+    for (const clubId of clubIds) {
+      const clubSnapshot = await get(ref(database, "clubs/" + clubId));
+      const club = clubSnapshot.val();
+
+      if (!club) continue;
+
+      html += `
+        <div class="club-card">
+          <div class="item-title">${club.name}</div>
+          <div class="small">Book club</div>
+          <button onclick="openClub('${clubId}')">Open Club</button>
+        </div>
+      `;
+    }
+
+    document.getElementById("clubList").innerHTML = html;
+  });
+}
+
+window.createClub = async function () {
+  if (!currentUser) {
     alert("Please log in first.");
     return;
   }
 
-  const clubName = prompt("Enter your club name:");
-  if (!clubName) return;
+  const clubName = document.getElementById("newClubName").value.trim();
 
-  const clubRef = push(ref(database, "clubs"));
-
-  await set(clubRef, {
-    name: clubName,
-    owner: user.uid,
-    createdBy: user.email,
-    createdAt: Date.now(),
-    members: {
-      [user.uid]: true
-    }
-  });
-
-  const clubId = clubRef.key;
-  const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
-  const inviteText = "Join my Spine Society book club shelf: " + clubName + "\n" + inviteLink;
-
-  window.currentClubInvite = {
-    clubName: clubName,
-    inviteLink: inviteLink,
-    inviteText: inviteText
-  };
-
-  alert("Club created! Now click Share Invite.");
-};
-window.textCurrentClubInvite = function () {
-  const invite = window.currentClubInvite;
-
-  if (!invite) {
-    alert("Create a club first.");
+  if (!clubName) {
+    alert("Enter a club name.");
     return;
   }
 
+  const clubRef = push(ref(database, "clubs"));
+  const clubId = clubRef.key;
+
+  await set(clubRef, {
+    name: clubName,
+    owner: currentUser.uid,
+    createdBy: currentUser.email || "",
+    createdAt: Date.now(),
+    members: {
+      [currentUser.uid]: true
+    }
+  });
+
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
+
+  document.getElementById("newClubName").value = "";
+
+  alert("Club created.");
+
+  openClub(clubId);
+};
+
+function extractClubId(input) {
+  try {
+    if (input.includes("?club=")) {
+      return new URL(input).searchParams.get("club");
+    }
+  } catch (error) {}
+
+  return input.replace("?club=", "").trim();
+}
+
+window.joinClubFromInput = async function () {
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const input = document.getElementById("joinClubId").value.trim();
+
+  if (!input) {
+    alert("Paste a club code or invite link.");
+    return;
+  }
+
+  const clubId = extractClubId(input);
+
+  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), true);
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
+
+  document.getElementById("joinClubId").value = "";
+
+  alert("Joined club.");
+
+  openClub(clubId);
+};
+
+window.openClub = async function (clubId) {
+  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
+  const club = clubSnapshot.val();
+
+  if (!club) {
+    alert("Club not found.");
+    return;
+  }
+
+  document.getElementById("activeClubSubtitle").textContent = club.name;
+
+  document.getElementById("clubScreen").innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <h2>${club.name}</h2>
+      </div>
+
+      <p class="helper">
+        This is your club hub. Next we’ll move spin, add book, next read, and invites here cleanly.
+      </p>
+
+      <button onclick="textCurrentClubInvite('${clubId}', '${club.name}')">
+        Text Invite
+      </button>
+
+      <button class="secondary" onclick="emailCurrentClubInvite('${clubId}', '${club.name}')">
+        Email Invite
+      </button>
+
+      <button class="secondary" onclick="copyCurrentClubInvite('${clubId}', '${club.name}')">
+        Copy Invite
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>Next Read</h2>
+      <p class="status">Next Read tools will live here.</p>
+    </div>
+
+    <div class="card">
+      <h2>Spin</h2>
+      <p class="status">Spin tools will live here.</p>
+    </div>
+
+    <div class="card">
+      <h2>Add Book</h2>
+      <p class="status">Add Book tools will live here.</p>
+    </div>
+  `;
+
+  showScreen("club");
+};
+
+function buildInviteText(clubId, clubName) {
+  const inviteLink =
+    window.location.origin +
+    window.location.pathname +
+    "?club=" +
+    clubId;
+
+  return {
+    inviteLink,
+    inviteText:
+      "Join my Spine Society book club shelf: " +
+      clubName +
+      "\n" +
+      inviteLink
+  };
+}
+
+window.textCurrentClubInvite = function (clubId, clubName) {
+  const invite = buildInviteText(clubId, clubName);
   window.location.href =
     "sms:?&body=" + encodeURIComponent(invite.inviteText);
 };
 
-window.emailCurrentClubInvite = function () {
-  const invite = window.currentClubInvite;
-
-  if (!invite) {
-    alert("Create a club first.");
-    return;
-  }
-
-  const subject =
-    "Join my Spine Society book club: " + invite.clubName;
+window.emailCurrentClubInvite = function (clubId, clubName) {
+  const invite = buildInviteText(clubId, clubName);
+  const subject = "Join my Spine Society book club: " + clubName;
 
   window.location.href =
     "mailto:?subject=" +
@@ -1583,65 +890,57 @@ window.emailCurrentClubInvite = function () {
     encodeURIComponent(invite.inviteText);
 };
 
-window.copyCurrentClubInvite = async function () {
-  const invite = window.currentClubInvite;
-
-  if (!invite) {
-    alert("Create a club first.");
-    return;
-  }
+window.copyCurrentClubInvite = async function (clubId, clubName) {
+  const invite = buildInviteText(clubId, clubName);
 
   try {
     await navigator.clipboard.writeText(invite.inviteText);
-    alert("Invite copied!");
+    alert("Invite copied.");
   } catch (error) {
     prompt("Copy this invite:", invite.inviteText);
   }
 };
-window.showScreen = function (screenName, button) {
-  const screens = ["homeScreen", "clubScreen", "picksScreen", "accountScreen"];
 
-  screens.forEach(id => {
-    const screen = document.getElementById(id);
-    if (screen) {
-      screen.style.display = "none";
-    }
-  });
+function handleInviteLink() {
+  const params = new URLSearchParams(window.location.search);
+  const clubId = params.get("club");
 
-  const selectedScreen = document.getElementById(screenName + "Screen");
+  if (clubId) {
+    document.getElementById("joinClubId").value = clubId;
+    showScreen("home");
+    alert("Invite detected. Tap Join Book Club.");
+  }
+}
 
-  if (selectedScreen) {
-    selectedScreen.style.display = "block";
+onAuthStateChanged(auth, async (user) => {
+  const authScreen = document.getElementById("authScreen");
+  const mainApp = document.getElementById("mainApp");
+
+  if (user) {
+    currentUser = user;
+
+    authScreen.style.display = "none";
+    mainApp.style.display = "block";
+
+    document.getElementById("accountEmail").textContent =
+      "Signed in as " + (user.email || "Google user");
+
+    await ensureUserRecord(user);
+
+    listenToUserClubs();
+
+    handleInviteLink();
+
+    showScreen("home");
   } else {
-    alert("Screen not found: " + screenName + "Screen");
-  }
+    currentUser = null;
 
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  if (button) {
-    button.classList.add("active");
+    authScreen.style.display = "block";
+    mainApp.style.display = "none";
   }
-};
-document.addEventListener("DOMContentLoaded", function () {
-  window.showScreen("home", document.querySelector(".nav-btn"));
 });
-  onAuthStateChanged(auth, (user) => {
-    const authScreen = document.getElementById("authScreen");
-    const mainApp = document.getElementById("mainApp");
 
-    if (user) {
-      authScreen.style.display = "none";
-      mainApp.style.display = "block";
-      console.log("Logged in:", user.email);
-    } else {
-      authScreen.style.display = "block";
-      mainApp.style.display = "none";
-      console.log("Logged out");
-    }
-  });
 </script>
-</body>
 
+</body>
 </html>
