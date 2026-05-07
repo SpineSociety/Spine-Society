@@ -611,7 +611,7 @@ const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
 let currentUser = null;
-
+let currentClubBooks = [];
 function toast(message) {
   alert(message);
 }
@@ -916,10 +916,101 @@ window.openClub = async function (clubId) {
       </div>
     </div>
   `;
+onValue(
+  ref(database, "clubs/" + clubId + "/books"),
+  (snapshot) => {
 
+    const books = snapshot.val() || {};
+
+    currentClubBooks =
+      Object.entries(books).map(([id, value]) => ({
+        id,
+        ...value
+      }));
+
+    document.getElementById("bookCount").textContent =
+      currentClubBooks.length +
+      " book" +
+      (currentClubBooks.length === 1 ? "" : "s");
+
+    if (currentClubBooks.length === 0) {
+
+      document.getElementById("bookList").innerHTML = `
+        <p class="status">
+          No books added yet.
+        </p>
+      `;
+
+      return;
+    }
+
+    document.getElementById("bookList").innerHTML =
+      currentClubBooks.map(book => `
+        <div class="book-item">
+
+          <div class="item-title">
+            ${book.title}
+          </div>
+
+          ${
+            book.author
+            ? `<div class="small">by ${book.author}</div>`
+            : ""
+          }
+
+          <div class="small">
+            ${book.category || "Uncategorized"}
+          </div>
+
+        </div>
+      `).join("");
+  }
+);
   showScreen("club");
 };
+window.addBookToClub = async function () {
 
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const title =
+    document.getElementById("bookTitle").value.trim();
+
+  const author =
+    document.getElementById("bookAuthor").value.trim();
+
+  const category =
+    document.getElementById("bookCategory").value;
+
+  const image =
+    document.getElementById("bookImage").value.trim();
+
+  if (!title) {
+    alert("Enter a book title.");
+    return;
+  }
+
+  const bookRef = push(
+    ref(database,
+    "clubs/" + window.currentClubId + "/books")
+  );
+
+  await set(bookRef, {
+    title,
+    author,
+    category,
+    image,
+    createdAt: Date.now()
+  });
+
+  document.getElementById("bookTitle").value = "";
+  document.getElementById("bookAuthor").value = "";
+  document.getElementById("bookImage").value = "";
+
+  alert("Book added.");
+};
 function buildInviteText(clubId, clubName) {
   const inviteLink =
     window.location.origin +
