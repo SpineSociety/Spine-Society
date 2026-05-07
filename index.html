@@ -1577,6 +1577,9 @@ window.editBook = async function (bookId) {
   const newAuthor = prompt("Edit author name:", book.author || "");
   if (newAuthor === null) return;
 
+  const newCategory = prompt("Edit category:", book.category || "Book Club Pick");
+  if (newCategory === null) return;
+
   const newImage = prompt("Edit cover image URL:", book.image || "");
   if (newImage === null) return;
 
@@ -1585,6 +1588,7 @@ window.editBook = async function (bookId) {
     {
       title: newTitle.trim(),
       author: newAuthor.trim(),
+      category: newCategory.trim(),
       image: newImage.trim(),
       updatedAt: Date.now()
     }
