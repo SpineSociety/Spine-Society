@@ -1017,7 +1017,28 @@ window.openClub = async function (clubId) {
       <div class="card-header">
         <h2>Add Book</h2>
       </div>
+<div class="card">
+  <div class="card-header">
+    <h2>Discussion</h2>
+  </div>
 
+  <p class="helper">
+    Chat about the current read with your book club.
+  </p>
+
+  <input
+    id="discussionInput"
+    placeholder="Add a thought, question, or reaction..."
+  />
+
+  <button onclick="postDiscussionComment()">
+    Post Comment
+  </button>
+
+  <div id="discussionList">
+    <p class="status">No comments yet.</p>
+  </div>
+</div>
       <input id="bookTitle" placeholder="Book title" />
 
       <input id="bookAuthor" placeholder="Author" />
@@ -1202,6 +1223,35 @@ onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
   }
 
   memberList.innerHTML = html;
+});
+onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
+  const discussion = snapshot.val() || {};
+
+  const comments = Object.entries(discussion)
+    .map(([id, value]) => ({
+      id,
+      ...value
+    }))
+    .sort((a, b) => a.createdAt - b.createdAt);
+
+  if (comments.length === 0) {
+    document.getElementById("discussionList").innerHTML =
+      `<p class="status">No comments yet.</p>`;
+    return;
+  }
+
+  document.getElementById("discussionList").innerHTML =
+    comments.map(comment => `
+      <div class="book-item">
+        <div class="item-title">
+          ${comment.authorAlias || "Reader"}
+        </div>
+
+        <div class="small">
+          ${comment.message}
+        </div>
+      </div>
+    `).join("");
 });
   showScreen("club");
 };
@@ -1398,6 +1448,36 @@ window.markNextReadFinished = async function () {
   );
 
   alert("Moved to Books Read!");
+};
+window.postDiscussionComment = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const input = document.getElementById("discussionInput");
+  const message = input.value.trim();
+
+  if (!message) {
+    alert("Write a comment first.");
+    return;
+  }
+
+  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
+  const userData = userSnapshot.val();
+
+  const commentRef = push(
+    ref(database, "clubs/" + window.currentClubId + "/discussion")
+  );
+
+  await set(commentRef, {
+    message: message,
+    authorId: currentUser.uid,
+    authorAlias: userData?.username || currentUser.email || "Reader",
+    createdAt: Date.now()
+  });
+
+  input.value = "";
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
