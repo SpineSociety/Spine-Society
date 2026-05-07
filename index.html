@@ -1581,6 +1581,24 @@ window.copyCurrentClubInvite = async function () {
     prompt("Copy this invite:", invite.inviteText);
   }
 };
+window.showScreen = function (screenName, button) {
+
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  const screen = document.getElementById(screenName + "Screen");
+
+  if (screen) {
+    screen.classList.add("active");
+  }
+
+  button.classList.add("active");
+};
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
     const mainApp = document.getElementById("mainApp");
