@@ -1486,7 +1486,21 @@ window.createClub = async function () {
     }
   });
 
-  alert("Club created! Club ID: " + clubRef.key);
+  const clubId = clubRef.key;
+  const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
+
+  const shareText = `Join my Spine Society book club shelf: ${clubName}\n${inviteLink}`;
+
+  if (navigator.share) {
+    await navigator.share({
+      title: "Join my Spine Society book club",
+      text: shareText,
+      url: inviteLink
+    });
+  } else {
+    await navigator.clipboard.writeText(shareText);
+    alert("Invite copied to clipboard!");
+  }
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
