@@ -564,7 +564,9 @@ footer {
 
     <button onclick="createShelf()">Create Shelf</button>
 <button class="secondary" onclick="createClub()">Create Shared Club</button>
-<button class="secondary" onclick="shareCurrentClubInvite()">Share Invite</button>
+<button class="secondary" onclick="textCurrentClubInvite()">Text Invite</button>
+<button class="secondary" onclick="emailCurrentClubInvite()">Email Invite</button>
+<button class="secondary" onclick="copyCurrentClubInvite()">Copy Invite</button>
     <select id="shelfSelect" onchange="changeShelf()"></select>
 
     <div id="currentShelfText" class="current-pill"></div>
@@ -1498,7 +1500,7 @@ window.createClub = async function () {
 
   alert("Club created! Now click Share Invite.");
 };
-window.shareCurrentClubInvite = async function () {
+window.textCurrentClubInvite = function () {
   const invite = window.currentClubInvite;
 
   if (!invite) {
@@ -1506,20 +1508,42 @@ window.shareCurrentClubInvite = async function () {
     return;
   }
 
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "Join my Spine Society book club",
-        text: invite.inviteText,
-        url: invite.inviteLink
-      });
-      return;
-    } catch (error) {
-      console.log("Share failed:", error);
-    }
+  window.location.href =
+    "sms:?&body=" + encodeURIComponent(invite.inviteText);
+};
+
+window.emailCurrentClubInvite = function () {
+  const invite = window.currentClubInvite;
+
+  if (!invite) {
+    alert("Create a club first.");
+    return;
   }
 
-  prompt("Copy this invite:", invite.inviteText);
+  const subject =
+    "Join my Spine Society book club: " + invite.clubName;
+
+  window.location.href =
+    "mailto:?subject=" +
+    encodeURIComponent(subject) +
+    "&body=" +
+    encodeURIComponent(invite.inviteText);
+};
+
+window.copyCurrentClubInvite = async function () {
+  const invite = window.currentClubInvite;
+
+  if (!invite) {
+    alert("Create a club first.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(invite.inviteText);
+    alert("Invite copied!");
+  } catch (error) {
+    prompt("Copy this invite:", invite.inviteText);
+  }
 };
   onAuthStateChanged(auth, (user) => {
     const authScreen = document.getElementById("authScreen");
