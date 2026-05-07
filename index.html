@@ -620,19 +620,15 @@ footer {
 
   </section>
 </div>
-<div id="clubScreen" class="screen">
-  <section class="card">
-    <h2>Club</h2>
-    <p class="status">Club screen test.</p>
-  </section>
-</div>
+<nav class="top-nav">
+  <button id="homeTab" class="nav-btn active" onclick="window.showScreen('home', this)">Home</button>
 
-<div id="picksScreen" class="screen">
-  <section class="card">
-    <h2>Picks</h2>
-    <p class="status">Picks screen test.</p>
-  </section>
-</div>
+  <button id="clubTab" class="nav-btn" onclick="window.showScreen('club', this)">Club</button>
+
+  <button id="picksTab" class="nav-btn" onclick="window.showScreen('picks', this)">Picks</button>
+
+  <button id="accountTab" class="nav-btn" onclick="window.showScreen('account', this)">Account</button>
+</nav>
 
 <div id="accountScreen" class="screen">
   <section class="card">
