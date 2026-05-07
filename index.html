@@ -1011,6 +1011,100 @@ window.addBookToClub = async function () {
 
   alert("Book added.");
 };
+window.spinBook = function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  if (!currentClubBooks || currentClubBooks.length === 0) {
+    document.getElementById("winner").innerHTML =
+      `<p class="status">Add books before spinning.</p>`;
+    return;
+  }
+
+  const selectedCategory = document.getElementById("spinCategory").value;
+
+  const filteredBooks = selectedCategory === "All Books"
+    ? currentClubBooks
+    : currentClubBooks.filter(book => book.category === selectedCategory);
+
+  if (filteredBooks.length === 0) {
+    document.getElementById("winner").innerHTML =
+      `<p class="status">No books in this category yet.</p>`;
+    return;
+  }
+
+  const winnerDiv = document.getElementById("winner");
+  const spinButton = document.getElementById("spinButton");
+
+  spinButton.disabled = true;
+  spinButton.textContent = "Choosing...";
+
+  let spins = 0;
+  const maxSpins = 30;
+
+  const interval = setInterval(() => {
+    const randomBook =
+      filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+
+    winnerDiv.innerHTML = `
+      <div class="winner spinning">
+        ${
+          randomBook.image
+            ? `<img class="cover" src="${randomBook.image}" alt="Book cover">`
+            : `<div class="cover-placeholder">S</div>`
+        }
+
+        <h3>${randomBook.title}</h3>
+
+        ${
+          randomBook.author
+            ? `<div class="small">by ${randomBook.author}</div>`
+            : ""
+        }
+
+        <div class="small">${randomBook.category || "Uncategorized"}</div>
+      </div>
+    `;
+
+    spins++;
+
+    if (spins >= maxSpins) {
+      clearInterval(interval);
+
+      const finalBook =
+        filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+
+      window.lastPick = finalBook;
+
+      winnerDiv.innerHTML = `
+        <div class="winner">
+          ${
+            finalBook.image
+              ? `<img class="cover" src="${finalBook.image}" alt="Book cover">`
+              : `<div class="cover-placeholder">S</div>`
+          }
+
+          <h3>${finalBook.title}</h3>
+
+          ${
+            finalBook.author
+              ? `<div class="small">by ${finalBook.author}</div>`
+              : ""
+          }
+
+          <div class="small">${finalBook.category || "Uncategorized"}</div>
+
+          <button onclick="setNextRead()">Set as Next Read</button>
+        </div>
+      `;
+
+      spinButton.disabled = false;
+      spinButton.textContent = "Spin";
+    }
+  }, 80);
+};
 function buildInviteText(clubId, clubName) {
   const inviteLink =
     window.location.origin +
