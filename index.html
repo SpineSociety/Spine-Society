@@ -515,6 +515,27 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
+.reaction-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.reaction-btn {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: .82rem;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+
+.reaction-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.08);
+}
 </style>
 
 </head>
@@ -1508,7 +1529,41 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
       <div class="comment-time">
         ${formatTimeAgo(comment.createdAt)}
       </div>
+<div class="reaction-row">
 
+  <button
+    class="reaction-btn"
+    onclick="reactToComment('${comment.id}', 'heart')">
+
+    ❤️ ${comment.reactions?.heart || 0}
+
+  </button>
+
+  <button
+    class="reaction-btn"
+    onclick="reactToComment('${comment.id}', 'book')">
+
+    📚 ${comment.reactions?.book || 0}
+
+  </button>
+
+  <button
+    class="reaction-btn"
+    onclick="reactToComment('${comment.id}', 'eyes')">
+
+    👀 ${comment.reactions?.eyes || 0}
+
+  </button>
+
+  <button
+    class="reaction-btn"
+    onclick="reactToComment('${comment.id}', 'cry')">
+
+    😭 ${comment.reactions?.cry || 0}
+
+  </button>
+
+</div>
     </div>
 
   </div>
@@ -1861,6 +1916,37 @@ function formatTimeAgo(timestamp) {
 
   return days + "d ago";
 }
+window.reactToComment = async function (commentId, reactionType) {
+
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const commentRef = ref(
+    database,
+    "clubs/" +
+    window.currentClubId +
+    "/discussion/" +
+    commentId
+  );
+
+  const snapshot = await get(commentRef);
+
+  const comment = snapshot.val();
+
+  if (!comment) return;
+
+  const reactions = comment.reactions || {};
+
+  reactions[reactionType] =
+    (reactions[reactionType] || 0) + 1;
+
+  await update(commentRef, {
+    reactions: reactions
+  });
+
+};
 function buildInviteText(clubId, clubName) {
   const inviteLink =
     window.location.origin +
