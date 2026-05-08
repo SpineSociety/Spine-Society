@@ -1578,22 +1578,21 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
 
   <div class="book-actions">
 
-   <button
+ <button
   class="secondary"
-  onclick="event.stopPropagation(); editDiscussionComment('${comment.id}')">
+  onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')">
 
   Edit Comment
 
 </button>
 
-   <button
+<button
   class="danger"
-  onclick="event.stopPropagation(); deleteDiscussionComment('${comment.id}')">
+  onclick="event.stopPropagation(); window.deleteDiscussionComment('${comment.id}')">
 
   Delete Comment
 
 </button>
-
   </div>
 
 ` : ""}
@@ -2003,8 +2002,69 @@ window.toggleReactionPicker = function (commentId) {
 
   picker.classList.toggle("show");
 };
-window.editDiscussionComment
-window.deleteDiscussionComment
+window.editDiscussionComment = async function (commentId) {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const commentRef = ref(
+    database,
+    "clubs/" + window.currentClubId + "/discussion/" + commentId
+  );
+
+  const snapshot = await get(commentRef);
+  const comment = snapshot.val();
+
+  if (!comment) {
+    alert("Comment not found.");
+    return;
+  }
+
+  const updatedMessage = prompt(
+    "Edit your Marginalia note:",
+    comment.message || ""
+  );
+
+  if (updatedMessage === null) return;
+
+  if (!updatedMessage.trim()) {
+    alert("Comment cannot be blank.");
+    return;
+  }
+
+  await update(commentRef, {
+    message: updatedMessage.trim(),
+    editedAt: Date.now()
+  });
+
+  alert("Comment updated.");
+};
+
+window.deleteDiscussionComment = async function (commentId) {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const confirmDelete =
+    confirm("Delete this Marginalia comment?");
+
+  if (!confirmDelete) return;
+
+  await set(
+    ref(
+      database,
+      "clubs/" +
+      window.currentClubId +
+      "/discussion/" +
+      commentId
+    ),
+    null
+  );
+
+  alert("Comment deleted.");
+};
 function buildInviteText(clubId, clubName) {
   const inviteLink =
     window.location.origin +
