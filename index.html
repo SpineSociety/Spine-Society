@@ -501,6 +501,20 @@ footer {
 .book-actions {
   margin-top: 10px;
 }
+.club-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity .28s ease,
+    transform .28s ease;
+}
+
+.club-section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 
 </head>
