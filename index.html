@@ -1,393 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Spine Society" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <title>Spine Society</title>
 
 <style>
-
 :root {
   --bg: #0E0C0A;
-  --card: #1A1612;
-  --dark: #14110F;
-
-  --ivory: #EADCC2;
+  --panel: #17120F;
+  --panel-2: #211912;
+  --ink: #EADCC2;
   --muted: #A99272;
-
   --gold: #A67C3A;
   --gold-soft: #C8A36A;
-
+  --gold-pale: #E4C98B;
   --sage: #5E6B4A;
   --rust: #7A2F2F;
-
   --danger: #D8A1A1;
-  --line: rgba(200, 163, 106, .18);
+  --line: rgba(200,163,106,.18);
+  --shadow: 0 22px 60px rgba(0,0,0,.55);
+}
 
-  --shadow: 0 18px 45px rgba(0,0,0,.45);
-}
-* {
-  box-sizing:border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-  margin:0;
-  min-height:100vh;
-background:
-  radial-gradient(circle at top left,
-    rgba(200,163,106,.16),
-    transparent 26%),
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(200,163,106,.16), transparent 26%),
+    radial-gradient(circle at top right, rgba(94,107,74,.12), transparent 26%),
+    radial-gradient(circle at bottom, rgba(122,47,47,.10), transparent 36%),
+    linear-gradient(180deg, #0E0C0A, #080706);
+  padding: max(20px, env(safe-area-inset-top)) 14px 38px;
+}
 
-  radial-gradient(circle at top right,
-    rgba(94,107,74,.12),
-    transparent 24%),
-
-  radial-gradient(circle at bottom,
-    rgba(122,47,47,.10),
-    transparent 34%),
-
-  linear-gradient(
-    180deg,
-    #0E0C0A,
-    #090807
-  );
-
-  color:var(--ivory);
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Inter",
-    "Helvetica Neue",
-    sans-serif;
-
-  padding:
-    max(22px, env(safe-area-inset-top))
-    16px
-    42px;
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .18;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at top, black, transparent 70%);
 }
 
 .app {
-  max-width:440px;
-  margin:0 auto;
+  max-width: 440px;
+  margin: 0 auto;
+  position: relative;
 }
 
 .header {
-  text-align:center;
-  padding:14px 4px 18px;
+  text-align: center;
+  padding: 10px 4px 18px;
 }
 
 .brand-mark {
-  width:54px;
-  height:54px;
-  margin:0 auto 12px;
-
-  border-radius:18px;
-
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 12px;
+  border-radius: 19px;
   background:
-  radial-gradient(circle at top left, rgba(166,124,58,.16), transparent 32%),
-  radial-gradient(circle at top right, rgba(94,107,74,.12), transparent 28%),
-  linear-gradient(180deg, #0E0C0A, #090807);
+    radial-gradient(circle at 30% 20%, rgba(234,220,194,.42), transparent 30%),
+    linear-gradient(145deg, var(--gold-soft), var(--gold));
+  color: #0E0C0A;
+  display: grid;
+  place-items: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  box-shadow:
+    0 14px 34px rgba(166,124,58,.26),
+    inset 0 1px 0 rgba(255,255,255,.26);
+}
 
-  color:#111;
-
-  display:grid;
-  place-items:center;
-
-  font-family:Georgia,serif;
-  font-size:1.5rem;
-  font-weight:bold;
-
-  box-shadow:var(--shadow);
+h1, h2, h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  letter-spacing: .3px;
+  font-weight: 600;
 }
 
 h1 {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+  font-size: 2.75rem;
+  line-height: .95;
+  color: var(--gold-soft);
+  text-shadow: 0 10px 30px rgba(166,124,58,.20);
+  margin: 0 0 8px;
+}
 
-  font-size:2.55rem;
-  line-height:1;
+h2 {
+  font-size: 1.55rem;
+  margin: 0;
+}
 
-  margin:0 0 8px;
+h3 {
+  font-size: 1.55rem;
+  margin: 14px 0 6px;
 }
 
 .subtitle {
-  color:var(--muted);
-  margin:0;
-  font-size:.98rem;
+  color: var(--muted);
+  margin: 0;
+  font-size: .98rem;
+  letter-spacing: .3px;
 }
 
 .top-nav {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin:10px 0 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0 18px;
+  padding: 6px;
+  border: 1px solid rgba(200,163,106,.12);
+  border-radius: 22px;
+  background: rgba(255,255,255,.025);
 }
 
 .nav-btn {
-  min-height:44px;
-  padding:10px 6px;
-
-  margin:0;
-
-  border-radius:16px;
-
-  background:var(--dark);
-  color:var(--muted);
-
-  border:1px solid var(--line);
-
-  font-size:.86rem;
+  min-height: 42px;
+  margin: 0;
+  padding: 9px 6px;
+  border-radius: 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: .82rem;
+  box-shadow: none;
 }
 
 .nav-btn.active {
-  background:var(--ivory);
-  color:#111;
+  color: var(--ink);
+  border-color: rgba(200,163,106,.22);
+  background: linear-gradient(180deg, rgba(200,163,106,.18), rgba(166,124,58,.10));
 }
 
-.screen {
-  display:none;
-}
-
-.screen.active {
-  display:block;
-}
+.screen { display: none; }
+.screen.active { display: block; }
 
 .card {
   background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.045),
-      rgba(255,255,255,.025)
-    );
-
-  border: 1px solid rgba(255,255,255,.08);
-
+    linear-gradient(180deg, rgba(255,255,255,.052), rgba(255,255,255,.024)),
+    radial-gradient(circle at top left, rgba(200,163,106,.08), transparent 45%);
+  border: 1px solid rgba(200,163,106,.14);
   border-radius: 30px;
-
   padding: 20px;
   margin: 16px 0;
-
   box-shadow:
-    0 10px 30px rgba(0,0,0,.22),
-    inset 0 1px 0 rgba(255,255,255,.03);
-
+    0 12px 36px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.04);
   backdrop-filter: blur(14px);
-
-  transition:
-    transform .22s ease,
-    box-shadow .22s ease;
+  transition: transform .22s ease, box-shadow .22s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
-
   box-shadow:
-    0 14px 38px rgba(0,0,0,.28),
-    inset 0 1px 0 rgba(255,255,255,.04);
+    0 16px 44px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .card-header {
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-
-  gap:12px;
-
-  margin-bottom:12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-h2 {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:1.45rem;
-
-  margin:0;
+.card-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 74px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(200,163,106,.60), transparent);
 }
 
 .helper {
-  color:var(--muted);
-  font-size:.86rem;
-  margin:2px 0 12px;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.45;
+  margin: 2px 0 12px;
 }
 
-input,
-select,
-button {
-
-  width:100%;
-  min-height:52px;
-
-  padding:14px 15px;
-
-  margin:8px 0;
-
-  border-radius:18px;
-
-  font-size:1rem;
-  font-family:inherit;
-}
-
-input,
-select {
+input, select, button {
   width: 100%;
-
-  background:
-    rgba(255,255,255,.035);
-
-  border:
-    1px solid rgba(200,163,106,.16);
-
-  color: var(--ivory);
-
-  border-radius: 18px;
-
   min-height: 50px;
-
   padding: 12px 16px;
+  margin: 8px 0;
+  border-radius: 18px;
+  font-size: .96rem;
+  font-family: inherit;
+}
 
-  font-size: .95rem;
-
+input, select {
+  background: rgba(255,255,255,.035);
+  color: var(--ink);
+  border: 1px solid rgba(200,163,106,.16);
   outline: none;
-
-  transition:
-    border .22s ease,
-    background .22s ease,
-    box-shadow .22s ease;
-
+  transition: border .22s ease, background .22s ease, box-shadow .22s ease;
   backdrop-filter: blur(10px);
 }
 
-input:focus,
-select:focus {
-  border:
-    1px solid rgba(200,163,106,.36);
+input::placeholder { color: rgba(169,146,114,.72); }
 
-  background:
-    rgba(255,255,255,.05);
-
-  box-shadow:
-    0 0 0 4px rgba(200,163,106,.08);
+input:focus, select:focus {
+  border: 1px solid rgba(200,163,106,.38);
+  background: rgba(255,255,255,.052);
+  box-shadow: 0 0 0 4px rgba(200,163,106,.08);
 }
 
 button {
-  width: 100%;
-
-  border: 1px solid rgba(200,163,106,.22);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(166,124,58,.22),
-      rgba(166,124,58,.12)
-    );
-
-  color: var(--ivory);
-
-  border-radius: 18px;
-
-  min-height: 50px;
-
-  padding: 12px 16px;
-
+  border: 1px solid rgba(200,163,106,.24);
+  background: linear-gradient(180deg, rgba(166,124,58,.26), rgba(166,124,58,.13));
+  color: var(--ink);
   font-weight: 600;
-
-  transition:
-    transform .2s ease,
-    background .2s ease,
-    box-shadow .2s ease;
-
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.22);
-
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 18px rgba(0,0,0,.22);
   backdrop-filter: blur(10px);
 }
 
 button:hover {
   transform: translateY(-1px);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(200,163,106,.28),
-      rgba(166,124,58,.16)
-    );
-
-  box-shadow:
-    0 12px 24px rgba(0,0,0,.28);
+  background: linear-gradient(180deg, rgba(200,163,106,.30), rgba(166,124,58,.17));
+  box-shadow: 0 12px 24px rgba(0,0,0,.28);
 }
+
 .primary {
-  background:var(--ivory);
-  color:#111;
+  background: linear-gradient(180deg, rgba(228,201,139,.92), rgba(166,124,58,.78));
+  color: #0E0C0A;
 }
 
 .secondary {
-  background:transparent;
-  color:var(--muted);
-  border:1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  box-shadow: none;
 }
 
 .danger {
-  background:transparent;
-  color:var(--danger);
-  border:1px solid rgba(216,161,161,.28);
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(216,161,161,.28);
+  box-shadow: none;
 }
 
-.club-card,
-.book-item,
-.picked-item,
-.winner,
-.next-read-card {
-
-  background:var(--dark);
-
-  border:1px solid var(--line);
-
-  padding:15px;
-
-  border-radius:22px;
-
-  margin:10px 0;
+.club-card, .book-item, .picked-item, .winner, .next-read-card {
+  background: rgba(20,17,15,.78);
+  border: 1px solid var(--line);
+  padding: 15px;
+  border-radius: 22px;
+  margin: 10px 0;
 }
 
 .item-title {
-  font-weight:760;
-  font-size:1.02rem;
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.2;
+  margin-bottom: 4px;
 }
 
 .small {
-  color:var(--muted);
-  font-size:.88rem;
+  color: var(--muted);
+  font-size: .88rem;
 }
 
 .status {
-  color:var(--muted);
-  font-size:.95rem;
-  text-align:center;
-  padding:18px 10px;
+  color: var(--muted);
+  font-size: .95rem;
+  text-align: center;
+  padding: 18px 10px;
+  line-height: 1.45;
 }
 
 footer {
-  text-align:center;
-  color:#777;
-  font-size:.8rem;
-  margin-top:26px;
+  text-align: center;
+  color: rgba(169,146,114,.72);
+  font-size: .82rem;
+  margin-top: 26px;
+  letter-spacing: .4px;
 }
+
+/* Club room navigation */
+.club-subnav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.club-subnav button {
+  min-height: 44px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(200,163,106,.12);
+  color: var(--muted);
+  font-size: .76rem;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  box-shadow: none;
+  padding: 8px 6px;
+}
+
+.club-subnav button.active {
+  background: linear-gradient(180deg, rgba(200,163,106,.24), rgba(166,124,58,.12));
+  color: var(--ink);
+  border: 1px solid rgba(200,163,106,.30);
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+}
+
+.club-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.club-section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Book cards */
+.book-card-polished {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.book-mini-cover {
+  width: 58px;
+  height: 86px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  box-shadow:
+    0 6px 16px rgba(0,0,0,.28),
+    2px 0 0 rgba(255,255,255,.04);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.book-mini-placeholder {
+  width: 58px;
+  height: 86px;
+  border-radius: 10px;
+  background: linear-gradient(145deg,#2B241C,#14110F);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.book-item {
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.book-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,163,106,.12), transparent);
+}
+
+.book-item:hover .book-mini-cover {
+  transform: translateY(-2px) rotate(-1deg);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.36),
+    3px 0 0 rgba(255,255,255,.06);
+}
+
+.book-info { flex: 1; }
+.book-actions { margin-top: 10px; }
+
+.book-category {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(200,163,106,.08);
+  border: 1px solid rgba(200,163,106,.12);
+  color: var(--gold-pale);
+  font-size: .72rem;
+}
+
+/* Covers and spin */
+.cover {
+  width: 140px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 16px 35px rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.cover-placeholder {
+  width: 140px;
+  height: 210px;
+  border-radius: 18px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg,#30271F,#14110F);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.4rem;
+}
+
+.next-read-card {
+  text-align: center;
+}
+
+.next-read-card .cover,
+.next-read-card .cover-placeholder {
+  width: 95px;
+  height: 142px;
+}
+
 .spin-display {
   min-height: 390px;
   display: flex;
@@ -402,6 +460,7 @@ footer {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: opacity .22s ease, filter .22s ease, transform .22s ease;
 }
 
 .spin-card .cover,
@@ -417,39 +476,23 @@ footer {
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-.spin-card {
-  transition: opacity 0.22s ease, filter 0.22s ease, transform 0.22s ease;
-}
-
-.spin-card.spinning {
-  opacity: 0.72;
-  filter: blur(1.2px);
-  transform: scale(0.985);
+  margin: 14px 0 4px;
 }
 
 .spin-card.final-result {
-  opacity: 1;
-  filter: blur(0);
-  transform: scale(1);
-  animation: finalPop 0.35s ease both;
+  animation: finalPop .35s ease both;
 }
 
 @keyframes finalPop {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(.96) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
+
 .slot-window {
   height: 360px;
   overflow: hidden;
   border-radius: 26px;
-  background: #151517;
+  background: rgba(20,17,15,.95);
   border: 1px solid var(--line);
   margin-top: 14px;
 }
@@ -477,66 +520,10 @@ footer {
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-.club-subnav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 0 0 18px;
+  margin: 14px 0 4px;
 }
 
-.club-subnav button {
-  min-height: 44px;
-
-  border-radius: 999px;
-
-  background:
-    rgba(255,255,255,.03);
-
-  border:
-    1px solid rgba(200,163,106,.12);
-
-  color: var(--muted);
-
-  font-size: .82rem;
-
-  letter-spacing: .4px;
-
-  text-transform: uppercase;
-
-  transition:
-    all .22s ease;
-}
-
-.club-section {
-  display: none;
-}
-
-.club-subnav button.active {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(200,163,106,.22),
-      rgba(166,124,58,.12)
-    );
-
-  color: var(--ivory);
-
-  border:
-    1px solid rgba(200,163,106,.26);
-
-  box-shadow:
-    0 8px 24px rgba(0,0,0,.28);
-}
-.next-read-card .cover,
-.next-read-card .cover-placeholder {
-  width: 95px;
-  height: 142px;
-}
-
-.next-read-card {
-  text-align: center;
-}
+/* Marginalia */
 .comment-card {
   background: rgba(255,255,255,.045);
   border: 1px solid var(--line);
@@ -545,23 +532,6 @@ footer {
   margin-top: 12px;
 }
 
-.comment-alias {
-  font-weight: 700;
-  margin-bottom: 6px;
-  font-size: .95rem;
-}
-
-.comment-message {
-  color: rgba(255,255,255,.82);
-  line-height: 1.5;
-  font-size: .93rem;
-}
-
-.comment-time {
-  margin-top: 10px;
-  font-size: .72rem;
-  opacity: .55;
-}
 .comment-row {
   display: flex;
   gap: 12px;
@@ -572,8 +542,8 @@ footer {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: var(--soft);
-  color: #111;
+  background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+  color: #0E0C0A;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -581,94 +551,33 @@ footer {
   flex-shrink: 0;
 }
 
-.comment-content {
-  flex: 1;
-}
-.club-subnav button {
-  transition: all 0.22s ease;
-  background: var(--dark);
-  color: var(--muted);
-  border: 1px solid var(--line);
+.comment-content { flex: 1; }
+
+.comment-alias {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: .95rem;
+  color: var(--gold-pale);
 }
 
-.club-subnav button.active {
-  background: var(--ivory);
-  color: #111;
-  box-shadow: 0 8px 24px rgba(245,241,234,.12);
-}
-.book-card-polished {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
+.comment-message {
+  color: rgba(234,220,194,.88);
+  line-height: 1.5;
+  font-size: .93rem;
 }
 
-.book-mini-cover {
-  width: 58px;
-  height: 86px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--line);
-  flex-shrink: 0;
-}
-
-.book-mini-placeholder {
-  width: 58px;
-  height: 86px;
-  border-radius: 10px;
-  background: linear-gradient(145deg,#303033,#171719);
-  border: 1px solid var(--line);
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Georgia, serif;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.book-info {
-  flex: 1;
-}
-
-.book-actions {
+.comment-time {
   margin-top: 10px;
-}
-.club-section {
-  display: none;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity .28s ease,
-    transform .28s ease;
+  font-size: .72rem;
+  opacity: .58;
 }
 
-.club-section.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-.reaction-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
+.reaction-summary {
+  margin-top: 8px;
+  font-size: .78rem;
+  color: var(--muted);
 }
 
-.reaction-btn {
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.04);
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: .82rem;
-  cursor: pointer;
-  transition: all .18s ease;
-}
-
-.reaction-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(255,255,255,.08);
-}
 .reaction-picker {
   display: none;
   gap: 8px;
@@ -680,9 +589,7 @@ footer {
   justify-content: center;
 }
 
-.reaction-picker.show {
-  display: flex;
-}
+.reaction-picker.show { display: flex; }
 
 .reaction-picker button {
   width: auto;
@@ -691,445 +598,112 @@ footer {
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(255,255,255,.08);
-  color: var(--ivory);
+  color: var(--ink);
 }
 
-.reaction-summary {
-  margin-top: 8px;
-  font-size: .78rem;
-  color: var(--muted);
+.edit-panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 12px;
 }
-h1,
-h2,
-h3,
-.card-header h2 {
-  font-family: 'Cormorant Garamond', serif;
-  letter-spacing: .3px;
-  font-weight: 600;
-}
-.book-item {
-  position: relative;
-  padding-bottom: 14px;
-}
-
-.book-item::after {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.08),
-      transparent
-    );
-}
-.book-mini-cover {
-  box-shadow:
-    0 6px 16px rgba(0,0,0,.28),
-    2px 0 0 rgba(255,255,255,.04);
-
-  transition:
-    transform .22s ease,
-    box-shadow .22s ease;
-}
-
-.book-item:hover .book-mini-cover {
-  transform: translateY(-2px) rotate(-1deg);
-
-  box-shadow:
-    0 10px 24px rgba(0,0,0,.36),
-    3px 0 0 rgba(255,255,255,.06);
-}
-  .brand-mark {
-  background:
-    radial-gradient(circle at 30% 20%, rgba(234,220,194,.45), transparent 28%),
-    linear-gradient(145deg, var(--gold-soft), var(--gold));
-
-  color: #0E0C0A;
-
-  box-shadow:
-    0 12px 28px rgba(166,124,58,.28),
-    inset 0 1px 0 rgba(255,255,255,.22);
-}
-
-h1 {
-  color: var(--gold-soft);
-  text-shadow: 0 8px 28px rgba(166,124,58,.18);
-}
-
-.subtitle {
-  color: var(--muted);
-  letter-spacing: .3px;
-}
-  .card-header {
-  position: relative;
-  padding-bottom: 12px;
-  margin-bottom: 16px;
-}
-
-.card-header::after {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  bottom: 0;
-
-  width: 72px;
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(200,163,106,.55),
-      transparent
-    );
-}
-
-/* Final dark-library polish overrides */
-.club-subnav button {
-  min-height: 44px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(200,163,106,.12);
-  color: var(--muted);
-  font-size: .82rem;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-  transition: all .22s ease;
-}
-
-.club-subnav button.active {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(200,163,106,.22),
-      rgba(166,124,58,.12)
-    );
-  color: var(--ivory);
-  border: 1px solid rgba(200,163,106,.26);
-  box-shadow: 0 8px 24px rgba(0,0,0,.28);
-}
-
-.book-category {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.07);
-  font-size: .72rem;
-  color: var(--muted);
-}
-
 </style>
-
 </head>
 
 <body>
 
 <div id="authScreen" class="app">
-
   <header class="header">
-
     <div class="brand-mark">S</div>
-
     <h1>Spine Society</h1>
-
-    <p class="subtitle">
-      Sign in to manage your book clubs.
-    </p>
-
+    <p class="subtitle">Your book club, curated.</p>
   </header>
 
   <section class="card">
-
     <h2>Welcome</h2>
+    <p class="helper">Create or join book clubs, add books, spin for the next read, and talk together in Marginalia.</p>
 
-    <p class="helper">
-      Create or join book clubs,
-      add books,
-      spin for the next read,
-      and invite friends.
-    </p>
+    <input id="loginEmail" type="email" placeholder="Email" />
+    <input id="loginPassword" type="password" placeholder="Password" />
 
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="Email"
-    />
-
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Password"
-    />
-
-    <button onclick="loginWithEmail()">
-      Log In
-    </button>
-
-    <button
-      class="secondary"
-      onclick="signUpWithEmail()">
-
-      Create Account
-
-    </button>
-
-    <button
-      class="primary"
-      onclick="loginWithGoogle()">
-
-      Continue with Google
-
-    </button>
-
+    <button onclick="loginWithEmail()">Log In</button>
+    <button class="secondary" onclick="signUpWithEmail()">Create Account</button>
+    <button class="primary" onclick="loginWithGoogle()">Continue with Google</button>
   </section>
-
 </div>
 
-<div
-  id="mainApp"
-  class="app"
-  style="display:none;"
->
-
+<div id="mainApp" class="app" style="display:none;">
   <header class="header">
-
     <div class="brand-mark">S</div>
-
     <h1>Spine Society</h1>
-
-    <p
-      class="subtitle"
-      id="activeClubSubtitle">
-
-      Home
-
-    </p>
-
+    <p class="subtitle" id="activeClubSubtitle">Home</p>
   </header>
 
   <nav class="top-nav">
-
-    <button
-      id="homeTab"
-      class="nav-btn active">
-
-      Home
-
-    </button>
-
-    <button
-      id="clubTab"
-      class="nav-btn">
-
-      Club
-
-    </button>
-
-    <button
-      id="picksTab"
-      class="nav-btn">
-
-      Picks
-
-    </button>
-
-    <button
-      id="accountTab"
-      class="nav-btn">
-
-      Account
-
-    </button>
-
+    <button id="homeTab" class="nav-btn active">Home</button>
+    <button id="clubTab" class="nav-btn">Club</button>
+    <button id="picksTab" class="nav-btn">Picks</button>
+    <button id="accountTab" class="nav-btn">Account</button>
   </nav>
 
-  <!-- HOME SCREEN -->
-
-  <section
-    id="homeScreen"
-    class="screen active"
-  >
-
+  <section id="homeScreen" class="screen active">
     <div class="card">
+      <div class="card-header"><h2>Home</h2></div>
+      <p class="helper">Create a reading circle, join one from an invite, or open one of your shelves.</p>
 
-      <div class="card-header">
+      <input id="newClubName" placeholder="New shelf name" />
+      <button onclick="createClub()">Create Shelf</button>
 
-        <h2>Home</h2>
-
-      </div>
-
-      <p class="helper">
-        Create a book club,
-        join one from an invite,
-        or open one of your clubs.
-      </p>
-
-      <input
-        id="newClubName"
-        placeholder="New book club name"
-      />
-
-      <button onclick="createClub()">
-        Create Book Club
-      </button>
-
-      <input
-        id="joinClubId"
-        placeholder="Paste club invite code or link"
-      />
-
-      <button
-        class="secondary"
-        onclick="joinClubFromInput()">
-
-        Join Book Club
-
-      </button>
-
+      <input id="joinClubId" placeholder="Paste invite code or link" />
+      <button class="secondary" onclick="joinClubFromInput()">Join Shelf</button>
     </div>
 
     <div class="card">
-
       <div class="card-header">
-
         <h2>Your Shelves</h2>
-
-        <span
-          id="clubCount"
-          class="small">
-
-        </span>
-
+        <span id="clubCount" class="small"></span>
       </div>
-
       <div id="clubList">
-
-        <p class="status">
-          Loading clubs...
-        </p>
-
+        <p class="status">Loading shelves...</p>
       </div>
-
     </div>
-
   </section>
 
-  <!-- CLUB SCREEN -->
-
-  <section
-    id="clubScreen"
-    class="screen"
-  >
-
-    <div
-      id="noClubSelected"
-      class="card"
-    >
-
-      <h2>No Club Selected</h2>
-
-      <p class="status">
-        Choose or create a book club from Home first.
-      </p>
-
+  <section id="clubScreen" class="screen">
+    <div id="noClubSelected" class="card">
+      <h2>No Shelf Selected</h2>
+      <p class="status">Choose or create a shelf from Home first.</p>
     </div>
-
   </section>
 
-  <!-- PICKS SCREEN -->
-
-  <section
-    id="picksScreen"
-    class="screen"
-  >
-
+  <section id="picksScreen" class="screen">
     <div class="card">
-
-      <div class="card-header">
-
-        <h2>Saved Picks</h2>
-
-      </div>
-
+      <div class="card-header"><h2>Saved Picks</h2></div>
       <div id="pickedList">
-
-        <p class="status">
-          No saved picks yet.
-        </p>
-
+        <p class="status">Your saved picks will live here.</p>
       </div>
-
     </div>
-
   </section>
 
-  <!-- ACCOUNT SCREEN -->
-
-  <section
-    id="accountScreen"
-    class="screen"
-  >
-
+  <section id="accountScreen" class="screen">
     <div class="card">
+      <div class="card-header"><h2>Account</h2></div>
+      <p class="helper" id="accountEmail">Signed in.</p>
 
-      <div class="card-header">
+      <input id="usernameInput" placeholder="Choose your Reader Alias" />
+      <button onclick="saveUsername()">Save Reader Alias</button>
+      <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
 
-        <h2>Account</h2>
-
-      </div>
-
-      <p
-        class="helper"
-        id="accountEmail">
-
-        Signed in.
-
-      </p>
-<input
-  id="usernameInput"
-  placeholder="Choose your Reader Alias"
-/>
-
-<button onclick="saveUsername()">
-  Save Reader Alias
-</button>
-
-<p class="helper" id="currentUsername">
-  No Reader Alias set yet.
-</p>
-      <button
-        class="danger"
-        onclick="logoutUser()">
-
-        Log Out
-
-      </button>
-
+      <button class="danger" onclick="logoutUser()">Log Out</button>
     </div>
-
   </section>
 
-  <footer>
-    Spine Society · Read together.
-  </footer>
-
+  <footer>Spine Society · Read Together.</footer>
 </div>
+
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -1139,7 +713,6 @@ import {
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 import {
   getDatabase,
   ref,
@@ -1168,68 +741,50 @@ const database = getDatabase(app);
 
 let currentUser = null;
 let currentClubBooks = [];
-function toast(message) {
-  alert(message);
+
+function escapeHTML(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
-window.showClubSection = function (section) {
-  document.querySelectorAll(".club-section").forEach(sec => {
-    sec.classList.remove("active");
-  });
 
-  document.querySelectorAll(".club-subnav button").forEach(btn => {
-    btn.classList.remove("active");
-  });
+function escapeAttr(value) {
+  return escapeHTML(value).replaceAll("`", "&#096;");
+}
 
-  const selected = document.getElementById(section + "Section");
-
-  if (selected) {
-    selected.classList.add("active");
-  }
-
-  const buttons = document.querySelectorAll(".club-subnav button");
-
-  if (section === "overview") buttons[0].classList.add("active");
-  if (section === "shelf") buttons[1].classList.add("active");
-  if (section === "spin") buttons[2].classList.add("active");
-  if (section === "talk") buttons[3].classList.add("active");
-};
 function showScreen(screenName) {
-  document.querySelectorAll(".screen").forEach(screen => {
-    screen.classList.remove("active");
-  });
-
-  document.querySelectorAll(".nav-btn").forEach(button => {
-    button.classList.remove("active");
-  });
-
+  document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(button => button.classList.remove("active"));
   document.getElementById(screenName + "Screen").classList.add("active");
   document.getElementById(screenName + "Tab").classList.add("active");
 }
 
-document.getElementById("homeTab").addEventListener("click", () => {
-  showScreen("home");
-});
+window.showClubSection = function (section) {
+  document.querySelectorAll(".club-section").forEach(sec => sec.classList.remove("active"));
+  document.querySelectorAll(".club-subnav button").forEach(btn => btn.classList.remove("active"));
 
-document.getElementById("clubTab").addEventListener("click", () => {
-  showScreen("club");
-});
+  const selected = document.getElementById(section + "Section");
+  if (selected) selected.classList.add("active");
 
-document.getElementById("picksTab").addEventListener("click", () => {
-  showScreen("picks");
-});
+  const buttons = document.querySelectorAll(".club-subnav button");
+  if (section === "overview") buttons[0]?.classList.add("active");
+  if (section === "shelf") buttons[1]?.classList.add("active");
+  if (section === "spin") buttons[2]?.classList.add("active");
+  if (section === "talk") buttons[3]?.classList.add("active");
+};
 
-document.getElementById("accountTab").addEventListener("click", () => {
-  showScreen("account");
-});
+document.getElementById("homeTab").addEventListener("click", () => showScreen("home"));
+document.getElementById("clubTab").addEventListener("click", () => showScreen("club"));
+document.getElementById("picksTab").addEventListener("click", () => showScreen("picks"));
+document.getElementById("accountTab").addEventListener("click", () => showScreen("account"));
 
 window.signUpWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
-
-  if (!email || !password) {
-    alert("Enter email and password.");
-    return;
-  }
+  if (!email || !password) return alert("Enter email and password.");
 
   try {
     await createUserWithEmailAndPassword(auth, email, password);
@@ -1241,11 +796,7 @@ window.signUpWithEmail = async function () {
 window.loginWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
-
-  if (!email || !password) {
-    alert("Enter email and password.");
-    return;
-  }
+  if (!email || !password) return alert("Enter email and password.");
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -1265,32 +816,23 @@ window.loginWithGoogle = async function () {
 window.logoutUser = async function () {
   await signOut(auth);
 };
+
 window.saveUsername = async function () {
+  if (!currentUser) return alert("Please log in first.");
 
-  if (!currentUser) {
-    alert("Please log in first.");
-    return;
-  }
-
-  const username =
-    document.getElementById("usernameInput").value.trim();
-
-  if (!username) {
-    alert("Enter a Reader Alias.");
-    return;
-  }
+  const username = document.getElementById("usernameInput").value.trim();
+  if (!username) return alert("Enter a Reader Alias.");
 
   await update(ref(database, "users/" + currentUser.uid), {
-    username: username,
+    username,
     email: currentUser.email || "",
     updatedAt: Date.now()
   });
 
-  document.getElementById("currentUsername").textContent =
-    "Reader Alias: " + username;
-
+  document.getElementById("currentUsername").textContent = "Reader Alias: " + username;
   alert("Reader Alias saved.");
 };
+
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
     email: user.email || "",
@@ -1306,46 +848,27 @@ function listenToUserClubs() {
     const clubIds = Object.keys(clubs);
 
     document.getElementById("clubCount").textContent =
-      clubIds.length + " club" + (clubIds.length === 1 ? "" : "s");
+      clubIds.length + " shelf" + (clubIds.length === 1 ? "" : "s");
 
     if (clubIds.length === 0) {
       document.getElementById("clubList").innerHTML =
-        `<p class="status">No book clubs yet. Create or join one to get started.</p>`;
+        `<p class="status">Your shelves are waiting for their first reading circle.</p>`;
       return;
     }
 
     let html = "";
-
     for (const clubId of clubIds) {
       const clubSnapshot = await get(ref(database, "clubs/" + clubId));
       const club = clubSnapshot.val();
-
       if (!club) continue;
 
       html += `
-       <div class="club-card">
-
-  <div class="item-title">
-    ${club.name}
-  </div>
-
-  <div class="small">
-    Book club
-  </div>
-
-  <button onclick="openClub('${clubId}')">
-    Open Club
-  </button>
-
-  <button
-    class="danger"
-    onclick="removeClub('${clubId}')">
-
-    Remove Club
-
-  </button>
-
-</div>
+        <div class="club-card">
+          <div class="item-title">${escapeHTML(club.name)}</div>
+          <div class="small">Reading circle</div>
+          <button onclick="openClub('${clubId}')">Open Shelf</button>
+          <button class="danger" onclick="removeClub('${clubId}')">Remove Shelf</button>
+        </div>
       `;
     }
 
@@ -1354,17 +877,10 @@ function listenToUserClubs() {
 }
 
 window.createClub = async function () {
-  if (!currentUser) {
-    alert("Please log in first.");
-    return;
-  }
+  if (!currentUser) return alert("Please log in first.");
 
   const clubName = document.getElementById("newClubName").value.trim();
-
-  if (!clubName) {
-    alert("Enter a club name.");
-    return;
-  }
+  if (!clubName) return alert("Enter a shelf name.");
 
   const clubRef = push(ref(database, "clubs"));
   const clubId = clubRef.key;
@@ -1374,42 +890,28 @@ window.createClub = async function () {
     owner: currentUser.uid,
     createdBy: currentUser.email || "",
     createdAt: Date.now(),
-    members: {
-      [currentUser.uid]: true
-    }
+    members: { [currentUser.uid]: true }
   });
 
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("newClubName").value = "";
-
-  alert("Club created.");
-
+  alert("Shelf created.");
   openClub(clubId);
 };
 
 function extractClubId(input) {
   try {
-    if (input.includes("?club=")) {
-      return new URL(input).searchParams.get("club");
-    }
+    if (input.includes("?club=")) return new URL(input).searchParams.get("club");
   } catch (error) {}
-
   return input.replace("?club=", "").trim();
 }
 
 window.joinClubFromInput = async function () {
-  if (!currentUser) {
-    alert("Please log in first.");
-    return;
-  }
+  if (!currentUser) return alert("Please log in first.");
 
   const input = document.getElementById("joinClubId").value.trim();
-
-  if (!input) {
-    alert("Paste a club code or invite link.");
-    return;
-  }
+  if (!input) return alert("Paste a shelf code or invite link.");
 
   const clubId = extractClubId(input);
 
@@ -1417,9 +919,7 @@ window.joinClubFromInput = async function () {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("joinClubId").value = "";
-
-  alert("Joined club.");
-
+  alert("Joined shelf.");
   openClub(clubId);
 };
 
@@ -1427,492 +927,301 @@ window.openClub = async function (clubId) {
   const clubSnapshot = await get(ref(database, "clubs/" + clubId));
   const club = clubSnapshot.val();
 
-  if (!club) {
-    alert("Club not found.");
-    return;
-  }
+  if (!club) return alert("Shelf not found.");
 
   window.currentClubId = clubId;
   window.currentClubName = club.name;
-
   document.getElementById("activeClubSubtitle").textContent = club.name;
 
   document.getElementById("clubScreen").innerHTML = `
-  <div class="club-subnav">
-    <button class="active" onclick="showClubSection('overview')">Lounge</button>
-    <button onclick="showClubSection('shelf')">Shelf</button>
-    <button onclick="showClubSection('spin')">Pick</button>
-    <button onclick="showClubSection('talk')">Marginalia</button>
-  </div>
-
-  <div id="overviewSection" class="club-section active">
-    <div class="card">
-      <div class="card-header">
-        <h2>${club.name}</h2>
-      </div>
-
-      <p class="helper">
-        Manage books, spin for the next read, and invite friends to this club.
-      </p>
-
-      <button onclick="textCurrentClubInvite('${clubId}', '${club.name}')">
-        Text Invite
-      </button>
-
-      <button class="secondary" onclick="emailCurrentClubInvite('${clubId}', '${club.name}')">
-        Email Invite
-      </button>
-
-      <button class="secondary" onclick="copyCurrentClubInvite('${clubId}', '${club.name}')">
-        Copy Invite
-      </button>
+    <div class="club-subnav">
+      <button class="active" onclick="showClubSection('overview')">Lounge</button>
+      <button onclick="showClubSection('shelf')">Shelf</button>
+      <button onclick="showClubSection('spin')">Pick</button>
+      <button onclick="showClubSection('talk')">Marginalia</button>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <h2>Members</h2>
-        <span id="memberCount" class="small"></span>
+    <div id="overviewSection" class="club-section active">
+      <div class="card">
+        <div class="card-header"><h2>${escapeHTML(club.name)}</h2></div>
+        <p class="helper">Invite readers, track the current read, and keep your club history together.</p>
+        <button onclick="textCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Text Invite</button>
+        <button class="secondary" onclick="emailCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Email Invite</button>
+        <button class="secondary" onclick="copyCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Copy Invite</button>
       </div>
 
-      <div id="memberList">
-        <p class="status">Loading members...</p>
+      <div class="card">
+        <div class="card-header">
+          <h2>Readers</h2>
+          <span id="memberCount" class="small"></span>
+        </div>
+        <div id="memberList"><p class="status">Loading readers...</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>Next Read</h2></div>
+        <div id="nextReadArea"><p class="status">No next read set yet.</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Finished Reads</h2>
+          <span id="booksReadCount" class="small"></span>
+        </div>
+        <div id="booksReadList"><p class="status">No finished reads yet.</p></div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <h2>Next Read</h2>
+    <div id="shelfSection" class="club-section">
+      <div class="card">
+        <div class="card-header"><h2>Add to Shelf</h2></div>
+        <input id="bookTitle" placeholder="Book title" />
+        <input id="bookAuthor" placeholder="Author" />
+        <select id="bookCategory">
+          <option>Book Club Pick</option>
+          <option>Thriller</option>
+          <option>Romance</option>
+          <option>Fantasy</option>
+          <option>Mystery</option>
+          <option>Cozy Read</option>
+          <option>Wild Card</option>
+        </select>
+        <input id="bookImage" placeholder="Book cover image URL optional" />
+        <button onclick="addBookToClub()">Add to Shelf</button>
       </div>
 
-      <div id="nextReadArea">
-        <p class="status">No next read set yet.</p>
+      <div class="card">
+        <div class="card-header">
+          <h2>Current Shelf</h2>
+          <span id="bookCount" class="small"></span>
+        </div>
+        <div id="bookList"><p class="status">Your shelf is waiting for its first story.</p></div>
+      </div>
+    </div>
+
+    <div id="spinSection" class="club-section">
+      <div class="card">
+        <div class="card-header"><h2>Pick</h2></div>
+        <p class="helper">Let Spine Society choose from the books on this shelf.</p>
+        <select id="spinCategory">
+          <option>All Books</option>
+          <option>Book Club Pick</option>
+          <option>Thriller</option>
+          <option>Romance</option>
+          <option>Fantasy</option>
+          <option>Mystery</option>
+          <option>Cozy Read</option>
+          <option>Wild Card</option>
+        </select>
+        <button id="spinButton" class="primary" onclick="spinBook()">Surprise Me</button>
+        <div id="winner" class="result-stage spin-display">
+          <p class="status">Your next pick will appear here.</p>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <h2>Finished Reads</h2>
-        <span id="booksReadCount" class="small"></span>
-      </div>
-
-      <div id="booksReadList">
-        <p class="status">No books finished yet.</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="shelfSection" class="club-section">
-    <div class="card">
-      <div class="card-header">
-        <h2>Add to Shelf</h2>
-      </div>
-
-      <input id="bookTitle" placeholder="Book title" />
-      <input id="bookAuthor" placeholder="Author" />
-
-      <select id="bookCategory">
-        <option>Book Club Pick</option>
-        <option>Thriller</option>
-        <option>Romance</option>
-        <option>Fantasy</option>
-        <option>Mystery</option>
-        <option>Cozy Read</option>
-        <option>Wild Card</option>
-      </select>
-
-      <input id="bookImage" placeholder="Book cover image URL optional" />
-
-      <button onclick="addBookToClub()">
-        Add to Shelf
-      </button>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <h2>Current Shelf</h2>
-        <span id="bookCount" class="small"></span>
-      </div>
-
-      <div id="bookList">
-        <p class="status">No books added yet.</p>
+    <div id="talkSection" class="club-section">
+      <div class="card">
+        <div class="card-header"><h2>Marginalia</h2></div>
+        <p class="helper">Leave notes, reactions, and thoughts for your reading circle.</p>
+        <input id="discussionInput" placeholder="Add a thought, question, or reaction..." />
+        <button onclick="postDiscussionComment()">Post Note</button>
+        <div id="discussionList"><p class="status">No notes yet. Start the conversation.</p></div>
       </div>
     </div>
-  </div>
+  `;
 
-  <div id="spinSection" class="club-section">
-    <div class="card">
-      <div class="card-header">
-        <h2>Pick</h2>
-      </div>
+  listenToClubBooks(clubId);
+  listenToNextRead(clubId);
+  listenToBooksRead(clubId);
+  listenToMembers(clubId);
+  listenToDiscussion(clubId);
 
-      <p class="helper">
-        Let Spine Society choose from this club’s shelf.
-      </p>
+  showScreen("club");
+};
 
-      <select id="spinCategory">
-        <option>All Books</option>
-        <option>Book Club Pick</option>
-        <option>Thriller</option>
-        <option>Romance</option>
-        <option>Fantasy</option>
-        <option>Mystery</option>
-        <option>Cozy Read</option>
-        <option>Wild Card</option>
-      </select>
-
-      <button id="spinButton" class="primary" onclick="spinBook()">
-        Spin
-      </button>
-
-      <div id="winner" class="result-stage spin-display">
-        <p class="status">Your next read will appear here.</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="talkSection" class="club-section">
-    <div class="card">
-      <div class="card-header">
-        <h2>Marginalia</h2>
-      </div>
-
-      <p class="helper">
-        Chat about the current read with your book club.
-      </p>
-
-      <input
-        id="discussionInput"
-        placeholder="Add a thought, question, or reaction..."
-      />
-
-      <button onclick="postDiscussionComment()">
-        Post Comment
-      </button>
-
-      <div id="discussionList">
-        <p class="status">No comments yet.</p>
-      </div>
-    </div>
-  </div>
-`;
-onValue(
-  ref(database, "clubs/" + clubId + "/books"),
-  (snapshot) => {
-
+function listenToClubBooks(clubId) {
+  onValue(ref(database, "clubs/" + clubId + "/books"), (snapshot) => {
     const books = snapshot.val() || {};
-
-    currentClubBooks =
-      Object.entries(books).map(([id, value]) => ({
-        id,
-        ...value
-      }));
+    currentClubBooks = Object.entries(books).map(([id, value]) => ({ id, ...value }));
 
     document.getElementById("bookCount").textContent =
-      currentClubBooks.length +
-      " book" +
-      (currentClubBooks.length === 1 ? "" : "s");
+      currentClubBooks.length + " book" + (currentClubBooks.length === 1 ? "" : "s");
 
     if (currentClubBooks.length === 0) {
-
-      document.getElementById("bookList").innerHTML = `
-        <p class="status">
-          No books added yet.
-        </p>
-      `;
-
+      document.getElementById("bookList").innerHTML =
+        `<p class="status">Your shelf is waiting for its first story.</p>`;
       return;
     }
 
     document.getElementById("bookList").innerHTML =
-      currentClubBooks.map(book => `
-     <div class="book-item">
-  <div class="book-card-polished">
+      currentClubBooks.map(book => renderBookCard(book, false)).join("");
+  });
+}
 
-    ${
-      book.image
-        ? `<img class="book-mini-cover" src="${book.image}" alt="Book cover">`
-        : `<div class="book-mini-placeholder">S</div>`
-    }
-
-    <div class="book-info">
-      <div class="item-title">
-        ${book.title}
+function renderBookCard(book, finished) {
+  return `
+    <div class="book-item">
+      <div class="book-card-polished">
+        ${
+          book.image
+            ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+            : `<div class="book-mini-placeholder">S</div>`
+        }
+        <div class="book-info">
+          <div class="item-title">${escapeHTML(book.title)}</div>
+          ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
+          <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
+          <div class="book-actions">
+            ${
+              finished
+                ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
+                : `
+                  <button class="secondary" onclick="editBook('${book.id}')">Edit Book</button>
+                  <button class="danger" onclick="deleteBook('${book.id}')">Delete Book</button>
+                `
+            }
+          </div>
+        </div>
       </div>
-
-      ${
-        book.author
-          ? `<div class="small">by ${book.author}</div>`
-          : ""
-      }
-
-      <div class="book-category">
-        ${book.category || "Uncategorized"}
-      </div>
-
-      <div class="book-actions">
-        <button
-          class="secondary"
-          onclick="editBook('${book.id}')">
-          Edit Book
-        </button>
-
-        <button
-          class="danger"
-          onclick="deleteBook('${book.id}')">
-          Delete Book
-        </button>
-
-        <div id="editBookForm-${book.id}"></div>
-      </div>
-    </div>
-  </div>
-</div>
-      `).join("");
-  }
-);
-onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
-  const nextRead = snapshot.val();
-
-  const area = document.getElementById("nextReadArea");
-
-  if (!nextRead) {
-    area.innerHTML = `<p class="status">No next read set yet.</p>`;
-    return;
-  }
-
-  area.innerHTML = `
-    <div class="next-read-card" style="text-align:center;">
-      ${
-        nextRead.image
-          ? `<img class="cover" src="${nextRead.image}" alt="Book cover">`
-          : `<div class="cover-placeholder">S</div>`
-      }
-
-      <h3>${nextRead.title}</h3>
-
-      ${
-        nextRead.author
-          ? `<div class="small">by ${nextRead.author}</div>`
-          : ""
-      }
-
-      <div class="small">${nextRead.category || "Uncategorized"}</div>
-      <button onclick="markNextReadFinished()">Mark as Finished</button>
     </div>
   `;
-});
-onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
-  const booksRead = snapshot.val() || {};
+}
 
-  const finishedBooks = Object.entries(booksRead).map(([id, value]) => ({
-    id,
-    ...value
-  }));
+function listenToNextRead(clubId) {
+  onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
+    const nextRead = snapshot.val();
+    const area = document.getElementById("nextReadArea");
+    if (!area) return;
 
-  document.getElementById("booksReadCount").textContent =
-    finishedBooks.length + " read";
-
-  if (finishedBooks.length === 0) {
-    document.getElementById("booksReadList").innerHTML =
-      `<p class="status">No books finished yet.</p>`;
-    return;
-  }
-
-  document.getElementById("booksReadList").innerHTML =
-  finishedBooks.map(book => `
-   <div class="book-item">
-  <div class="book-card-polished">
-
-    ${
-      book.image
-        ? `<img class="book-mini-cover" src="${book.image}" alt="Book cover">`
-        : `<div class="book-mini-placeholder">S</div>`
+    if (!nextRead) {
+      area.innerHTML = `<p class="status">No next read set yet.</p>`;
+      return;
     }
 
-    <div class="book-info">
-
-      <div class="item-title">
-        ${book.title}
-      </div>
-
-      ${
-        book.author
-          ? `<div class="small">by ${book.author}</div>`
-          : ""
-      }
-
-      <div class="book-category">
-        ${book.category || "Uncategorized"}
-      </div>
-
-      <div class="book-actions">
-        <button
-          class="danger"
-          onclick="deleteFinishedBook('${book.id}')">
-          Remove
-        </button>
-      </div>
-
-    </div>
-
-  </div>
-</div>
-  `).join("");
-});
-const memberList = document.getElementById("memberList");
-const memberCount = document.getElementById("memberCount");
-
-onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
-
-  const members = snapshot.val() || {};
-  const memberIds = Object.keys(members);
-
-  memberCount.textContent =
-    memberIds.length + " member" +
-    (memberIds.length === 1 ? "" : "s");
-
-  let html = "";
-
-  for (const uid of memberIds) {
-
-    const userSnapshot =
-      await get(ref(database, "users/" + uid));
-
-    const userData = userSnapshot.val();
-
-    html += `
-      <div class="book-item">
-        <div class="item-title">
-          ${userData?.email || "Member"}
-        </div>
-
-        <div class="small">
-          Book Club Member
-        </div>
+    area.innerHTML = `
+      <div class="next-read-card">
+        ${
+          nextRead.image
+            ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+            : `<div class="cover-placeholder">S</div>`
+        }
+        <h3>${escapeHTML(nextRead.title)}</h3>
+        ${nextRead.author ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>` : ""}
+        <div class="book-category">${escapeHTML(nextRead.category || "Uncategorized")}</div>
+        <button onclick="markNextReadFinished()">Mark as Finished</button>
       </div>
     `;
-  }
+  });
+}
 
-  memberList.innerHTML = html;
-});
-onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
-  const discussion = snapshot.val() || {};
+function listenToBooksRead(clubId) {
+  onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
+    const booksRead = snapshot.val() || {};
+    const finishedBooks = Object.entries(booksRead).map(([id, value]) => ({ id, ...value }));
 
-  const comments = Object.entries(discussion)
-    .map(([id, value]) => ({
-      id,
-      ...value
-    }))
-    .sort((a, b) => a.createdAt - b.createdAt);
+    document.getElementById("booksReadCount").textContent = finishedBooks.length + " read";
 
-  if (comments.length === 0) {
-    document.getElementById("discussionList").innerHTML =
-      `<p class="status">No comments yet.</p>`;
-    return;
-  }
+    if (finishedBooks.length === 0) {
+      document.getElementById("booksReadList").innerHTML =
+        `<p class="status">No finished reads yet. Your club history will live here.</p>`;
+      return;
+    }
 
-  document.getElementById("discussionList").innerHTML =
-    comments.map(comment => `
-      <div class="book-item">
-       <div
-  class="comment-card"
-  onclick="toggleReactionPicker('${comment.id}')"
->
+    document.getElementById("booksReadList").innerHTML =
+      finishedBooks.map(book => renderBookCard(book, true)).join("");
+  });
+}
 
-  <div class="comment-row">
+function listenToMembers(clubId) {
+  const memberList = document.getElementById("memberList");
+  const memberCount = document.getElementById("memberCount");
 
-    <div class="comment-avatar">
-      ${(comment.authorAlias || "R").charAt(0).toUpperCase()}
-    </div>
+  onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
+    const members = snapshot.val() || {};
+    const memberIds = Object.keys(members);
 
-    <div class="comment-content">
+    memberCount.textContent = memberIds.length + " reader" + (memberIds.length === 1 ? "" : "s");
 
-      <div class="comment-alias">
-        ${comment.authorAlias || "Reader"}
+    let html = "";
+    for (const uid of memberIds) {
+      const userSnapshot = await get(ref(database, "users/" + uid));
+      const userData = userSnapshot.val();
+
+      html += `
+        <div class="book-item">
+          <div class="item-title">${escapeHTML(userData?.username || userData?.email || "Reader")}</div>
+          <div class="small">Reading circle member</div>
+        </div>
+      `;
+    }
+
+    memberList.innerHTML = html || `<p class="status">No readers yet.</p>`;
+  });
+}
+
+function listenToDiscussion(clubId) {
+  onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
+    const discussion = snapshot.val() || {};
+    const comments = Object.entries(discussion)
+      .map(([id, value]) => ({ id, ...value }))
+      .sort((a, b) => a.createdAt - b.createdAt);
+
+    const list = document.getElementById("discussionList");
+    if (!list) return;
+
+    if (comments.length === 0) {
+      list.innerHTML = `<p class="status">No notes yet. Start the conversation.</p>`;
+      return;
+    }
+
+    list.innerHTML = comments.map(comment => `
+      <div class="comment-card" onclick="toggleReactionPicker('${comment.id}')">
+        <div class="comment-row">
+          <div class="comment-avatar">${escapeHTML((comment.authorAlias || "R").charAt(0).toUpperCase())}</div>
+          <div class="comment-content">
+            <div class="comment-alias">${escapeHTML(comment.authorAlias || "Reader")}</div>
+            <div class="comment-message">${escapeHTML(comment.message)}</div>
+            <div class="comment-time">${formatTimeAgo(comment.createdAt)}${comment.editedAt ? " · edited" : ""}</div>
+
+            ${comment.authorId === currentUser.uid ? `
+              <div class="book-actions">
+                <button class="secondary" onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')">Edit Note</button>
+                <button class="danger" onclick="event.stopPropagation(); window.deleteDiscussionComment('${comment.id}')">Delete Note</button>
+              </div>
+            ` : ""}
+
+            <div class="reaction-summary">
+              ❤️ ${comment.reactions?.heart || 0}
+              📚 ${comment.reactions?.book || 0}
+              👀 ${comment.reactions?.eyes || 0}
+              😭 ${comment.reactions?.cry || 0}
+            </div>
+
+            <div id="reactionPicker-${comment.id}" class="reaction-picker">
+              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'heart')">❤️</button>
+              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'book')">📚</button>
+              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'eyes')">👀</button>
+              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'cry')">😭</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="comment-message">
-        ${comment.message}
-      </div>
-
-      <div class="comment-time">
-        ${formatTimeAgo(comment.createdAt)}
-      </div>
-      ${comment.authorId === currentUser.uid ? `
-
-  <div class="book-actions">
-
- <button
-  class="secondary"
-  onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')">
-
-  Edit Comment
-
-</button>
-
-<button
-  class="danger"
-  onclick="event.stopPropagation(); window.deleteDiscussionComment('${comment.id}')">
-
-  Delete Comment
-
-</button>
-  </div>
-
-` : ""}
-<div class="reaction-summary">
-  ❤️ ${comment.reactions?.heart || 0}
-  📚 ${comment.reactions?.book || 0}
-  👀 ${comment.reactions?.eyes || 0}
-  😭 ${comment.reactions?.cry || 0}
-</div>
-
-<div
-  id="reactionPicker-${comment.id}"
-  class="reaction-picker"
->
-  <button onclick="reactToComment('${comment.id}', 'heart')">❤️</button>
-  <button onclick="reactToComment('${comment.id}', 'book')">📚</button>
-  <button onclick="reactToComment('${comment.id}', 'eyes')">👀</button>
-  <button onclick="reactToComment('${comment.id}', 'cry')">😭</button>
-</div>
-    </div>
-
-  </div>
-
-</div>
     `).join("");
-});
-  showScreen("club");
-};
+  });
+}
+
 window.addBookToClub = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  const title = document.getElementById("bookTitle").value.trim();
+  const author = document.getElementById("bookAuthor").value.trim();
+  const category = document.getElementById("bookCategory").value;
+  const image = document.getElementById("bookImage").value.trim();
 
-  const title =
-    document.getElementById("bookTitle").value.trim();
+  if (!title) return alert("Enter a book title.");
 
-  const author =
-    document.getElementById("bookAuthor").value.trim();
-
-  const category =
-    document.getElementById("bookCategory").value;
-
-  const image =
-    document.getElementById("bookImage").value.trim();
-
-  if (!title) {
-    alert("Enter a book title.");
-    return;
-  }
-
-  const bookRef = push(
-    ref(database,
-    "clubs/" + window.currentClubId + "/books")
-  );
+  const bookRef = push(ref(database, "clubs/" + window.currentClubId + "/books"));
 
   await set(bookRef, {
     title,
@@ -1928,20 +1237,17 @@ window.addBookToClub = async function () {
 
   alert("Book added.");
 };
+
 window.spinBook = function () {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
   if (!currentClubBooks || currentClubBooks.length === 0) {
     document.getElementById("winner").innerHTML =
-      `<p class="status">Add books before spinning.</p>`;
+      `<p class="status">Add books before picking.</p>`;
     return;
   }
 
   const selectedCategory = document.getElementById("spinCategory").value;
-
   const filteredBooks = selectedCategory === "All Books"
     ? currentClubBooks
     : currentClubBooks.filter(book => book.category === selectedCategory);
@@ -1959,7 +1265,6 @@ window.spinBook = function () {
   spinButton.textContent = "Choosing...";
 
   const spinList = [];
-
   for (let i = 0; i < 18; i++) {
     spinList.push(filteredBooks[Math.floor(Math.random() * filteredBooks.length)]);
   }
@@ -1975,12 +1280,12 @@ window.spinBook = function () {
             <div class="slot-card">
               ${
                 book.image
-                  ? `<img class="cover" src="${book.image}" alt="Book cover">`
+                  ? `<img class="cover" src="${escapeAttr(book.image)}" alt="Book cover">`
                   : `<div class="cover-placeholder">S</div>`
               }
-              <h3>${book.title}</h3>
-              ${book.author ? `<div class="small">by ${book.author}</div>` : ""}
-              <div class="small">${book.category || "Uncategorized"}</div>
+              <h3>${escapeHTML(book.title)}</h3>
+              ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
+              <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
             </div>
           </div>
         `).join("")}
@@ -1990,8 +1295,7 @@ window.spinBook = function () {
 
   requestAnimationFrame(() => {
     const track = document.getElementById("slotTrack");
-    track.style.transform =
-      `translateY(-${360 * (spinList.length - 1)}px)`;
+    track.style.transform = `translateY(-${360 * (spinList.length - 1)}px)`;
   });
 
   setTimeout(() => {
@@ -2001,34 +1305,24 @@ window.spinBook = function () {
       <div class="winner spin-card final-result">
         ${
           finalBook.image
-            ? `<img class="cover" src="${finalBook.image}" alt="Book cover">`
+            ? `<img class="cover" src="${escapeAttr(finalBook.image)}" alt="Book cover">`
             : `<div class="cover-placeholder">S</div>`
         }
-
-        <h3>${finalBook.title}</h3>
-
-        ${finalBook.author ? `<div class="small">by ${finalBook.author}</div>` : ""}
-
-        <div class="small">${finalBook.category || "Uncategorized"}</div>
-
+        <h3>${escapeHTML(finalBook.title)}</h3>
+        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
+        <div class="book-category">${escapeHTML(finalBook.category || "Uncategorized")}</div>
         <button onclick="setNextRead()">Set as Next Read</button>
       </div>
     `;
 
     spinButton.disabled = false;
-    spinButton.textContent = "Spin";
+    spinButton.textContent = "Surprise Me";
   }, 2500);
 };
-window.setNextRead = async function () {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
 
-  if (!window.lastPick) {
-    alert("Spin first.");
-    return;
-  }
+window.setNextRead = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!window.lastPick) return alert("Pick a book first.");
 
   await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
     title: window.lastPick.title || "",
@@ -2037,32 +1331,21 @@ window.setNextRead = async function () {
     image: window.lastPick.image || "",
     setAt: Date.now()
   });
-await set(
-  ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id),
-  null
-);
+
+  await set(ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id), null);
+
   alert("Next read set!");
 };
+
 window.markNextReadFinished = async function () {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  const nextReadSnapshot = await get(
-    ref(database, "clubs/" + window.currentClubId + "/nextRead")
-  );
-
+  const nextReadSnapshot = await get(ref(database, "clubs/" + window.currentClubId + "/nextRead"));
   const nextRead = nextReadSnapshot.val();
 
-  if (!nextRead) {
-    alert("No next read to finish.");
-    return;
-  }
+  if (!nextRead) return alert("No next read to finish.");
 
-  const finishedRef = push(
-    ref(database, "clubs/" + window.currentClubId + "/booksRead")
-  );
+  const finishedRef = push(ref(database, "clubs/" + window.currentClubId + "/booksRead"));
 
   await set(finishedRef, {
     title: nextRead.title || "",
@@ -2072,36 +1355,26 @@ window.markNextReadFinished = async function () {
     finishedAt: Date.now()
   });
 
-  await set(
-    ref(database, "clubs/" + window.currentClubId + "/nextRead"),
-    null
-  );
+  await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), null);
 
-  alert("Moved to Books Read!");
+  alert("Moved to Finished Reads!");
 };
+
 window.postDiscussionComment = async function () {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
   const input = document.getElementById("discussionInput");
   const message = input.value.trim();
 
-  if (!message) {
-    alert("Write a comment first.");
-    return;
-  }
+  if (!message) return alert("Write a note first.");
 
   const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
   const userData = userSnapshot.val();
 
-  const commentRef = push(
-    ref(database, "clubs/" + window.currentClubId + "/discussion")
-  );
+  const commentRef = push(ref(database, "clubs/" + window.currentClubId + "/discussion"));
 
   await set(commentRef, {
-    message: message,
+    message,
     authorId: currentUser.uid,
     authorAlias: userData?.username || currentUser.email || "Reader",
     createdAt: Date.now()
@@ -2109,62 +1382,30 @@ window.postDiscussionComment = async function () {
 
   input.value = "";
 };
-  window.deleteFinishedBook = async function (bookId) {
 
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+window.deleteFinishedBook = async function (bookId) {
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  const confirmDelete =
-    confirm("Remove this finished book?");
+  if (!confirm("Remove this finished read?")) return;
 
-  if (!confirmDelete) return;
-
-  await set(
-    ref(
-      database,
-      "clubs/" +
-      window.currentClubId +
-      "/booksRead/" +
-      bookId
-    ),
-    null
-  );
-
-  alert("Finished book removed.");
+  await set(ref(database, "clubs/" + window.currentClubId + "/booksRead/" + bookId), null);
+  alert("Finished read removed.");
 };
-  window.deleteBook = async function (bookId) {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
 
-  const confirmDelete = confirm("Delete this book from the club?");
+window.deleteBook = async function (bookId) {
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  if (!confirmDelete) return;
+  if (!confirm("Delete this book from the shelf?")) return;
 
-  await set(
-    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
-    null
-  );
-
+  await set(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), null);
   alert("Book deleted.");
 };
 
 window.editBook = async function (bookId) {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-const book = currentClubBooks.find(b => b.id === bookId);
-
-
-if (!book) {
-  alert("Book not found.");
-  return;
-}
+  const book = currentClubBooks.find(b => b.id === bookId);
+  if (!book) return alert("Book not found.");
 
   const newTitle = prompt("Edit book title:", book.title || "");
   if (newTitle === null) return;
@@ -2178,43 +1419,30 @@ if (!book) {
   const newImage = prompt("Edit cover image URL:", book.image || "");
   if (newImage === null) return;
 
-  await update(
-    ref(database, "clubs/" + window.currentClubId + "/books/" + bookId),
-    {
-      title: newTitle.trim(),
-      author: newAuthor.trim(),
-      category: newCategory.trim(),
-      image: newImage.trim(),
-      updatedAt: Date.now()
-    }
-  );
+  await update(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), {
+    title: newTitle.trim(),
+    author: newAuthor.trim(),
+    category: newCategory.trim(),
+    image: newImage.trim(),
+    updatedAt: Date.now()
+  });
 
   alert("Book updated.");
 };
+
 window.removeClub = async function (clubId) {
-  if (!currentUser) {
-    alert("Please log in first.");
-    return;
-  }
+  if (!currentUser) return alert("Please log in first.");
 
-  const confirmRemove = confirm(
-    "Remove this book club from your list?"
-  );
+  if (!confirm("Remove this shelf from your list?")) return;
 
-  if (!confirmRemove) return;
-
-  await set(
-    ref(database, "users/" + currentUser.uid + "/clubs/" + clubId),
-    null
-  );
-
-  alert("Club removed from your list.");
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
+  alert("Shelf removed from your list.");
 };
+
 function formatTimeAgo(timestamp) {
   if (!timestamp) return "Just now";
 
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
-
   if (seconds < 60) return "Just now";
 
   const minutes = Math.floor(seconds / 60);
@@ -2228,139 +1456,80 @@ function formatTimeAgo(timestamp) {
 
   return days + "d ago";
 }
+
 window.reactToComment = async function (commentId, reactionType) {
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
-
-  const commentRef = ref(
-    database,
-    "clubs/" +
-    window.currentClubId +
-    "/discussion/" +
-    commentId
-  );
-
+  const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
   const snapshot = await get(commentRef);
-
   const comment = snapshot.val();
 
   if (!comment) return;
 
   const reactions = comment.reactions || {};
+  reactions[reactionType] = (reactions[reactionType] || 0) + 1;
 
-  reactions[reactionType] =
-    (reactions[reactionType] || 0) + 1;
-
-  await update(commentRef, {
-    reactions: reactions
-  });
-
+  await update(commentRef, { reactions });
 };
+
 window.toggleReactionPicker = function (commentId) {
   const picker = document.getElementById("reactionPicker-" + commentId);
-
   if (!picker) return;
-
   picker.classList.toggle("show");
 };
+
 window.editDiscussionComment = async function (commentId) {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  const commentRef = ref(
-    database,
-    "clubs/" + window.currentClubId + "/discussion/" + commentId
-  );
-
+  const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
   const snapshot = await get(commentRef);
   const comment = snapshot.val();
 
-  if (!comment) {
-    alert("Comment not found.");
-    return;
-  }
+  if (!comment) return alert("Note not found.");
 
-  const updatedMessage = prompt(
-    "Edit your Marginalia note:",
-    comment.message || ""
-  );
-
+  const updatedMessage = prompt("Edit your Marginalia note:", comment.message || "");
   if (updatedMessage === null) return;
 
-  if (!updatedMessage.trim()) {
-    alert("Comment cannot be blank.");
-    return;
-  }
+  if (!updatedMessage.trim()) return alert("Note cannot be blank.");
 
   await update(commentRef, {
     message: updatedMessage.trim(),
     editedAt: Date.now()
   });
 
-  alert("Comment updated.");
+  alert("Note updated.");
 };
 
 window.deleteDiscussionComment = async function (commentId) {
-  if (!window.currentClubId) {
-    alert("Open a club first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
-  const confirmDelete =
-    confirm("Delete this Marginalia comment?");
+  if (!confirm("Delete this Marginalia note?")) return;
 
-  if (!confirmDelete) return;
-
-  await set(
-    ref(
-      database,
-      "clubs/" +
-      window.currentClubId +
-      "/discussion/" +
-      commentId
-    ),
-    null
-  );
-
-  alert("Comment deleted.");
+  await set(ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId), null);
+  alert("Note deleted.");
 };
+
 function buildInviteText(clubId, clubName) {
-  const inviteLink =
-    window.location.origin +
-    window.location.pathname +
-    "?club=" +
-    clubId;
+  const inviteLink = window.location.origin + window.location.pathname + "?club=" + clubId;
 
   return {
     inviteLink,
-    inviteText:
-      "Join my Spine Society book club shelf: " +
-      clubName +
-      "\n" +
-      inviteLink
+    inviteText: "Join my Spine Society shelf: " + clubName + "\n" + inviteLink
   };
 }
 
 window.textCurrentClubInvite = function (clubId, clubName) {
   const invite = buildInviteText(clubId, clubName);
-  window.location.href =
-    "sms:?&body=" + encodeURIComponent(invite.inviteText);
+  window.location.href = "sms:?&body=" + encodeURIComponent(invite.inviteText);
 };
 
 window.emailCurrentClubInvite = function (clubId, clubName) {
   const invite = buildInviteText(clubId, clubName);
-  const subject = "Join my Spine Society book club: " + clubName;
+  const subject = "Join my Spine Society shelf: " + clubName;
 
   window.location.href =
-    "mailto:?subject=" +
-    encodeURIComponent(subject) +
-    "&body=" +
-    encodeURIComponent(invite.inviteText);
+    "mailto:?subject=" + encodeURIComponent(subject) +
+    "&body=" + encodeURIComponent(invite.inviteText);
 };
 
 window.copyCurrentClubInvite = async function (clubId, clubName) {
@@ -2381,7 +1550,7 @@ function handleInviteLink() {
   if (clubId) {
     document.getElementById("joinClubId").value = clubId;
     showScreen("home");
-    alert("Invite detected. Tap Join Book Club.");
+    alert("Invite detected. Tap Join Shelf.");
   }
 }
 
@@ -2399,29 +1568,25 @@ onAuthStateChanged(auth, async (user) => {
       "Signed in as " + (user.email || "Google user");
 
     await ensureUserRecord(user);
-const userSnapshot = await get(ref(database, "users/" + user.uid));
-const userData = userSnapshot.val();
 
-if (userData && userData.username) {
-  document.getElementById("usernameInput").value = userData.username;
+    const userSnapshot = await get(ref(database, "users/" + user.uid));
+    const userData = userSnapshot.val();
 
-  document.getElementById("currentUsername").textContent =
-    "Reader Alias: " + userData.username;
-}
+    if (userData && userData.username) {
+      document.getElementById("usernameInput").value = userData.username;
+      document.getElementById("currentUsername").textContent =
+        "Reader Alias: " + userData.username;
+    }
+
     listenToUserClubs();
-
     handleInviteLink();
-
     showScreen("home");
   } else {
     currentUser = null;
-
     authScreen.style.display = "block";
     mainApp.style.display = "none";
   }
 });
-
 </script>
-
 </body>
 </html>
