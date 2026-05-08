@@ -536,6 +536,36 @@ footer {
   transform: translateY(-1px);
   background: rgba(255,255,255,.08);
 }
+.reaction-picker {
+  display: none;
+  gap: 8px;
+  margin-top: 10px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px;
+  justify-content: center;
+}
+
+.reaction-picker.show {
+  display: flex;
+}
+
+.reaction-picker button {
+  width: auto;
+  min-height: 34px;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: var(--ivory);
+}
+
+.reaction-summary {
+  margin-top: 8px;
+  font-size: .78rem;
+  color: var(--muted);
+}
 </style>
 
 </head>
@@ -1529,40 +1559,24 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
       <div class="comment-time">
         ${formatTimeAgo(comment.createdAt)}
       </div>
-<div class="reaction-row">
+<div
+  class="reaction-summary"
+  onclick="toggleReactionPicker('${comment.id}')"
+>
+  ❤️ ${comment.reactions?.heart || 0}
+  📚 ${comment.reactions?.book || 0}
+  👀 ${comment.reactions?.eyes || 0}
+  😭 ${comment.reactions?.cry || 0}
+</div>
 
-  <button
-    class="reaction-btn"
-    onclick="reactToComment('${comment.id}', 'heart')">
-
-    ❤️ ${comment.reactions?.heart || 0}
-
-  </button>
-
-  <button
-    class="reaction-btn"
-    onclick="reactToComment('${comment.id}', 'book')">
-
-    📚 ${comment.reactions?.book || 0}
-
-  </button>
-
-  <button
-    class="reaction-btn"
-    onclick="reactToComment('${comment.id}', 'eyes')">
-
-    👀 ${comment.reactions?.eyes || 0}
-
-  </button>
-
-  <button
-    class="reaction-btn"
-    onclick="reactToComment('${comment.id}', 'cry')">
-
-    😭 ${comment.reactions?.cry || 0}
-
-  </button>
-
+<div
+  id="reactionPicker-${comment.id}"
+  class="reaction-picker"
+>
+  <button onclick="reactToComment('${comment.id}', 'heart')">❤️</button>
+  <button onclick="reactToComment('${comment.id}', 'book')">📚</button>
+  <button onclick="reactToComment('${comment.id}', 'eyes')">👀</button>
+  <button onclick="reactToComment('${comment.id}', 'cry')">😭</button>
 </div>
     </div>
 
@@ -1946,6 +1960,13 @@ window.reactToComment = async function (commentId, reactionType) {
     reactions: reactions
   });
 
+};
+window.toggleReactionPicker = function (commentId) {
+  const picker = document.getElementById("reactionPicker-" + commentId);
+
+  if (!picker) return;
+
+  picker.classList.toggle("show");
 };
 function buildInviteText(clubId, clubName) {
   const inviteLink =
