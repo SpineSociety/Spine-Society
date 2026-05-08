@@ -429,6 +429,28 @@ footer {
   font-size: .72rem;
   opacity: .55;
 }
+.comment-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--soft);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.comment-content {
+  flex: 1;
+}
 </style>
 
 </head>
@@ -1383,19 +1405,31 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
   document.getElementById("discussionList").innerHTML =
     comments.map(comment => `
       <div class="book-item">
-        <div class="comment-card">
+       <div class="comment-card">
 
-  <div class="comment-alias">
-    ${comment.authorAlias || "Reader"}
+  <div class="comment-row">
+
+    <div class="comment-avatar">
+      ${(comment.authorAlias || "R").charAt(0).toUpperCase()}
+    </div>
+
+    <div class="comment-content">
+
+      <div class="comment-alias">
+        ${comment.authorAlias || "Reader"}
+      </div>
+
+      <div class="comment-message">
+        ${comment.message}
+      </div>
+
+      <div class="comment-time">
+        ${formatTimeAgo(comment.createdAt)}
+      </div>
+
+    </div>
+
   </div>
-
-  <div class="comment-message">
-    ${comment.message}
-  </div>
-
-  <div class="comment-time">
-  ${formatTimeAgo(comment.createdAt)}
-</div>
 
 </div>
     `).join("");
