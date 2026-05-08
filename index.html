@@ -245,13 +245,44 @@ button {
 
 input,
 select {
+  width: 100%;
 
-  background:var(--dark);
-  color:var(--ivory);
+  background:
+    rgba(255,255,255,.035);
 
-  border:1px solid var(--line);
+  border:
+    1px solid rgba(200,163,106,.16);
 
-  outline:none;
+  color: var(--ivory);
+
+  border-radius: 18px;
+
+  min-height: 50px;
+
+  padding: 12px 16px;
+
+  font-size: .95rem;
+
+  outline: none;
+
+  transition:
+    border .22s ease,
+    background .22s ease,
+    box-shadow .22s ease;
+
+  backdrop-filter: blur(10px);
+}
+
+input:focus,
+select:focus {
+  border:
+    1px solid rgba(200,163,106,.36);
+
+  background:
+    rgba(255,255,255,.05);
+
+  box-shadow:
+    0 0 0 4px rgba(200,163,106,.08);
 }
 
 button {
