@@ -1538,7 +1538,10 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
   document.getElementById("discussionList").innerHTML =
     comments.map(comment => `
       <div class="book-item">
-       <div class="comment-card">
+       <div
+  class="comment-card"
+  onclick="toggleReactionPicker('${comment.id}')"
+>
 
   <div class="comment-row">
 
@@ -1559,10 +1562,7 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
       <div class="comment-time">
         ${formatTimeAgo(comment.createdAt)}
       </div>
-<div
-  class="reaction-summary"
-  onclick="toggleReactionPicker('${comment.id}')"
->
+<div class="reaction-summary">
   ❤️ ${comment.reactions?.heart || 0}
   📚 ${comment.reactions?.book || 0}
   👀 ${comment.reactions?.eyes || 0}
