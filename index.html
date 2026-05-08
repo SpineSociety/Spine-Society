@@ -795,7 +795,124 @@ button:hover {
 .club-room-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0;border-bottom:1px solid rgba(200,163,106,.14)}.club-room-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);font-family:"Cormorant Garamond",serif;font-size:1rem;padding:10px 4px;margin:0;min-height:38px;border-radius:0}.club-room-tabs button.active{color:var(--gold-pale);border-bottom:2px solid var(--gold-soft)}.club-room-panel{display:none}.club-room-panel.active{display:block}
 .marginalia-book-card{display:flex;align-items:center;gap:18px;padding:16px;margin-bottom:14px;background:rgba(17,13,10,.78);border:1px solid rgba(200,163,106,.16);border-radius:22px}.marginalia-tabs{display:grid;grid-template-columns:repeat(3,1fr);margin:14px 0;border:1px solid rgba(200,163,106,.14);border-radius:18px;overflow:hidden}.marginalia-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);font-family:"Cormorant Garamond",serif;font-size:1.15rem;margin:0;border-radius:0}.marginalia-tabs button.active{color:var(--gold-pale);border-bottom:2px solid var(--gold-soft)}.note-card{border:1px solid rgba(200,163,106,.18);border-radius:22px;padding:16px;margin:12px 0;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018)),rgba(17,13,10,.78)}.note-message{font-family:"Cormorant Garamond",serif;font-size:1.35rem;line-height:1.35;color:var(--ink);margin:8px 0 12px}.note-footer{display:flex;justify-content:space-between;align-items:center;color:var(--gold-soft);font-size:.9rem}.add-note-button{min-height:58px;font-family:"Cormorant Garamond",serif;font-size:1.35rem}
 .reflection-hero{min-height:430px;border-radius:30px;padding:24px;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.55)),radial-gradient(circle at 12% 22%,rgba(255,169,72,.34),transparent 22%),linear-gradient(135deg,#2a1a10,#090706 62%,#1a1009);border:1px solid rgba(200,163,106,.18);box-shadow:var(--shadow)}.reflection-card-paper{margin-top:24px;padding:34px 26px;border-radius:16px;background:linear-gradient(180deg,#d8c29a,#b99b6a);color:#17100a;font-family:"Cormorant Garamond",serif;font-size:2rem;line-height:1.25;box-shadow:0 18px 40px rgba(0,0,0,.42)}.reflection-author{margin-top:18px;font-size:1.15rem}.streak-card,.goal-card{background:rgba(17,13,10,.82);border:1px solid rgba(200,163,106,.16);border-radius:22px;padding:18px;margin:16px 0}.fire-row{display:flex;gap:9px;margin-top:12px;font-size:1.15rem}.goal-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:14px}.goal-fill{height:100%;width:60%;background:linear-gradient(90deg,var(--gold-soft),var(--gold))}
+.randomizer-shelf {
+  margin-top: 16px;
+  padding: 18px 10px 22px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(72,42,22,.65), rgba(12,8,5,.96));
+  border: 1px solid rgba(200,163,106,.18);
+  box-shadow: inset 0 0 35px rgba(0,0,0,.65);
+}
 
+.randomizer-books {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 250px;
+  border-bottom: 10px solid rgba(86,50,27,.78);
+  padding-bottom: 12px;
+  overflow: hidden;
+}
+
+.randomizer-spine {
+  width: 58px;
+  min-height: 220px;
+  border-radius: 10px 12px 12px 10px;
+  border: 1px solid rgba(200,163,106,.22);
+  padding: 14px 6px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #263b32, #111714);
+
+  color: var(--gold-pale);
+  box-shadow: 0 18px 30px rgba(0,0,0,.45);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    filter .35s ease;
+}
+
+.randomizer-spine:nth-child(2n) {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #243642, #11181e);
+}
+
+.randomizer-spine:nth-child(3n) {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #6b3929, #281511);
+}
+
+.randomizer-spine.active {
+  transform: translateY(-18px) scale(1.08);
+  box-shadow:
+    0 0 28px rgba(228,201,139,.65),
+    0 24px 42px rgba(0,0,0,.55);
+  filter: brightness(1.18);
+}
+
+.randomizer-spine-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+
+.randomizer-spine-author {
+  font-size: .62rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.randomizer-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.surprise-dial {
+  width: 190px;
+  height: 190px;
+  margin: 18px auto 8px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle, #d7b06d 0%, #a87434 48%, #2b1a0e 70%);
+  border: 10px solid rgba(80,47,24,.85);
+
+  color: #160d07;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.8rem;
+
+  display: grid;
+  place-items: center;
+
+  box-shadow:
+    0 0 0 6px rgba(200,163,106,.18),
+    0 24px 42px rgba(0,0,0,.58);
+}
+
+.surprise-dial:active {
+  transform: scale(.97);
+}
+
+.randomizer-result {
+  text-align: center;
+  color: var(--gold-pale);
+  margin-top: 14px;
+}
 </style>
 </head>
 
@@ -856,30 +973,52 @@ button:hover {
 </section>
 
 <section id="randomizerScreen" class="screen">
-          <div class="page-top">
-            <div class="page-title">Book Randomizer</div>
-            <button class="icon-button secondary" onclick="showScreen('nook')">⌂</button>
-          </div>
 
-          <section class="randomizer-cabinet">
-            <p class="helper">Let Spine Society choose from the books on your current shelf.</p>
-            <select id="spinCategory">
-              <option>All Books</option>
-              <option>Book Club Pick</option>
-              <option>Thriller</option>
-              <option>Romance</option>
-              <option>Fantasy</option>
-              <option>Mystery</option>
-              <option>Cozy Read</option>
-              <option>Wild Card</option>
-            </select>
-            <button id="spinButton" class="primary" onclick="spinBook()">Surprise Me</button>
-            <div id="winner" class="spin-display">
-              <p class="status">Your next pick will appear here.</p>
-            </div>
-          </section>
-        </section>
+  <div class="page-top">
+    <button class="icon-button secondary" onclick="showScreen('nook')">←</button>
+    <div class="page-title">Book Randomizer</div>
+    <button class="icon-button secondary">i</button>
+  </div>
 
+  <section class="randomizer-shelf">
+
+    <div id="randomizerBooks" class="randomizer-books">
+      <p class="status">Open a shelf to load books.</p>
+    </div>
+
+    <div class="randomizer-controls">
+      <select id="spinCategory">
+        <option>All Books</option>
+        <option>Book Club Pick</option>
+        <option>Thriller</option>
+        <option>Romance</option>
+        <option>Fantasy</option>
+        <option>Mystery</option>
+        <option>Cozy Read</option>
+        <option>Wild Card</option>
+      </select>
+
+      <select id="spinMood">
+        <option>All Moods</option>
+        <option>Thoughtful</option>
+        <option>Uplifting</option>
+        <option>Dark & Twisty</option>
+        <option>Adventurous</option>
+        <option>Relaxing</option>
+      </select>
+    </div>
+
+    <button id="spinButton" class="surprise-dial" onclick="spinBook()">
+      Surprise<br>Me
+    </button>
+
+    <div id="winner" class="randomizer-result">
+      Your next pick will appear here.
+    </div>
+
+  </section>
+
+</section>
         <section id="clubScreen" class="screen">
   <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Club Room</div><button class="icon-button secondary">•••</button></div>
   <section class="current-club-panel" id="clubHero"><div class="club-emblem">📚</div><div><div class="panel-kicker">Current Club</div><h3>Choose a Shelf</h3><p class="small">Open one of your shelves to begin.</p></div></section>
@@ -1242,12 +1381,33 @@ function updateNookShelfPreview() {
   area.innerHTML = `<div class="nook-shelf-spine"><div><div class="item-title">${escapeHTML(firstBook.title)}</div>${firstBook.author ? `<div class="small">by ${escapeHTML(firstBook.author)}</div>` : ""}</div><div class="small">${currentClubBooks.length} book${currentClubBooks.length === 1 ? "" : "s"}</div></div>`;
 }
 window.jumpToCategory = function (category) { showScreen("randomizer"); setTimeout(() => { const select = document.getElementById("spinCategory"); if (select) select.value = category; }, 100); };
+function renderRandomizerShelf() {
+  const shelf = document.getElementById("randomizerBooks");
+  if (!shelf) return;
 
+  if (!currentClubBooks || currentClubBooks.length === 0) {
+    shelf.innerHTML = `<p class="status">Add books to your shelf first.</p>`;
+    return;
+  }
+
+  shelf.innerHTML = currentClubBooks.slice(0, 6).map(book => `
+    <div class="randomizer-spine" id="randomizerBook-${book.id}">
+      <div class="randomizer-spine-title">
+        ${escapeHTML(book.title)}
+      </div>
+
+      <div class="randomizer-spine-author">
+        ${escapeHTML(book.author || "Unknown")}
+      </div>
+    </div>
+  `).join("");
+}
 function listenToClubBooks(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/books"), (snapshot) => {
     const books = snapshot.val() || {};
     currentClubBooks = Object.entries(books).map(([id, value]) => ({ id, ...value }));
     updateNookShelfPreview();
+    renderRandomizerShelf();
 
     document.getElementById("bookCount").textContent =
       currentClubBooks.length + " book" + (currentClubBooks.length === 1 ? "" : "s");
@@ -1475,58 +1635,84 @@ window.addBookToClub = async function () {
 };
 
 window.spinBook = function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!window.currentClubId) {
+    alert("Open a shelf first.");
+    return;
+  }
 
   if (!currentClubBooks || currentClubBooks.length === 0) {
-    document.getElementById("winner").innerHTML = `<p class="status">Add books before picking.</p>`;
+    document.getElementById("winner").innerHTML =
+      "Add books before picking.";
     return;
   }
 
   const selectedCategory = document.getElementById("spinCategory").value;
+
   const filteredBooks = selectedCategory === "All Books"
     ? currentClubBooks
     : currentClubBooks.filter(book => book.category === selectedCategory);
 
   if (filteredBooks.length === 0) {
-    document.getElementById("winner").innerHTML = `<p class="status">No books in this category yet.</p>`;
+    document.getElementById("winner").innerHTML =
+      "No books in this category yet.";
     return;
   }
 
-  const winnerDiv = document.getElementById("winner");
   const spinButton = document.getElementById("spinButton");
+  const winner = document.getElementById("winner");
 
   spinButton.disabled = true;
-  spinButton.textContent = "Choosing...";
+  winner.innerHTML = "Choosing...";
 
-  const spinList = [];
-  for (let i = 0; i < 18; i++) {
-    spinList.push(filteredBooks[Math.floor(Math.random() * filteredBooks.length)]);
-  }
+  let count = 0;
+  const maxCount = 18;
 
-  const finalBook = filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
-  spinList.push(finalBook);
+  const interval = setInterval(() => {
+    document.querySelectorAll(".randomizer-spine").forEach(book => {
+      book.classList.remove("active");
+    });
 
-  winnerDiv.innerHTML = `
-    <div class="slot-window">
-      <div class="slot-track" id="slotTrack">
-        ${spinList.map(book => `
-          <div class="slot-item">
-            <div class="slot-card">
-              ${
-                book.image
-                  ? `<img class="cover" src="${escapeAttr(book.image)}" alt="Book cover">`
-                  : `<div class="cover-placeholder">S</div>`
-              }
-              <h3>${escapeHTML(book.title)}</h3>
-              ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-              <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
-            </div>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
+    const randomBook =
+      filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
 
+    const activeBook =
+      document.getElementById("randomizerBook-" + randomBook.id);
+
+    if (activeBook) {
+      activeBook.classList.add("active");
+    }
+
+    count++;
+
+    if (count >= maxCount) {
+      clearInterval(interval);
+
+      const finalBook =
+        filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+
+      document.querySelectorAll(".randomizer-spine").forEach(book => {
+        book.classList.remove("active");
+      });
+
+      const finalElement =
+        document.getElementById("randomizerBook-" + finalBook.id);
+
+      if (finalElement) {
+        finalElement.classList.add("active");
+      }
+
+      window.lastPick = finalBook;
+
+      winner.innerHTML = `
+        <h3>${escapeHTML(finalBook.title)}</h3>
+        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
+        <button onclick="setNextRead()">Set as Next Read</button>
+      `;
+
+      spinButton.disabled = false;
+    }
+  }, 120);
+};
   requestAnimationFrame(() => {
     const track = document.getElementById("slotTrack");
     track.style.transform = `translateY(-${360 * (spinList.length - 1)}px)`;
