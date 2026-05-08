@@ -463,6 +463,44 @@ footer {
   color: #111;
   box-shadow: 0 8px 24px rgba(245,241,234,.12);
 }
+.book-card-polished {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.book-mini-cover {
+  width: 58px;
+  height: 86px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.book-mini-placeholder {
+  width: 58px;
+  height: 86px;
+  border-radius: 10px;
+  background: linear-gradient(145deg,#303033,#171719);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.book-info {
+  flex: 1;
+}
+
+.book-actions {
+  margin-top: 10px;
+}
 </style>
 
 </head>
@@ -1258,38 +1296,47 @@ onValue(
 
     document.getElementById("bookList").innerHTML =
       currentClubBooks.map(book => `
-      <div class="book-item">
+     <div class="book-item">
+  <div class="book-card-polished">
 
-  <div class="item-title">
-    ${book.title}
+    ${
+      book.image
+        ? `<img class="book-mini-cover" src="${book.image}" alt="Book cover">`
+        : `<div class="book-mini-placeholder">S</div>`
+    }
+
+    <div class="book-info">
+      <div class="item-title">
+        ${book.title}
+      </div>
+
+      ${
+        book.author
+          ? `<div class="small">by ${book.author}</div>`
+          : ""
+      }
+
+      <div class="small">
+        ${book.category || "Uncategorized"}
+      </div>
+
+      <div class="book-actions">
+        <button
+          class="secondary"
+          onclick="showEditBookForm('${book.id}')">
+          Edit Book
+        </button>
+
+        <button
+          class="danger"
+          onclick="deleteBook('${book.id}')">
+          Delete Book
+        </button>
+
+        <div id="editBookForm-${book.id}"></div>
+      </div>
+    </div>
   </div>
-
-  ${
-    book.author
-      ? `<div class="small">by ${book.author}</div>`
-      : ""
-  }
-
-  <div class="small">
-    ${book.category || "Uncategorized"}
-  </div>
-
-  <button
-    class="secondary"
-    onclick="editBook('${book.id}')">
-
-    Edit Book
-
-  </button>
-
-  <button
-    class="danger"
-    onclick="deleteBook('${book.id}')">
-
-    Delete Book
-
-  </button>
-
 </div>
       `).join("");
   }
