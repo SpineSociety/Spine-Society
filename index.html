@@ -404,6 +404,31 @@ footer {
 .next-read-card {
   text-align: center;
 }
+.comment-card {
+  background: rgba(255,255,255,.045);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.comment-alias {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: .95rem;
+}
+
+.comment-message {
+  color: rgba(255,255,255,.82);
+  line-height: 1.5;
+  font-size: .93rem;
+}
+
+.comment-time {
+  margin-top: 10px;
+  font-size: .72rem;
+  opacity: .55;
+}
 </style>
 
 </head>
@@ -1358,14 +1383,21 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
   document.getElementById("discussionList").innerHTML =
     comments.map(comment => `
       <div class="book-item">
-        <div class="item-title">
-          ${comment.authorAlias || "Reader"}
-        </div>
+        <div class="comment-card">
 
-        <div class="small">
-          ${comment.message}
-        </div>
-      </div>
+  <div class="comment-alias">
+    ${comment.authorAlias || "Reader"}
+  </div>
+
+  <div class="comment-message">
+    ${comment.message}
+  </div>
+
+  <div class="comment-time">
+    Posted in Marginalia
+  </div>
+
+</div>
     `).join("");
 });
   showScreen("club");
