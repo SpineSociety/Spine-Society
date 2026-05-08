@@ -1578,21 +1578,21 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
 
   <div class="book-actions">
 
-    <button
-      class="secondary"
-      onclick="editDiscussionComment('${comment.id}')">
+   <button
+  class="secondary"
+  onclick="event.stopPropagation(); editDiscussionComment('${comment.id}')">
 
-      Edit Comment
+  Edit Comment
 
-    </button>
+</button>
 
-    <button
-      class="danger"
-      onclick="deleteDiscussionComment('${comment.id}')">
+   <button
+  class="danger"
+  onclick="event.stopPropagation(); deleteDiscussionComment('${comment.id}')">
 
-      Delete Comment
+  Delete Comment
 
-    </button>
+</button>
 
   </div>
 
