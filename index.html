@@ -149,18 +149,36 @@ h1 {
 
 .card {
   background:
-    rgba(31,31,34,.94);
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.025)
+    );
 
-  border:1px solid var(--line);
+  border: 1px solid rgba(255,255,255,.08);
 
-  border-radius:30px;
+  border-radius: 30px;
 
-  padding:20px;
-  margin:16px 0;
+  padding: 20px;
+  margin: 16px 0;
 
-  box-shadow:var(--shadow);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.03);
 
-  backdrop-filter:blur(14px);
+  backdrop-filter: blur(14px);
+
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 38px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.04);
 }
 
 .card-header {
