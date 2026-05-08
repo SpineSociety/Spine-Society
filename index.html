@@ -1713,6 +1713,48 @@ window.spinBook = function () {
     }
   }, 120);
 };
+
+    const randomBook =
+      filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+
+    const activeBook =
+      document.getElementById("randomizerBook-" + randomBook.id);
+
+    if (activeBook) {
+      activeBook.classList.add("active");
+    }
+
+    count++;
+
+    if (count >= maxCount) {
+      clearInterval(interval);
+
+      const finalBook =
+        filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+
+      document.querySelectorAll(".randomizer-spine").forEach(book => {
+        book.classList.remove("active");
+      });
+
+      const finalElement =
+        document.getElementById("randomizerBook-" + finalBook.id);
+
+      if (finalElement) {
+        finalElement.classList.add("active");
+      }
+
+      window.lastPick = finalBook;
+
+      winner.innerHTML = `
+        <h3>${escapeHTML(finalBook.title)}</h3>
+        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
+        <button onclick="setNextRead()">Set as Next Read</button>
+      `;
+
+      spinButton.disabled = false;
+    }
+  }, 120);
+};
   requestAnimationFrame(() => {
     const track = document.getElementById("slotTrack");
     track.style.transform = `translateY(-${360 * (spinList.length - 1)}px)`;
