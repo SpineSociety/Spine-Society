@@ -451,6 +451,18 @@ footer {
 .comment-content {
   flex: 1;
 }
+.club-subnav button {
+  transition: all 0.22s ease;
+  background: var(--dark);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.club-subnav button.active {
+  background: var(--ivory);
+  color: #111;
+  box-shadow: 0 8px 24px rgba(245,241,234,.12);
+}
 </style>
 
 </head>
@@ -793,17 +805,26 @@ function toast(message) {
   alert(message);
 }
 window.showClubSection = function (section) {
-
   document.querySelectorAll(".club-section").forEach(sec => {
     sec.classList.remove("active");
   });
 
-  const selected =
-    document.getElementById(section + "Section");
+  document.querySelectorAll(".club-subnav button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  const selected = document.getElementById(section + "Section");
 
   if (selected) {
     selected.classList.add("active");
   }
+
+  const buttons = document.querySelectorAll(".club-subnav button");
+
+  if (section === "overview") buttons[0].classList.add("active");
+  if (section === "shelf") buttons[1].classList.add("active");
+  if (section === "spin") buttons[2].classList.add("active");
+  if (section === "talk") buttons[3].classList.add("active");
 };
 function showScreen(screenName) {
   document.querySelectorAll(".screen").forEach(screen => {
