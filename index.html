@@ -769,6 +769,30 @@ h1 {
   color: var(--muted);
   letter-spacing: .3px;
 }
+  .card-header {
+  position: relative;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.card-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 72px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(200,163,106,.55),
+      transparent
+    );
+}
 </style>
 
 </head>
