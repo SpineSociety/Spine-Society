@@ -1574,6 +1574,29 @@ onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
       <div class="comment-time">
         ${formatTimeAgo(comment.createdAt)}
       </div>
+      ${comment.authorId === currentUser.uid ? `
+
+  <div class="book-actions">
+
+    <button
+      class="secondary"
+      onclick="editDiscussionComment('${comment.id}')">
+
+      Edit Comment
+
+    </button>
+
+    <button
+      class="danger"
+      onclick="deleteDiscussionComment('${comment.id}')">
+
+      Delete Comment
+
+    </button>
+
+  </div>
+
+` : ""}
 <div class="reaction-summary">
   ❤️ ${comment.reactions?.heart || 0}
   📚 ${comment.reactions?.book || 0}
@@ -1980,6 +2003,8 @@ window.toggleReactionPicker = function (commentId) {
 
   picker.classList.toggle("show");
 };
+window.editDiscussionComment
+window.deleteDiscussionComment
 function buildInviteText(clubId, clubName) {
   const inviteLink =
     window.location.origin +
