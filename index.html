@@ -596,6 +596,47 @@ h3,
   letter-spacing: .3px;
   font-weight: 600;
 }
+.book-item {
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.book-item::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.08),
+      transparent
+    );
+}
+.book-mini-cover {
+  box-shadow:
+    0 6px 16px rgba(0,0,0,.28),
+    2px 0 0 rgba(255,255,255,.04);
+
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease;
+}
+
+.book-item:hover .book-mini-cover {
+  transform: translateY(-2px) rotate(-1deg);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.36),
+    3px 0 0 rgba(255,255,255,.06);
+}
 </style>
 
 </head>
