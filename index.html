@@ -442,18 +442,47 @@ footer {
 }
 
 .club-subnav button {
-  min-height: 42px;
-  padding: 10px 6px;
-  border-radius: 14px;
+  min-height: 44px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,.03);
+
+  border:
+    1px solid rgba(200,163,106,.12);
+
+  color: var(--muted);
+
   font-size: .82rem;
+
+  letter-spacing: .4px;
+
+  text-transform: uppercase;
+
+  transition:
+    all .22s ease;
 }
 
 .club-section {
   display: none;
 }
 
-.club-section.active {
-  display: block;
+.club-subnav button.active {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200,163,106,.22),
+      rgba(166,124,58,.12)
+    );
+
+  color: var(--ivory);
+
+  border:
+    1px solid rgba(200,163,106,.26);
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.28);
 }
 .next-read-card .cover,
 .next-read-card .cover-placeholder {
