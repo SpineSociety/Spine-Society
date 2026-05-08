@@ -15,22 +15,30 @@
 
 <style>
 :root {
-  --bg: #0E0C0A;
-  --panel: #17120F;
-  --panel-2: #211912;
-  --ink: #EADCC2;
-  --muted: #A99272;
-  --gold: #A67C3A;
-  --gold-soft: #C8A36A;
-  --gold-pale: #E4C98B;
-  --sage: #5E6B4A;
-  --rust: #7A2F2F;
-  --danger: #D8A1A1;
-  --line: rgba(200,163,106,.18);
-  --shadow: 0 22px 60px rgba(0,0,0,.55);
+  --bg: #080706;
+  --ink: #eadcc2;
+  --ink-soft: #c8b994;
+  --muted: #a58a5e;
+  --gold: #a67c3a;
+  --gold-soft: #c8a36a;
+  --gold-pale: #e4c98b;
+  --panel: rgba(19, 15, 12, .82);
+  --panel-strong: rgba(26, 18, 13, .94);
+  --line: rgba(200, 163, 106, .20);
+  --line-soft: rgba(200, 163, 106, .10);
+  --sage: #5e6b4a;
+  --rust: #7a2f2f;
+  --bluebook: #223640;
+  --greenbook: #303923;
+  --danger: #d8a1a1;
+  --shadow: 0 28px 70px rgba(0,0,0,.62);
 }
 
 * { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -38,11 +46,11 @@ body {
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(200,163,106,.16), transparent 26%),
-    radial-gradient(circle at top right, rgba(94,107,74,.12), transparent 26%),
-    radial-gradient(circle at bottom, rgba(122,47,47,.10), transparent 36%),
-    linear-gradient(180deg, #0E0C0A, #080706);
-  padding: max(20px, env(safe-area-inset-top)) 14px 38px;
+    radial-gradient(circle at 12% 4%, rgba(200,163,106,.18), transparent 24%),
+    radial-gradient(circle at 86% 10%, rgba(94,107,74,.13), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(122,47,47,.12), transparent 36%),
+    linear-gradient(180deg, #100d0a 0%, #090807 52%, #050403 100%);
+  padding: 18px 12px 40px;
 }
 
 body::before {
@@ -50,127 +58,190 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: .18;
-  background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(circle at top, black, transparent 70%);
+  opacity: .34;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at top, black, transparent 72%);
 }
 
-.app {
-  max-width: 440px;
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 25% 12%, rgba(255,213,128,.10), transparent 20%),
+    radial-gradient(circle at 80% 92%, rgba(255,166,86,.08), transparent 25%),
+    linear-gradient(90deg, rgba(0,0,0,.36), transparent 20%, transparent 80%, rgba(0,0,0,.28));
+}
+
+.app-shell {
+  width: min(100%, 430px);
   margin: 0 auto;
   position: relative;
+  z-index: 1;
+}
+
+.phone-frame {
+  border: 1px solid rgba(200,163,106,.26);
+  border-radius: 38px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+    rgba(9,8,7,.72);
+  box-shadow:
+    0 22px 70px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  overflow: hidden;
+  min-height: calc(100vh - 36px);
+}
+
+.status-bar {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  font-size: .78rem;
+  color: rgba(234,220,194,.92);
+  letter-spacing: .2px;
+}
+
+.status-icons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  opacity: .9;
+}
+
+.signal {
+  width: 17px;
+  height: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: end;
+  gap: 2px;
+}
+
+.signal span {
+  display: block;
+  width: 3px;
+  background: var(--ink);
+  border-radius: 2px;
+}
+
+.signal span:nth-child(1) { height: 3px; }
+.signal span:nth-child(2) { height: 5px; }
+.signal span:nth-child(3) { height: 7px; }
+.signal span:nth-child(4) { height: 9px; }
+
+.battery {
+  width: 21px;
+  height: 10px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  position: relative;
+}
+
+.battery::before {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--ink);
+  border-radius: 0 2px 2px 0;
+}
+
+.battery::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  height: 4px;
+  width: 12px;
+  background: var(--ink);
+  border-radius: 2px;
+}
+
+.app-content {
+  padding: 8px 18px 84px;
 }
 
 .header {
   text-align: center;
-  padding: 10px 4px 18px;
+  padding: 8px 0 18px;
 }
 
 .brand-mark {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 12px;
-  border-radius: 19px;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(234,220,194,.42), transparent 30%),
-    linear-gradient(145deg, var(--gold-soft), var(--gold));
-  color: #0E0C0A;
+  width: 70px;
+  height: 70px;
+  margin: 2px auto 12px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.75rem;
-  font-weight: 700;
+  color: var(--gold-pale);
+  background:
+    radial-gradient(circle at 32% 24%, rgba(228,201,139,.32), transparent 26%),
+    linear-gradient(145deg, rgba(166,124,58,.24), rgba(15,12,9,.94));
+  border: 1px solid rgba(200,163,106,.36);
   box-shadow:
-    0 14px 34px rgba(166,124,58,.26),
-    inset 0 1px 0 rgba(255,255,255,.26);
+    0 14px 34px rgba(0,0,0,.42),
+    0 0 34px rgba(166,124,58,.18),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.brand-mark svg {
+  width: 42px;
+  height: 42px;
 }
 
 h1, h2, h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
-  letter-spacing: .3px;
   font-weight: 600;
+  letter-spacing: .25px;
 }
 
 h1 {
-  font-size: 2.75rem;
-  line-height: .95;
+  font-size: 2.65rem;
+  line-height: .94;
   color: var(--gold-soft);
-  text-shadow: 0 10px 30px rgba(166,124,58,.20);
   margin: 0 0 8px;
+  text-shadow: 0 12px 30px rgba(166,124,58,.22);
 }
 
 h2 {
-  font-size: 1.55rem;
+  font-size: 1.52rem;
   margin: 0;
 }
 
 h3 {
-  font-size: 1.55rem;
-  margin: 14px 0 6px;
+  font-size: 1.35rem;
+  margin: 10px 0 4px;
 }
 
 .subtitle {
   color: var(--muted);
+  font-size: .95rem;
   margin: 0;
-  font-size: .98rem;
-  letter-spacing: .3px;
+  letter-spacing: .35px;
 }
-
-.top-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 10px 0 18px;
-  padding: 6px;
-  border: 1px solid rgba(200,163,106,.12);
-  border-radius: 22px;
-  background: rgba(255,255,255,.025);
-}
-
-.nav-btn {
-  min-height: 42px;
-  margin: 0;
-  padding: 9px 6px;
-  border-radius: 16px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--muted);
-  font-size: .82rem;
-  box-shadow: none;
-}
-
-.nav-btn.active {
-  color: var(--ink);
-  border-color: rgba(200,163,106,.22);
-  background: linear-gradient(180deg, rgba(200,163,106,.18), rgba(166,124,58,.10));
-}
-
-.screen { display: none; }
-.screen.active { display: block; }
 
 .card {
   background:
-    linear-gradient(180deg, rgba(255,255,255,.052), rgba(255,255,255,.024)),
-    radial-gradient(circle at top left, rgba(200,163,106,.08), transparent 45%);
-  border: 1px solid rgba(200,163,106,.14);
-  border-radius: 30px;
-  padding: 20px;
-  margin: 16px 0;
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)),
+    radial-gradient(circle at top left, rgba(200,163,106,.09), transparent 42%),
+    rgba(18,14,11,.76);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 25px;
+  padding: 18px;
+  margin: 14px 0;
   box-shadow:
-    0 12px 36px rgba(0,0,0,.30),
+    0 14px 42px rgba(0,0,0,.34),
     inset 0 1px 0 rgba(255,255,255,.04);
-  backdrop-filter: blur(14px);
-  transition: transform .22s ease, box-shadow .22s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 16px 44px rgba(0,0,0,.36),
-    inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(16px);
 }
 
 .card-header {
@@ -179,8 +250,8 @@ h3 {
   justify-content: space-between;
   gap: 12px;
   position: relative;
-  padding-bottom: 12px;
-  margin-bottom: 16px;
+  padding-bottom: 11px;
+  margin-bottom: 14px;
 }
 
 .card-header::after {
@@ -188,86 +259,212 @@ h3 {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 74px;
   height: 1px;
-  background: linear-gradient(90deg, rgba(200,163,106,.60), transparent);
+  width: 76px;
+  background: linear-gradient(90deg, rgba(200,163,106,.70), transparent);
 }
 
 .helper {
   color: var(--muted);
   font-size: .88rem;
   line-height: 1.45;
-  margin: 2px 0 12px;
+  margin: 0 0 12px;
 }
 
 input, select, button {
   width: 100%;
-  min-height: 50px;
-  padding: 12px 16px;
-  margin: 8px 0;
-  border-radius: 18px;
-  font-size: .96rem;
+  min-height: 48px;
+  padding: 12px 15px;
+  margin: 7px 0;
+  border-radius: 16px;
+  font-size: .94rem;
   font-family: inherit;
 }
 
 input, select {
   background: rgba(255,255,255,.035);
   color: var(--ink);
-  border: 1px solid rgba(200,163,106,.16);
+  border: 1px solid rgba(200,163,106,.18);
   outline: none;
-  transition: border .22s ease, background .22s ease, box-shadow .22s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
 }
 
-input::placeholder { color: rgba(169,146,114,.72); }
+input::placeholder { color: rgba(169,138,94,.74); }
 
 input:focus, select:focus {
-  border: 1px solid rgba(200,163,106,.38);
-  background: rgba(255,255,255,.052);
+  border-color: rgba(200,163,106,.42);
   box-shadow: 0 0 0 4px rgba(200,163,106,.08);
 }
 
 button {
-  border: 1px solid rgba(200,163,106,.24);
-  background: linear-gradient(180deg, rgba(166,124,58,.26), rgba(166,124,58,.13));
-  color: var(--ink);
-  font-weight: 600;
   cursor: pointer;
-  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
-  box-shadow: 0 8px 18px rgba(0,0,0,.22);
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200,163,106,.25);
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(166,124,58,.32), rgba(166,124,58,.14));
+  font-weight: 650;
+  box-shadow: 0 10px 22px rgba(0,0,0,.24);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
 button:hover {
   transform: translateY(-1px);
-  background: linear-gradient(180deg, rgba(200,163,106,.30), rgba(166,124,58,.17));
-  box-shadow: 0 12px 24px rgba(0,0,0,.28);
+  border-color: rgba(228,201,139,.38);
+  box-shadow: 0 14px 28px rgba(0,0,0,.30);
 }
 
 .primary {
-  background: linear-gradient(180deg, rgba(228,201,139,.92), rgba(166,124,58,.78));
-  color: #0E0C0A;
+  color: #0e0c0a;
+  background: linear-gradient(180deg, rgba(228,201,139,.92), rgba(166,124,58,.82));
 }
 
 .secondary {
-  background: transparent;
   color: var(--muted);
-  border: 1px solid var(--line);
+  background: rgba(255,255,255,.02);
+  border-color: rgba(200,163,106,.16);
   box-shadow: none;
 }
 
 .danger {
-  background: transparent;
   color: var(--danger);
-  border: 1px solid rgba(216,161,161,.28);
+  background: transparent;
+  border-color: rgba(216,161,161,.28);
   box-shadow: none;
 }
 
+.screen { display: none; }
+.screen.active { display: block; }
+
+.top-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(390px, calc(100% - 42px));
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 7px;
+  border-radius: 24px;
+  background: rgba(14,11,8,.86);
+  border: 1px solid rgba(200,163,106,.20);
+  box-shadow: 0 18px 42px rgba(0,0,0,.54);
+  backdrop-filter: blur(18px);
+}
+
+.nav-btn {
+  min-height: 46px;
+  margin: 0;
+  padding: 7px 4px;
+  border-radius: 17px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: .72rem;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+}
+
+.nav-btn .nav-icon {
+  display: block;
+  color: currentColor;
+  line-height: 1;
+}
+
+.nav-btn svg {
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.nav-btn.active {
+  color: var(--gold-pale);
+  background: rgba(166,124,58,.14);
+  border-color: rgba(200,163,106,.20);
+}
+
+.lounge-hero {
+  min-height: 210px;
+  border-radius: 28px;
+  padding: 22px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(200,163,106,.18);
+  background:
+    linear-gradient(90deg, rgba(9,7,5,.92), rgba(9,7,5,.58)),
+    radial-gradient(circle at 84% 28%, rgba(200,163,106,.20), transparent 26%),
+    linear-gradient(135deg, rgba(49,35,21,.96), rgba(8,7,6,.95));
+  box-shadow: var(--shadow);
+}
+
+.lounge-hero::before {
+  content: "";
+  position: absolute;
+  right: -24px;
+  bottom: -42px;
+  width: 180px;
+  height: 180px;
+  background:
+    radial-gradient(circle, rgba(200,163,106,.18), transparent 64%);
+  filter: blur(2px);
+}
+
+.lounge-kicker {
+  color: var(--gold-pale);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  margin-bottom: 8px;
+}
+
+.lounge-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.15rem;
+  line-height: 1;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.lounge-copy {
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 240px;
+  margin: 0;
+  font-size: .92rem;
+}
+
+.shelf-preview {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  margin-top: 18px;
+}
+
+.preview-spine {
+  width: 34px;
+  border-radius: 6px 6px 3px 3px;
+  border: 1px solid rgba(200,163,106,.18);
+  background: linear-gradient(180deg, #533025, #21120f);
+  box-shadow: 0 10px 20px rgba(0,0,0,.28);
+}
+
+.preview-spine:nth-child(1) { height: 72px; background: linear-gradient(180deg, #3b4a35, #1c251b); }
+.preview-spine:nth-child(2) { height: 90px; background: linear-gradient(180deg, #6b3527, #2b1712); }
+.preview-spine:nth-child(3) { height: 62px; background: linear-gradient(180deg, #2a3f4a, #121f26); }
+.preview-spine:nth-child(4) { height: 80px; background: linear-gradient(180deg, #4b341f, #1d130c); }
+
 .club-card, .book-item, .picked-item, .winner, .next-read-card {
-  background: rgba(20,17,15,.78);
-  border: 1px solid var(--line);
-  padding: 15px;
-  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)),
+    rgba(17,13,10,.82);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 21px;
+  padding: 14px;
   margin: 10px 0;
 }
 
@@ -275,56 +472,48 @@ button:hover {
   font-weight: 700;
   font-size: 1.02rem;
   line-height: 1.2;
-  margin-bottom: 4px;
+  color: var(--ink);
 }
 
 .small {
   color: var(--muted);
-  font-size: .88rem;
+  font-size: .84rem;
+  line-height: 1.35;
 }
 
 .status {
   color: var(--muted);
-  font-size: .95rem;
+  font-size: .94rem;
   text-align: center;
-  padding: 18px 10px;
   line-height: 1.45;
+  padding: 18px 10px;
 }
 
-footer {
-  text-align: center;
-  color: rgba(169,146,114,.72);
-  font-size: .82rem;
-  margin-top: 26px;
-  letter-spacing: .4px;
-}
-
-/* Club room navigation */
 .club-subnav {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 
 .club-subnav button {
-  min-height: 44px;
+  min-height: 43px;
   border-radius: 999px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(200,163,106,.12);
-  color: var(--muted);
-  font-size: .76rem;
-  letter-spacing: .4px;
+  padding: 8px 5px;
+  margin: 0;
+  font-size: .72rem;
+  letter-spacing: .5px;
   text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(200,163,106,.13);
   box-shadow: none;
-  padding: 8px 6px;
 }
 
 .club-subnav button.active {
-  background: linear-gradient(180deg, rgba(200,163,106,.24), rgba(166,124,58,.12));
-  color: var(--ink);
-  border: 1px solid rgba(200,163,106,.30);
-  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+  color: var(--gold-pale);
+  background: linear-gradient(180deg, rgba(200,163,106,.22), rgba(166,124,58,.10));
+  border-color: rgba(200,163,106,.30);
 }
 
 .club-section {
@@ -340,7 +529,6 @@ footer {
   transform: translateY(0);
 }
 
-/* Book cards */
 .book-card-polished {
   display: flex;
   gap: 14px;
@@ -348,54 +536,36 @@ footer {
 }
 
 .book-mini-cover {
-  width: 58px;
-  height: 86px;
-  border-radius: 10px;
+  width: 62px;
+  height: 94px;
+  border-radius: 8px 10px 10px 8px;
   object-fit: cover;
   background: rgba(255,255,255,.06);
   border: 1px solid var(--line);
   flex-shrink: 0;
   box-shadow:
-    0 6px 16px rgba(0,0,0,.28),
-    2px 0 0 rgba(255,255,255,.04);
-  transition: transform .22s ease, box-shadow .22s ease;
+    0 10px 22px rgba(0,0,0,.38),
+    4px 0 0 rgba(255,255,255,.04);
 }
 
 .book-mini-placeholder {
-  width: 58px;
-  height: 86px;
-  border-radius: 10px;
-  background: linear-gradient(145deg,#2B241C,#14110F);
+  width: 62px;
+  height: 94px;
+  border-radius: 8px 10px 10px 8px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.08), transparent 12%),
+    linear-gradient(180deg, #4a2f1f, #16100c);
   border: 1px solid var(--line);
-  color: var(--muted);
+  color: var(--gold-pale);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Cormorant Garamond", serif;
   font-weight: 800;
   flex-shrink: 0;
-}
-
-.book-item {
-  position: relative;
-  padding-bottom: 14px;
-}
-
-.book-item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,163,106,.12), transparent);
-}
-
-.book-item:hover .book-mini-cover {
-  transform: translateY(-2px) rotate(-1deg);
   box-shadow:
-    0 10px 24px rgba(0,0,0,.36),
-    3px 0 0 rgba(255,255,255,.06);
+    0 10px 22px rgba(0,0,0,.38),
+    4px 0 0 rgba(255,255,255,.04);
 }
 
 .book-info { flex: 1; }
@@ -407,33 +577,74 @@ footer {
   padding: 4px 10px;
   border-radius: 999px;
   background: rgba(200,163,106,.08);
-  border: 1px solid rgba(200,163,106,.12);
+  border: 1px solid rgba(200,163,106,.13);
   color: var(--gold-pale);
-  font-size: .72rem;
+  font-size: .70rem;
 }
 
-/* Covers and spin */
+.book-item {
+  position: relative;
+}
+
+.book-item::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,163,106,.13), transparent);
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.spine-card {
+  min-height: 154px;
+  border-radius: 9px 11px 11px 9px;
+  border: 1px solid rgba(200,163,106,.20);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #42311f, #15100d);
+  padding: 12px 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  box-shadow: 0 12px 24px rgba(0,0,0,.36);
+}
+
 .cover {
   width: 140px;
   height: 210px;
   object-fit: cover;
-  border-radius: 18px;
-  box-shadow: 0 16px 35px rgba(0,0,0,.45);
-  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 17px;
+  border: 1px solid rgba(200,163,106,.18);
+  box-shadow: 0 18px 38px rgba(0,0,0,.48);
 }
 
 .cover-placeholder {
   width: 140px;
   height: 210px;
-  border-radius: 18px;
+  border-radius: 17px;
   margin: 0 auto;
   display: grid;
   place-items: center;
-  background: linear-gradient(145deg,#30271F,#14110F);
-  border: 1px solid var(--line);
-  color: var(--muted);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #4a2f1f, #14100c);
+  border: 1px solid rgba(200,163,106,.18);
+  color: var(--gold-pale);
   font-family: "Cormorant Garamond", serif;
   font-size: 2.4rem;
+  box-shadow: 0 18px 38px rgba(0,0,0,.48);
 }
 
 .next-read-card {
@@ -442,8 +653,8 @@ footer {
 
 .next-read-card .cover,
 .next-read-card .cover-placeholder {
-  width: 95px;
-  height: 142px;
+  width: 96px;
+  height: 144px;
 }
 
 .spin-display {
@@ -460,41 +671,24 @@ footer {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity .22s ease, filter .22s ease, transform .22s ease;
-}
-
-.spin-card .cover,
-.spin-card .cover-placeholder {
-  width: 130px;
-  height: 195px;
-  flex-shrink: 0;
-}
-
-.spin-card h3 {
-  min-height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 14px 0 4px;
-}
-
-.spin-card.final-result {
   animation: finalPop .35s ease both;
 }
 
 @keyframes finalPop {
-  from { opacity: 0; transform: scale(.96) translateY(6px); }
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .slot-window {
   height: 360px;
+  width: 100%;
   overflow: hidden;
-  border-radius: 26px;
-  background: rgba(20,17,15,.95);
-  border: 1px solid var(--line);
-  margin-top: 14px;
+  border-radius: 28px;
+  border: 1px solid rgba(200,163,106,.18);
+  background:
+    radial-gradient(circle at top, rgba(200,163,106,.11), transparent 46%),
+    rgba(15,12,9,.94);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
 }
 
 .slot-track {
@@ -514,20 +708,12 @@ footer {
   text-align: center;
 }
 
-.slot-card h3 {
-  min-height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 14px 0 4px;
-}
-
-/* Marginalia */
 .comment-card {
-  background: rgba(255,255,255,.045);
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.052), rgba(255,255,255,.018)),
+    rgba(17,13,10,.72);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 20px;
   padding: 14px;
   margin-top: 12px;
 }
@@ -542,38 +728,38 @@ footer {
   width: 38px;
   height: 38px;
   border-radius: 50%;
+  flex-shrink: 0;
   background: linear-gradient(145deg, var(--gold-soft), var(--gold));
-  color: #0E0C0A;
+  color: #0b0806;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  flex-shrink: 0;
 }
 
 .comment-content { flex: 1; }
 
 .comment-alias {
-  font-weight: 700;
-  margin-bottom: 6px;
-  font-size: .95rem;
   color: var(--gold-pale);
+  font-weight: 700;
+  font-size: .94rem;
+  margin-bottom: 6px;
 }
 
 .comment-message {
-  color: rgba(234,220,194,.88);
+  color: rgba(234,220,194,.90);
   line-height: 1.5;
-  font-size: .93rem;
+  font-size: .92rem;
 }
 
 .comment-time {
-  margin-top: 10px;
-  font-size: .72rem;
+  margin-top: 9px;
+  font-size: .70rem;
   opacity: .58;
 }
 
 .reaction-summary {
-  margin-top: 8px;
+  margin-top: 9px;
   font-size: .78rem;
   color: var(--muted);
 }
@@ -582,11 +768,11 @@ footer {
   display: none;
   gap: 8px;
   margin-top: 10px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 8px;
   justify-content: center;
+  background: rgba(255,255,255,.07);
+  border: 1px solid var(--line);
 }
 
 .reaction-picker.show { display: flex; }
@@ -598,108 +784,162 @@ footer {
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(255,255,255,.08);
-  color: var(--ink);
+  box-shadow: none;
 }
 
-.edit-panel {
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 14px;
-  margin-top: 12px;
+@media (min-width: 760px) {
+  .app-shell {
+    max-width: 430px;
+  }
 }
 </style>
 </head>
 
 <body>
-
-<div id="authScreen" class="app">
-  <header class="header">
-    <div class="brand-mark">S</div>
-    <h1>Spine Society</h1>
-    <p class="subtitle">Your book club, curated.</p>
-  </header>
-
-  <section class="card">
-    <h2>Welcome</h2>
-    <p class="helper">Create or join book clubs, add books, spin for the next read, and talk together in Marginalia.</p>
-
-    <input id="loginEmail" type="email" placeholder="Email" />
-    <input id="loginPassword" type="password" placeholder="Password" />
-
-    <button onclick="loginWithEmail()">Log In</button>
-    <button class="secondary" onclick="signUpWithEmail()">Create Account</button>
-    <button class="primary" onclick="loginWithGoogle()">Continue with Google</button>
-  </section>
-</div>
-
-<div id="mainApp" class="app" style="display:none;">
-  <header class="header">
-    <div class="brand-mark">S</div>
-    <h1>Spine Society</h1>
-    <p class="subtitle" id="activeClubSubtitle">Home</p>
-  </header>
-
-  <nav class="top-nav">
-    <button id="homeTab" class="nav-btn active">Home</button>
-    <button id="clubTab" class="nav-btn">Club</button>
-    <button id="picksTab" class="nav-btn">Picks</button>
-    <button id="accountTab" class="nav-btn">Account</button>
-  </nav>
-
-  <section id="homeScreen" class="screen active">
-    <div class="card">
-      <div class="card-header"><h2>Home</h2></div>
-      <p class="helper">Create a reading circle, join one from an invite, or open one of your shelves.</p>
-
-      <input id="newClubName" placeholder="New shelf name" />
-      <button onclick="createClub()">Create Shelf</button>
-
-      <input id="joinClubId" placeholder="Paste invite code or link" />
-      <button class="secondary" onclick="joinClubFromInput()">Join Shelf</button>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <h2>Your Shelves</h2>
-        <span id="clubCount" class="small"></span>
-      </div>
-      <div id="clubList">
-        <p class="status">Loading shelves...</p>
+<div class="app-shell">
+  <div class="phone-frame">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <div class="signal"><span></span><span></span><span></span><span></span></div>
+        <span style="font-size:.74rem;">Wi‑Fi</span>
+        <div class="battery"></div>
       </div>
     </div>
-  </section>
 
-  <section id="clubScreen" class="screen">
-    <div id="noClubSelected" class="card">
-      <h2>No Shelf Selected</h2>
-      <p class="status">Choose or create a shelf from Home first.</p>
-    </div>
-  </section>
+    <div class="app-content">
+      <div id="authScreen">
+        <header class="header">
+          <div class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M16 16c8 0 13 3 16 8v28c-3-5-8-8-16-8V16Z"></path>
+              <path d="M48 16c-8 0-13 3-16 8v28c3-5 8-8 16-8V16Z"></path>
+              <path d="M20 24h7M20 31h7M37 24h7M37 31h7"></path>
+            </svg>
+          </div>
+          <h1>Spine Society</h1>
+          <p class="subtitle">Your book club, curated.</p>
+        </header>
 
-  <section id="picksScreen" class="screen">
-    <div class="card">
-      <div class="card-header"><h2>Saved Picks</h2></div>
-      <div id="pickedList">
-        <p class="status">Your saved picks will live here.</p>
+        <section class="lounge-hero">
+          <div class="lounge-kicker">Private Reading Circle</div>
+          <div class="lounge-title">A cozy place to choose, track, and talk books.</div>
+          <p class="lounge-copy">Create shelves for every club, spin for your next read, and leave notes in Marginalia.</p>
+          <div class="shelf-preview">
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>Begin Your Journey</h2></div>
+          <input id="loginEmail" type="email" placeholder="Email" />
+          <input id="loginPassword" type="password" placeholder="Password" />
+          <button class="primary" onclick="loginWithEmail()">Log In</button>
+          <button class="secondary" onclick="signUpWithEmail()">Create Account</button>
+          <button class="secondary" onclick="loginWithGoogle()">Continue with Google</button>
+        </section>
+      </div>
+
+      <div id="mainApp" style="display:none;">
+        <header class="header">
+          <div class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M16 16c8 0 13 3 16 8v28c-3-5-8-8-16-8V16Z"></path>
+              <path d="M48 16c-8 0-13 3-16 8v28c3-5 8-8 16-8V16Z"></path>
+              <path d="M20 24h7M20 31h7M37 24h7M37 31h7"></path>
+            </svg>
+          </div>
+          <h1>Spine Society</h1>
+          <p class="subtitle" id="activeClubSubtitle">Your Nook</p>
+        </header>
+
+        <section id="homeScreen" class="screen active">
+          <section class="lounge-hero">
+            <div class="lounge-kicker">Your Nook</div>
+            <div class="lounge-title">Welcome back, reader.</div>
+            <p class="lounge-copy">Open a shelf, create a new circle, or join one from an invite.</p>
+            <div class="shelf-preview">
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header"><h2>Create or Join</h2></div>
+            <input id="newClubName" placeholder="New shelf name" />
+            <button onclick="createClub()">Create Shelf</button>
+            <input id="joinClubId" placeholder="Paste invite code or link" />
+            <button class="secondary" onclick="joinClubFromInput()">Join Shelf</button>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Your Shelves</h2>
+              <span id="clubCount" class="small"></span>
+            </div>
+            <div id="clubList"><p class="status">Loading shelves...</p></div>
+          </section>
+        </section>
+
+        <section id="clubScreen" class="screen">
+          <section class="card">
+            <h2>No Shelf Selected</h2>
+            <p class="status">Choose or create a shelf from Your Nook first.</p>
+          </section>
+        </section>
+
+        <section id="picksScreen" class="screen">
+          <section class="card">
+            <div class="card-header"><h2>Saved Picks</h2></div>
+            <p class="status">Your saved picks will live here.</p>
+          </section>
+        </section>
+
+        <section id="accountScreen" class="screen">
+          <section class="card">
+            <div class="card-header"><h2>Reader Profile</h2></div>
+            <p class="helper" id="accountEmail">Signed in.</p>
+            <input id="usernameInput" placeholder="Choose your Reader Alias" />
+            <button onclick="saveUsername()">Save Reader Alias</button>
+            <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
+            <button class="danger" onclick="logoutUser()">Log Out</button>
+          </section>
+        </section>
       </div>
     </div>
-  </section>
 
-  <section id="accountScreen" class="screen">
-    <div class="card">
-      <div class="card-header"><h2>Account</h2></div>
-      <p class="helper" id="accountEmail">Signed in.</p>
-
-      <input id="usernameInput" placeholder="Choose your Reader Alias" />
-      <button onclick="saveUsername()">Save Reader Alias</button>
-      <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
-
-      <button class="danger" onclick="logoutUser()">Log Out</button>
-    </div>
-  </section>
-
-  <footer>Spine Society · Read Together.</footer>
+    <nav class="top-nav" id="mainNav" style="display:none;">
+      <button id="homeTab" class="nav-btn active">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V20h14v-9.5"></path></svg>
+        </span>
+        Nook
+      </button>
+      <button id="clubTab" class="nav-btn">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M5 4h10a4 4 0 0 1 4 4v12H8a3 3 0 0 0-3-3V4Z"></path><path d="M5 17V4"></path></svg>
+        </span>
+        Shelf
+      </button>
+      <button id="picksTab" class="nav-btn">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z"></path><path d="M4 7l8 4 8-4"></path><path d="M12 11v10"></path></svg>
+        </span>
+        Picks
+      </button>
+      <button id="accountTab" class="nav-btn">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+        </span>
+        Reader
+      </button>
+    </nav>
+  </div>
 </div>
 
 <script type="module">
@@ -758,6 +998,7 @@ function escapeAttr(value) {
 function showScreen(screenName) {
   document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
   document.querySelectorAll(".nav-btn").forEach(button => button.classList.remove("active"));
+
   document.getElementById(screenName + "Screen").classList.add("active");
   document.getElementById(screenName + "Tab").classList.add("active");
 }
@@ -772,7 +1013,7 @@ window.showClubSection = function (section) {
   const buttons = document.querySelectorAll(".club-subnav button");
   if (section === "overview") buttons[0]?.classList.add("active");
   if (section === "shelf") buttons[1]?.classList.add("active");
-  if (section === "spin") buttons[2]?.classList.add("active");
+  if (section === "pick") buttons[2]?.classList.add("active");
   if (section === "talk") buttons[3]?.classList.add("active");
 };
 
@@ -937,43 +1178,54 @@ window.openClub = async function (clubId) {
     <div class="club-subnav">
       <button class="active" onclick="showClubSection('overview')">Lounge</button>
       <button onclick="showClubSection('shelf')">Shelf</button>
-      <button onclick="showClubSection('spin')">Pick</button>
+      <button onclick="showClubSection('pick')">Pick</button>
       <button onclick="showClubSection('talk')">Marginalia</button>
     </div>
 
     <div id="overviewSection" class="club-section active">
-      <div class="card">
-        <div class="card-header"><h2>${escapeHTML(club.name)}</h2></div>
-        <p class="helper">Invite readers, track the current read, and keep your club history together.</p>
+      <section class="lounge-hero">
+        <div class="lounge-kicker">Current Club</div>
+        <div class="lounge-title">${escapeHTML(club.name)}</div>
+        <p class="lounge-copy">Invite readers, choose the next read, and keep your club history together.</p>
+        <div class="shelf-preview">
+          <div class="preview-spine"></div>
+          <div class="preview-spine"></div>
+          <div class="preview-spine"></div>
+          <div class="preview-spine"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header"><h2>Invite Readers</h2></div>
         <button onclick="textCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Text Invite</button>
         <button class="secondary" onclick="emailCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Email Invite</button>
         <button class="secondary" onclick="copyCurrentClubInvite('${clubId}', '${escapeAttr(club.name)}')">Copy Invite</button>
-      </div>
+      </section>
 
-      <div class="card">
+      <section class="card">
         <div class="card-header">
           <h2>Readers</h2>
           <span id="memberCount" class="small"></span>
         </div>
         <div id="memberList"><p class="status">Loading readers...</p></div>
-      </div>
+      </section>
 
-      <div class="card">
+      <section class="card">
         <div class="card-header"><h2>Next Read</h2></div>
         <div id="nextReadArea"><p class="status">No next read set yet.</p></div>
-      </div>
+      </section>
 
-      <div class="card">
+      <section class="card">
         <div class="card-header">
           <h2>Finished Reads</h2>
           <span id="booksReadCount" class="small"></span>
         </div>
         <div id="booksReadList"><p class="status">No finished reads yet.</p></div>
-      </div>
+      </section>
     </div>
 
     <div id="shelfSection" class="club-section">
-      <div class="card">
+      <section class="card">
         <div class="card-header"><h2>Add to Shelf</h2></div>
         <input id="bookTitle" placeholder="Book title" />
         <input id="bookAuthor" placeholder="Author" />
@@ -988,20 +1240,20 @@ window.openClub = async function (clubId) {
         </select>
         <input id="bookImage" placeholder="Book cover image URL optional" />
         <button onclick="addBookToClub()">Add to Shelf</button>
-      </div>
+      </section>
 
-      <div class="card">
+      <section class="card">
         <div class="card-header">
           <h2>Current Shelf</h2>
           <span id="bookCount" class="small"></span>
         </div>
         <div id="bookList"><p class="status">Your shelf is waiting for its first story.</p></div>
-      </div>
+      </section>
     </div>
 
-    <div id="spinSection" class="club-section">
-      <div class="card">
-        <div class="card-header"><h2>Pick</h2></div>
+    <div id="pickSection" class="club-section">
+      <section class="card">
+        <div class="card-header"><h2>Book Randomizer</h2></div>
         <p class="helper">Let Spine Society choose from the books on this shelf.</p>
         <select id="spinCategory">
           <option>All Books</option>
@@ -1014,20 +1266,20 @@ window.openClub = async function (clubId) {
           <option>Wild Card</option>
         </select>
         <button id="spinButton" class="primary" onclick="spinBook()">Surprise Me</button>
-        <div id="winner" class="result-stage spin-display">
+        <div id="winner" class="spin-display">
           <p class="status">Your next pick will appear here.</p>
         </div>
-      </div>
+      </section>
     </div>
 
     <div id="talkSection" class="club-section">
-      <div class="card">
+      <section class="card">
         <div class="card-header"><h2>Marginalia</h2></div>
         <p class="helper">Leave notes, reactions, and thoughts for your reading circle.</p>
         <input id="discussionInput" placeholder="Add a thought, question, or reaction..." />
         <button onclick="postDiscussionComment()">Post Note</button>
         <div id="discussionList"><p class="status">No notes yet. Start the conversation.</p></div>
-      </div>
+      </section>
     </div>
   `;
 
@@ -1223,13 +1475,7 @@ window.addBookToClub = async function () {
 
   const bookRef = push(ref(database, "clubs/" + window.currentClubId + "/books"));
 
-  await set(bookRef, {
-    title,
-    author,
-    category,
-    image,
-    createdAt: Date.now()
-  });
+  await set(bookRef, { title, author, category, image, createdAt: Date.now() });
 
   document.getElementById("bookTitle").value = "";
   document.getElementById("bookAuthor").value = "";
@@ -1242,8 +1488,7 @@ window.spinBook = function () {
   if (!window.currentClubId) return alert("Open a shelf first.");
 
   if (!currentClubBooks || currentClubBooks.length === 0) {
-    document.getElementById("winner").innerHTML =
-      `<p class="status">Add books before picking.</p>`;
+    document.getElementById("winner").innerHTML = `<p class="status">Add books before picking.</p>`;
     return;
   }
 
@@ -1253,8 +1498,7 @@ window.spinBook = function () {
     : currentClubBooks.filter(book => book.category === selectedCategory);
 
   if (filteredBooks.length === 0) {
-    document.getElementById("winner").innerHTML =
-      `<p class="status">No books in this category yet.</p>`;
+    document.getElementById("winner").innerHTML = `<p class="status">No books in this category yet.</p>`;
     return;
   }
 
@@ -1300,9 +1544,8 @@ window.spinBook = function () {
 
   setTimeout(() => {
     window.lastPick = finalBook;
-
     winnerDiv.innerHTML = `
-      <div class="winner spin-card final-result">
+      <div class="winner spin-card">
         ${
           finalBook.image
             ? `<img class="cover" src="${escapeAttr(finalBook.image)}" alt="Book cover">`
@@ -1333,7 +1576,6 @@ window.setNextRead = async function () {
   });
 
   await set(ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id), null);
-
   alert("Next read set!");
 };
 
@@ -1356,7 +1598,6 @@ window.markNextReadFinished = async function () {
   });
 
   await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), null);
-
   alert("Moved to Finished Reads!");
 };
 
@@ -1385,7 +1626,6 @@ window.postDiscussionComment = async function () {
 
 window.deleteFinishedBook = async function (bookId) {
   if (!window.currentClubId) return alert("Open a shelf first.");
-
   if (!confirm("Remove this finished read?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/booksRead/" + bookId), null);
@@ -1394,7 +1634,6 @@ window.deleteFinishedBook = async function (bookId) {
 
 window.deleteBook = async function (bookId) {
   if (!window.currentClubId) return alert("Open a shelf first.");
-
   if (!confirm("Delete this book from the shelf?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), null);
@@ -1432,7 +1671,6 @@ window.editBook = async function (bookId) {
 
 window.removeClub = async function (clubId) {
   if (!currentUser) return alert("Please log in first.");
-
   if (!confirm("Remove this shelf from your list?")) return;
 
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
@@ -1441,19 +1679,14 @@ window.removeClub = async function (clubId) {
 
 function formatTimeAgo(timestamp) {
   if (!timestamp) return "Just now";
-
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
   if (seconds < 60) return "Just now";
-
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return minutes + "m ago";
-
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return hours + "h ago";
-
   const days = Math.floor(hours / 24);
   if (days === 1) return "Yesterday";
-
   return days + "d ago";
 }
 
@@ -1463,7 +1696,6 @@ window.reactToComment = async function (commentId, reactionType) {
   const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
   const snapshot = await get(commentRef);
   const comment = snapshot.val();
-
   if (!comment) return;
 
   const reactions = comment.reactions || {};
@@ -1502,7 +1734,6 @@ window.editDiscussionComment = async function (commentId) {
 
 window.deleteDiscussionComment = async function (commentId) {
   if (!window.currentClubId) return alert("Open a shelf first.");
-
   if (!confirm("Delete this Marginalia note?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId), null);
@@ -1557,12 +1788,14 @@ function handleInviteLink() {
 onAuthStateChanged(auth, async (user) => {
   const authScreen = document.getElementById("authScreen");
   const mainApp = document.getElementById("mainApp");
+  const mainNav = document.getElementById("mainNav");
 
   if (user) {
     currentUser = user;
 
     authScreen.style.display = "none";
     mainApp.style.display = "block";
+    mainNav.style.display = "grid";
 
     document.getElementById("accountEmail").textContent =
       "Signed in as " + (user.email || "Google user");
@@ -1585,6 +1818,7 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = null;
     authScreen.style.display = "block";
     mainApp.style.display = "none";
+    mainNav.style.display = "none";
   }
 });
 </script>
