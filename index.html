@@ -793,6 +793,43 @@ h1 {
       transparent
     );
 }
+
+/* Final dark-library polish overrides */
+.club-subnav button {
+  min-height: 44px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(200,163,106,.12);
+  color: var(--muted);
+  font-size: .82rem;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  transition: all .22s ease;
+}
+
+.club-subnav button.active {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200,163,106,.22),
+      rgba(166,124,58,.12)
+    );
+  color: var(--ivory);
+  border: 1px solid rgba(200,163,106,.26);
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+}
+
+.book-category {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.07);
+  font-size: .72rem;
+  color: var(--muted);
+}
+
 </style>
 
 </head>
@@ -1085,7 +1122,7 @@ h1 {
   </section>
 
   <footer>
-    Spine Society · Read Together.
+    Spine Society · Read together.
   </footer>
 
 </div>
@@ -1402,10 +1439,10 @@ window.openClub = async function (clubId) {
 
   document.getElementById("clubScreen").innerHTML = `
   <div class="club-subnav">
-    <button onclick="showClubSection('🕯 Lounge')">Overview</button>
-    <button onclick="showClubSection('📚 Shelf')">Shelf</button>
-    <button onclick="showClubSection('🎲 Pick')">Spin</button>
-    <button onclick="showClubSection('✍️ Marginalia')">Marginalia</button>
+    <button class="active" onclick="showClubSection('overview')">Lounge</button>
+    <button onclick="showClubSection('shelf')">Shelf</button>
+    <button onclick="showClubSection('spin')">Pick</button>
+    <button onclick="showClubSection('talk')">Marginalia</button>
   </div>
 
   <div id="overviewSection" class="club-section active">
@@ -1454,7 +1491,7 @@ window.openClub = async function (clubId) {
 
     <div class="card">
       <div class="card-header">
-        <h2>Books Read</h2>
+        <h2>Finished Reads</h2>
         <span id="booksReadCount" class="small"></span>
       </div>
 
@@ -1467,7 +1504,7 @@ window.openClub = async function (clubId) {
   <div id="shelfSection" class="club-section">
     <div class="card">
       <div class="card-header">
-        <h2>Add Book</h2>
+        <h2>Add to Shelf</h2>
       </div>
 
       <input id="bookTitle" placeholder="Book title" />
@@ -1486,13 +1523,13 @@ window.openClub = async function (clubId) {
       <input id="bookImage" placeholder="Book cover image URL optional" />
 
       <button onclick="addBookToClub()">
-        Add Book
+        Add to Shelf
       </button>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <h2>Books</h2>
+        <h2>Current Shelf</h2>
         <span id="bookCount" class="small"></span>
       </div>
 
@@ -1505,11 +1542,11 @@ window.openClub = async function (clubId) {
   <div id="spinSection" class="club-section">
     <div class="card">
       <div class="card-header">
-        <h2>Spin</h2>
+        <h2>Pick</h2>
       </div>
 
       <p class="helper">
-        Spin from the books added to this club.
+        Let Spine Society choose from this club’s shelf.
       </p>
 
       <select id="spinCategory">
@@ -1528,7 +1565,7 @@ window.openClub = async function (clubId) {
       </button>
 
       <div id="winner" class="result-stage spin-display">
-        <p class="status">Your next pick will appear here.</p>
+        <p class="status">Your next read will appear here.</p>
       </div>
     </div>
   </div>
@@ -1608,14 +1645,14 @@ onValue(
           : ""
       }
 
-      <div class="small">
+      <div class="book-category">
         ${book.category || "Uncategorized"}
       </div>
 
       <div class="book-actions">
         <button
           class="secondary"
-          onclick="showEditBookForm('${book.id}')">
+          onclick="editBook('${book.id}')">
           Edit Book
         </button>
 
@@ -1704,7 +1741,7 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
           : ""
       }
 
-      <div class="small">
+      <div class="book-category">
         ${book.category || "Uncategorized"}
       </div>
 
