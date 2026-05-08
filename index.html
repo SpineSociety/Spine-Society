@@ -1456,7 +1456,16 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
 
   document.getElementById("booksReadList").innerHTML =
   finishedBooks.map(book => `
-    <div class="book-item">
+   <div class="book-item">
+  <div class="book-card-polished">
+
+    ${
+      book.image
+        ? `<img class="book-mini-cover" src="${book.image}" alt="Book cover">`
+        : `<div class="book-mini-placeholder">S</div>`
+    }
+
+    <div class="book-info">
 
       <div class="item-title">
         ${book.title}
@@ -1472,15 +1481,18 @@ onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
         ${book.category || "Uncategorized"}
       </div>
 
-      <button
-        class="danger"
-        onclick="deleteFinishedBook('${book.id}')">
-
-        Remove
-
-      </button>
+      <div class="book-actions">
+        <button
+          class="danger"
+          onclick="deleteFinishedBook('${book.id}')">
+          Remove
+        </button>
+      </div>
 
     </div>
+
+  </div>
+</div>
   `).join("");
 });
 const memberList = document.getElementById("memberList");
