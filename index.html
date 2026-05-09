@@ -1714,71 +1714,31 @@ window.spinBook = function () {
   }, 120);
 };
 
-    const randomBook =
-      filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
+window.spinBookFromClub = function () {
+  const originalCategory = document.getElementById("spinCategory");
+  const originalWinner = document.getElementById("winner");
+  const originalButton = document.getElementById("spinButton");
+  const clubCategory = document.getElementById("spinCategoryClub");
+  const clubWinner = document.getElementById("winnerClub");
+  const clubButton = document.getElementById("spinButtonClub");
 
-    const activeBook =
-      document.getElementById("randomizerBook-" + randomBook.id);
+  if (!clubCategory || !clubWinner || !clubButton) return;
 
-    if (activeBook) {
-      activeBook.classList.add("active");
-    }
+  clubCategory.id = "spinCategory";
+  clubWinner.id = "winner";
+  clubButton.id = "spinButton";
 
-    count++;
-
-    if (count >= maxCount) {
-      clearInterval(interval);
-
-      const finalBook =
-        filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
-
-      document.querySelectorAll(".randomizer-spine").forEach(book => {
-        book.classList.remove("active");
-      });
-
-      const finalElement =
-        document.getElementById("randomizerBook-" + finalBook.id);
-
-      if (finalElement) {
-        finalElement.classList.add("active");
-      }
-
-      window.lastPick = finalBook;
-
-      winner.innerHTML = `
-        <h3>${escapeHTML(finalBook.title)}</h3>
-        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
-        <button onclick="setNextRead()">Set as Next Read</button>
-      `;
-
-      spinButton.disabled = false;
-    }
-  }, 120);
-};
-  requestAnimationFrame(() => {
-    const track = document.getElementById("slotTrack");
-    track.style.transform = `translateY(-${360 * (spinList.length - 1)}px)`;
-  });
+  window.spinBook();
 
   setTimeout(() => {
-    window.lastPick = finalBook;
-    winnerDiv.innerHTML = `
-      <div class="winner spin-card">
-        ${
-          finalBook.image
-            ? `<img class="cover" src="${escapeAttr(finalBook.image)}" alt="Book cover">`
-            : `<div class="cover-placeholder">S</div>`
-        }
-        <h3>${escapeHTML(finalBook.title)}</h3>
-        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
-        <div class="book-category">${escapeHTML(finalBook.category || "Uncategorized")}</div>
-        <button onclick="setNextRead()">Set as Next Read</button>
-      </div>
-    `;
+    const tempCategory = document.getElementById("spinCategory");
+    const tempWinner = document.getElementById("winner");
+    const tempButton = document.getElementById("spinButton");
 
-    spinButton.disabled = false;
-    spinButton.textContent = "Surprise Me";
-  }, 2500);
+    if (tempCategory) tempCategory.id = "spinCategoryClub";
+    if (tempWinner) tempWinner.id = "winnerClub";
+    if (tempButton) tempButton.id = "spinButtonClub";
+  }, 2700);
 };
 
 
