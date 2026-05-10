@@ -1093,11 +1093,10 @@ window.showClubRoomTab = function (tabName) {
   document.querySelectorAll(".club-room-tabs button").forEach(button => button.classList.remove("active"));
   document.getElementById(tabName + "Panel")?.classList.add("active");
   const buttons = document.querySelectorAll(".club-room-tabs button");
-  if (tabName === "chat") buttons[0]?.classList.add("active");
-  if (tabName === "current") buttons[1]?.classList.add("active");
-  if (tabName === "polls") buttons[2]?.classList.add("active");
-  if (tabName === "randomizer") buttons[3]?.classList.add("active");
-};
+  if (tabName === "current") buttons[0]?.classList.add("active");
+if (tabName === "chat") buttons[1]?.classList.add("active");
+if (tabName === "books") buttons[2]?.classList.add("active");
+if (tabName === "randomizer") buttons[3]?.classList.add("active");
 
 document.getElementById("nookTab").addEventListener("click", () => showScreen("nook"));
 document.getElementById("libraryTab").addEventListener("click", () => showScreen("library"));
