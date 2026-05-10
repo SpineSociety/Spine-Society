@@ -1179,14 +1179,53 @@ function listenToUserClubs() {
       if (!club) continue;
 
       html += `
-        <div class="club-card">
-          <div class="item-title">${escapeHTML(club.name)}</div>
-          <div class="small">Reading circle</div>
-          <button onclick="openClub('${clubId}')">Open Shelf</button>
-          <button class="secondary" onclick="openClubRoom('${clubId}')">View Club Room</button>
-          <button class="danger" onclick="removeClub('${clubId}')">Remove Shelf</button>
-        </div>
-      `;
+  <section class="current-club-panel">
+
+    <div class="club-emblem">
+      📚
+    </div>
+
+    <div style="flex:1;">
+
+      <div class="panel-kicker">
+        Your Shelf
+      </div>
+
+      <h3>
+        ${escapeHTML(club.name)}
+      </h3>
+
+      <p class="small">
+        Reading circle
+      </p>
+
+      <div style="
+        display:flex;
+        gap:10px;
+        margin-top:14px;
+      ">
+
+        <button
+          onclick="openClub('${clubId}')"
+          style="flex:1;"
+        >
+          Open Shelf
+        </button>
+
+        <button
+          class="secondary"
+          onclick="openClubRoom('${clubId}')"
+          style="flex:1;"
+        >
+          Club Room
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+`;
     }
 
     document.getElementById("clubList").innerHTML = html;
