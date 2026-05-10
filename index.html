@@ -1381,14 +1381,17 @@ function updateNookShelfPreview() {
 window.jumpToCategory = function (category) { showScreen("randomizer"); setTimeout(() => { const select = document.getElementById("spinCategory"); if (select) select.value = category; }, 100); };
 function renderRandomizerShelf() {
   const shelf = document.getElementById("randomizerBooks");
-  if (!shelf) return;
+  const clubShelf = document.getElementById("randomizerBooksClub");
+
+  const emptyHTML = `<p class="status">Add books to your shelf first.</p>`;
 
   if (!currentClubBooks || currentClubBooks.length === 0) {
-    shelf.innerHTML = `<p class="status">Add books to your shelf first.</p>`;
+    if (shelf) shelf.innerHTML = emptyHTML;
+    if (clubShelf) clubShelf.innerHTML = emptyHTML;
     return;
   }
 
-  shelf.innerHTML = currentClubBooks.slice(0, 6).map(book => `
+  const shelfHTML = currentClubBooks.slice(0, 6).map(book => `
     <div class="randomizer-spine" id="randomizerBook-${book.id}">
       <div class="randomizer-spine-title">
         ${escapeHTML(book.title)}
@@ -1399,6 +1402,9 @@ function renderRandomizerShelf() {
       </div>
     </div>
   `).join("");
+
+  if (shelf) shelf.innerHTML = shelfHTML;
+  if (clubShelf) clubShelf.innerHTML = shelfHTML;
 }
 function listenToClubBooks(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/books"), (snapshot) => {
