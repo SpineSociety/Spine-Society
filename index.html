@@ -966,41 +966,11 @@ button:hover {
 </section>
 
 <section id="profileScreen" class="screen">
+          <div class="page-top">
+            <div class="page-title">Reader Profile</div>
+            <button class="icon-button secondary" onclick="showScreen('nook')">⌂</button>
+          </div>
 
-  <div class="page-top">
-    <div class="page-title">Reader Profile</div>
-  </div>
-
-  <section class="card">
-
-    <div class="card-header">
-      <h2>Your Account</h2>
-    </div>
-
-    <p class="helper" id="accountEmail">
-      Signed in.
-    </p>
-
-    <input
-      id="usernameInput"
-      placeholder="Choose your Reader Alias"
-    />
-
-    <button onclick="saveUsername()">
-      Save Reader Alias
-    </button>
-
-    <p class="helper" id="currentUsername">
-      No Reader Alias set yet.
-    </p>
-
-    <button class="danger" onclick="logoutUser()">
-      Log Out
-    </button>
-
-  </section>
-
-</section>
           <section class="card">
             <div class="card-header"><h2>Reader Alias</h2></div>
             <p class="helper" id="accountEmail">Signed in.</p>
