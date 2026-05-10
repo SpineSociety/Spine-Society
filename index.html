@@ -1279,15 +1279,6 @@ window.openClub = async function (clubId) {
   window.currentClubId = clubId;
   window.currentClubName = club.name;
 
-  document.getElementById("currentClubCard").innerHTML = `
-    <div class="club-emblem">📚</div>
-    <div>
-      <div class="panel-kicker">Current Club</div>
-      <h3>${escapeHTML(club.name)}</h3>
-      <p class="small">Current club shelf is open.</p>
-      <button class="secondary" onclick="showScreen('club')">View Club</button>
-    </div>
-  `;
 
   document.getElementById("clubHero").innerHTML = `
     <div class="club-emblem">📚</div>
@@ -1298,11 +1289,6 @@ window.openClub = async function (clubId) {
     </div>
   `;
 
-  document.getElementById("libraryTitle").textContent = club.name;
-
-  document.getElementById("textInviteBtn").onclick = () => textCurrentClubInvite(clubId, club.name);
-  document.getElementById("emailInviteBtn").onclick = () => emailCurrentClubInvite(clubId, club.name);
-  document.getElementById("copyInviteBtn").onclick = () => copyCurrentClubInvite(clubId, club.name);
 
   listenToClubBooks(clubId);
   listenToNextRead(clubId);
