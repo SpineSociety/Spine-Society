@@ -1314,11 +1314,14 @@ window.openClub = async function (clubId) {
 };
 
 window.openClubRoom = async function (clubId) {
+
   await openClub(clubId);
 
   showScreen("club");
+
   showClubRoomTab("chat");
-}; 
+
+};
 
 function updateNookNextRead(nextRead) {
   const area = document.getElementById("nookNextRead");
