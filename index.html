@@ -1675,6 +1675,39 @@ window.addBookToClub = async function () {
 
   alert("Book added.");
 };
+window.addBookToClubCollection = async function () {
+
+  if (!window.currentClubId) {
+    return alert("Open a society first.");
+  }
+
+  const title = document.getElementById("bookTitleClub").value.trim();
+  const author = document.getElementById("bookAuthorClub").value.trim();
+  const category = document.getElementById("bookCategoryClub").value;
+  const image = document.getElementById("bookImageClub").value.trim();
+
+  if (!title) {
+    return alert("Enter a book title.");
+  }
+
+  const bookRef = push(
+    ref(database, "clubs/" + window.currentClubId + "/books")
+  );
+
+  await set(bookRef, {
+    title,
+    author,
+    category,
+    image,
+    createdAt: Date.now()
+  });
+
+  document.getElementById("bookTitleClub").value = "";
+  document.getElementById("bookAuthorClub").value = "";
+  document.getElementById("bookImageClub").value = "";
+
+  alert("Added to The Collection.");
+};
 
 window.spinBook = function () {
   if (!window.currentClubId) {
