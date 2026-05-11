@@ -1426,13 +1426,13 @@ function renderRandomizerShelf() {
 
   const emptyHTML = `<p class="status">Add books to your shelf first.</p>`;
 
-  if (!currentClubBooks || currentClubBooks.length === 0) {
+  if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
     if (shelf) shelf.innerHTML = emptyHTML;
     if (clubShelf) clubShelf.innerHTML = emptyHTML;
     return;
   }
 
-  const shelfHTML = currentClubBooks.slice(0, 6).map(book => `
+  const shelfHTML = currentCollectionBooks.slice(0, 6).map(book => `
     <div class="randomizer-spine" id="randomizerBook-${book.id}">
       <div class="randomizer-spine-title">
         ${escapeHTML(book.title)}
@@ -1885,7 +1885,7 @@ window.spinBookFromClub = function () {
     return;
   }
 
-  if (!currentClubBooks || currentClubBooks.length === 0) {
+  if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
     document.getElementById("winnerClub").innerHTML =
       "Add books to The Collection first.";
     return;
@@ -1895,8 +1895,8 @@ window.spinBookFromClub = function () {
 
   const filteredBooks =
     selectedCategory === "All Books"
-      ? currentClubBooks
-      : currentClubBooks.filter(book => book.category === selectedCategory);
+      ? currentCollectionBooks
+      : currentCollectionBooks.filter(book => book.category === selectedCategory);
 
   if (filteredBooks.length === 0) {
     document.getElementById("winnerClub").innerHTML =
