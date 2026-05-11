@@ -1420,46 +1420,50 @@ function updateNookShelfPreview() {
   area.innerHTML = `<div class="nook-shelf-spine"><div><div class="item-title">${escapeHTML(firstBook.title)}</div>${firstBook.author ? `<div class="small">by ${escapeHTML(firstBook.author)}</div>` : ""}</div><div class="small">${currentClubBooks.length} book${currentClubBooks.length === 1 ? "" : "s"}</div></div>`;
 }
 window.jumpToCategory = function (category) { showScreen("randomizer"); setTimeout(() => { const select = document.getElementById("spinCategory"); if (select) select.value = category; }, 100); };
-function renderRandomizerShelf() {
+function renderBookRandomizerShelf() {
   const shelf = document.getElementById("randomizerBooks");
-  const clubShelf = document.getElementById("randomizerBooksClub");
+  if (!shelf) return;
 
-  const emptyHTML = `<p class="status">Add books to your shelf first.</p>`;
-
-  if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
-    if (shelf) shelf.innerHTML = emptyHTML;
-    if (clubShelf) clubShelf.innerHTML = emptyHTML;
+  if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
+    shelf.innerHTML = `<p class="status">Add books to your library first.</p>`;
     return;
   }
 
-  const shelfHTML = currentCollectionBooks.slice(0, 6).map(book => `
-    <div class="randomizer-spine" id="randomizerBook-${book.id}">
-      <div class="randomizer-spine-title">
-        ${escapeHTML(book.title)}
-      </div>
-
-      <div class="randomizer-spine-author">
-        ${escapeHTML(book.author || "Unknown")}
-      </div>
+  shelf.innerHTML = currentLibraryBooks.slice(0, 6).map(book => `
+    <div class="randomizer-spine" id="libraryRandomizerBook-${book.id}">
+      <div class="randomizer-spine-title">${escapeHTML(book.title)}</div>
+      <div class="randomizer-spine-author">${escapeHTML(book.author || "Unknown")}</div>
     </div>
   `).join("");
+}
 
-  if (shelf) shelf.innerHTML = shelfHTML;
-  if (clubShelf) clubShelf.innerHTML = shelfHTML;
+function renderFateDecidesShelf() {
+  const clubShelf = document.getElementById("randomizerBooksClub");
+  if (!clubShelf) return;
+
+  if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
+    clubShelf.innerHTML = `<p class="status">Add books to The Collection first.</p>`;
+    return;
+  }
+
+  clubShelf.innerHTML = currentCollectionBooks.slice(0, 6).map(book => `
+    <div class="randomizer-spine" id="collectionRandomizerBook-${book.id}">
+      <div class="randomizer-spine-title">${escapeHTML(book.title)}</div>
+      <div class="randomizer-spine-author">${escapeHTML(book.author || "Unknown")}</div>
+    </div>
+  `).join("");
 }
 
 function renderClubCollection() {
   const collection = document.getElementById("clubCollectionGrid");
   if (!collection) return;
 
-  if (!currentClubBooks || currentClubBooks.length === 0) {
-    collection.innerHTML = `
-      <p class="status">Your collection is waiting for its first story.</p>
-    `;
+  if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
+    collection.innerHTML = `<p class="status">Your collection is waiting for its first story.</p>`;
     return;
   }
 
-  collection.innerHTML = currentClubBooks.map(book => `
+  collection.innerHTML = currentCollectionBooks.map(book => `
     <div class="book-item">
       <div class="book-card-polished">
         ${
@@ -1470,24 +1474,18 @@ function renderClubCollection() {
 
         <div class="book-info">
           <div class="item-title">${escapeHTML(book.title)}</div>
-
           ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-
-          <div class="book-category">
-            ${escapeHTML(book.category || "Uncategorized")}
-          </div>
+          <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
 
           ${
-            currentUser && currentClubOwner === currentUser.uid
+            currentUser && (
+              currentClubOwner === currentUser.uid ||
+              book.addedBy === currentUser.uid
+            )
               ? `
                 <div class="book-actions">
-                  <button class="secondary" onclick="editBook('${book.id}')">
-                    Edit
-                  </button>
-
-                  <button class="danger" onclick="deleteBook('${book.id}')">
-                    Delete
-                  </button>
+                  <button class="secondary" onclick="editCollectionBook('${book.id}')">Edit</button>
+                  <button class="danger" onclick="deleteCollectionBook('${book.id}')">Delete</button>
                 </div>
               `
               : ""
@@ -1502,8 +1500,7 @@ function listenToClubBooks(clubId) {
     const books = snapshot.val() || {};
     currentClubBooks = Object.entries(books).map(([id, value]) => ({ id, ...value }));
     updateNookShelfPreview();
-    renderRandomizerShelf();
-    renderClubCollection();
+    renderBookRandomizerShelf();
     
     document.getElementById("bookCount").textContent =
       currentClubBooks.length + " book" + (currentClubBooks.length === 1 ? "" : "s");
@@ -1545,7 +1542,7 @@ function listenToCollectionBooks(clubId) {
       );
 
       renderClubCollection();
-      renderRandomizerShelf();
+      renderFateDecidesShelf();
     }
   );
 }
@@ -1791,24 +1788,20 @@ window.addBookToClubCollection = async function () {
 };
 
 window.spinBook = function () {
-  if (!window.currentClubId) {
-    alert("Open a shelf first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a shelf first.");
 
   if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
     document.getElementById("winner").innerHTML =
-      "Add books before picking.";
+      "Add books to your Library first.";
     return;
   }
 
   const selectedCategory = document.getElementById("spinCategory").value;
 
-  const filteredBooks = selectedCategory === "All Books"
-    ? currentLibraryBooks
-    : currentLibraryBooks.filter(
-        book => book.category === selectedCategory
-      );
+  const filteredBooks =
+    selectedCategory === "All Books"
+      ? currentLibraryBooks
+      : currentLibraryBooks.filter(book => book.category === selectedCategory);
 
   if (filteredBooks.length === 0) {
     document.getElementById("winner").innerHTML =
@@ -1826,20 +1819,16 @@ window.spinBook = function () {
   const maxCount = 18;
 
   const interval = setInterval(() => {
-
-    document.querySelectorAll(".randomizer-spine").forEach(book => {
-      book.classList.remove("active");
-    });
+    document.querySelectorAll("#randomizerBooks .randomizer-spine")
+      .forEach(book => book.classList.remove("active"));
 
     const randomBook =
       filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
 
     const activeBook =
-      document.getElementById("randomizerBook-" + randomBook.id);
+      document.getElementById("libraryRandomizerBook-" + randomBook.id);
 
-    if (activeBook) {
-      activeBook.classList.add("active");
-    }
+    if (activeBook) activeBook.classList.add("active");
 
     count++;
 
@@ -1849,45 +1838,26 @@ window.spinBook = function () {
       const finalBook =
         filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
 
-      document.querySelectorAll(".randomizer-spine").forEach(book => {
-        book.classList.remove("active");
-      });
+      document.querySelectorAll("#randomizerBooks .randomizer-spine")
+        .forEach(book => book.classList.remove("active"));
 
       const finalElement =
-        document.getElementById("randomizerBook-" + finalBook.id);
+        document.getElementById("libraryRandomizerBook-" + finalBook.id);
 
-      if (finalElement) {
-        finalElement.classList.add("active");
-      }
-
-      window.lastPick = finalBook;
+      if (finalElement) finalElement.classList.add("active");
 
       winner.innerHTML = `
         <h3>${escapeHTML(finalBook.title)}</h3>
-
-        ${
-          finalBook.author
-            ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
-            : ""
-        }
-
-        <button onclick="setNextRead()">
-          Set as Featured Volume
-        </button>
+        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
       `;
 
       spinButton.disabled = false;
     }
-
   }, 120);
 };
 
-
 window.spinBookFromClub = function () {
-  if (!window.currentClubId) {
-    alert("Open a society first.");
-    return;
-  }
+  if (!window.currentClubId) return alert("Open a society first.");
 
   if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
     document.getElementById("winnerClub").innerHTML =
@@ -1918,20 +1888,16 @@ window.spinBookFromClub = function () {
   const maxCount = 18;
 
   const interval = setInterval(() => {
-    document
-      .querySelectorAll("#randomizerBooksClub .randomizer-spine")
+    document.querySelectorAll("#randomizerBooksClub .randomizer-spine")
       .forEach(book => book.classList.remove("active"));
 
     const randomBook =
       filteredBooks[Math.floor(Math.random() * filteredBooks.length)];
 
-    const activeBook = document.querySelector(
-      "#randomizerBooksClub #randomizerBook-" + randomBook.id
-    );
+    const activeBook =
+      document.getElementById("collectionRandomizerBook-" + randomBook.id);
 
-    if (activeBook) {
-      activeBook.classList.add("active");
-    }
+    if (activeBook) activeBook.classList.add("active");
 
     count++;
 
@@ -1943,25 +1909,17 @@ window.spinBookFromClub = function () {
 
       window.lastPick = finalBook;
 
-      document
-        .querySelectorAll("#randomizerBooksClub .randomizer-spine")
+      document.querySelectorAll("#randomizerBooksClub .randomizer-spine")
         .forEach(book => book.classList.remove("active"));
 
-      const finalElement = document.querySelector(
-        "#randomizerBooksClub #randomizerBook-" + finalBook.id
-      );
+      const finalElement =
+        document.getElementById("collectionRandomizerBook-" + finalBook.id);
 
-      if (finalElement) {
-        finalElement.classList.add("active");
-      }
+      if (finalElement) finalElement.classList.add("active");
 
       winner.innerHTML = `
         <h3>${escapeHTML(finalBook.title)}</h3>
-        ${
-          finalBook.author
-            ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
-            : ""
-        }
+        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
 
         <button onclick="setNextRead()">
           Set as Featured Volume
@@ -2091,6 +2049,42 @@ window.editBook = async function (bookId) {
   });
 
   alert("Book updated.");
+};
+window.deleteCollectionBook = async function (bookId) {
+  if (!window.currentClubId) return alert("Open a society first.");
+  if (!confirm("Delete this book from The Collection?")) return;
+
+  await set(ref(database, "clubs/" + window.currentClubId + "/collection/" + bookId), null);
+  alert("Book deleted from The Collection.");
+};
+
+window.editCollectionBook = async function (bookId) {
+  if (!window.currentClubId) return alert("Open a society first.");
+
+  const book = currentCollectionBooks.find(b => b.id === bookId);
+  if (!book) return alert("Book not found.");
+
+  const newTitle = prompt("Edit book title:", book.title || "");
+  if (newTitle === null) return;
+
+  const newAuthor = prompt("Edit author name:", book.author || "");
+  if (newAuthor === null) return;
+
+  const newCategory = prompt("Edit category:", book.category || "Book Club Pick");
+  if (newCategory === null) return;
+
+  const newImage = prompt("Edit cover image URL:", book.image || "");
+  if (newImage === null) return;
+
+  await update(ref(database, "clubs/" + window.currentClubId + "/collection/" + bookId), {
+    title: newTitle.trim(),
+    author: newAuthor.trim(),
+    category: newCategory.trim(),
+    image: newImage.trim(),
+    updatedAt: Date.now()
+  });
+
+  alert("Collection book updated.");
 };
 
 window.removeClub = async function (clubId) {
