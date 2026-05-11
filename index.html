@@ -1450,7 +1450,8 @@ function listenToClubBooks(clubId) {
     currentClubBooks = Object.entries(books).map(([id, value]) => ({ id, ...value }));
     updateNookShelfPreview();
     renderRandomizerShelf();
-
+    renderClubCollection();
+    
     document.getElementById("bookCount").textContent =
       currentClubBooks.length + " book" + (currentClubBooks.length === 1 ? "" : "s");
 
