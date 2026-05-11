@@ -1790,53 +1790,107 @@ window.spinBook = function () {
 };
 
 window.spinBookFromClub = function () {
-  const originalCategory = document.getElementById("spinCategory");
-  const originalWinner = document.getElementById("winner");
-  const originalButton = document.getElementById("spinButton");
-  const clubCategory = document.getElementById("spinCategoryClub");
-  const clubWinner = document.getElementById("winnerClub");
-  const clubButton = document.getElementById("spinButtonClub");
 
-  if (!clubCategory || !clubWinner || !clubButton) return;
+  if (!window.currentClubId) {
+    alert("Open a society first.");
+    return;
+  }
 
-  clubCategory.id = "spinCategory";
-  clubWinner.id = "winner";
-  clubButton.id = "spinButton";
+  if (!currentClubBooks || currentClubBooks.length === 0) {
+    document.getElementById("winnerClub").innerHTML =
+      "Add books to The Collection first.";
+    return;
+  }
 
-  window.spinBook();
+  const selectedCategory =
+    document.getElementById("spinCategoryClub").value;
 
-  setTimeout(() => {
-    const tempCategory = document.getElementById("spinCategory");
-    const tempWinner = document.getElementById("winner");
-    const tempButton = document.getElementById("spinButton");
+  const filteredBooks =
+    selectedCategory === "All Books"
+      ? currentClubBooks
+      : currentClubBooks.filter(
+          book => book.category === selectedCategory
+        );
 
-    if (tempCategory) tempCategory.id = "spinCategoryClub";
-    if (tempWinner) tempWinner.id = "winnerClub";
-    if (tempButton) tempButton.id = "spinButtonClub";
-  }, 2700);
-};
+  if (filteredBooks.length === 0) {
+    document.getElementById("winnerClub").innerHTML =
+      "No books in this category yet.";
+    return;
+  }
 
+  const spinButton =
+    document.getElementById("spinButtonClub");
 
-window.spinBookFromClub = function () {
-  const originalCategory = document.getElementById("spinCategory");
-  const originalWinner = document.getElementById("winner");
-  const originalButton = document.getElementById("spinButton");
-  const clubCategory = document.getElementById("spinCategoryClub");
-  const clubWinner = document.getElementById("winnerClub");
-  const clubButton = document.getElementById("spinButtonClub");
-  if (!clubCategory || !clubWinner || !clubButton) return;
-  clubCategory.id = "spinCategory";
-  clubWinner.id = "winner";
-  clubButton.id = "spinButton";
-  window.spinBook();
-  setTimeout(() => {
-    const tempCategory = document.getElementById("spinCategory");
-    const tempWinner = document.getElementById("winner");
-    const tempButton = document.getElementById("spinButton");
-    if (tempCategory) tempCategory.id = "spinCategoryClub";
-    if (tempWinner) tempWinner.id = "winnerClub";
-    if (tempButton) tempButton.id = "spinButtonClub";
-  }, 2700);
+  const winner =
+    document.getElementById("winnerClub");
+
+  spinButton.disabled = true;
+
+  winner.innerHTML = "Fate is deciding...";
+
+  let count = 0;
+  const maxCount = 18;
+
+  const interval = setInterval(() => {
+
+    document.querySelectorAll("#randomizerBooksClub .randomizer-spine")
+      .forEach(book => {
+        book.classList.remove("active");
+      });
+
+    const randomBook =
+      filteredBooks[
+        Math.floor(Math.random() * filteredBooks.length)
+      ];
+
+    const activeBook =
+      document.querySelector(
+        "#randomizerBooksClub #randomizerBook-" + randomBook.id
+      );
+
+    if (activeBook) {
+      activeBook.classList.add("active");
+    }
+
+    count++;
+
+    if (count >= maxCount) {
+
+      clearInterval(interval);
+
+      const finalBook =
+        filteredBooks[
+          Math.floor(Math.random() * filteredBooks.length)
+        ];
+
+      document.querySelectorAll("#randomizerBooksClub .randomizer-spine")
+        .forEach(book => {
+          book.classList.remove("active");
+        });
+
+      const finalElement =
+        document.querySelector(
+          "#randomizerBooksClub #randomizerBook-" + finalBook.id
+        );
+
+      if (finalElement) {
+        finalElement.classList.add("active");
+      }
+
+      winner.innerHTML = `
+        <h3>${escapeHTML(finalBook.title)}</h3>
+
+        ${
+          finalBook.author
+            ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
+            : ""
+        }
+      `;
+
+      spinButton.disabled = false;
+    }
+
+  }, 120);
 };
 
 window.setNextRead = async function () {
