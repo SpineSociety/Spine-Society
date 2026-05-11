@@ -1135,6 +1135,7 @@ button:hover {
   </div>
 
 </div>
+<div id="memberList" style="display:none;"></div>
     <nav class="top-nav" id="mainNav" style="display:none;">
       <button id="nookTab" class="nav-btn active">
         <span class="nav-icon">
@@ -2231,7 +2232,11 @@ window.openMembersModal = function () {
   if (memberList) {
     modalList.innerHTML = memberList.innerHTML;
   } else {
-    modalList.innerHTML = `<p class="status">Members are still loading.</p>`;
+    modalList.innerHTML = `
+  <p class="status">
+    Members are loading. Make sure listenToMembers(clubId) is inside openClub().
+  </p>
+`;
   }
 
   modal.style.display = "flex";
