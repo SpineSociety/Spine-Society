@@ -1513,8 +1513,14 @@ function renderBookCard(book, finished) {
               finished
                 ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
                 : `
-                  <button class="secondary" onclick="editBook('${book.id}')">Edit Book</button>
-                  <button class="danger" onclick="deleteBook('${book.id}')">Delete Book</button>
+                  ${
+  book.addedBy === currentUser.uid
+    ? `
+      <button class="secondary" onclick="editBook('${book.id}')">Edit Book</button>
+      <button class="danger" onclick="deleteBook('${book.id}')">Delete Book</button>
+    `
+    : ""
+}
                 `
             }
           </div>
@@ -1695,12 +1701,13 @@ window.addBookToClubCollection = async function () {
   );
 
   await set(bookRef, {
-    title,
-    author,
-    category,
-    image,
-    createdAt: Date.now()
-  });
+  title,
+  author,
+  category,
+  image,
+  addedBy: currentUser.uid,
+  createdAt: Date.now()
+});
 
   document.getElementById("bookTitleClub").value = "";
   document.getElementById("bookAuthorClub").value = "";
