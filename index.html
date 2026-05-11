@@ -1384,7 +1384,29 @@ window.openClub = async function (clubId) {
     <div>
       <div class="panel-kicker">Current Club</div>
       <h3>${escapeHTML(club.name)}</h3>
-      <p class="small" id="clubHeroMemberCount">Loading readers...</p>
+      <div class="small" id="clubHeroMemberCount">
+  Loading readers...
+</div>
+
+<div id="clubMemberPreview" style="
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap;
+"></div>
+
+<button
+  class="secondary"
+  onclick="openMembersModal()"
+  style="
+    margin-top:12px;
+    width:auto;
+    padding:10px 16px;
+  "
+>
+  View All Members
+</button>
     </div>
   `;
 
