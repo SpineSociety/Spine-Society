@@ -1795,7 +1795,7 @@ window.spinBook = function () {
     return;
   }
 
-  if (!currentClubBooks || currentClubBooks.length === 0) {
+  if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
     document.getElementById("winner").innerHTML =
       "Add books before picking.";
     return;
@@ -1804,8 +1804,10 @@ window.spinBook = function () {
   const selectedCategory = document.getElementById("spinCategory").value;
 
   const filteredBooks = selectedCategory === "All Books"
-    ? currentClubBooks
-    : currentClubBooks.filter(book => book.category === selectedCategory);
+    ? currentLibraryBooks
+    : currentLibraryBooks.filter(
+        book => book.category === selectedCategory
+      );
 
   if (filteredBooks.length === 0) {
     document.getElementById("winner").innerHTML =
@@ -1823,6 +1825,7 @@ window.spinBook = function () {
   const maxCount = 18;
 
   const interval = setInterval(() => {
+
     document.querySelectorAll(".randomizer-spine").forEach(book => {
       book.classList.remove("active");
     });
@@ -1858,26 +1861,26 @@ window.spinBook = function () {
 
       window.lastPick = finalBook;
 
-      window.lastPick = finalBook;
+      winner.innerHTML = `
+        <h3>${escapeHTML(finalBook.title)}</h3>
 
-winner.innerHTML = `
-  <h3>${escapeHTML(finalBook.title)}</h3>
+        ${
+          finalBook.author
+            ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
+            : ""
+        }
 
-  ${
-    finalBook.author
-      ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
-      : ""
-  }
-
-  <button onclick="setNextRead()">
-    Set as Featured Volume
-  </button>
-`;
+        <button onclick="setNextRead()">
+          Set as Featured Volume
+        </button>
+      `;
 
       spinButton.disabled = false;
     }
+
   }, 120);
 };
+
 
 window.spinBookFromClub = function () {
   if (!window.currentClubId) {
