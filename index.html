@@ -1140,7 +1140,8 @@ const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
 let currentUser = null;
-let currentClubBooks = [];
+let currentLibraryBooks = [];
+let currentCollectionBooks = [];
 let currentClubOwner = null;
 
 function escapeHTML(value) {
@@ -1536,7 +1537,7 @@ function listenToCollectionBooks(clubId) {
 
       const books = snapshot.val() || {};
 
-      currentClubBooks = Object.entries(books).map(
+      currentCollectionBooks = Object.entries(books).map(
         ([id, value]) => ({
           id,
           ...value
