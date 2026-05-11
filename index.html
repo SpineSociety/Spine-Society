@@ -1755,9 +1755,9 @@ window.addBookToClub = async function () {
   alert("Book added.");
 };
 window.addBookToClubCollection = async function () {
-
   if (!window.currentClubId) {
-    return alert("Open a society first.");
+    alert("Open a society first.");
+    return;
   }
 
   const title = document.getElementById("bookTitleClub").value.trim();
@@ -1766,7 +1766,8 @@ window.addBookToClubCollection = async function () {
   const image = document.getElementById("bookImageClub").value.trim();
 
   if (!title) {
-    return alert("Enter a book title.");
+    alert("Enter a book title.");
+    return;
   }
 
   const bookRef = push(
@@ -1774,13 +1775,13 @@ window.addBookToClubCollection = async function () {
   );
 
   await set(bookRef, {
-  title,
-  author,
-  category,
-  image,
-  addedBy: currentUser.uid,
-  createdAt: Date.now()
-});
+    title,
+    author,
+    category,
+    image,
+    addedBy: currentUser.uid,
+    createdAt: Date.now()
+  });
 
   document.getElementById("bookTitleClub").value = "";
   document.getElementById("bookAuthorClub").value = "";
