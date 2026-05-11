@@ -1750,7 +1750,7 @@ window.addBookToClubCollection = async function () {
   }
 
   const bookRef = push(
-    ref(database, "clubs/" + window.currentClubId + "/books")
+    ref(database, "clubs/" + window.currentClubId + "/collection")
   );
 
   await set(bookRef, {
