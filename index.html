@@ -1068,7 +1068,73 @@ button:hover {
         </section>
       </div>
     </div>
+<div
+  id="membersModal"
+  style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    z-index:999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
 
+  <div
+    style="
+      width:min(100%,420px);
+      max-height:80vh;
+      overflow-y:auto;
+      border-radius:28px;
+      background:
+        linear-gradient(180deg, rgba(30,20,14,.96), rgba(12,8,5,.98));
+      border:1px solid rgba(200,163,106,.18);
+      padding:22px;
+      box-shadow:0 24px 60px rgba(0,0,0,.65);
+    "
+  >
+
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:18px;
+      "
+    >
+
+      <h2 style="margin:0;">
+        Reading Circle
+      </h2>
+
+      <button
+        class="secondary"
+        onclick="closeMembersModal()"
+        style="
+          width:auto;
+          min-height:auto;
+          padding:8px 14px;
+        "
+      >
+        Close
+      </button>
+
+    </div>
+
+    <div id="membersModalList">
+
+      <p class="status">
+        Loading members...
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
     <nav class="top-nav" id="mainNav" style="display:none;">
       <button id="nookTab" class="nav-btn active">
         <span class="nav-icon">
@@ -2153,17 +2219,27 @@ window.editCollectionBook = async function (bookId) {
   alert("Collection book updated.");
 };
 window.openMembersModal = function () {
+  const modal = document.getElementById("membersModal");
+  const modalList = document.getElementById("membersModalList");
   const memberList = document.getElementById("memberList");
 
-  if (!memberList) {
-    alert("Members are still loading.");
+  if (!modal || !modalList) {
+    alert("Members modal is missing.");
     return;
   }
 
-  memberList.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
+  if (memberList) {
+    modalList.innerHTML = memberList.innerHTML;
+  } else {
+    modalList.innerHTML = `<p class="status">Members are still loading.</p>`;
+  }
+
+  modal.style.display = "flex";
+};
+
+window.closeMembersModal = function () {
+  const modal = document.getElementById("membersModal");
+  if (modal) modal.style.display = "none";
 };
 
 window.removeClub = async function (clubId) {
