@@ -2153,7 +2153,17 @@ window.editCollectionBook = async function (bookId) {
   alert("Collection book updated.");
 };
 window.openMembersModal = function () {
-  alert("Full members page coming soon ✨");
+  const memberList = document.getElementById("memberList");
+
+  if (!memberList) {
+    alert("Members are still loading.");
+    return;
+  }
+
+  memberList.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
 };
 
 window.removeClub = async function (clubId) {
