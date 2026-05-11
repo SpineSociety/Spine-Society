@@ -1723,6 +1723,16 @@ previewHTML += `
     }
 
     memberList.innerHTML = html || `<p class="status">No readers yet.</p>`;
+    const preview = document.getElementById("clubMemberPreview");
+
+if (preview) {
+  preview.innerHTML = `
+    ${previewHTML}
+    <div class="small" style="margin-left:4px;">
+      ${memberIds.length} member${memberIds.length === 1 ? "" : "s"}
+    </div>
+  `;
+}
   });
 }
 
