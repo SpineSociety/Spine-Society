@@ -1932,8 +1932,8 @@ window.spinBookFromClub = function () {
 };
 
 window.setNextRead = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
-  if (!window.lastPick) return alert("Pick a book first.");
+  if (!window.currentClubId) return alert("Open a society first.");
+  if (!window.lastPick) return alert("Let Fate Decides choose a book first.");
 
   await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
     title: window.lastPick.title || "",
@@ -1943,8 +1943,17 @@ window.setNextRead = async function () {
     setAt: Date.now()
   });
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id), null);
-  alert("Next read set!");
+  await set(
+    ref(database, "clubs/" + window.currentClubId + "/collection/" + window.lastPick.id),
+    null
+  );
+
+  window.lastPick = null;
+
+  document.getElementById("winnerClub").innerHTML =
+    "Featured Volume has been set.";
+
+  alert("Featured Volume set!");
 };
 
 window.markNextReadFinished = async function () {
