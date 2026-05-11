@@ -1212,6 +1212,7 @@ let currentUser = null;
 let currentLibraryBooks = [];
 let currentCollectionBooks = [];
 let currentClubOwner = null;
+let currentClubId = null;
 
 function escapeHTML(value) {
   return String(value || "")
@@ -2230,13 +2231,47 @@ window.editCollectionBook = async function (bookId) {
 };
 window.openMembersModal = function () {
   const modal = document.getElementById("membersModal");
+  const modalList = document.getElementById("membersModalList");
 
-  if (!modal) {
+  if (!modal || !modalList) {
     alert("Members modal is missing.");
     return;
   }
 
   modal.style.display = "flex";
+
+  const clubId = window.currentClubId;
+
+  if (!clubId) {
+    modalList.innerHTML = `<p class="status">No club selected.</p>`;
+    return;
+  }
+
+  modalList.innerHTML = `<p class="status">Loading members...</p>`;
+
+  const membersRef = ref(database, `clubs/${clubId}/members`);
+
+  onValue(membersRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      modalList.innerHTML = `<p class="status">No members yet.</p>`;
+      return;
+    }
+
+    let html = "";
+
+    snapshot.forEach((childSnapshot) => {
+      const member = childSnapshot.val();
+
+      html += `
+        <div class="member-card">
+          <strong>${member.name || "Unnamed member"}</strong>
+          <p>${member.email || ""}</p>
+        </div>
+      `;
+    });
+
+    modalList.innerHTML = html;
+  });
 };
 
 window.closeMembersModal = function () {
