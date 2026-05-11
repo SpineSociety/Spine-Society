@@ -1943,7 +1943,7 @@ window.setNextRead = async function () {
     setAt: Date.now()
   });
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/books/" + window.lastPick.id), null);
+  await set(ref(database, "clubs/" + window.currentClubId + "/collection/" + window.lastPick.id), null);
   alert("Next read set!");
 };
 
