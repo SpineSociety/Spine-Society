@@ -1744,62 +1744,71 @@ function listenToBooksRead(clubId) {
 }
 
 function listenToMembers(clubId) {
-  const memberList = document.getElementById("memberList");
-  const memberCount = document.getElementById("memberCount");
+  const memberCount = document.getElementById("clubHeroMemberCount");
+  const preview = document.getElementById("clubMemberPreview");
+  const modalList = document.getElementById("membersModalList");
 
   onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
     const members = snapshot.val() || {};
     const memberIds = Object.keys(members);
 
-    memberCount.textContent = memberIds.length + " reader" + (memberIds.length === 1 ? "" : "s");
+    if (memberCount) {
+      memberCount.textContent =
+        memberIds.length + " member" + (memberIds.length === 1 ? "" : "s");
+    }
 
-    let html = "";
+    if (memberIds.length === 0) {
+      if (preview) preview.innerHTML = "";
+      if (modalList) modalList.innerHTML = `<p class="status">No members yet.</p>`;
+      return;
+    }
+
     let previewHTML = "";
+    let modalHTML = "";
+
     for (const uid of memberIds) {
       const userSnapshot = await get(ref(database, "users/" + uid));
       const userData = userSnapshot.val();
-const displayName =
-  userData?.username ||
-  userData?.email ||
-  "Reader";
 
-const firstLetter = displayName.charAt(0).toUpperCase();
+      const displayName =
+        userData?.username ||
+        userData?.email ||
+        "Reader";
 
-previewHTML += `
-  <div style="
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(145deg,var(--gold-soft),var(--gold));
-    color:#120b06;
-    font-weight:700;
-    font-size:.9rem;
-  ">
-    ${escapeHTML(firstLetter)}
-  </div>
-`;
-      html += `
+      const firstLetter = displayName.charAt(0).toUpperCase();
+
+      previewHTML += `
+        <div style="
+          width:38px;
+          height:38px;
+          border-radius:50%;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:linear-gradient(145deg,var(--gold-soft),var(--gold));
+          color:#120b06;
+          font-weight:700;
+          font-size:.9rem;
+        ">
+          ${escapeHTML(firstLetter)}
+        </div>
+      `;
+
+      modalHTML += `
         <div class="book-item">
-          <div class="item-title">${escapeHTML(userData?.username || userData?.email || "Reader")}</div>
+          <div class="item-title">${escapeHTML(displayName)}</div>
           <div class="small">Reading circle member</div>
         </div>
       `;
     }
 
-    memberList.innerHTML = html || `<p class="status">No readers yet.</p>`;
-    const preview = document.getElementById("clubMemberPreview");
+    if (preview) {
+      preview.innerHTML = previewHTML;
+    }
 
-if (preview) {
-  preview.innerHTML = `
-    ${previewHTML}
-    <div class="small" style="margin-left:4px;">
-      ${memberIds.length} member${memberIds.length === 1 ? "" : "s"}
-    </div>
-  `;
-}
+    if (modalList) {
+      modalList.innerHTML = modalHTML;
+    }
   });
 }
 
@@ -2221,22 +2230,10 @@ window.editCollectionBook = async function (bookId) {
 };
 window.openMembersModal = function () {
   const modal = document.getElementById("membersModal");
-  const modalList = document.getElementById("membersModalList");
-  const memberList = document.getElementById("memberList");
 
-  if (!modal || !modalList) {
+  if (!modal) {
     alert("Members modal is missing.");
     return;
-  }
-
-  if (memberList) {
-    modalList.innerHTML = memberList.innerHTML;
-  } else {
-    modalList.innerHTML = `
-  <p class="status">
-    Members are loading. Make sure listenToMembers(clubId) is inside openClub().
-  </p>
-`;
   }
 
   modal.style.display = "flex";
