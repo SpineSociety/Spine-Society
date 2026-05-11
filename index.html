@@ -2264,8 +2264,8 @@ window.openMembersModal = function () {
 
       html += `
         <div class="member-card">
-          <strong>${member.name || "Unnamed member"}</strong>
-          <p>${member.email || ""}</p>
+          <strong>${member.displayName || member.name || member.email || "Unknown member"}</strong>
+<p>${member.email || ""}</p>
         </div>
       `;
     });
