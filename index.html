@@ -2268,15 +2268,32 @@ window.openMembersModal = function () {
     let html = "";
 
     snapshot.forEach((childSnapshot) => {
-      const member = childSnapshot.val();
+  const member = childSnapshot.val();
+  const memberId = childSnapshot.key;
 
-      html += `
-        <div class="member-card">
-          <strong>${member.displayName || member.name || member.email || "Unknown member"}</strong>
-<p>${member.email || ""}</p>
-        </div>
-      `;
-    });
+  let memberName = "Unknown member";
+  let memberEmail = "";
+
+  if (member === true) {
+    memberName = memberId;
+  } else if (typeof member === "object" && member !== null) {
+    memberName =
+      member.name ||
+      member.displayName ||
+      member.email ||
+      memberId ||
+      "Unknown member";
+
+    memberEmail = member.email || "";
+  }
+
+  html += `
+    <div class="member-card">
+      <strong>${memberName}</strong>
+      <p>${memberEmail}</p>
+    </div>
+  `;
+});
 
     modalList.innerHTML = html;
   });
