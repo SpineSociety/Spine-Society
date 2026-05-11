@@ -1778,11 +1778,21 @@ window.spinBook = function () {
 
       window.lastPick = finalBook;
 
-      winner.innerHTML = `
-        <h3>${escapeHTML(finalBook.title)}</h3>
-        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
-        <button onclick="setNextRead()">Set as Next Read</button>
-      `;
+      window.lastPick = finalBook;
+
+winner.innerHTML = `
+  <h3>${escapeHTML(finalBook.title)}</h3>
+
+  ${
+    finalBook.author
+      ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
+      : ""
+  }
+
+  <button onclick="setNextRead()">
+    Set as Featured Volume
+  </button>
+`;
 
       spinButton.disabled = false;
     }
