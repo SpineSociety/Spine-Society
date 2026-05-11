@@ -1141,6 +1141,7 @@ const database = getDatabase(app);
 
 let currentUser = null;
 let currentClubBooks = [];
+let currentClubOwner = null;
 
 function escapeHTML(value) {
   return String(value || "")
@@ -1375,7 +1376,7 @@ window.openClub = async function (clubId) {
 
   window.currentClubId = clubId;
   window.currentClubName = club.name;
-
+  currentClubOwner = club.owner || null;
 
   document.getElementById("clubHero").innerHTML = `
     <div class="club-emblem">📚</div>
@@ -1478,7 +1479,7 @@ function renderClubCollection() {
           </div>
 
           ${
-            book.addedBy === currentUser.uid
+            currentUser && currentClubOwner === currentUser.uid
               ? `
                 <div class="book-actions">
                   <button class="secondary" onclick="editBook('${book.id}')">
