@@ -1687,6 +1687,7 @@ function listenToMembers(clubId) {
     memberCount.textContent = memberIds.length + " reader" + (memberIds.length === 1 ? "" : "s");
 
     let html = "";
+    let previewHTML = "";
     for (const uid of memberIds) {
       const userSnapshot = await get(ref(database, "users/" + uid));
       const userData = userSnapshot.val();
