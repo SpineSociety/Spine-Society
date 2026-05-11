@@ -1404,7 +1404,12 @@ window.createClub = async function () {
     owner: currentUser.uid,
     createdBy: currentUser.email || "",
     createdAt: Date.now(),
-    members: { [currentUser.uid]: true }
+    members: {
+  [currentUser.uid]: {
+    name: currentUser.displayName || currentUser.email || "Reader",
+    email: currentUser.email || ""
+  }
+}
   });
 
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
@@ -1429,7 +1434,10 @@ window.joinClubFromInput = async function () {
 
   const clubId = extractClubId(input);
 
-  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), true);
+  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
+  name: currentUser.displayName || currentUser.email || "Reader",
+  email: currentUser.email || ""
+});
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("joinClubId").value = "";
