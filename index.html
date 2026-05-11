@@ -1386,7 +1386,7 @@ window.openClub = async function (clubId) {
   `;
 
 
-  listenToClubBooks(clubId);
+  listenToCollectionBooks(clubId);
   listenToNextRead(clubId);
   listenToBooksRead(clubId);
   listenToMembers(clubId);
@@ -1528,7 +1528,25 @@ function listenToClubBooks(clubId) {
     `;
   });
 }
+function listenToCollectionBooks(clubId) {
 
+  onValue(
+    ref(database, "clubs/" + clubId + "/collection"),
+    (snapshot) => {
+
+      const books = snapshot.val() || {};
+
+      currentClubBooks = Object.entries(books).map(
+        ([id, value]) => ({
+          id,
+          ...value
+        })
+      );
+
+      renderClubCollection();
+    }
+  );
+}
 function renderSpineCard(book) {
   return `
     <div class="spine-card" title="${escapeAttr(book.title)}">
