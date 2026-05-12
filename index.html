@@ -2457,26 +2457,7 @@ onAuthStateChanged(auth, async (user) => {
       userData.username;
   }
 
-  if (userData.avatar) {
-
-    const avatarInput =
-      document.getElementById("avatarInput");
-
-    const currentAvatar =
-      document.getElementById("currentAvatar");
-
-    if (avatarInput) {
-      avatarInput.value = userData.avatar;
-    }
-
-    if (currentAvatar) {
-      currentAvatar.textContent =
-        "Current Avatar: " + userData.avatar;
-    }
-
-  }
-
-}
+  
 if (userData && userData.avatar) {
   const avatarInput = document.getElementById("avatarInput");
   const currentAvatar = document.getElementById("currentAvatar");
