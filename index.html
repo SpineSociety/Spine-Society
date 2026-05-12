@@ -1452,6 +1452,13 @@ window.openClub = async function (clubId) {
   if (!club) return alert("Shelf not found.");
 
   window.currentClubId = clubId;
+  
+  if (currentUser && currentUser.uid) {
+  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
+    name: currentUser.displayName || currentUser.email || "Reader",
+    email: currentUser.email || ""
+  });
+}
   window.currentClubName = club.name;
   currentClubOwner = club.owner || null;
 
