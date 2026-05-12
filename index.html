@@ -2255,52 +2255,15 @@ window.openMembersModal = function () {
 
   modal.style.display = "flex";
 
-  const clubId = window.currentClubId;
-
-  if (!clubId) {
+  if (!window.currentClubId) {
     modalList.innerHTML = `<p class="status">No club selected.</p>`;
     return;
   }
 
-  modalList.innerHTML = `<p class="status">Loading members...</p>`;
-
-  const membersRef = ref(database, `clubs/${clubId}/members`);
-
-  onValue(membersRef, (snapshot) => {
-    if (!snapshot.exists()) {
-      modalList.innerHTML = `<p class="status">No members yet.</p>`;
-      return;
-    }
-
-    let html = "";
-
-    snapshot.forEach((childSnapshot) => {
-  const member = childSnapshot.val();
-  const memberId = childSnapshot.key;
-
-  let memberName = "Unknown member";
-  let memberEmail = "";
-
-  if (member === true) {
-    memberName = memberId;
-  } else if (typeof member === "object" && member !== null) {
-    memberName =
-      member.name ||
-      member.displayName ||
-      member.email ||
-      memberId ||
-      "Unknown member";
-
-    memberEmail = member.email || "";
+  if (!modalList.innerHTML.trim()) {
+    modalList.innerHTML = `<p class="status">Loading members...</p>`;
   }
-
-  html += `
-    <div class="member-card">
-      <strong>${memberName}</strong>
-      <p>${memberEmail}</p>
-    </div>
-  `;
-});
+};
 
     modalList.innerHTML = html;
   });
