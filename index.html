@@ -1063,6 +1063,21 @@ button:hover {
             <input id="usernameInput" placeholder="Choose your Reader Alias" />
             <button onclick="saveUsername()">Save Reader Alias</button>
             <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
+            <div class="card-header"><h2>Reader Avatar</h2></div>
+
+<select id="avatarInput">
+  <option value="📚">📚 Book Lover</option>
+  <option value="🕯️">🕯️ Cozy Reader</option>
+  <option value="🌙">🌙 Night Reader</option>
+  <option value="☕">☕ Coffee Reader</option>
+  <option value="🦉">🦉 Wise Owl</option>
+  <option value="🌿">🌿 Soft Scholar</option>
+  <option value="🖋️">🖋️ Marginalia Writer</option>
+</select>
+
+<button onclick="saveAvatar()">Save Avatar</button>
+
+<p class="helper" id="currentAvatar">Current Avatar: 📚</p>
             <button class="danger" onclick="logoutUser()">Log Out</button>
           </section>
         </section>
@@ -1324,7 +1339,21 @@ window.saveUsername = async function () {
   document.getElementById("currentUsername").textContent = "Reader Alias: " + username;
   alert("Reader Alias saved.");
 };
+window.saveAvatar = async function () {
+  if (!currentUser) return alert("Please log in first.");
 
+  const avatar = document.getElementById("avatarInput").value;
+
+  await update(ref(database, "users/" + currentUser.uid), {
+    avatar,
+    updatedAt: Date.now()
+  });
+
+  document.getElementById("currentAvatar").textContent =
+    "Current Avatar: " + avatar;
+
+  alert("Avatar saved.");
+};
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
     email: user.email || "",
@@ -1800,7 +1829,7 @@ function listenToMembers(clubId) {
         userData?.email ||
         "Reader";
 
-      const firstLetter = displayName.charAt(0).toUpperCase();
+      const avatar = userData?.avatar || displayName.charAt(0).toUpperCase();
 
       previewHTML += `
         <div style="
@@ -1815,7 +1844,7 @@ function listenToMembers(clubId) {
           font-weight:700;
           font-size:.9rem;
         ">
-          ${escapeHTML(firstLetter)}
+          ${escapeHTML(avatar)}
         </div>
       `;
 
@@ -2415,12 +2444,28 @@ onAuthStateChanged(auth, async (user) => {
     const userSnapshot = await get(ref(database, "users/" + user.uid));
     const userData = userSnapshot.val();
 
-    if (userData && userData.username) {
-      document.getElementById("usernameInput").value = userData.username;
-      document.getElementById("currentUsername").textContent =
-        "Reader Alias: " + userData.username;
-      document.getElementById("nookReaderName").textContent = userData.username;
-    }
+    if (userData) {
+
+  if (userData.username) {
+    document.getElementById("usernameInput").value =
+      userData.username;
+
+    document.getElementById("currentUsername").textContent =
+      "Reader Alias: " + userData.username;
+
+    document.getElementById("nookReaderName").textContent =
+      userData.username;
+  }
+
+  if (userData.avatar) {
+    document.getElementById("avatarInput").value =
+      userData.avatar;
+
+    document.getElementById("currentAvatar").textContent =
+      "Current Avatar: " + userData.avatar;
+  }
+
+}
 
     listenToUserClubs();
     handleInviteLink();
