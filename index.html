@@ -1062,6 +1062,18 @@ button:hover {
             <p class="helper" id="accountEmail">Signed in.</p>
             <input id="usernameInput" placeholder="Choose your Reader Alias" />
             <button onclick="saveUsername()">Save Reader Alias</button>
+            <input
+  id="avatarInput"
+  placeholder="Paste avatar image URL"
+/>
+
+<button onclick="saveAvatar()">
+  Save Avatar
+</button>
+
+<p class="helper" id="currentAvatar">
+  No avatar set yet.
+</p>
             <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
             <div class="card-header"><h2>Reader Avatar</h2></div>
 
@@ -1339,6 +1351,32 @@ window.saveUsername = async function () {
   document.getElementById("currentUsername").textContent = "Reader Alias: " + username;
   alert("Reader Alias saved.");
 };
+window.saveAvatar = async function () {
+
+  if (!currentUser)
+    return alert("Please log in first.");
+
+  const avatar =
+    document.getElementById("avatarInput").value.trim();
+
+  if (!avatar)
+    return alert("Paste an avatar URL.");
+
+  await update(
+    ref(database, "users/" + currentUser.uid),
+    {
+      avatar,
+      updatedAt: Date.now()
+    }
+  );
+
+  document.getElementById("currentAvatar").textContent =
+    "Current Avatar saved.";
+
+  alert("Avatar saved.");
+
+};
+
 window.saveAvatar = async function () {
   if (!currentUser) return alert("Please log in first.");
 
@@ -1829,41 +1867,46 @@ function listenToMembers(clubId) {
         userData?.email ||
         "Reader";
 
-      const avatar = userData?.avatar || displayName.charAt(0).toUpperCase();
+      const avatar = userData?.avatar || "";
 
-      previewHTML += `
-        <div style="
-          width:38px;
-          height:38px;
-          border-radius:50%;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:linear-gradient(145deg,var(--gold-soft),var(--gold));
-          color:#120b06;
-          font-weight:700;
-          font-size:.9rem;
-        ">
-          ${escapeHTML(avatar)}
-        </div>
-      `;
+if (avatar) {
 
-      modalHTML += `
-        <div class="book-item">
-          <div class="item-title">${escapeHTML(displayName)}</div>
-          <div class="small">Reading circle member</div>
-        </div>
-      `;
-    }
+  previewHTML += `
+    <img
+      src="${escapeAttr(avatar)}"
+      style="
+        width:38px;
+        height:38px;
+        border-radius:50%;
+        object-fit:cover;
+        border:2px solid rgba(200,163,106,.25);
+      "
+    >
+  `;
 
-    if (preview) {
-      preview.innerHTML = previewHTML;
-    }
+} else {
 
-    if (modalList) {
-      modalList.innerHTML = modalHTML;
-    }
-  });
+  const firstLetter =
+    displayName.charAt(0).toUpperCase();
+
+  previewHTML += `
+    <div style="
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(145deg,var(--gold-soft),var(--gold));
+      color:#120b06;
+      font-weight:700;
+      font-size:.9rem;
+    ">
+      ${escapeHTML(firstLetter)}
+    </div>
+  `;
+
+}
 }
 
 function listenToDiscussion(clubId) {
