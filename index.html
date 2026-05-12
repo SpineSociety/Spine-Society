@@ -1211,6 +1211,7 @@ const database = getDatabase(app);
 let currentUser = null;
 let currentLibraryBooks = [];
 let currentCollectionBooks = [];
+let currentClubBooks = [];
 let currentClubOwner = null;
 let currentClubId = null;
 
@@ -1232,8 +1233,16 @@ function showScreen(screenName) {
   document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
   document.querySelectorAll(".nav-btn").forEach(button => button.classList.remove("active"));
 
-  document.getElementById(screenName + "Screen").classList.add("active");
-  document.getElementById(screenName + "Tab").classList.add("active");
+  const screen = document.getElementById(screenName + "Screen");
+  if (screen) {
+    screen.classList.add("active");
+  }
+
+  const tab = document.getElementById(screenName + "Tab");
+  if (tab) {
+    tab.classList.add("active");
+  }
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
