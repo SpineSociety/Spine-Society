@@ -2458,6 +2458,35 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   if (userData.avatar) {
+
+    const avatarInput =
+      document.getElementById("avatarInput");
+
+    const currentAvatar =
+      document.getElementById("currentAvatar");
+
+    if (avatarInput) {
+      avatarInput.value = userData.avatar;
+    }
+
+    if (currentAvatar) {
+      currentAvatar.textContent =
+        "Current Avatar: " + userData.avatar;
+    }
+
+  }
+
+}
+if (userData && userData.avatar) {
+  const avatarInput = document.getElementById("avatarInput");
+  const currentAvatar = document.getElementById("currentAvatar");
+
+  if (avatarInput) avatarInput.value = userData.avatar;
+  if (currentAvatar) {
+    currentAvatar.textContent = "Current Avatar: " + userData.avatar;
+  }
+}
+  if (userData.avatar) {
     document.getElementById("avatarInput").value =
       userData.avatar;
 
