@@ -1900,7 +1900,7 @@ function listenToDiscussion(clubId) {
       <div class="note-card" onclick="toggleReactionPicker('${comment.id}')">
         <div class="comment-row">
          <div class="comment-avatar">${escapeHTML(comment.authorAvatar || (comment.authorAlias || "R").charAt(0).toUpperCase())}</div>
-          <div class="comment-avatar">${escapeHTML((comment.authorAlias || "R").charAt(0).toUpperCase())}</div>
+          <div class="comment-avatar">${
             <div class="comment-alias">${escapeHTML(comment.authorAlias || "Reader")}</div>
             <div class="note-message">${escapeHTML(comment.message)}</div>
             <div class="comment-time">${formatTimeAgo(comment.createdAt)}${comment.editedAt ? " · edited" : ""}</div>
