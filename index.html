@@ -951,7 +951,21 @@ button:hover {
   <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
 </div>
   <div id="chatPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Marginalia</h2></div><p class="helper">Chat with your reading circle.</p><input id="discussionInputClub" placeholder="Share your thoughts..." /><button onclick="postDiscussionCommentFromClub()">Post Note</button><div id="discussionListClub"><p class="status">No notes yet. Start the conversation.</p></div></section></div>
-  <div id="currentPanel" class="club-room-panel active"><section class="card"><div class="card-header"><h2>Current Read</h2></div><div id="nextReadArea"><p class="status">No next read set yet.</p></div></section><section class="card"><div class="card-header"><h2>Finished Reads</h2><span id="booksReadCount" class="small"></span></div><div id="booksReadList"><p class="status">No finished reads yet.</p></div></section></div>
+  <div id="currentPanel" class="club-room-panel active"><section class="card"><div class="card-header"><h2>Current Read</h2></div><div id="nextReadArea"><p class="status">No next read set yet.</p></div></section><section class="card">
+  <div class="card-header">
+    <h2>Reading Check-In</h2>
+  </div>
+
+  <p class="helper">
+    Let your group know you finished the assigned section.
+  </p>
+
+  <input id="checkInAmount" placeholder="Example: Chapters 1–5 or 50 pages" />
+
+  <button onclick="sendReadingCheckIn()">
+    Notify My Circle 📣
+  </button>
+</section><section class="card"><div class="card-header"><h2>Finished Reads</h2><span id="booksReadCount" class="small"></span></div><div id="booksReadList"><p class="status">No finished reads yet.</p></div></section></div>
   
 
   <div id="pollsPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Polls</h2></div><p class="status">Polls are coming soon.</p></section></div>
@@ -2187,7 +2201,51 @@ window.postDiscussionComment = async function () {
 
   input.value = "";
 };
+window.sendReadingCheckIn = async function () {
+  if (!window.currentClubId) {
+    alert("Open a shelf first.");
+    return;
+  }
 
+  const input = document.getElementById("checkInAmount");
+  const amount = input.value.trim();
+
+  if (!amount) {
+    alert("Enter what you finished reading.");
+    return;
+  }
+
+  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
+  const userData = userSnapshot.val() || {};
+
+  const name =
+    userData.username ||
+    currentUser.email ||
+    "A reader";
+
+  const avatar =
+    userData.avatar ||
+    "📚";
+
+  const message =
+    avatar + " " + name + " finished the assigned reading: " + amount + " ✨";
+
+  const commentRef = push(
+    ref(database, "clubs/" + window.currentClubId + "/discussion")
+  );
+
+  await set(commentRef, {
+    message,
+    authorId: currentUser.uid,
+    authorAlias: name,
+    type: "check-in",
+    createdAt: Date.now()
+  });
+
+  input.value = "";
+
+  alert("Your reading circle has been notified!");
+};
 
 window.postDiscussionCommentFromClub = async function () {
   const input = document.getElementById("discussionInputClub");
