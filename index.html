@@ -1898,7 +1898,7 @@ function listenToDiscussion(clubId) {
     const discussionHTML = comments.map(comment => `
       <div class="note-card" onclick="toggleReactionPicker('${comment.id}')">
         <div class="comment-row">
-          <div class="comment-avatar">${escapeHTML(comment.authorAvatar || (comment.authorAlias || "R").charAt(0).toUpperCase())}</div>
+          <div class="comment-avatar">${escapeHTML((comment.authorAlias || "R").charAt(0).toUpperCase())}</div>
           <div class="comment-content">
             <div class="comment-alias">${escapeHTML(comment.authorAlias || "Reader")}</div>
             <div class="note-message">${escapeHTML(comment.message)}</div>
@@ -2193,11 +2193,12 @@ window.postDiscussionComment = async function () {
   const commentRef = push(ref(database, "clubs/" + window.currentClubId + "/discussion"));
 
   await set(commentRef, {
-    message,
-    authorId: currentUser.uid,
-    authorAlias: userData?.username || currentUser.email || "Reader",
-    createdAt: Date.now()
-  });
+  message,
+  authorId: currentUser.uid,
+  authorAlias: userData?.username || currentUser.email || "Reader",
+  authorAvatar: userData?.avatar || "📚",
+  createdAt: Date.now()
+});
 
   input.value = "";
 };
@@ -2215,17 +2216,6 @@ window.sendReadingCheckIn = async function () {
     return;
   }
 
-  const nextReadSnapshot = await get(
-    ref(database, "clubs/" + window.currentClubId + "/nextRead")
-  );
-
-  const nextRead = nextReadSnapshot.val();
-
-  if (!nextRead) {
-    alert("Set a Featured Volume first so your check-in knows which book you mean.");
-    return;
-  }
-
   const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
   const userData = userSnapshot.val() || {};
 
@@ -2238,17 +2228,8 @@ window.sendReadingCheckIn = async function () {
     userData.avatar ||
     "📚";
 
-  const bookTitle =
-    nextRead.title ||
-    "the current read";
-
-  const bookAuthor =
-    nextRead.author ? " by " + nextRead.author : "";
-
- const message =
-  name +
-  " finished " + amount +
-  " of " + bookTitle + bookAuthor + " ✨";
+  const message =
+    avatar + " " + name + " finished the assigned reading: " + amount + " ✨";
 
   const commentRef = push(
     ref(database, "clubs/" + window.currentClubId + "/discussion")
@@ -2258,11 +2239,7 @@ window.sendReadingCheckIn = async function () {
     message,
     authorId: currentUser.uid,
     authorAlias: name,
-    authorAvatar: avatar,
     type: "check-in",
-    bookTitle: bookTitle,
-    bookAuthor: nextRead.author || "",
-    amount,
     createdAt: Date.now()
   });
 
@@ -2280,7 +2257,13 @@ window.postDiscussionCommentFromClub = async function () {
   const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
   const userData = userSnapshot.val();
   const commentRef = push(ref(database, "clubs/" + window.currentClubId + "/discussion"));
-  await set(commentRef, { message, authorId: currentUser.uid, authorAlias: userData?.username || currentUser.email || "Reader", createdAt: Date.now() });
+  await set(commentRef, {
+  message,
+  authorId: currentUser.uid,
+  authorAlias: userData?.username || currentUser.email || "Reader",
+  authorAvatar: userData?.avatar || "📚",
+  createdAt: Date.now()
+});
   input.value = "";
 };
 
