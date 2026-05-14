@@ -1112,7 +1112,13 @@ button:hover {
 </select>
 
 <button onclick="saveAvatar()">Save Avatar</button>
+<input id="avatarPhotoInput" type="file" accept="image/*" />
 
+<button onclick="uploadAvatarPhoto()">
+  Upload Avatar Photo
+</button>
+
+<div id="avatarPreview" style="margin-top:12px;"></div>
 <p class="helper" id="currentAvatar">Current Avatar: 📚</p>
             <button class="danger" onclick="logoutUser()">Log Out</button>
           </section>
@@ -1242,7 +1248,12 @@ import {
   update,
   onValue
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
   authDomain: "spine-society-b2a3c.firebaseapp.com",
@@ -1258,7 +1269,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
-
+const storage = getStorage(app);
 let currentUser = null;
 let currentLibraryBooks = [];
 let currentCollectionBooks = [];
@@ -1391,6 +1402,37 @@ window.saveAvatar = async function () {
     "Current Avatar: " + avatar;
 
   alert("Avatar saved.");
+};
+window.uploadAvatarPhoto = async function () {
+  if (!currentUser) return alert("Please log in first.");
+
+  const fileInput = document.getElementById("avatarPhotoInput");
+  const file = fileInput.files[0];
+
+  if (!file) return alert("Choose a photo first.");
+
+  const avatarPath =
+    "avatars/" + currentUser.uid + "/" + Date.now() + "-" + file.name;
+
+  const imageRef = storageRef(storage, avatarPath);
+
+  await uploadBytes(imageRef, file);
+
+  const photoURL = await getDownloadURL(imageRef);
+
+  await update(ref(database, "users/" + currentUser.uid), {
+    avatar: "photo",
+    avatarPhoto: photoURL,
+    updatedAt: Date.now()
+  });
+
+  document.getElementById("currentAvatar").textContent =
+    "Avatar photo uploaded.";
+
+  document.getElementById("avatarPreview").innerHTML =
+    `<img src="${photoURL}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+
+  alert("Avatar photo saved.");
 };
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
