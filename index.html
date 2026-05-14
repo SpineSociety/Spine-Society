@@ -1780,16 +1780,26 @@ function renderMyLibrary() {
     return;
   }
 
+  const shelfRows = [];
+
+  for (let i = 0; i < currentLibraryBooks.length; i += 4) {
+    const rowBooks = currentLibraryBooks.slice(i, i + 4);
+
+    shelfRows.push(`
+      <div class="bookshelf-row">
+        ${rowBooks.map(book => renderLibrarySpine(book)).join("")}
+      </div>
+    `);
+  }
+
   library.innerHTML = `
-    <div class="bookshelf-row">
-      ${currentLibraryBooks.slice(0, 4).map(book => renderLibrarySpine(book)).join("")}
-    </div>
+    ${shelfRows.join("")}
 
     <div style="margin-top:14px;">
       ${currentLibraryBooks.map(book => renderBookCard(book, false)).join("")}
     </div>
   `;
-}  
+}
 function renderSpineCard(book) {
   return `
     <div class="spine-card" title="${escapeAttr(book.title)}">
