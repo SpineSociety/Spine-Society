@@ -1679,41 +1679,20 @@ function renderClubCollection() {
   if (!collection) return;
 
   if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
-    collection.innerHTML = `<p class="status">Your collection is waiting for its first story.</p>`;
+    collection.innerHTML =
+      `<p class="status">Your collection is waiting for its first story.</p>`;
     return;
   }
 
-  collection.innerHTML = currentCollectionBooks.map(book => `
-    <div class="book-item">
-      <div class="book-card-polished">
-        ${
-          book.image
-            ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
-            : `<div class="book-mini-placeholder">S</div>`
-        }
-
-        <div class="book-info">
-          <div class="item-title">${escapeHTML(book.title)}</div>
-          ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-          <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
-
-          ${
-            currentUser && (
-              currentClubOwner === currentUser.uid ||
-              book.addedBy === currentUser.uid
-            )
-              ? `
-                <div class="book-actions">
-                  <button class="secondary" onclick="editCollectionBook('${book.id}')">Edit</button>
-                  <button class="danger" onclick="deleteCollectionBook('${book.id}')">Delete</button>
-                </div>
-              `
-              : ""
-          }
-        </div>
-      </div>
+  collection.innerHTML = `
+    <div class="bookshelf-row">
+      ${currentCollectionBooks.slice(0, 4).map(book => renderLibrarySpine(book)).join("")}
     </div>
-  `).join("");
+
+    <div style="margin-top:14px;">
+      ${currentCollectionBooks.map(book => renderBookCard(book, false)).join("")}
+    </div>
+  `;
 }
  function listenToPersonalLibrary() {
   if (!currentUser) return;
