@@ -1715,6 +1715,21 @@ function renderClubCollection() {
     </div>
   `).join("");
 }
+ function listenToPersonalLibrary() {
+  if (!currentUser) return;
+
+  onValue(ref(database, "users/" + currentUser.uid + "/library"), (snapshot) => {
+    const books = snapshot.val() || {};
+
+    currentLibraryBooks = Object.entries(books).map(([id, value]) => ({
+      id,
+      ...value
+    }));
+
+    renderMyLibrary();
+    renderBookRandomizerShelf();
+  });
+} 
 function listenToClubBooks(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/books"), (snapshot) => {
     const books = snapshot.val() || {};
@@ -1766,6 +1781,26 @@ function listenToCollectionBooks(clubId) {
     }
   );
 }
+function renderMyLibrary() {
+  const library = document.getElementById("libraryGrid");
+  if (!library) return;
+
+  if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
+    library.innerHTML =
+      `<p class="status">Your personal library is waiting for its first book.</p>`;
+    return;
+  }
+
+  library.innerHTML = `
+    <div class="bookshelf-row">
+      ${currentLibraryBooks.slice(0, 4).map(book => renderLibrarySpine(book)).join("")}
+    </div>
+
+    <div style="margin-top:14px;">
+      ${currentLibraryBooks.map(book => renderBookCard(book, false)).join("")}
+    </div>
+  `;
+}  
 function renderSpineCard(book) {
   return `
     <div class="spine-card" title="${escapeAttr(book.title)}">
@@ -1993,24 +2028,38 @@ function listenToDiscussion(clubId) {
 }
 
 window.addBookToClub = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
 
   const title = document.getElementById("bookTitle").value.trim();
   const author = document.getElementById("bookAuthor").value.trim();
   const category = document.getElementById("bookCategory").value;
   const image = document.getElementById("bookImage").value.trim();
 
-  if (!title) return alert("Enter a book title.");
+  if (!title) {
+    alert("Enter a book title.");
+    return;
+  }
 
-  const bookRef = push(ref(database, "clubs/" + window.currentClubId + "/books"));
+  const bookRef = push(
+    ref(database, "users/" + currentUser.uid + "/library")
+  );
 
-  await set(bookRef, { title, author, category, image, createdAt: Date.now() });
+  await set(bookRef, {
+    title,
+    author,
+    category,
+    image,
+    createdAt: Date.now()
+  });
 
   document.getElementById("bookTitle").value = "";
   document.getElementById("bookAuthor").value = "";
   document.getElementById("bookImage").value = "";
 
-  alert("Book added.");
+  alert("Book added to My Library.");
 };
 window.addBookToClubCollection = async function () {
   if (!window.currentClubId) {
@@ -2623,8 +2672,9 @@ if (userData && userData.avatar) {
   }
 
 }
-
+    
     listenToUserClubs();
+    listenToPersonalLibrary();
     handleInviteLink();
     showScreen("nook");
   } else {
