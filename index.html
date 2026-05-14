@@ -1112,12 +1112,13 @@ button:hover {
 </select>
 
 <button onclick="saveAvatar()">Save Avatar</button>
-<input id="avatarPhotoInput" type="file" accept="image/*" />
+<input id="avatarPhotoUrl" placeholder="Paste profile photo URL" />
 
-<button onclick="uploadAvatarPhoto()">
-  Upload Avatar Photo
+<button onclick="saveAvatarPhotoUrl()">
+  Save Profile Photo
 </button>
 
+<div id="avatarPreview" style="margin-top:12px;"></div>
 <div id="avatarPreview" style="margin-top:12px;"></div>
 <p class="helper" id="currentAvatar">Current Avatar: 📚</p>
             <button class="danger" onclick="logoutUser()">Log Out</button>
@@ -1403,22 +1404,12 @@ window.saveAvatar = async function () {
 
   alert("Avatar saved.");
 };
-window.uploadAvatarPhoto = async function () {
+window.saveAvatarPhotoUrl = async function () {
   if (!currentUser) return alert("Please log in first.");
 
-  const fileInput = document.getElementById("avatarPhotoInput");
-  const file = fileInput.files[0];
+  const photoURL = document.getElementById("avatarPhotoUrl").value.trim();
 
-  if (!file) return alert("Choose a photo first.");
-
-  const avatarPath =
-    "avatars/" + currentUser.uid + "/" + Date.now() + "-" + file.name;
-
-  const imageRef = storageRef(storage, avatarPath);
-
-  await uploadBytes(imageRef, file);
-
-  const photoURL = await getDownloadURL(imageRef);
+  if (!photoURL) return alert("Paste a photo URL first.");
 
   await update(ref(database, "users/" + currentUser.uid), {
     avatar: "photo",
@@ -1427,12 +1418,12 @@ window.uploadAvatarPhoto = async function () {
   });
 
   document.getElementById("currentAvatar").textContent =
-    "Avatar photo uploaded.";
+    "Current Avatar: Photo";
 
   document.getElementById("avatarPreview").innerHTML =
     `<img src="${photoURL}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
 
-  alert("Avatar photo saved.");
+  alert("Profile photo saved.");
 };
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
