@@ -762,15 +762,18 @@ button:hover {
   gap: 8px;
   align-items: flex-end;
   justify-content: center;
-  min-height: 250px;
+  min-height: 285px;
   border-bottom: 10px solid rgba(86,50,27,.78);
-  padding-bottom: 12px;
-  overflow: hidden;
+  padding: 28px 8px 18px;
+  overflow: visible;
+  position: relative;
 }
 
 .randomizer-spine {
   width: 58px;
   min-height: 220px;
+  position: relative;
+  z-index: 1;
   border-radius: 10px 12px 12px 10px;
   border: 1px solid rgba(200,163,106,.22);
   padding: 14px 6px;
@@ -806,11 +809,12 @@ button:hover {
 }
 
 .randomizer-spine.active {
-  transform: translateY(-18px) scale(1.08);
+  transform: translateY(-34px) scale(1.18);
+  z-index: 20;
   box-shadow:
-    0 0 28px rgba(228,201,139,.65),
-    0 24px 42px rgba(0,0,0,.55);
-  filter: brightness(1.18);
+    0 0 26px rgba(228,201,139,.55),
+    0 30px 46px rgba(0,0,0,.65);
+  filter: brightness(1.22);
 }
 
 .randomizer-spine-title {
