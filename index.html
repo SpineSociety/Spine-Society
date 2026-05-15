@@ -869,6 +869,46 @@ button:hover {
   color: var(--gold-pale);
   margin-top: 14px;
 }
+.fate-title {
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.1rem;
+  color: var(--gold-pale);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.fate-subtitle {
+  text-align: center;
+  color: var(--ink-soft);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+
+.fate-result-card {
+  margin-top: 18px;
+  text-align: center;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(200,163,106,.18);
+  background: rgba(12,8,5,.62);
+}
+
+.fate-result-kicker {
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: .72rem;
+  margin-bottom: 6px;
+}
+
+.fate-result-title {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  font-size: 1.8rem;
+  line-height: 1.1;
+}
 </style>
 </head>
 
@@ -928,7 +968,8 @@ button:hover {
   </div>
 
   <section class="randomizer-shelf">
-
+<div class="fate-title">✦ FATE DECIDES ✦</div>
+<div class="fate-subtitle">Let chance write the next chapter.</div>
     <div id="randomizerBooks" class="randomizer-books">
       <p class="status">Open a shelf to load books.</p>
     </div>
@@ -2231,13 +2272,28 @@ window.spinBookFromClub = function () {
       if (finalElement) finalElement.classList.add("active");
 
       winner.innerHTML = `
-        <h3>${escapeHTML(finalBook.title)}</h3>
-        ${finalBook.author ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>` : ""}
+  <div class="fate-result-card">
 
-        <button onclick="setNextRead()">
-          Set as Featured Volume
-        </button>
-      `;
+    <div class="fate-result-kicker">
+      Fate has chosen
+    </div>
+
+    <div class="fate-result-title">
+      ${escapeHTML(finalBook.title)}
+    </div>
+
+    ${
+      finalBook.author
+        ? `<div class="small">by ${escapeHTML(finalBook.author)}</div>`
+        : ""
+    }
+
+    <button onclick="setNextRead()">
+      Set as Featured Volume
+    </button>
+
+  </div>
+`;
 
       spinButton.disabled = false;
     }
