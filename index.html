@@ -2041,13 +2041,15 @@ function listenToNextRead(clubId) {
 
   <div class="featured-progress-top">
     <span>Club Progress</span>
-    <span>Chapters 21–36</span>
+    <span>${escapeHTML(nextRead.progress || "Set progress")}</span>
   </div>
 
   <div class="featured-progress-bar">
     <div class="featured-progress-fill"></div>
   </div>
-
+<button class="secondary" onclick="updateClubProgress()">
+  Update Club Progress
+</button>
 </div>
     <button onclick="markNextReadFinished()">
       Mark as Finished
@@ -2471,7 +2473,23 @@ window.markNextReadFinished = async function () {
   await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), null);
   alert("Moved to Finished Reads!");
 };
+window.updateClubProgress = async function () {
+  if (!window.currentClubId) {
+    alert("Open a society first.");
+    return;
+  }
 
+  const progress = prompt("Where is the club currently reading? Example: Chapters 21–36");
+
+  if (!progress) return;
+
+  await update(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
+    progress,
+    updatedAt: Date.now()
+  });
+
+  alert("Club progress updated.");
+};
 window.postDiscussionComment = async function () {
   if (!window.currentClubId) return alert("Open a shelf first.");
 
