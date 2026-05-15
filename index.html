@@ -2616,21 +2616,7 @@ window.sendReadingCheckIn = async function () {
 </div>
 `;
 
-  const commentRef = push(
-    ref(database, "clubs/" + window.currentClubId + "/discussion")
-  );
-
-  await set(commentRef, {
-    message,
-    authorId: currentUser.uid,
-    authorAlias: name,
-    authorAvatar: avatar,
-    type: "check-in",
-    bookTitle,
-    bookAuthor: nextRead.author || "",
-    amount,
-    createdAt: Date.now()
-  });
+  
 await set(
   ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
   {
