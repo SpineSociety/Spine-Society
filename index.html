@@ -1767,6 +1767,7 @@ window.openClub = async function (clubId) {
   listenToNextRead(clubId);
   listenToBooksRead(clubId);
   listenToMembers(clubId);
+  listenToCheckIns(clubId);
   listenToDiscussion(clubId);
 
  showScreen("club");
@@ -2067,7 +2068,7 @@ function listenToNextRead(clubId) {
     <div class="featured-progress-fill"></div>
   </div>
   <div class="featured-reader-row" id="featuredReaderRow">
-  <span class="small">Readers will appear here.</span>
+  <span class="small">Readers checked in will appear here.</span>
 </div>
 <button class="secondary" onclick="updateClubProgress()">
   Update Club Progress
@@ -2179,7 +2180,27 @@ if (featuredReaderRow) {
 }
   });
 }
+function listenToCheckIns(clubId) {
+  onValue(ref(database, "clubs/" + clubId + "/checkIns"), (snapshot) => {
+    const checkIns = snapshot.val() || {};
+    const checkedInReaders = Object.values(checkIns);
 
+    const featuredReaderRow = document.getElementById("featuredReaderRow");
+    if (!featuredReaderRow) return;
+
+    if (checkedInReaders.length === 0) {
+      featuredReaderRow.innerHTML =
+        `<span class="small">Readers checked in will appear here.</span>`;
+      return;
+    }
+
+    featuredReaderRow.innerHTML = checkedInReaders.map(reader => `
+      <div class="featured-reader-avatar" title="${escapeAttr(reader.name || "Reader")}">
+        ${escapeHTML(reader.avatar || "📚")}
+      </div>
+    `).join("");
+  });
+}
 function listenToDiscussion(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
     const discussion = snapshot.val() || {};
@@ -2609,7 +2630,16 @@ window.sendReadingCheckIn = async function () {
     amount,
     createdAt: Date.now()
   });
-
+await set(
+  ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
+  {
+    name,
+    avatar,
+    amount,
+    bookTitle,
+    checkedInAt: Date.now()
+  }
+);
   input.value = "";
   alert("Your reading circle has been notified!");
 };
