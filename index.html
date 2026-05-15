@@ -773,6 +773,7 @@ button:hover {
   width: 58px;
   min-height: 220px;
   position: relative;
+  overflow: visible;
   z-index: 1;
   border-radius: 10px 12px 12px 10px;
   border: 1px solid rgba(200,163,106,.22);
@@ -811,12 +812,28 @@ button:hover {
 .randomizer-spine.active {
   transform: translateY(-34px) scale(1.18);
   z-index: 20;
+  outline: 2px solid rgba(228,201,139,.35);
   box-shadow:
     0 0 26px rgba(228,201,139,.55),
     0 30px 46px rgba(0,0,0,.65);
   filter: brightness(1.22);
 }
+.randomizer-spine.active::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 14px;
 
+  background:
+    radial-gradient(
+      circle,
+      rgba(228,201,139,.24),
+      transparent 70%
+    );
+
+  z-index: -1;
+  filter: blur(12px);
+}
 .randomizer-spine-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 1rem;
