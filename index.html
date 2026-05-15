@@ -834,6 +834,35 @@ button:hover {
   z-index: -1;
   filter: blur(12px);
 }
+.randomizer-spine.active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px 12px 12px 10px;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,.18) 45%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: spineShimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes spineShimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  55% {
+    transform: translateX(120%);
+  }
+
+  100% {
+    transform: translateX(120%);
+  }
+}
 .randomizer-spine-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 1rem;
