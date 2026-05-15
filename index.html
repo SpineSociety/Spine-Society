@@ -1976,38 +1976,16 @@ function listenToNextRead(clubId) {
     if (marginaliaAuthor) marginaliaAuthor.textContent = nextRead.author || "";
 
     area.innerHTML = `
-  <div class="featured-volume-card">
-
-    <div class="featured-kicker">
-      Currently Reading Together
-    </div>
-
-    <div class="featured-cover-wrap">
-      ${
-        nextRead.image
-          ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-          : `<div class="cover-placeholder">S</div>`
-      }
-    </div>
-
-    <div class="featured-title">
-      ${escapeHTML(nextRead.title)}
-    </div>
-
+  <div class="next-read-card">
     ${
-      nextRead.author
-        ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
-        : ""
+      nextRead.image
+        ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+        : `<div class="cover-placeholder">S</div>`
     }
-
-    <div class="book-category">
-      ${escapeHTML(nextRead.category || "Featured Volume")}
-    </div>
-
-    <button onclick="markNextReadFinished()">
-      Mark as Finished
-    </button>
-
+    <h3>${escapeHTML(nextRead.title)}</h3>
+    ${nextRead.author ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>` : ""}
+    <div class="book-category">${escapeHTML(nextRead.category || "Uncategorized")}</div>
+    <button onclick="markNextReadFinished()">Mark as Finished</button>
   </div>
 `;
 
