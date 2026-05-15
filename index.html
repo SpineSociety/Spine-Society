@@ -2558,15 +2558,16 @@ window.postDiscussionComment = async function () {
   const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
   const userData = userSnapshot.val();
 
-  const commentRef = push(ref(database, "clubs/" + window.currentClubId + "/discussion"));
-
-  await set(commentRef, {
-  message,
-  authorId: currentUser.uid,
-  authorAlias: userData?.username || currentUser.email || "Reader",
-  authorAvatar: userData?.avatar || "📚",
-  createdAt: Date.now()
-});
+  await set(
+  ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
+  {
+    name,
+    avatar,
+    amount,
+    bookTitle,
+    checkedInAt: Date.now()
+  }
+);
 
   input.value = "";
 };
