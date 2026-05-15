@@ -647,11 +647,6 @@ button:hover {
   background: linear-gradient(90deg, var(--gold-soft), var(--gold));
 }
 
-.featured-progress-note {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: .82rem;
-}
 .next-read-card .cover,
 .next-read-card .cover-placeholder {
   width: 96px;
@@ -2043,18 +2038,16 @@ function listenToNextRead(clubId) {
       ${escapeHTML(nextRead.category || "Featured Volume")}
     </div>
 <div class="featured-progress">
+
   <div class="featured-progress-top">
-    <span>Reading Progress</span>
-    <span>Weekly check-ins</span>
+    <span>Club Progress</span>
+    <span>Chapters 21–36</span>
   </div>
 
   <div class="featured-progress-bar">
     <div class="featured-progress-fill"></div>
   </div>
 
-  <div class="featured-progress-note">
-    Check-ins from your reading circle will appear here.
-  </div>
 </div>
     <button onclick="markNextReadFinished()">
       Mark as Finished
