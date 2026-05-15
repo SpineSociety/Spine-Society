@@ -639,7 +639,26 @@ button:hover {
   background: rgba(255,255,255,.10);
   overflow: hidden;
 }
+.featured-reader-row {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
 
+.featured-reader-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+  color: #120b06;
+  font-size: .72rem;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,.18);
+}
 .featured-progress-fill {
   height: 100%;
   width: 35%;
@@ -2047,6 +2066,9 @@ function listenToNextRead(clubId) {
   <div class="featured-progress-bar">
     <div class="featured-progress-fill"></div>
   </div>
+  <div class="featured-reader-row" id="featuredReaderRow">
+  <span class="small">Readers will appear here.</span>
+</div>
 <button class="secondary" onclick="updateClubProgress()">
   Update Club Progress
 </button>
@@ -2141,6 +2163,11 @@ function listenToMembers(clubId) {
 
     if (preview) preview.innerHTML = previewHTML;
     if (modalList) modalList.innerHTML = modalHTML;
+    const featuredReaderRow = document.getElementById("featuredReaderRow");
+
+if (featuredReaderRow) {
+  featuredReaderRow.innerHTML = previewHTML;
+}
   });
 }
 
