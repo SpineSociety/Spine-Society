@@ -572,7 +572,47 @@ button:hover {
 .next-read-card {
   text-align: center;
 }
+.featured-volume-card {
+  text-align: center;
+  padding: 22px;
+  border-radius: 28px;
+  border: 1px solid rgba(200,163,106,.22);
+  background:
+    radial-gradient(circle at top, rgba(228,201,139,.14), transparent 42%),
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+    rgba(14,10,7,.88);
+  box-shadow:
+    0 22px 48px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
 
+.featured-kicker {
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: .72rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.featured-title {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  font-size: 2rem;
+  line-height: 1.05;
+  margin-top: 12px;
+}
+
+.featured-cover-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.featured-volume-card .cover,
+.featured-volume-card .cover-placeholder {
+  width: 126px;
+  height: 188px;
+}
 .next-read-card .cover,
 .next-read-card .cover-placeholder {
   width: 96px;
@@ -1936,20 +1976,40 @@ function listenToNextRead(clubId) {
     if (marginaliaAuthor) marginaliaAuthor.textContent = nextRead.author || "";
 
     area.innerHTML = `
-      <div class="next-read-card">
-        ${
-          nextRead.image
-            ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-            : `<div class="cover-placeholder">S</div>`
-        }
-        <h3>${escapeHTML(nextRead.title)}</h3>
-        ${nextRead.author ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>` : ""}
-        <div class="book-category">${escapeHTML(nextRead.category || "Uncategorized")}</div>
-        <button onclick="markNextReadFinished()">Mark as Finished</button>
-      </div>
-    `;
-  });
-}
+  <div class="featured-volume-card">
+
+    <div class="featured-kicker">
+      Currently Reading Together
+    </div>
+
+    <div class="featured-cover-wrap">
+      ${
+        nextRead.image
+          ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+          : `<div class="cover-placeholder">S</div>`
+      }
+    </div>
+
+    <div class="featured-title">
+      ${escapeHTML(nextRead.title)}
+    </div>
+
+    ${
+      nextRead.author
+        ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
+        : ""
+    }
+
+    <div class="book-category">
+      ${escapeHTML(nextRead.category || "Featured Volume")}
+    </div>
+
+    <button onclick="markNextReadFinished()">
+      Mark as Finished
+    </button>
+
+  </div>
+`;
 
 function listenToBooksRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
