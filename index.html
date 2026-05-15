@@ -1141,6 +1141,9 @@ button:hover {
   <button onclick="sendReadingCheckIn()">
     Notify My Circle 📣
   </button>
+  <button class="secondary" onclick="undoReadingCheckIn()">
+  Undo My Check-In
+</button>
 </section><section class="card"><div class="card-header"><h2>Finished Reads</h2><span id="booksReadCount" class="small"></span></div><div id="booksReadList"><p class="status">No finished reads yet.</p></div></section></div>
   
 
@@ -2630,7 +2633,24 @@ await set(
   input.value = "";
   alert("Your reading circle has been notified!");
 };
+window.undoReadingCheckIn = async function () {
+  if (!window.currentClubId) {
+    alert("Open a shelf first.");
+    return;
+  }
 
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  await set(
+    ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
+    null
+  );
+
+  alert("Your check-in was removed.");
+};
 window.postDiscussionCommentFromClub = async function () {
   const input = document.getElementById("discussionInputClub");
   if (!input) return;
