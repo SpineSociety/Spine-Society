@@ -1433,7 +1433,7 @@ let currentCollectionBooks = [];
 let currentClubBooks = [];
 let currentClubOwner = null;
 let currentClubId = null;
-
+let currentMemberAvatarsHTML = "";
 function escapeHTML(value) {
   return String(value || "")
     .replaceAll("&", "&amp;")
@@ -2079,7 +2079,12 @@ function listenToNextRead(clubId) {
 
   </div>
 `;
+const featuredReaderRow =
+  document.getElementById("featuredReaderRow");
 
+if (featuredReaderRow && currentMemberAvatarsHTML) {
+  featuredReaderRow.innerHTML = currentMemberAvatarsHTML;
+}
   });
 }
 function listenToBooksRead(clubId) {
@@ -2161,9 +2166,13 @@ function listenToMembers(clubId) {
       `;
     }
 
-    if (preview) preview.innerHTML = previewHTML;
-    if (modalList) modalList.innerHTML = modalHTML;
-    const featuredReaderRow = document.getElementById("featuredReaderRow");
+    currentMemberAvatarsHTML = previewHTML;
+
+if (preview) preview.innerHTML = previewHTML;
+if (modalList) modalList.innerHTML = modalHTML;
+
+const featuredReaderRow =
+  document.getElementById("featuredReaderRow");
 
 if (featuredReaderRow) {
   featuredReaderRow.innerHTML = previewHTML;
