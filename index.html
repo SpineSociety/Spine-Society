@@ -2068,10 +2068,13 @@ function listenToNextRead(clubId) {
   </div>
 
   <div class="featured-progress-bar">
-    <div class="featured-progress-fill"></div>
+    <div class="featured-progress-fill" id="featuredProgressFill"></div>
   </div>
   <div class="featured-reader-row" id="featuredReaderRow">
   <span class="small">Readers checked in will appear here.</span>
+</div>
+<div class="featured-progress-note" id="featuredProgressNote">
+  0 readers checked in.
 </div>
 <button class="secondary" onclick="updateClubProgress()">
   Update Club Progress
@@ -2187,8 +2190,32 @@ function listenToCheckIns(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/checkIns"), (snapshot) => {
     const checkIns = snapshot.val() || {};
     const checkedInReaders = Object.values(checkIns);
+get(ref(database, "clubs/" + clubId + "/members")).then((membersSnapshot) => {
+  const members = membersSnapshot.val() || {};
+  const totalMembers = Object.keys(members).length || 1;
+  const checkedInCount = checkedInReaders.length;
 
+  const percent =
+    Math.min((checkedInCount / totalMembers) * 100, 100);
+
+  if (featuredProgressFill) {
+    featuredProgressFill.style.width = percent + "%";
+  }
+
+  if (featuredProgressNote) {
+    featuredProgressNote.textContent =
+      checkedInCount +
+      " of " +
+      totalMembers +
+      " readers checked in.";
+  }
+});
     const featuredReaderRow = document.getElementById("featuredReaderRow");
+    const featuredProgressFill =
+  document.getElementById("featuredProgressFill");
+
+const featuredProgressNote =
+  document.getElementById("featuredProgressNote");
     if (!featuredReaderRow) return;
 
     if (checkedInReaders.length === 0) {
