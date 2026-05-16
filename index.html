@@ -1956,7 +1956,7 @@ function renderMyLibrary() {
     ${shelfRows.join("")}
 
     <div style="margin-top:14px;">
-      ${currentLibraryBooks.map(book => renderBookCard(book, false)).join("")}
+      ${currentLibraryBooks.map(book => renderPersonalBookCard(book)).join("")}
     </div>
   `;
 }
@@ -2032,7 +2032,43 @@ function renderBookCard(book, finished) {
     </div>
   `;
 }
+function renderPersonalBookCard(book) {
+  return `
+    <div class="book-item">
+      <div class="book-card-polished">
+        ${
+          book.image
+            ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+            : `<div class="book-mini-placeholder">S</div>`
+        }
 
+        <div class="book-info">
+          <div class="item-title">${escapeHTML(book.title)}</div>
+
+          ${
+            book.author
+              ? `<div class="small">by ${escapeHTML(book.author)}</div>`
+              : ""
+          }
+
+          <div class="book-category">
+            ${escapeHTML(book.category || "Uncategorized")}
+          </div>
+
+          <div class="book-actions">
+            <button class="secondary" onclick="editPersonalBook('${book.id}')">
+              Edit Book
+            </button>
+
+            <button class="danger" onclick="deletePersonalBook('${book.id}')">
+              Delete Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
@@ -2767,7 +2803,49 @@ window.deleteCollectionBook = async function (bookId) {
   await set(ref(database, "clubs/" + window.currentClubId + "/collection/" + bookId), null);
   alert("Book deleted from The Collection.");
 };
+window.deletePersonalBook = async function (bookId) {
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
 
+  if (!confirm("Delete this book from My Library?")) return;
+
+  await set(ref(database, "users/" + currentUser.uid + "/library/" + bookId), null);
+
+  alert("Book deleted from My Library.");
+};
+window.editPersonalBook = async function (bookId) {
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const book = currentLibraryBooks.find(b => b.id === bookId);
+  if (!book) return alert("Book not found.");
+
+  const newTitle = prompt("Edit book title:", book.title || "");
+  if (newTitle === null) return;
+
+  const newAuthor = prompt("Edit author name:", book.author || "");
+  if (newAuthor === null) return;
+
+  const newCategory = prompt("Edit category:", book.category || "Book Club Pick");
+  if (newCategory === null) return;
+
+  const newImage = prompt("Edit cover image URL:", book.image || "");
+  if (newImage === null) return;
+
+  await update(ref(database, "users/" + currentUser.uid + "/library/" + bookId), {
+    title: newTitle.trim(),
+    author: newAuthor.trim(),
+    category: newCategory.trim(),
+    image: newImage.trim(),
+    updatedAt: Date.now()
+  });
+
+  alert("Book updated in My Library.");
+};
 window.editCollectionBook = async function (bookId) {
   if (!window.currentClubId) return alert("Open a society first.");
 
