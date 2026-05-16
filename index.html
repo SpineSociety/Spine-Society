@@ -2213,6 +2213,21 @@ window.closeBookModal = function () {
   const modal = document.getElementById("bookModal");
   if (modal) modal.style.display = "none";
 };
+window.openAddCollectionBookModal = function () {
+  const modal = document.getElementById("addCollectionBookModal");
+
+  if (modal) {
+    modal.style.display = "flex";
+  }
+};
+
+window.closeAddCollectionBookModal = function () {
+  const modal = document.getElementById("addCollectionBookModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+};
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
