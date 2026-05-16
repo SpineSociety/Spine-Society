@@ -2110,6 +2110,60 @@ function renderPersonalBookCard(book) {
     </div>
   `;
 }
+window.openBookModal = function (bookId) {
+  const modal = document.getElementById("bookModal");
+  const body = document.getElementById("bookModalBody");
+
+  if (!modal || !body) return;
+
+  const book =
+    currentLibraryBooks.find(b => b.id === bookId) ||
+    currentCollectionBooks.find(b => b.id === bookId);
+
+  if (!book) {
+    alert("Book not found.");
+    return;
+  }
+
+  body.innerHTML = `
+    <div style="text-align:center;">
+
+      ${
+        book.image
+          ? `<img class="cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+          : `<div class="cover-placeholder">S</div>`
+      }
+
+      <div class="featured-title">
+        ${escapeHTML(book.title)}
+      </div>
+
+      ${
+        book.author
+          ? `<div class="small">by ${escapeHTML(book.author)}</div>`
+          : ""
+      }
+
+      <div class="book-category">
+        ${escapeHTML(book.category || "Uncategorized")}
+      </div>
+
+      <div class="featured-progress">
+        <div class="small">
+          More book details coming soon.
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  modal.style.display = "flex";
+};
+
+window.closeBookModal = function () {
+  const modal = document.getElementById("bookModal");
+  if (modal) modal.style.display = "none";
+};
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
