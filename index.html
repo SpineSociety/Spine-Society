@@ -261,8 +261,23 @@ button:hover {
   box-shadow: none;
 }
 
-.screen { display: none; }
-.screen.active { display: block; }
+.screen{
+  opacity:0;
+  transform:translateY(14px);
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  transition:
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+.screen.active{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+  position:relative;
+}
 
 .page-top {
   display: flex;
