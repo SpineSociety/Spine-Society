@@ -2165,10 +2165,19 @@ function renderClubCollection() {
   if (!collection) return;
 
   if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
-    collection.innerHTML =
-      `<p class="status">Your collection is waiting for its first story.</p>`;
-    return;
-  }
+  collection.innerHTML = `
+    <div class="bookshelf-row">
+      <button
+        class="library-book-spine add-book-spine"
+        onclick="openAddCollectionBookModal()"
+      >
+        <div>＋</div>
+        <div>Add<br>Book</div>
+      </button>
+    </div>
+  `;
+  return;
+}
 
   const shelfRows = [];
 
@@ -2269,15 +2278,19 @@ function renderMyLibrary() {
   if (!library) return;
 
   if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
-
-    library.innerHTML = `
-      <p class="status">
-        Your personal library is waiting for its first story.
-      </p>
-    `;
-
-    return;
-  }
+  library.innerHTML = `
+    <div class="bookshelf-row">
+      <button
+        class="library-book-spine add-book-spine"
+        onclick="openAddLibraryBookModal()"
+      >
+        <div>＋</div>
+        <div>Add<br>Book</div>
+      </button>
+    </div>
+  `;
+  return;
+}
 
   library.innerHTML = `
     <div class="bookshelf-row">
