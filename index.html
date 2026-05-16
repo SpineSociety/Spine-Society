@@ -2395,6 +2395,7 @@ document.querySelector(".phone-frame").classList.add("modal-open");
 };
 
 window.closeEditBookModal = function () {
+  document.querySelector(".phone-frame").classList.remove("modal-open");
   document.getElementById("editBookModal").style.display = "none";
   bookBeingEditedId = null;
   bookBeingEditedType = null;
