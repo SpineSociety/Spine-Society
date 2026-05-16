@@ -2854,8 +2854,9 @@ window.saveEditedBook = async function () {
   closeEditBookModal();
   closeBookModal();
 
-  showToast("Book updated.");
-}:
+    showToast("Book updated.");
+};
+
 window.updateBookStatus = async function (bookId, type, status) {
   const path =
     type === "collection"
