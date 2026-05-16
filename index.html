@@ -1998,7 +1998,7 @@ function renderBookCard(book, finished) {
                 ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
                 : `
                   ${
-  book.addedBy === currentUser.uid
+  book.addedBy === currentUser.uid || currentClubOwner === currentUser.uid || !book.addedBy
     ? `
       <button class="secondary" onclick="editBook('${book.id}')">Edit Book</button>
       <button class="danger" onclick="deleteBook('${book.id}')">Delete Book</button>
