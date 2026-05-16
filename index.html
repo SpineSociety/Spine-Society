@@ -2389,7 +2389,7 @@ window.openEditBookModal = function (bookId, type) {
   document.getElementById("editBookAuthor").value = book.author || "";
   document.getElementById("editBookCategory").value = book.category || "Book Club Pick";
   document.getElementById("editBookImage").value = book.image || "";
-
+document.querySelector(".phone-frame").classList.add("modal-open");
   document.getElementById("editBookModal").style.display = "flex";
 };
 
