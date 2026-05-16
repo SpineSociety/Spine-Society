@@ -69,10 +69,47 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
+
   background:
-    radial-gradient(circle at 25% 12%, rgba(255,213,128,.10), transparent 20%),
-    radial-gradient(circle at 80% 92%, rgba(255,166,86,.08), transparent 25%),
-    linear-gradient(90deg, rgba(0,0,0,.36), transparent 20%, transparent 80%, rgba(0,0,0,.28));
+    radial-gradient(circle at 20% 18%,
+      rgba(255,191,120,.12),
+      transparent 20%),
+
+    radial-gradient(circle at 82% 78%,
+      rgba(200,163,106,.10),
+      transparent 24%),
+
+    radial-gradient(circle at 50% 50%,
+      rgba(94,107,74,.06),
+      transparent 42%),
+
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.38),
+      transparent 20%,
+      transparent 80%,
+      rgba(0,0,0,.28)
+    );
+
+  animation: ambientShift 18s ease-in-out infinite alternate;
+}
+@keyframes ambientShift {
+
+  0% {
+    transform: scale(1) translateY(0px);
+    filter: blur(0px);
+  }
+
+  50% {
+    transform: scale(1.03) translateY(-6px);
+    filter: blur(2px);
+  }
+
+  100% {
+    transform: scale(1.06) translateY(4px);
+    filter: blur(0px);
+  }
+
 }
 
 .app-shell {
