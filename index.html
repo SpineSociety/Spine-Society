@@ -1667,6 +1667,62 @@ body::before {
     </button>
   </div>
 </div>
+<div
+  id="shelfSettingsModal"
+  style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(14px);
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
+  <div
+    style="
+      width:min(100%,420px);
+      border-radius:32px;
+      padding:24px;
+      background:
+        linear-gradient(180deg, rgba(26,18,13,.98), rgba(10,8,6,.98));
+      border:1px solid rgba(200,163,106,.18);
+      box-shadow:0 30px 70px rgba(0,0,0,.72);
+    "
+  >
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Shelf Settings</h2>
+
+      <button
+        class="secondary"
+        onclick="closeShelfSettingsModal()"
+        style="width:auto;min-height:auto;padding:8px 14px;"
+      >
+        Close
+      </button>
+    </div>
+
+    <p class="helper">Manage this reading shelf.</p>
+
+    <button class="secondary" onclick="editCurrentShelfName()">
+      Edit Shelf Name
+    </button>
+
+    <button class="secondary" onclick="copyCurrentShelfInvite()">
+      Copy Invite Link
+    </button>
+
+    <button class="danger" onclick="leaveCurrentShelf()">
+      Leave Shelf
+    </button>
+
+    <button class="danger" onclick="deleteCurrentShelf()">
+      Delete Shelf
+    </button>
+  </div>
+</div>
     <nav class="top-nav" id="mainNav" style="display:none;">
       <button id="nookTab" class="nav-btn active">
         <span class="nav-icon">
