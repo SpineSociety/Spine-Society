@@ -2030,7 +2030,7 @@ function renderBookCard(book, finished) {
     );
 
   return `
-    <div class="book-item">
+    <div class="book-item" onclick="openBookModal('${book.id}')">
       <div class="book-card-polished">
         ${
           book.image
@@ -2075,7 +2075,7 @@ function renderBookCard(book, finished) {
 }
 function renderPersonalBookCard(book) {
   return `
-    <div class="book-item">
+    <div class="book-item" onclick="openBookModal('${book.id}')">
       <div class="book-card-polished">
         ${
           book.image
