@@ -2348,9 +2348,12 @@ function renderMyLibrary() {
 
   if (!library) return;
 
-  const filteredBooks = currentLibraryBooks.filter(book =>
-  (book.status || "Want to Read") === currentLibraryFilter
-);
+  const filteredBooks =
+  currentLibraryFilter === "All"
+    ? currentLibraryBooks
+    : currentLibraryBooks.filter(book =>
+        (book.status || "Want to Read") === currentLibraryFilter
+      );
 
   if (!filteredBooks || filteredBooks.length === 0) {
     library.innerHTML = `
