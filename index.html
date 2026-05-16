@@ -2772,8 +2772,8 @@ window.addBookToClubCollection = async function () {
   document.getElementById("bookTitleClub").value = "";
   document.getElementById("bookAuthorClub").value = "";
   document.getElementById("bookImageClub").value = "";
-
-  alert("Added to The Collection.");
+closeAddCollectionBookModal();
+  showToast("Added to The Collection.");
 };
 
 window.spinBook = function () {
