@@ -1898,12 +1898,8 @@ function renderClubCollection() {
   }
 
   collection.innerHTML = `
-    ${shelfRows.join("")}
-
-    <div style="margin-top:14px;">
-      ${currentCollectionBooks.map(book => renderBookCard(book, false)).join("")}
-    </div>
-  `;
+  ${shelfRows.join("")}
+`;
 }
  function listenToPersonalLibrary() {
   if (!currentUser) return;
