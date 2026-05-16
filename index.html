@@ -1550,6 +1550,65 @@ body::before {
   </div>
 </div>
 <div
+  id="addLibraryBookModal"
+  style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(14px);
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
+  <div
+    style="
+      width:min(100%,420px);
+      border-radius:32px;
+      padding:24px;
+      background:
+        linear-gradient(180deg, rgba(26,18,13,.98), rgba(10,8,6,.98));
+      border:1px solid rgba(200,163,106,.18);
+      box-shadow:0 30px 70px rgba(0,0,0,.72);
+    "
+  >
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Add Book</h2>
+
+      <button
+        class="secondary"
+        onclick="closeAddLibraryBookModal()"
+        style="width:auto;min-height:auto;padding:8px 14px;"
+      >
+        Close
+      </button>
+    </div>
+
+    <p class="helper">Add a book to My Library.</p>
+
+    <input id="libraryBookTitle" placeholder="Book title" />
+    <input id="libraryBookAuthor" placeholder="Author" />
+
+    <select id="libraryBookCategory">
+      <option>Book Club Pick</option>
+      <option>Thriller</option>
+      <option>Romance</option>
+      <option>Fantasy</option>
+      <option>Mystery</option>
+      <option>Cozy Read</option>
+      <option>Wild Card</option>
+    </select>
+
+    <input id="libraryBookImage" placeholder="Book cover image URL optional" />
+
+    <button onclick="addBookToPersonalLibrary()">
+      Add to My Library
+    </button>
+  </div>
+</div>
+<div
   id="editBookModal"
   style="
     position:fixed;
