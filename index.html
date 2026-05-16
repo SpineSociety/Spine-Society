@@ -129,6 +129,7 @@ body::after {
     0 22px 70px rgba(0,0,0,.65),
     inset 0 1px 0 rgba(255,255,255,.06);
   overflow: hidden;
+  isolation: isolate;
   min-height: calc(100vh - 36px);
 }
 
@@ -415,7 +416,30 @@ button:hover {
   background: radial-gradient(circle, rgba(200,163,106,.18), transparent 64%);
   filter: blur(2px);
 }
+.lounge-hero::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle,
+      rgba(255,220,150,.12),
+      transparent 40%);
 
+  animation: heroGlow 10s ease-in-out infinite alternate;
+  z-index:-1;
+}
+
+@keyframes heroGlow{
+
+  0%{
+    transform:translateX(-10%) translateY(-4%);
+  }
+
+  100%{
+    transform:translateX(12%) translateY(8%);
+  }
+
+}
 .lounge-kicker {
   color: var(--gold-pale);
   font-size: .78rem;
@@ -1094,6 +1118,33 @@ button:hover {
 #toast.show{
   opacity:1;
   transform:translateX(-50%) translateY(0);
+}
+body::before {
+  animation: dustFloat 28s linear infinite;
+}
+
+@keyframes dustFloat {
+
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  25% {
+    transform: translateY(-8px) translateX(4px);
+  }
+
+  50% {
+    transform: translateY(-14px) translateX(-3px);
+  }
+
+  75% {
+    transform: translateY(-7px) translateX(5px);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+
 }
 </style>
 </head>
