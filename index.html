@@ -1726,7 +1726,7 @@ window.saveAvatar = async function () {
   document.getElementById("currentAvatar").textContent =
     "Current Avatar: " + avatar;
 
-  alert("Avatar saved.");
+  showToast("Avatar saved.");
 };
 window.saveAvatarPhotoUrl = async function () {
   if (!currentUser) return alert("Please log in first.");
@@ -1848,7 +1848,7 @@ window.createClub = async function () {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("newClubName").value = "";
-  alert("Shelf created.");
+  showToast("Shelf created.");
   openClub(clubId);
 };
 
@@ -1878,7 +1878,7 @@ await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("joinClubId").value = "";
-  alert("Joined shelf.");
+  showToast("Joined shelf.");
   openClub(clubId);
 };
 
@@ -2415,7 +2415,7 @@ window.saveEditedBook = async function () {
   closeEditBookModal();
   closeBookModal();
 
-  alert("Book updated.");
+  showToast("Book updated.");
 };
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
@@ -2942,7 +2942,7 @@ window.setNextRead = async function () {
   document.getElementById("winnerClub").innerHTML =
     "Featured Volume has been set.";
 
-  alert("Featured Volume set!");
+  showToast("Featured Volume set!");
 }; 
 
 window.markNextReadFinished = async function () {
@@ -3116,7 +3116,7 @@ window.deleteBook = async function (bookId) {
   if (!confirm("Delete this book from the shelf?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), null);
-  alert("Book deleted.");
+  showToast("Book deleted.");
 };
 
 window.editBook = async function (bookId) {
@@ -3311,7 +3311,7 @@ window.editDiscussionComment = async function (commentId) {
     editedAt: Date.now()
   });
 
-  alert("Note updated.");
+  showToast("Note updated.");
 };
 
 window.deleteDiscussionComment = async function (commentId) {
