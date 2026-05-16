@@ -1508,6 +1508,18 @@ let currentClubBooks = [];
 let currentClubOwner = null;
 let currentClubId = null;
 let currentMemberAvatarsHTML = "";
+const appCreatorEmail = "kokakisan@gmail.com";
+
+function canManageBook(book) {
+  return (
+    currentUser &&
+    (
+      book.addedBy === currentUser.uid ||
+      currentClubOwner === currentUser.uid ||
+      currentUser.email === appCreatorEmail
+    )
+  );
+}
 function escapeHTML(value) {
   return String(value || "")
     .replaceAll("&", "&amp;")
