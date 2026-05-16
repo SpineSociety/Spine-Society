@@ -1870,6 +1870,13 @@ function renderClubCollection() {
 
   collection.innerHTML = `
   ${shelfRows.join("")}
+
+  <div class="bookshelf-row">
+    <button class="library-book-spine add-book-spine" onclick="openAddCollectionBookModal()">
+      <div>＋</div>
+      <div>Add<br>Book</div>
+    </button>
+  </div>
 `;
 }
  function listenToPersonalLibrary() {
