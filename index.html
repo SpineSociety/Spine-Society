@@ -2522,7 +2522,70 @@ window.closeAddCollectionBookModal = function () {
 };
 let bookBeingEditedId = null;
 let bookBeingEditedType = null;
+window.openAddLibraryBookModal = function () {
 
+  const modal = document.getElementById("addLibraryBookModal");
+
+  if (modal) {
+    modal.style.display = "flex";
+  }
+
+};
+
+window.closeAddLibraryBookModal = function () {
+
+  const modal = document.getElementById("addLibraryBookModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+
+};
+
+window.addBookToPersonalLibrary = async function () {
+
+  if (!currentUser) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const title =
+    document.getElementById("libraryBookTitle").value.trim();
+
+  const author =
+    document.getElementById("libraryBookAuthor").value.trim();
+
+  const category =
+    document.getElementById("libraryBookCategory").value;
+
+  const image =
+    document.getElementById("libraryBookImage").value.trim();
+
+  if (!title) {
+    alert("Enter a book title.");
+    return;
+  }
+
+  const bookRef = push(
+    ref(database, "users/" + currentUser.uid + "/library")
+  );
+
+  await set(bookRef, {
+    title,
+    author,
+    category,
+    image,
+    createdAt: Date.now()
+  });
+
+  document.getElementById("libraryBookTitle").value = "";
+  document.getElementById("libraryBookAuthor").value = "";
+  document.getElementById("libraryBookImage").value = "";
+
+  closeAddLibraryBookModal();
+
+  alert("Book added to My Library.");
+};
 window.openEditBookModal = function (bookId, type) {
   bookBeingEditedId = bookId;
   bookBeingEditedType = type;
