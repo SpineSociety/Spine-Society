@@ -2205,32 +2205,37 @@ function listenToCollectionBooks(clubId) {
   );
 }
 function renderMyLibrary() {
+
   const library = document.getElementById("libraryGrid");
+
   if (!library) return;
 
   if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
-    library.innerHTML =
-      `<p class="status">Your personal library is waiting for its first book.</p>`;
+
+    library.innerHTML = `
+      <p class="status">
+        Your personal library is waiting for its first story.
+      </p>
+    `;
+
     return;
   }
 
-  const shelfRows = [];
-
-  for (let i = 0; i < currentLibraryBooks.length; i += 4) {
-    const rowBooks = currentLibraryBooks.slice(i, i + 4);
-
-    shelfRows.push(`
-      <div class="bookshelf-row">
-        ${rowBooks.map(book => renderLibrarySpine(book)).join("")}
-      </div>
-    `);
-  }
-
   library.innerHTML = `
-    ${shelfRows.join("")}
+    <div class="bookshelf-row">
 
-    <div style="margin-top:14px;">
-      ${currentLibraryBooks.map(book => renderPersonalBookCard(book)).join("")}
+      ${currentLibraryBooks.map(book =>
+        renderLibrarySpine(book)
+      ).join("")}
+
+      <button
+        class="library-book-spine add-book-spine"
+        onclick="document.getElementById('bookTitle').focus()"
+      >
+        <div>＋</div>
+        <div>Add<br>Book</div>
+      </button>
+
     </div>
   `;
 }
