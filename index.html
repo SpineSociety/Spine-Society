@@ -2318,6 +2318,71 @@ window.closeAddCollectionBookModal = function () {
     modal.style.display = "none";
   }
 };
+let bookBeingEditedId = null;
+let bookBeingEditedType = null;
+
+window.openEditBookModal = function (bookId, type) {
+  bookBeingEditedId = bookId;
+  bookBeingEditedType = type;
+
+  const book =
+    type === "collection"
+      ? currentCollectionBooks.find(b => b.id === bookId)
+      : currentLibraryBooks.find(b => b.id === bookId);
+
+  if (!book) {
+    alert("Book not found.");
+    return;
+  }
+
+  document.getElementById("editBookTitle").value = book.title || "";
+  document.getElementById("editBookAuthor").value = book.author || "";
+  document.getElementById("editBookCategory").value = book.category || "Book Club Pick";
+  document.getElementById("editBookImage").value = book.image || "";
+
+  document.getElementById("editBookModal").style.display = "flex";
+};
+
+window.closeEditBookModal = function () {
+  document.getElementById("editBookModal").style.display = "none";
+  bookBeingEditedId = null;
+  bookBeingEditedType = null;
+};
+
+window.saveEditedBook = async function () {
+  if (!bookBeingEditedId || !bookBeingEditedType) {
+    alert("No book selected.");
+    return;
+  }
+
+  const title = document.getElementById("editBookTitle").value.trim();
+  const author = document.getElementById("editBookAuthor").value.trim();
+  const category = document.getElementById("editBookCategory").value;
+  const image = document.getElementById("editBookImage").value.trim();
+
+  if (!title) {
+    alert("Enter a book title.");
+    return;
+  }
+
+  const path =
+    bookBeingEditedType === "collection"
+      ? "clubs/" + window.currentClubId + "/collection/" + bookBeingEditedId
+      : "users/" + currentUser.uid + "/library/" + bookBeingEditedId;
+
+  await update(ref(database, path), {
+    title,
+    author,
+    category,
+    image,
+    updatedAt: Date.now()
+  });
+
+  closeEditBookModal();
+  closeBookModal();
+
+  alert("Book updated.");
+};
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
