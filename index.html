@@ -2012,7 +2012,7 @@ function renderSpineCard(book) {
 
 function renderLibrarySpine(book) {
   return `
-    <div class="library-book-spine" title="${escapeAttr(book.title)}">
+    <div class="library-book-spine" title="${escapeAttr(book.title)}" onclick="openBookModal('${book.id}')">
       <div class="library-spine-title">${escapeHTML(book.title)}</div>
       <div class="library-spine-author">${escapeHTML(book.author || "Unknown")}</div>
       <div class="library-spine-status">${escapeHTML(book.category || "Want to Read")}</div>
