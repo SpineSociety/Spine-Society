@@ -1980,6 +1980,14 @@ function renderLibrarySpine(book) {
 }
 
 function renderBookCard(book, finished) {
+  const canEdit =
+    currentUser &&
+    (
+      currentClubOwner === currentUser.uid ||
+      book.addedBy === currentUser.uid ||
+      !book.addedBy
+    );
+
   return `
     <div class="book-item">
       <div class="book-card-polished">
@@ -1988,24 +1996,35 @@ function renderBookCard(book, finished) {
             ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
             : `<div class="book-mini-placeholder">S</div>`
         }
+
         <div class="book-info">
           <div class="item-title">${escapeHTML(book.title)}</div>
-          ${book.author ? `<div class="small">by ${escapeHTML(book.author)}</div>` : ""}
-          <div class="book-category">${escapeHTML(book.category || "Uncategorized")}</div>
+
+          ${
+            book.author
+              ? `<div class="small">by ${escapeHTML(book.author)}</div>`
+              : ""
+          }
+
+          <div class="book-category">
+            ${escapeHTML(book.category || "Uncategorized")}
+          </div>
+
           <div class="book-actions">
             ${
               finished
                 ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
-                : `
-                  ${
-  book.addedBy === currentUser.uid || currentClubOwner === currentUser.uid || !book.addedBy
-    ? `
-      <button class="secondary" onclick="editBook('${book.id}')">Edit Book</button>
-      <button class="danger" onclick="deleteBook('${book.id}')">Delete Book</button>
-    `
-    : ""
-}
-                `
+                : canEdit
+                  ? `
+                    <button class="secondary" onclick="editCollectionBook('${book.id}')">
+                      Edit Book
+                    </button>
+
+                    <button class="danger" onclick="deleteCollectionBook('${book.id}')">
+                      Delete Book
+                    </button>
+                  `
+                  : ""
             }
           </div>
         </div>
