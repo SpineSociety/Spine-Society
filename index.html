@@ -1191,8 +1191,7 @@ body::before {
 <section id="libraryScreen" class="screen">
   <div class="page-top"><div class="page-title">My Library</div><button class="icon-button secondary" onclick="showScreen('nook')">⌕</button></div>
   <div class="library-tabs">
-  <button class="active" onclick="setLibraryFilter('All', this)">All</button>
-  <button onclick="setLibraryFilter('Want to Read', this)">Want to Read</button>
+  <button class="active" onclick="setLibraryFilter('Want to Read', this)">Want to Read</button>
   <button onclick="setLibraryFilter('In Progress', this)">In Progress</button>
   <button onclick="setLibraryFilter('Completed', this)">Completed</button>
 </div>
@@ -1815,7 +1814,7 @@ const database = getDatabase(app);
 const storage = getStorage(app);
 let currentUser = null;
 let currentLibraryBooks = [];
-let currentLibraryFilter = "All";
+let currentLibraryFilter = "Want to Read";
 let currentCollectionBooks = [];
 let currentClubBooks = [];
 let currentClubOwner = null;
@@ -2348,12 +2347,9 @@ function renderMyLibrary() {
 
   if (!library) return;
 
-  const filteredBooks =
-    currentLibraryFilter === "All"
-      ? currentLibraryBooks
-      : currentLibraryBooks.filter(book =>
-         (book.status || book.category || "Want to Read") === currentLibraryFilter
-        );
+  const filteredBooks = currentLibraryBooks.filter(book =>
+  (book.status || "Want to Read") === currentLibraryFilter
+);
 
   if (!filteredBooks || filteredBooks.length === 0) {
     library.innerHTML = `
