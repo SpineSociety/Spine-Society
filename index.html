@@ -2699,7 +2699,93 @@ window.closeEditBookModal = function () {
   bookBeingEditedId = null;
   bookBeingEditedType = null;
 };
+window.openShelfSettingsModal = function () {
+  if (!window.currentClubId) {
+    alert("Open a shelf first.");
+    return;
+  }
 
+  document.querySelector(".phone-frame").classList.add("modal-open");
+  document.getElementById("shelfSettingsModal").style.display = "flex";
+};
+
+window.closeShelfSettingsModal = function () {
+  document.querySelector(".phone-frame").classList.remove("modal-open");
+  document.getElementById("shelfSettingsModal").style.display = "none";
+};
+
+window.editCurrentShelfName = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
+
+  const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
+  const club = clubSnapshot.val();
+
+  if (!club) return alert("Shelf not found.");
+
+  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
+    return alert("Only the shelf creator can rename this shelf.");
+  }
+
+  const newName = prompt("Edit shelf name:", club.name || "");
+  if (newName === null) return;
+  if (!newName.trim()) return alert("Shelf name cannot be blank.");
+
+  await update(ref(database, "clubs/" + window.currentClubId), {
+    name: newName.trim(),
+    updatedAt: Date.now()
+  });
+
+  closeShelfSettingsModal();
+  showToast("Shelf updated.");
+};
+
+window.copyCurrentShelfInvite = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
+
+  const inviteLink =
+    window.location.origin + window.location.pathname + "?club=" + window.currentClubId;
+
+  try {
+    await navigator.clipboard.writeText(inviteLink);
+    showToast("Invite link copied.");
+  } catch (error) {
+    prompt("Copy this invite link:", inviteLink);
+  }
+};
+
+window.leaveCurrentShelf = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!confirm("Leave this shelf?")) return;
+
+  await set(ref(database, "clubs/" + window.currentClubId + "/members/" + currentUser.uid), null);
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
+
+  closeShelfSettingsModal();
+  showScreen("nook");
+  showToast("Shelf removed.");
+};
+
+window.deleteCurrentShelf = async function () {
+  if (!window.currentClubId) return alert("Open a shelf first.");
+
+  const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
+  const club = clubSnapshot.val();
+
+  if (!club) return alert("Shelf not found.");
+
+  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
+    return alert("Only the shelf creator can delete this shelf.");
+  }
+
+  if (!confirm("Delete this shelf for everyone?")) return;
+
+  await set(ref(database, "clubs/" + window.currentClubId), null);
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
+
+  closeShelfSettingsModal();
+  showScreen("nook");
+  showToast("Shelf deleted.");
+};
 window.saveEditedBook = async function () {
   if (!bookBeingEditedId || !bookBeingEditedType) {
     alert("No book selected.");
