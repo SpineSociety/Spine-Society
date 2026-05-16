@@ -2356,6 +2356,7 @@ window.openAddCollectionBookModal = function () {
   const modal = document.getElementById("addCollectionBookModal");
 
   if (modal) {
+    document.querySelector(".phone-frame").classList.add("modal-open");
     modal.style.display = "flex";
   }
 };
