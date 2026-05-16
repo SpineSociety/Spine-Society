@@ -1190,7 +1190,12 @@ body::before {
 
 <section id="libraryScreen" class="screen">
   <div class="page-top"><div class="page-title">My Library</div><button class="icon-button secondary" onclick="showScreen('nook')">⌕</button></div>
-  <div class="library-tabs"><button class="active">All</button><button>Want to Read</button><button>In Progress</button><button>Completed</button></div>
+  <div class="library-tabs">
+  <button class="active" onclick="setLibraryFilter('All', this)">All</button>
+  <button onclick="setLibraryFilter('Want to Read', this)">Want to Read</button>
+  <button onclick="setLibraryFilter('In Progress', this)">In Progress</button>
+  <button onclick="setLibraryFilter('Completed', this)">Completed</button>
+</div>
   
     <section class="bookshelf-case"><div id="libraryGrid"><p class="status">Open a shelf to see its books.</p></div></section>
 </section>
@@ -1806,6 +1811,7 @@ const database = getDatabase(app);
 const storage = getStorage(app);
 let currentUser = null;
 let currentLibraryBooks = [];
+let currentLibraryFilter = "All";
 let currentCollectionBooks = [];
 let currentClubBooks = [];
 let currentClubOwner = null;
@@ -2338,25 +2344,32 @@ function renderMyLibrary() {
 
   if (!library) return;
 
-  if (!currentLibraryBooks || currentLibraryBooks.length === 0) {
-  library.innerHTML = `
-    <div class="bookshelf-row">
-      <button
-        class="library-book-spine add-book-spine"
-        onclick="openAddLibraryBookModal()"
-      >
-        <div>＋</div>
-        <div>Add<br>Book</div>
-      </button>
-    </div>
-  `;
-  return;
-}
+  const filteredBooks =
+    currentLibraryFilter === "All"
+      ? currentLibraryBooks
+      : currentLibraryBooks.filter(book =>
+          (book.status || "Want to Read") === currentLibraryFilter
+        );
+
+  if (!filteredBooks || filteredBooks.length === 0) {
+    library.innerHTML = `
+      <div class="bookshelf-row">
+        <button
+          class="library-book-spine add-book-spine"
+          onclick="openAddLibraryBookModal()"
+        >
+          <div>＋</div>
+          <div>Add<br>Book</div>
+        </button>
+      </div>
+    `;
+    return;
+  }
 
   library.innerHTML = `
     <div class="bookshelf-row">
 
-      ${currentLibraryBooks.map(book =>
+      ${filteredBooks.map(book =>
         renderLibrarySpine(book)
       ).join("")}
 
@@ -2371,6 +2384,16 @@ function renderMyLibrary() {
     </div>
   `;
 }
+window.setLibraryFilter = function (filter, button) {
+  currentLibraryFilter = filter;
+
+  document.querySelectorAll("#libraryScreen .library-tabs button")
+    .forEach(tab => tab.classList.remove("active"));
+
+  button.classList.add("active");
+
+  renderMyLibrary();
+};
 function renderSpineCard(book) {
   return `
     <div class="spine-card" title="${escapeAttr(book.title)}">
