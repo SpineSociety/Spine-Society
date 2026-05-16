@@ -2352,7 +2352,7 @@ function renderMyLibrary() {
     currentLibraryFilter === "All"
       ? currentLibraryBooks
       : currentLibraryBooks.filter(book =>
-          (book.status || "Want to Read") === currentLibraryFilter
+         (book.status || book.category || "Want to Read") === currentLibraryFilter
         );
 
   if (!filteredBooks || filteredBooks.length === 0) {
