@@ -1965,12 +1965,28 @@ function listenToUserClubs() {
 
 
         <button
-          class="secondary"
-          onclick="openClubRoom('${clubId}')"
-          style="flex:1;"
-        >
-          View Club Room
-        </button>
+  class="secondary"
+  onclick="openClubRoom('${clubId}')"
+  style="flex:1;"
+>
+  View Club Room
+</button>
+
+<button
+  class="secondary"
+  onclick="editShelfName('${clubId}')"
+  style="flex:1;"
+>
+  Edit
+</button>
+
+<button
+  class="danger"
+  onclick="deleteShelf('${clubId}')"
+  style="flex:1;"
+>
+  Delete
+</button>
 
       </div>
 
@@ -3504,7 +3520,56 @@ window.removeClub = async function (clubId) {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
   alert("Shelf removed from your list.");
 };
+window.editShelfName = async function (clubId) {
+  if (!currentUser) return alert("Please log in first.");
 
+  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
+  const club = clubSnapshot.val();
+
+  if (!club) return alert("Shelf not found.");
+
+  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
+    return alert("Only the shelf creator can rename this shelf.");
+  }
+
+  const newName = prompt("Edit shelf name:", club.name || "");
+
+  if (newName === null) return;
+  if (!newName.trim()) return alert("Shelf name cannot be blank.");
+
+  await update(ref(database, "clubs/" + clubId), {
+    name: newName.trim(),
+    updatedAt: Date.now()
+  });
+
+  showToast("Shelf updated.");
+};
+
+window.deleteShelf = async function (clubId) {
+  if (!currentUser) return alert("Please log in first.");
+
+  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
+  const club = clubSnapshot.val();
+
+  if (!club) return alert("Shelf not found.");
+
+  if (club.owner === currentUser.uid || currentUser.email === appCreatorEmail) {
+    if (!confirm("Delete this shelf for everyone?")) return;
+
+    await set(ref(database, "clubs/" + clubId), null);
+    await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
+
+    showToast("Shelf deleted.");
+    return;
+  }
+
+  if (!confirm("Leave this shelf?")) return;
+
+  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), null);
+  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
+
+  showToast("Shelf removed.");
+};
 function formatTimeAgo(timestamp) {
   if (!timestamp) return "Just now";
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
