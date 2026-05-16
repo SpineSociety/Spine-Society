@@ -2217,7 +2217,21 @@ window.openBookModal = function (bookId) {
 
     </div>
   `;
+${
+  canManageBook(book)
+    ? `
+      <div class="book-actions">
+        <button class="secondary" onclick="event.stopPropagation(); editCollectionBook('${book.id}')">
+          Edit Book
+        </button>
 
+        <button class="danger" onclick="event.stopPropagation(); closeBookModal(); deleteCollectionBook('${book.id}')">
+          Delete Book
+        </button>
+      </div>
+    `
+    : ""
+}
   modal.style.display = "flex";
 };
 
