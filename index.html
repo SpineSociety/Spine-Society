@@ -2472,7 +2472,13 @@ function renderBookCard(book, finished) {
           <div class="book-category">
             ${escapeHTML(book.category || "Uncategorized")}
           </div>
-
+<div style="margin-top:14px;">
+  <select onchange="updateBookStatus('${book.id}', '${isCollectionBook ? "collection" : "library"}', this.value)">
+    <option ${book.status === "Want to Read" ? "selected" : ""}>Want to Read</option>
+    <option ${book.status === "In Progress" ? "selected" : ""}>In Progress</option>
+    <option ${book.status === "Completed" ? "selected" : ""}>Completed</option>
+  </select>
+</div>
           <div class="book-actions">
             ${
               finished
@@ -2849,6 +2855,20 @@ window.saveEditedBook = async function () {
   closeBookModal();
 
   showToast("Book updated.");
+}:
+window.updateBookStatus = async function (bookId, type, status) {
+  const path =
+    type === "collection"
+      ? "clubs/" + window.currentClubId + "/collection/" + bookId
+      : "users/" + currentUser.uid + "/library/" + bookId;
+
+  await update(ref(database, path), {
+    status,
+    updatedAt: Date.now()
+  });
+
+  closeBookModal();
+  showToast("Book moved to " + status + ".");
 };
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
