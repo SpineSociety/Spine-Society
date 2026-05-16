@@ -2186,6 +2186,9 @@ window.openBookModal = function (bookId) {
     return;
   }
 
+  const isCollectionBook =
+    currentCollectionBooks.some(b => b.id === bookId);
+
   body.innerHTML = `
     <div style="text-align:center;">
 
@@ -2215,23 +2218,25 @@ window.openBookModal = function (bookId) {
         </div>
       </div>
 
+      ${
+        canManageBook(book)
+          ? `
+            <div class="book-actions">
+              <button class="secondary" onclick="event.stopPropagation(); ${isCollectionBook ? `editCollectionBook('${book.id}')` : `editPersonalBook('${book.id}')`}">
+                Edit Book
+              </button>
+
+              <button class="danger" onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook('${book.id}')` : `deletePersonalBook('${book.id}')`}">
+                Delete Book
+              </button>
+            </div>
+          `
+          : ""
+      }
+
     </div>
   `;
-${
-  canManageBook(book)
-    ? `
-      <div class="book-actions">
-        <button class="secondary" onclick="event.stopPropagation(); editCollectionBook('${book.id}')">
-          Edit Book
-        </button>
 
-        <button class="danger" onclick="event.stopPropagation(); closeBookModal(); deleteCollectionBook('${book.id}')">
-          Delete Book
-        </button>
-      </div>
-    `
-    : ""
-}
   modal.style.display = "flex";
 };
 
