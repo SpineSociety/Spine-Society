@@ -2365,6 +2365,7 @@ window.closeAddCollectionBookModal = function () {
   const modal = document.getElementById("addCollectionBookModal");
 
   if (modal) {
+    document.querySelector(".phone-frame").classList.remove("modal-open");
     modal.style.display = "none";
   }
 };
