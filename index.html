@@ -1424,6 +1424,65 @@ button:hover {
     </button>
   </div>
 </div>
+<div
+  id="editBookModal"
+  style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(14px);
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
+  <div
+    style="
+      width:min(100%,420px);
+      border-radius:32px;
+      padding:24px;
+      background:
+        linear-gradient(180deg, rgba(26,18,13,.98), rgba(10,8,6,.98));
+      border:1px solid rgba(200,163,106,.18);
+      box-shadow:0 30px 70px rgba(0,0,0,.72);
+    "
+  >
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Edit Book</h2>
+
+      <button
+        class="secondary"
+        onclick="closeEditBookModal()"
+        style="width:auto;min-height:auto;padding:8px 14px;"
+      >
+        Close
+      </button>
+    </div>
+
+    <p class="helper">Update this book’s details.</p>
+
+    <input id="editBookTitle" placeholder="Book title" />
+    <input id="editBookAuthor" placeholder="Author" />
+
+    <select id="editBookCategory">
+      <option>Book Club Pick</option>
+      <option>Thriller</option>
+      <option>Romance</option>
+      <option>Fantasy</option>
+      <option>Mystery</option>
+      <option>Cozy Read</option>
+      <option>Wild Card</option>
+    </select>
+
+    <input id="editBookImage" placeholder="Book cover image URL optional" />
+
+    <button onclick="saveEditedBook()">
+      Save Changes
+    </button>
+  </div>
+</div>
     <nav class="top-nav" id="mainNav" style="display:none;">
       <button id="nookTab" class="nav-btn active">
         <span class="nav-icon">
