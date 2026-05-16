@@ -2177,9 +2177,12 @@ function renderBookCard(book, finished) {
                 ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
                 : canEdit
                   ? `
-                    <button class="secondary" onclick="editCollectionBook('${book.id}')">
-                      Edit Book
-                    </button>
+                    <button
+  class="secondary"
+  onclick="event.stopPropagation(); openEditBookModal('${book.id}', 'collection')"
+>
+  Edit Book
+</button>
 
                     <button class="danger" onclick="deleteCollectionBook('${book.id}')">
                       Delete Book
@@ -2217,9 +2220,12 @@ function renderPersonalBookCard(book) {
           </div>
 
           <div class="book-actions">
-            <button class="secondary" onclick="editPersonalBook('${book.id}')">
-              Edit Book
-            </button>
+            <button
+  class="secondary"
+  onclick="event.stopPropagation(); openEditBookModal('${book.id}', 'library')"
+>
+  Edit Book
+</button>
 
             <button class="danger" onclick="deletePersonalBook('${book.id}')">
               Delete Book
@@ -2628,7 +2634,10 @@ function listenToDiscussion(clubId) {
 
             ${comment.authorId === currentUser.uid ? `
               <div class="book-actions">
-                <button class="secondary" onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')">Edit Note</button>
+                <button
+  class="secondary"
+  onclick="event.stopPropagation(); openEditBookModal('${book.id}', 'collection')"
+>
                 <button class="danger" onclick="event.stopPropagation(); window.deleteDiscussionComment('${comment.id}')">Delete Note</button>
               </div>
             ` : ""}
