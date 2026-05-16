@@ -3249,7 +3249,7 @@ window.openMembersModal = function () {
     alert("Members modal is missing.");
     return;
   }
-
+document.querySelector(".phone-frame").classList.add("modal-open");
   modal.style.display = "flex";
 
   if (!window.currentClubId) {
