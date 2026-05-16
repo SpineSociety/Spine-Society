@@ -1609,7 +1609,11 @@ body::before {
       <option>Cozy Read</option>
       <option>Wild Card</option>
     </select>
-
+<select id="libraryBookStatus">
+  <option>Want to Read</option>
+  <option>In Progress</option>
+  <option>Completed</option>
+</select>
     <input id="libraryBookImage" placeholder="Book cover image URL optional" />
 
     <button onclick="addBookToPersonalLibrary()">
@@ -2657,7 +2661,8 @@ window.addBookToPersonalLibrary = async function () {
 
   const image =
     document.getElementById("libraryBookImage").value.trim();
-
+const status =
+  document.getElementById("libraryBookStatus").value;
   if (!title) {
     alert("Enter a book title.");
     return;
@@ -2668,12 +2673,13 @@ window.addBookToPersonalLibrary = async function () {
   );
 
   await set(bookRef, {
-    title,
-    author,
-    category,
-    image,
-    createdAt: Date.now()
-  });
+  title,
+  author,
+  category,
+  status,
+  image,
+  createdAt: Date.now()
+});
 
   document.getElementById("libraryBookTitle").value = "";
   document.getElementById("libraryBookAuthor").value = "";
