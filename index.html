@@ -2179,8 +2179,10 @@ function renderBookCard(book, finished) {
                   ? `
                     <button
   class="secondary"
-  onclick="event.stopPropagation(); openEditBookModal('${book.id}', 'collection')"
+  onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')"
 >
+  Edit Note
+</button>
   Edit Book
 </button>
 
@@ -2287,9 +2289,12 @@ window.openBookModal = function (bookId) {
         canManageBook(book)
           ? `
             <div class="book-actions">
-              <button class="secondary" onclick="event.stopPropagation(); ${isCollectionBook ? `editCollectionBook('${book.id}')` : `editPersonalBook('${book.id}')`}">
-                Edit Book
-              </button>
+              <button
+  class="secondary"
+  onclick="event.stopPropagation(); openEditBookModal('${book.id}', '${isCollectionBook ? "collection" : "library"}')"
+>
+  Edit Book
+</button>
 
               <button class="danger" onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook('${book.id}')` : `deletePersonalBook('${book.id}')`}">
                 Delete Book
