@@ -2469,32 +2469,30 @@ function renderBookCard(book, finished) {
               : ""
           }
 
-          <div class="book-category">
-            ${escapeHTML(book.category || "Uncategorized")}
-          </div>
-<div style="margin-top:14px;">
-  <select onchange="updateBookStatus('${book.id}', '${isCollectionBook ? "collection" : "library"}', this.value)">
-    <option ${book.status === "Want to Read" ? "selected" : ""}>Want to Read</option>
-    <option ${book.status === "In Progress" ? "selected" : ""}>In Progress</option>
-    <option ${book.status === "Completed" ? "selected" : ""}>Completed</option>
-  </select>
-</div>
           <div class="book-actions">
             ${
               finished
-                ? `<button class="danger" onclick="deleteFinishedBook('${book.id}')">Remove</button>`
+                ? `
+                  <button
+                    class="danger"
+                    onclick="deleteFinishedBook('${book.id}')"
+                  >
+                    Remove
+                  </button>
+                `
                 : canEdit
                   ? `
                     <button
-  class="secondary"
-  onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')"
->
-  Edit Note
-</button>
-  Edit Book
-</button>
+                      class="secondary"
+                      onclick="editBook('${book.id}')"
+                    >
+                      Edit Book
+                    </button>
 
-                    <button class="danger" onclick="deleteCollectionBook('${book.id}')">
+                    <button
+                      class="danger"
+                      onclick="deleteCollectionBook('${book.id}')"
+                    >
                       Delete Book
                     </button>
                   `
@@ -2856,7 +2854,20 @@ window.saveEditedBook = async function () {
 
     showToast("Book updated.");
 };
+window.updateBookStatus = async function (bookId, type, status) {
+  const path =
+    type === "collection"
+      ? "clubs/" + window.currentClubId + "/collection/" + bookId
+      : "users/" + currentUser.uid + "/library/" + bookId;
 
+  await update(ref(database, path), {
+    status,
+    updatedAt: Date.now()
+  });
+
+  closeBookModal();
+  showToast("Book moved to " + status + ".");
+};
 window.updateBookStatus = async function (bookId, type, status) {
   const path =
     type === "collection"
