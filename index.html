@@ -2656,7 +2656,7 @@ window.openBookModal = function (bookId) {
       </div>
 
       ${
-        canManageBook(book)
+        canManageBook(book, isCollectionBook ? "collection" : "library")
           ? `
             <div class="book-actions">
               <button
