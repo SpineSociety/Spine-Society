@@ -2136,7 +2136,8 @@ const userData = userSnapshot.val() || {};
 await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
   name: userData.username || currentUser.displayName || currentUser.email || "Reader",
   email: currentUser.email || "",
-  avatar: userData.avatar || "📚"
+  avatar: userData.avatar || "📚",
+  avatarPhoto: userData.avatarPhoto || ""
 });
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
@@ -2154,9 +2155,14 @@ window.openClub = async function (clubId) {
   window.currentClubId = clubId;
   
   if (currentUser && currentUser.uid) {
+  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
+  const userData = userSnapshot.val() || {};
+
   await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
-    name: currentUser.displayName || currentUser.email || "Reader",
-    email: currentUser.email || ""
+    name: userData.username || currentUser.displayName || currentUser.email || "Reader",
+    email: currentUser.email || "",
+    avatar: userData.avatar || "📚",
+    avatarPhoto: userData.avatarPhoto || ""
   });
 }
   window.currentClubName = club.name;
@@ -3076,10 +3082,16 @@ function listenToMembers(clubId) {
         userData.email ||
         "Reader";
 
-      const avatarHTML =
-  userData.avatar === "photo" && userData.avatarPhoto
-    ? `<img src="${escapeAttr(userData.avatarPhoto)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
-    : escapeHTML(userData.avatar || displayName.charAt(0).toUpperCase());
+      const memberData = members[uid] || {};
+
+const avatarPhoto = userData.avatarPhoto || memberData.avatarPhoto || "";
+const avatarValue = userData.avatar || memberData.avatar || "📚";
+
+const avatarHTML =
+  avatarValue === "photo" && avatarPhoto
+    ? `<img src="${escapeAttr(avatarPhoto)}"
+         style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+    : escapeHTML(avatarValue || displayName.charAt(0).toUpperCase());
 
       previewHTML += `
         <div style="
