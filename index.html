@@ -3076,9 +3076,10 @@ function listenToMembers(clubId) {
         userData.email ||
         "Reader";
 
-      const avatar =
-        userData.avatar ||
-        displayName.charAt(0).toUpperCase();
+      const avatarHTML =
+  userData.avatar === "photo" && userData.avatarPhoto
+    ? `<img src="${escapeAttr(userData.avatarPhoto)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+    : escapeHTML(userData.avatar || displayName.charAt(0).toUpperCase());
 
       previewHTML += `
         <div style="
@@ -3093,13 +3094,13 @@ function listenToMembers(clubId) {
           font-weight:700;
           font-size:.9rem;
         ">
-          ${escapeHTML(avatar)}
+          ${avatarHTML}
         </div>
       `;
 
       modalHTML += `
         <div class="book-item">
-          <div class="item-title">${escapeHTML(avatar)} ${escapeHTML(displayName)}</div>
+          <div class="item-title">${avatarHTML} ${escapeHTML(displayName)}</div>
           <div class="small">Reading circle member</div>
         </div>
       `;
