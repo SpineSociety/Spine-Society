@@ -1850,14 +1850,17 @@ let currentClubId = null;
 let currentMemberAvatarsHTML = "";
 const appCreatorEmail = "kokakisan@gmail.com";
 
-function canManageBook(book) {
+function canManageBook(book, type = "library") {
+  if (!currentUser) return false;
+
+  if (type === "library") {
+    return true;
+  }
+
   return (
-    currentUser &&
-    (
-      book.addedBy === currentUser.uid ||
-      currentClubOwner === currentUser.uid ||
-      currentUser.email === appCreatorEmail
-    )
+    book.addedBy === currentUser.uid ||
+    currentClubOwner === currentUser.uid ||
+    currentUser.email === appCreatorEmail
   );
 }
 function escapeHTML(value) {
