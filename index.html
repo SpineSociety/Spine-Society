@@ -347,7 +347,7 @@ button:hover {
   width: min(390px, calc(100% - 42px));
   z-index: 50;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 4px;
   padding: 7px;
   border-radius: 24px;
@@ -1331,7 +1331,27 @@ body::before {
   </section>
 </div>
 </section>
+<section id="stacksScreen" class="screen">
+  <div class="page-top">
+    <button class="icon-button secondary" onclick="showScreen('nook')">←</button>
+    <div class="page-title">The Stacks</div>
+    <button class="icon-button secondary">＋</button>
+  </div>
 
+  <section class="card">
+    <div class="card-header">
+      <h2>Reader Recommendations</h2>
+    </div>
+
+    <p class="helper">
+      Shared reads, favorite finds, and books readers cannot stop thinking about.
+    </p>
+
+    <div id="stacksFeed">
+      <p class="status">Recommendations will live here.</p>
+    </div>
+  </section>
+</section>
 <section id="marginaliaScreen" class="screen">
   <div class="page-top">
   <button class="icon-button secondary" onclick="showScreen('nook')">←</button>
@@ -1755,6 +1775,10 @@ body::before {
         </span>
         Random
       </button>
+      <button id="stacksTab" class="nav-btn">
+  <span class="nav-icon">🌙</span>
+  The Stacks
+</button>
       <button id="reflectionTab" class="nav-btn">
         <span class="nav-icon">
           <svg viewBox="0 0 24 24"><path d="M5 19l4-1 10-10-3-3L6 15l-1 4Z"></path><path d="M14 6l3 3"></path></svg>
@@ -1888,6 +1912,7 @@ window.showClubRoomTab = function (tabName) {
 document.getElementById("nookTab").addEventListener("click", () => showScreen("nook"));
 document.getElementById("libraryTab").addEventListener("click", () => showScreen("library"));
 document.getElementById("randomizerTab").addEventListener("click", () => showScreen("randomizer"));
+document.getElementById("stacksTab").addEventListener("click", () => showScreen("stacks"));
 document.getElementById("reflectionTab").addEventListener("click", () => showScreen("reflection"));
 document.getElementById("profileTab").addEventListener("click", () => showScreen("profile"));
 
