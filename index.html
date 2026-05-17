@@ -3095,14 +3095,14 @@ const avatarValue = userData.avatar || memberData.avatar || "📚";
 
 const avatarHTML =
   avatarValue === "photo" && avatarPhoto
-    <img src="${escapeAttr(avatarPhoto)}"
-     style="
-       width:100%;
-       height:100%;
-       border-radius:50%;
-       object-fit:cover;
-       display:block;
-     ">
+    ? `<img src="${escapeAttr(avatarPhoto)}"
+        style="
+          width:100%;
+          height:100%;
+          border-radius:50%;
+          object-fit:cover;
+          display:block;
+        ">`
     : escapeHTML(avatarValue || displayName.charAt(0).toUpperCase());
 
       previewHTML += `
