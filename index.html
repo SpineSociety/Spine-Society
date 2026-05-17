@@ -1061,18 +1061,20 @@ button:hover {
 .fate-title {
   text-align: center;
   font-family: "Cormorant Garamond", serif;
-  font-size: 2.1rem;
+  font-size: clamp(1.45rem, 6vw, 2.1rem);
   color: var(--gold-pale);
-  letter-spacing: 2px;
-  margin-bottom: 4px;
+  letter-spacing: 1.5px;
+  margin: 0 0 6px;
+  line-height: 1.1;
 }
 
 .fate-subtitle {
   text-align: center;
   color: var(--ink-soft);
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.1rem;
-  margin-bottom: 18px;
+  font-size: clamp(.95rem, 3.5vw, 1.1rem);
+  margin: 0 0 18px;
+  line-height: 1.25;
 }
 
 .fate-result-card {
