@@ -2524,8 +2524,30 @@ function renderPersonalBookCard(book) {
           }
 
           <div class="book-category">
-            ${escapeHTML(book.category || "Uncategorized")}
-          </div>
+  ${escapeHTML(book.category || "Uncategorized")}
+</div>
+
+<div style="margin-top:18px;">
+  <select
+    onchange="updateBookStatus('${book.id}', this.value)"
+    class="modal-select"
+  >
+    <option value="Want to Read"
+      ${(book.status || "Want to Read") === "Want to Read" ? "selected" : ""}>
+      Want to Read
+    </option>
+
+    <option value="In Progress"
+      ${book.status === "In Progress" ? "selected" : ""}>
+      In Progress
+    </option>
+
+    <option value="Completed"
+      ${book.status === "Completed" ? "selected" : ""}>
+      Completed
+    </option>
+  </select>
+</div>
 
           <div class="book-actions">
             <button
@@ -2544,6 +2566,17 @@ function renderPersonalBookCard(book) {
     </div>
   `;
 }
+window.updateBookStatus = async function (bookId, status) {
+  await update(
+    ref(database, "users/" + currentUser.uid + "/library/" + bookId),
+    {
+      status,
+      updatedAt: Date.now()
+    }
+  );
+
+  showToast("Book status updated.");
+};
 window.openBookModal = function (bookId) {
   const modal = document.getElementById("bookModal");
   const body = document.getElementById("bookModalBody");
