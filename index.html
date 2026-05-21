@@ -1420,9 +1420,6 @@ body::before {
   onchange="openCropper(event)"
 >
 
-<button onclick="openAvatarCropper()">
-  Preview & Crop Photo
-</button>
 
 <button onclick="saveCroppedAvatar()">
   Save Cropped Photo
@@ -2167,30 +2164,31 @@ let cropper;
 
 window.openCropper = function(event) {
   const file = event.target.files[0];
-
   if (!file) return;
 
   const image = document.getElementById("cropImage");
   const modal = document.getElementById("cropModal");
 
-  image.src = URL.createObjectURL(file);
-
   modal.style.display = "flex";
 
-  if (cropper) {
-    cropper.destroy();
-  }
+  image.onload = function () {
+    if (cropper) {
+      cropper.destroy();
+    }
 
-  cropper = new Cropper(image, {
-    aspectRatio: 1,
-    viewMode: 1,
-    dragMode: "move",
-    background: false,
-    responsive: true,
-    autoCropArea: 1,
-    cropBoxResizable: false,
-    cropBoxMovable: false
-  });
+    cropper = new Cropper(image, {
+      aspectRatio: 1,
+      viewMode: 1,
+      dragMode: "move",
+      background: false,
+      responsive: true,
+      autoCropArea: 1,
+      cropBoxResizable: false,
+      cropBoxMovable: false
+    });
+  };
+
+  image.src = URL.createObjectURL(file);
 };
 
 window.closeCropModal = function() {
@@ -2198,6 +2196,7 @@ window.closeCropModal = function() {
 
   if (cropper) {
     cropper.destroy();
+    cropper = null;
   }
 };
 
@@ -2206,11 +2205,11 @@ window.saveCroppedAvatar = async function() {
   if (!cropper) return alert("Choose and crop a photo first.");
 
   const canvas = cropper.getCroppedCanvas({
-    width: 400,
-    height: 400
+    width: 300,
+    height: 300
   });
 
-  const croppedImage = canvas.toDataURL("image/png");
+  const croppedImage = canvas.toDataURL("image/jpeg", 0.8);
 
   await update(ref(database, "users/" + currentUser.uid), {
     avatar: "photo",
@@ -2225,24 +2224,13 @@ window.saveCroppedAvatar = async function() {
     avatar.style.display = "block";
   }
 
-  document.getElementById("currentAvatar").textContent =
-    "Current Avatar: Photo";
+  document.getElementById("currentAvatar").textContent = "Current Avatar: Photo";
 
   closeCropModal();
   showToast("Cropped avatar saved.");
 };
 
-window.addEventListener("load", () => {
-  const savedAvatar = localStorage.getItem("spineAvatar");
 
-  if (savedAvatar) {
-    const avatar = document.getElementById("profileAvatar");
-
-    if (avatar) {
-      avatar.src = savedAvatar;
-    }
-  }
-});
 function extractClubId(input) {
   try {
     if (input.includes("?club=")) return new URL(input).searchParams.get("club");
