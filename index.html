@@ -1421,9 +1421,6 @@ body::before {
 >
 
 
-<button onclick="saveCroppedAvatar()">
-  Save Cropped Photo
-</button>
 
 <div id="avatarPreview" style="margin-top:12px;">
   <img
@@ -4132,7 +4129,15 @@ onAuthStateChanged(auth, async (user) => {
   const mainApp = document.getElementById("mainApp");
   const mainNav = document.getElementById("mainNav");
 
-  if (user) {
+  if (!user) {
+    currentUser = null;
+    authScreen.style.display = "block";
+    mainApp.style.display = "none";
+    mainNav.style.display = "none";
+    return;
+  }
+
+  try {
     currentUser = user;
 
     authScreen.style.display = "none";
@@ -4145,63 +4150,42 @@ onAuthStateChanged(auth, async (user) => {
     await ensureUserRecord(user);
 
     const userSnapshot = await get(ref(database, "users/" + user.uid));
-    const userData = userSnapshot.val();
+    const userData = userSnapshot.val() || {};
 
-    if (userData) {
+    if (userData.username) {
+      document.getElementById("usernameInput").value = userData.username;
+      document.getElementById("currentUsername").textContent =
+        "Reader Alias: " + userData.username;
+      document.getElementById("nookReaderName").textContent = userData.username;
+    }
 
-  if (userData.username) {
-    document.getElementById("usernameInput").value =
-      userData.username;
+    if (userData.avatar === "photo" && userData.avatarPhoto) {
+      const avatar = document.getElementById("profileAvatar");
 
-    document.getElementById("currentUsername").textContent =
-      "Reader Alias: " + userData.username;
+      if (avatar) {
+        avatar.src = userData.avatarPhoto;
+        avatar.style.display = "block";
+      }
 
-    document.getElementById("nookReaderName").textContent =
-      userData.username;
-  }
-if (userData && userData.avatar) {
-  document.getElementById("currentAvatar").textContent =
-    "Current Avatar: " + userData.avatar;
-}
-  
-if (userData && userData.avatar) {
-  const avatarInput = document.getElementById("avatarInput");
-  const currentAvatar = document.getElementById("currentAvatar");
+      document.getElementById("currentAvatar").textContent =
+        "Current Avatar: Photo";
+    } else if (userData.avatar) {
+      const avatarInput = document.getElementById("avatarInput");
 
-  if (avatarInput) avatarInput.value = userData.avatar;
-  if (currentAvatar) {
-    currentAvatar.textContent = "Current Avatar: " + userData.avatar;
-  }
-}
-  if (userData.avatar) {
-    document.getElementById("avatarInput").value =
-      userData.avatar;
+      if (avatarInput) avatarInput.value = userData.avatar;
 
-    document.getElementById("currentAvatar").textContent =
-      "Current Avatar: " + userData.avatar;
-  }
-if (userData.avatar === "photo" && userData.avatarPhoto) {
-  const avatar = document.getElementById("profileAvatar");
+      document.getElementById("currentAvatar").textContent =
+        "Current Avatar: " + userData.avatar;
+    }
 
-  if (avatar) {
-    avatar.src = userData.avatarPhoto;
-    avatar.style.display = "block";
-  }
-
-  document.getElementById("currentAvatar").textContent =
-    "Current Avatar: Photo";
-}
-}
-    
     listenToUserClubs();
     listenToPersonalLibrary();
     handleInviteLink();
     showScreen("nook");
-  } else {
-    currentUser = null;
-    authScreen.style.display = "block";
-    mainApp.style.display = "none";
-    mainNav.style.display = "none";
+
+  } catch (error) {
+    console.error("Login load error:", error);
+    alert("You signed in, but something failed while loading your profile: " + error.message);
   }
 });
 </script>
