@@ -1413,14 +1413,35 @@ body::before {
 </select>
 
 <button onclick="saveAvatar()">Save Avatar</button>
-<input id="avatarPhotoUrl" placeholder="Paste profile photo URL" />
+<input
+  type="file"
+  id="avatarUpload"
+  accept="image/*"
+  onchange="openCropper(event)"
+>
 
-<button onclick="saveAvatarPhotoUrl()">
-  Save Profile Photo
+<button onclick="openAvatarCropper()">
+  Preview & Crop Photo
 </button>
 
-<div id="avatarPreview" style="margin-top:12px;"></div>
-<div id="avatarPreview" style="margin-top:12px;"></div>
+<button onclick="saveCroppedAvatar()">
+  Save Cropped Photo
+</button>
+
+<div id="avatarPreview" style="margin-top:12px;">
+  <img
+    id="profileAvatar"
+    src=""
+    style="
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      object-fit:cover;
+      display:none;
+      border:1px solid rgba(200,163,106,.35);
+    "
+  />
+</div>
 <p class="helper" id="currentAvatar">Current Avatar: 📚</p>
             <button class="danger" onclick="logoutUser()">Log Out</button>
           </section>
@@ -1495,6 +1516,19 @@ body::before {
 
 </div>
 <div id="memberList" style="display:none;"></div>
+<div id="cropModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="width:min(100%,420px);border-radius:28px;background:#120c08;padding:20px;border:1px solid rgba(200,163,106,.25);">
+    <h2>Adjust Avatar</h2>
+    <p class="helper">Move and zoom your photo to fit the circle.</p>
+
+    <div style="max-height:360px;overflow:hidden;border-radius:18px;">
+      <img id="cropImage" style="display:block;max-width:100%;" />
+    </div>
+
+    <button onclick="saveCroppedAvatar()">Save Cropped Avatar</button>
+    <button class="secondary" onclick="closeCropModal()">Cancel</button>
+  </div>
+</div>
 <div
   id="bookModal"
   style="
@@ -1861,6 +1895,8 @@ let currentClubBooks = [];
 let currentClubOwner = null;
 let currentClubId = null;
 let currentMemberAvatarsHTML = "";
+let avatarCropper = null;
+let croppedAvatarDataUrl = "";
 const appCreatorEmail = "kokakisan@gmail.com";
 
 function canManageBook(book, type = "library") {
@@ -2127,7 +2163,86 @@ window.createClub = async function () {
   showToast("Shelf created.");
   openClub(clubId);
 };
+let cropper;
 
+window.openCropper = function(event) {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const image = document.getElementById("cropImage");
+  const modal = document.getElementById("cropModal");
+
+  image.src = URL.createObjectURL(file);
+
+  modal.style.display = "flex";
+
+  if (cropper) {
+    cropper.destroy();
+  }
+
+  cropper = new Cropper(image, {
+    aspectRatio: 1,
+    viewMode: 1,
+    dragMode: "move",
+    background: false,
+    responsive: true,
+    autoCropArea: 1,
+    cropBoxResizable: false,
+    cropBoxMovable: false
+  });
+};
+
+window.closeCropModal = function() {
+  document.getElementById("cropModal").style.display = "none";
+
+  if (cropper) {
+    cropper.destroy();
+  }
+};
+
+window.saveCroppedAvatar = async function() {
+  if (!currentUser) return alert("Please log in first.");
+  if (!cropper) return alert("Choose and crop a photo first.");
+
+  const canvas = cropper.getCroppedCanvas({
+    width: 400,
+    height: 400
+  });
+
+  const croppedImage = canvas.toDataURL("image/png");
+
+  await update(ref(database, "users/" + currentUser.uid), {
+    avatar: "photo",
+    avatarPhoto: croppedImage,
+    updatedAt: Date.now()
+  });
+
+  const avatar = document.getElementById("profileAvatar");
+
+  if (avatar) {
+    avatar.src = croppedImage;
+    avatar.style.display = "block";
+  }
+
+  document.getElementById("currentAvatar").textContent =
+    "Current Avatar: Photo";
+
+  closeCropModal();
+  showToast("Cropped avatar saved.");
+};
+
+window.addEventListener("load", () => {
+  const savedAvatar = localStorage.getItem("spineAvatar");
+
+  if (savedAvatar) {
+    const avatar = document.getElementById("profileAvatar");
+
+    if (avatar) {
+      avatar.src = savedAvatar;
+    }
+  }
+});
 function extractClubId(input) {
   try {
     if (input.includes("?club=")) return new URL(input).searchParams.get("club");
@@ -4077,7 +4192,17 @@ if (userData && userData.avatar) {
     document.getElementById("currentAvatar").textContent =
       "Current Avatar: " + userData.avatar;
   }
+if (userData.avatar === "photo" && userData.avatarPhoto) {
+  const avatar = document.getElementById("profileAvatar");
 
+  if (avatar) {
+    avatar.src = userData.avatarPhoto;
+    avatar.style.display = "block";
+  }
+
+  document.getElementById("currentAvatar").textContent =
+    "Current Avatar: Photo";
+}
 }
     
     listenToUserClubs();
