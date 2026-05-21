@@ -2171,29 +2171,33 @@ window.openCropper = function(event) {
     cropper = null;
   }
 
-  image.src = "";
   modal.style.display = "flex";
+  image.src = "";
 
-  const imageUrl = URL.createObjectURL(file);
+  const reader = new FileReader();
 
-  image.onload = function () {
-    setTimeout(() => {
-      cropper = new Cropper(image, {
-        aspectRatio: 1,
-        viewMode: 1,
-        dragMode: "move",
-        background: false,
-        responsive: true,
-        autoCropArea: 0.9,
-        cropBoxResizable: true,
-        cropBoxMovable: true,
-        zoomable: true,
-        movable: true
-      });
-    }, 100);
+  reader.onload = function(e) {
+    image.src = e.target.result;
+
+    image.onload = function() {
+      setTimeout(() => {
+        cropper = new window.Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 1,
+          dragMode: "move",
+          autoCropArea: 0.85,
+          background: false,
+          responsive: true,
+          movable: true,
+          zoomable: true,
+          cropBoxMovable: true,
+          cropBoxResizable: true
+        });
+      }, 300);
+    };
   };
 
-  image.src = imageUrl;
+  reader.readAsDataURL(file);
 };
 
 window.closeCropModal = function() {
@@ -2207,12 +2211,21 @@ window.closeCropModal = function() {
 
 window.saveCroppedAvatar = async function() {
   if (!currentUser) return alert("Please log in first.");
-  if (!cropper) return alert("Choose and crop a photo first.");
+
+  if (!cropper) {
+    alert("The crop tool is still loading. Wait one second, then tap Save Cropped Avatar again.");
+    return;
+  }
 
   const canvas = cropper.getCroppedCanvas({
     width: 300,
     height: 300
   });
+
+  if (!canvas) {
+    alert("Crop failed. Try choosing the photo again.");
+    return;
+  }
 
   const croppedImage = canvas.toDataURL("image/jpeg", 0.8);
 
@@ -2223,7 +2236,6 @@ window.saveCroppedAvatar = async function() {
   });
 
   const avatar = document.getElementById("profileAvatar");
-
   if (avatar) {
     avatar.src = croppedImage;
     avatar.style.display = "block";
