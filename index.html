@@ -1511,11 +1511,11 @@ body::before {
 </div>
 <div id="memberList" style="display:none;"></div>
 <div id="cropModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="width:min(100%,420px);border-radius:28px;background:#120c08;padding:20px;border:1px solid rgba(200,163,106,.25);">
+  <div style="width:min(100%,420px);max-height:90vh;overflow-y:auto;border-radius:28px;background:#120c08;padding:20px;border:1px solid rgba(200,163,106,.25);">
     <h2>Adjust Avatar</h2>
     <p class="helper">Move and zoom your photo to fit the circle.</p>
 
-    <div style="max-height:360px;overflow:hidden;border-radius:18px;">
+    <div style="height:360px;border-radius:18px;overflow:hidden;background:#050403;">
       <img id="cropImage" style="display:block;max-width:100%;" />
     </div>
 
@@ -2166,26 +2166,34 @@ window.openCropper = function(event) {
   const image = document.getElementById("cropImage");
   const modal = document.getElementById("cropModal");
 
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
+  }
+
+  image.src = "";
   modal.style.display = "flex";
 
-  image.onload = function () {
-    if (cropper) {
-      cropper.destroy();
-    }
+  const imageUrl = URL.createObjectURL(file);
 
-    cropper = new Cropper(image, {
-      aspectRatio: 1,
-      viewMode: 1,
-      dragMode: "move",
-      background: false,
-      responsive: true,
-      autoCropArea: 1,
-      cropBoxResizable: false,
-      cropBoxMovable: false
-    });
+  image.onload = function () {
+    setTimeout(() => {
+      cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: "move",
+        background: false,
+        responsive: true,
+        autoCropArea: 0.9,
+        cropBoxResizable: true,
+        cropBoxMovable: true,
+        zoomable: true,
+        movable: true
+      });
+    }, 100);
   };
 
-  image.src = URL.createObjectURL(file);
+  image.src = imageUrl;
 };
 
 window.closeCropModal = function() {
