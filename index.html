@@ -2159,42 +2159,30 @@ window.createClub = async function () {
 };
 let cropper;
 
-window.openCropper = function(event) {
+window.openCropper = async function(event) {
   const file = event.target.files[0];
   if (!file) return;
-
-  const image = document.getElementById("cropImage");
-  const modal = document.getElementById("cropModal");
-
-  if (cropper) {
-    cropper.destroy();
-    cropper = null;
-  }
-
-  modal.style.display = "flex";
-  image.src = "";
+  if (!currentUser) return alert("Please log in first.");
 
   const reader = new FileReader();
 
-  reader.onload = function(e) {
-    image.src = e.target.result;
+  reader.onload = async function(e) {
+    const photoData = e.target.result;
 
-    image.onload = function() {
-      setTimeout(() => {
-        cropper = new window.Cropper(image, {
-          aspectRatio: 1,
-          viewMode: 1,
-          dragMode: "move",
-          autoCropArea: 0.85,
-          background: false,
-          responsive: true,
-          movable: true,
-          zoomable: true,
-          cropBoxMovable: true,
-          cropBoxResizable: true
-        });
-      }, 300);
-    };
+    await update(ref(database, "users/" + currentUser.uid), {
+      avatar: "photo",
+      avatarPhoto: photoData,
+      updatedAt: Date.now()
+    });
+
+    const avatar = document.getElementById("profileAvatar");
+    if (avatar) {
+      avatar.src = photoData;
+      avatar.style.display = "block";
+    }
+
+    document.getElementById("currentAvatar").textContent = "Current Avatar: Photo";
+    showToast("Avatar photo saved.");
   };
 
   reader.readAsDataURL(file);
