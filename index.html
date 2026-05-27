@@ -5462,21 +5462,35 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-window.finishFeaturedBook = function () {
-  alert("Book finished! Next we’ll move this book to Books Read.");
-};
-window.saveTotalChapters = async function () {
+window.finishFeaturedBook = async function () {
   const user = auth.currentUser;
   const clubId = window.currentClubId;
-  const input = document.getElementById("totalChaptersInput");
+  const nextRead = window.currentNextRead;
 
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
-  if (!input.value) return alert("Enter the total number of chapters.");
+  if (!nextRead) return alert("No featured volume selected.");
 
-  await set(ref(database, `clubs/${clubId}/featuredVolume/totalChapters`), Number(input.value));
+  const confirmFinish = confirm(
+    `Mark "${nextRead.title}" as finished for this club?`
+  );
 
-  alert("Chapter count saved!");
+  if (!confirmFinish) return;
+
+  const finishedRef = push(ref(database, `clubs/${clubId}/booksRead`));
+
+  await set(finishedRef, {
+    ...nextRead,
+    finishedAt: Date.now(),
+    finishedBy: user.uid
+  });
+
+  await remove(ref(database, `clubs/${clubId}/nextRead`));
+  await remove(ref(database, `clubs/${clubId}/checkIns`));
+  await remove(ref(database, `clubs/${clubId}/featuredVolume`));
+
+  alert("Book moved to Finished Reads!");
+  showScreen("club");
 };
 
 window.checkInForBook = async function () {
