@@ -5521,7 +5521,9 @@ function listenToFeaturedVolumeProgress(clubId) {
     const progressPercentText = document.getElementById("progressPercentText");
 
     const checkedInCount = checkinArray.length;
-    const totalMembers = window.currentClubMemberCount || 1;
+    const members = clubData.members || {};
+const totalMembers = Math.max(Object.keys(members).length, 1);
+window.currentClubMemberCount = totalMembers;
     const percent = Math.min(Math.round((checkedInCount / totalMembers) * 100), 100);
     const everyoneCheckedIn = checkedInCount >= totalMembers;
 
