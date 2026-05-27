@@ -3148,61 +3148,13 @@ function listenToNextRead(clubId) {
     if (!area) return;
 
     if (!nextRead) {
-      area.innerHTML = `<p class="status">No next read set yet.</p>`;
-      if (marginaliaTitle) marginaliaTitle.textContent = "Current Read";
-      if (marginaliaAuthor) marginaliaAuthor.textContent = "Open a shelf to see notes.";
-      return;
-    }
-    if (marginaliaTitle) marginaliaTitle.textContent = nextRead.title || "Current Read";
-    if (marginaliaAuthor) marginaliaAuthor.textContent = nextRead.author || "";
-
-    area.innerHTML = `
+      area.innerHTML = `
   <div class="featured-volume-card">
 
-    <div class="featured-kicker">Currently Reading Together</div>
-
-<div id="currentReadHero">
-  <p class="status">No current read set yet.</p>
-</div>
-
-<div class="club-progress-box">
-  <div class="club-progress-head">
-    <h3>Club Progress</h3>
-    <span id="chapterCountBadge">Set Chapters</span>
-  </div>
-
-  <div class="progress-stat-grid">
-    <div>
-      <p class="mini-label">Total Chapters</p>
-      <input id="totalChaptersInput" type="number" placeholder="46" />
+    <div class="featured-kicker">
+      Currently Reading Together
     </div>
 
-    <div>
-      <p class="mini-label">Progress</p>
-      <p id="chapterCountText">No chapter count set yet.</p>
-    </div>
-  </div>
-
-  <button onclick="saveTotalChapters()">Save Chapters</button>
-
-  <div class="progress-bar-shell">
-    <div id="clubProgressFill" class="progress-bar-fill"></div>
-  </div>
-
-  <div id="memberCheckinsList" class="reader-checkin-row"></div>
-
-  <div class="progress-actions">
-    <button class="secondary" onclick="checkInForBook()">Check In</button>
-
-    <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-      Finished Book 🔒
-    </button>
-  </div>
-
-  <p id="finishLockText" class="helper">
-    Everyone must check in before finishing this book.
-  </p>
-</div>
     <div class="featured-cover-wrap">
       ${
         nextRead.image
@@ -3225,9 +3177,74 @@ function listenToNextRead(clubId) {
       ${escapeHTML(nextRead.category || "Featured Volume")}
     </div>
 
-    <button onclick="markNextReadFinished()">
-      Mark as Finished
-    </button>
+    <div class="club-progress-box">
+
+      <div class="club-progress-head">
+        <h3>Reading Goal</h3>
+
+        <span id="chapterCountBadge">
+          Club Progress
+        </span>
+      </div>
+
+      <div class="progress-stat-grid">
+
+        <div>
+          <p class="mini-label">Current Goal</p>
+
+          <input
+            id="checkInAmount"
+            placeholder="Chapters 1–5"
+          />
+        </div>
+
+        <div>
+          <p class="mini-label">Reading Status</p>
+
+          <p id="chapterCountText">
+            No reading goal set yet.
+          </p>
+        </div>
+
+      </div>
+
+      <button onclick="saveTotalChapters()">
+        Save Reading Goal
+      </button>
+
+      <div class="progress-bar-shell">
+        <div id="clubProgressFill" class="progress-bar-fill"></div>
+      </div>
+
+      <div
+        id="memberCheckinsList"
+        class="reader-checkin-row"
+      ></div>
+
+      <div class="progress-actions">
+
+        <button
+          class="secondary"
+          onclick="checkInForBook()"
+        >
+          Check In
+        </button>
+
+        <button
+          id="finishedBookBtn"
+          onclick="finishFeaturedBook()"
+          disabled
+        >
+          Finished Book 🔒
+        </button>
+
+      </div>
+
+      <p id="finishLockText" class="helper">
+        Everyone must check in before finishing this book.
+      </p>
+
+    </div>
 
   </div>
 `;
