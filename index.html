@@ -5318,127 +5318,114 @@ function renderFeaturedVolumePage(nextRead) {
   }
 
   featuredPageArea.innerHTML = `
-    <div class="featured-volume-card featured-page-layout">
+    <div class="mock-feature-page">
 
-      <div class="featured-kicker">Currently Reading Together</div>
+      <section class="mock-current-hero">
+        <div class="mock-hero-header">
+          <div>
+            <h2>Current Read</h2>
+            <p>Reading together as a club</p>
+          </div>
+        </div>
 
-      <div class="featured-hero-layout">
+        <div class="mock-hero-body">
+          <div class="mock-cover-wrap">
+            ${
+              nextRead.image
+                ? `<img src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+                : `<div class="cover-placeholder">S</div>`
+            }
+          </div>
 
-  <div class="featured-cover-wrap">
-    ${
-      nextRead.image
-        ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-        : `<div class="cover-placeholder">S</div>`
-    }
-  </div>
+          <div class="mock-book-info">
+            <h1>${escapeHTML(nextRead.title)}</h1>
+            ${
+              nextRead.author
+                ? `<p>by ${escapeHTML(nextRead.author)}</p>`
+                : ""
+            }
 
-  <div class="featured-meta">
+            <span>${escapeHTML(nextRead.category || "Featured Volume")}</span>
 
-    <div class="featured-title">
-      ${escapeHTML(nextRead.title)}
-    </div>
+            <div class="mock-avatar-row">
+              <div>A</div>
+              <div>M</div>
+              <div>J</div>
+              <div>+</div>
+            </div>
 
-    ${
-      nextRead.author
-        ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
-        : ""
-    }
+            <small>6 members reading</small>
+          </div>
+        </div>
+      </section>
 
-    <div class="book-category">
-      ${escapeHTML(nextRead.category || "Featured Volume")}
-    </div>
+      <section class="mock-card">
+        <div class="mock-card-title">🎯 Reading Goal</div>
 
-    <div class="reading-social-row">
+        <div class="mock-goal-grid">
+          <div>
+            <small>Current Goal</small>
+            <strong>Chapters 1–5</strong>
+          </div>
 
-      <div class="member-stack">
-        <div class="member-avatar">A</div>
-        <div class="member-avatar">M</div>
-        <div class="member-avatar">J</div>
-        <div class="member-avatar">+</div>
-      </div>
+          <div>
+            <small>Total Chapters</small>
+            <input id="totalChaptersInput" type="number" placeholder="46" />
+          </div>
+        </div>
 
-      <div class="reading-meta-text">
-        6 members reading together
-      </div>
+        <button onclick="saveTotalChapters()">Save Goal</button>
 
-    </div>
+        <div class="mock-progress-line">
+          <div id="clubProgressFill"></div>
+        </div>
 
-  </div>
+        <p id="chapterCountText" class="mock-status-text">
+          No chapter count set yet.
+        </p>
+      </section>
 
-</div>
+      <section class="mock-card">
+        <div class="mock-card-row">
+          <div class="mock-card-title">📖 Club Progress</div>
+          <span id="chapterCountBadge">Set Chapters</span>
+        </div>
 
-      <div class="reading-goal-card">
-        <div class="section-row">
-  <h3>Reading Goal</h3>
-  <span id="chapterCountBadge">Active</span>
-</div>
+        <div class="mock-progress-stats">
+          <div>
+            <small>Total Chapters</small>
+            <strong id="checkedInCountText">0/0</strong>
+            <span>Checked in</span>
+          </div>
 
-<div class="goal-feature-row">
-  <div>
-    <div class="mini-label">Current Goal</div>
-    <div id="readingGoalDisplay" class="goal-display">
-      Chapters 1–5
-    </div>
-  </div>
+          <div>
+            <small>Progress</small>
+            <strong id="progressPercentText">0%</strong>
+            <span>Ready</span>
+          </div>
+        </div>
+      </section>
 
-  <div>
-    <div class="mini-label">Total Chapters</div>
-    <input id="totalChaptersInput" type="number" placeholder="46" />
-  </div>
-</div>
+      <section class="mock-card">
+        <div class="mock-card-row">
+          <div class="mock-card-title">✅ Checked In</div>
+          <span class="mock-green">Everyone’s in ✨</span>
+        </div>
 
-<button onclick="saveTotalChapters()">Save Goal</button>
+        <div id="memberCheckinsList" class="mock-checkin-row"></div>
 
-<div class="progress-bar-shell">
-  <div id="clubProgressFill" class="progress-bar-fill"></div>
-</div>
+        <div class="mock-action-grid">
+          <button onclick="checkInForBook()">Reading Check-In</button>
 
-<p id="chapterCountText" class="goal-status-text">
-  No chapter count set yet.
-</p>
+          <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+            Mark as Finished 🔒
+          </button>
+        </div>
 
-<div class="club-progress-mini">
-  <div class="mini-label">Club Progress</div>
-
-  <div class="progress-mini-grid">
-    <div>
-      <strong id="checkedInCountText">0/0</strong>
-      <span>Checked in</span>
-    </div>
-
-    <div>
-      <strong id="progressPercentText">0%</strong>
-      <span>Ready</span>
-    </div>
-  </div>
-</div>
-
-<div class="checkin-section">
-
-  <div class="section-row">
-    <div class="mini-label">Checked In</div>
-
-    <div class="checkin-count">
-      Everyone’s in ✨
-    </div>
-  </div>
-
-  <div id="memberCheckinsList" class="member-checkin-row"></div>
-
-</div>
-
-<div class="progress-actions">
-  <button onclick="checkInForBook()">Check In</button>
-
-  <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-    Finished Book 🔒
-  </button>
-</div>
-
-<p id="finishLockText" class="helper">
-  Everyone must check in before finishing this book.
-</p>
-      </div>
+        <p id="finishLockText" class="helper">
+          Everyone must check in before finishing this book.
+        </p>
+      </section>
 
     </div>
   `;
