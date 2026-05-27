@@ -1398,6 +1398,53 @@ body::before {
   line-height: 1.15;
   color: var(--gold-pale);
 }
+#featuredVolumeScreen .card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.featured-page-layout {
+  padding: 24px 18px;
+}
+
+.reading-goal-card {
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top left, rgba(200,163,106,.12), transparent 38%),
+    rgba(10,7,5,.78);
+  border: 1px solid rgba(200,163,106,.18);
+  text-align: left;
+}
+
+.reading-goal-card h3 {
+  margin: 0;
+  color: var(--gold-pale);
+  font-size: 1.65rem;
+}
+
+.goal-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+#featuredVolumeScreen #chapterCountText {
+  margin: 0;
+}
+
+#featuredVolumeScreen .progress-actions {
+  margin-top: 14px;
+}
+
+#featuredVolumeScreen #finishLockText {
+  text-align: center;
+  margin-top: 14px;
+}
 </style>
 </head>
 
@@ -4632,7 +4679,8 @@ function renderFeaturedVolumePage(nextRead) {
   }
 
   featuredPageArea.innerHTML = `
-    <div class="featured-volume-card">
+    <div class="featured-volume-card featured-page-layout">
+
       <div class="featured-kicker">Currently Reading Together</div>
 
       <div class="featured-cover-wrap">
@@ -4655,26 +4703,45 @@ function renderFeaturedVolumePage(nextRead) {
         ${escapeHTML(nextRead.category || "Featured Volume")}
       </div>
 
-      <div class="club-progress-box">
-        <h3>Reading Goal</h3>
+      <div class="reading-goal-card">
+        <div class="section-row">
+          <h3>Reading Goal</h3>
+          <span id="chapterCountBadge">Set Chapters</span>
+        </div>
 
-        <input id="totalChaptersInput" type="number" placeholder="How many chapters?" />
+        <div class="goal-summary">
+          <div>
+            <div class="mini-label">Total Chapters</div>
+            <input id="totalChaptersInput" type="number" placeholder="46" />
+          </div>
+
+          <div>
+            <div class="mini-label">Status</div>
+            <p id="chapterCountText">No chapter count set yet.</p>
+          </div>
+        </div>
+
         <button onclick="saveTotalChapters()">Save Chapters</button>
 
-        <p id="chapterCountText">No chapter count set yet.</p>
-
-        <button onclick="checkInForBook()">Check In</button>
+        <div class="progress-bar-shell">
+          <div id="clubProgressFill" class="progress-bar-fill"></div>
+        </div>
 
         <div id="memberCheckinsList"></div>
 
-        <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-          Finished Book 🔒
-        </button>
+        <div class="progress-actions">
+          <button onclick="checkInForBook()">Check In</button>
+
+          <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+            Finished Book 🔒
+          </button>
+        </div>
 
         <p id="finishLockText" class="helper">
           Everyone must check in before finishing this book.
         </p>
       </div>
+
     </div>
   `;
 }
