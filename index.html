@@ -5486,11 +5486,18 @@ window.checkInForBook = async function () {
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
 
-  await set(ref(database, `clubs/${clubId}/featuredVolume/checkins/${user.uid}`), {
-    name: user.displayName || user.email || "Member",
+  const progressText = prompt("What did you finish? Example: Chapters 1–5");
+
+  if (!progressText) return;
+
+  await set(ref(database, `clubs/${clubId}/checkIns/${user.uid}`), {
+    name: window.currentUsername || user.displayName || user.email || "Reader",
+    progress: progressText,
     checkedIn: true,
-    checkedInAt: Date.now()
+    timestamp: Date.now()
   });
+
+  alert("Check-in saved!");
 };
 function listenToFeaturedVolumeProgress(clubId) {
   const progressRef = ref(database, `clubs/${clubId}/featuredVolume`);
