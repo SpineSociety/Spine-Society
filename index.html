@@ -5500,18 +5500,30 @@ window.checkInForBook = async function () {
   alert("Check-in saved!");
 };
 function listenToFeaturedVolumeProgress(clubId) {
-  const progressRef = ref(database, `clubs/${clubId}/featuredVolume`);
+  const progressRef = ref(database, `clubs/${clubId}`);
 
   onValue(progressRef, (snapshot) => {
-    const data = snapshot.val() || {};
-    const totalChapters = data.totalChapters || null;
-    const checkins = data.checkins || {};
+    const clubData = snapshot.val() || {};
+
+    const totalChapters = clubData.featuredVolume?.totalChapters || null;
+    const checkins = clubData.checkIns || {};
+    const checkinArray = Object.values(checkins).sort(
+      (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+    );
 
     const input = document.getElementById("totalChaptersInput");
     const chapterText = document.getElementById("chapterCountText");
     const checkinsList = document.getElementById("memberCheckinsList");
+    const feed = document.getElementById("recentCheckInsFeed");
     const finishedBtn = document.getElementById("finishedBookBtn");
     const lockText = document.getElementById("finishLockText");
+    const checkedInCountText = document.getElementById("checkedInCountText");
+    const progressPercentText = document.getElementById("progressPercentText");
+
+    const checkedInCount = checkinArray.length;
+    const totalMembers = window.currentClubMemberCount || 1;
+    const percent = Math.min(Math.round((checkedInCount / totalMembers) * 100), 100);
+    const everyoneCheckedIn = checkedInCount >= totalMembers;
 
     if (input && totalChapters) input.value = totalChapters;
 
@@ -5521,24 +5533,47 @@ function listenToFeaturedVolumeProgress(clubId) {
         : "No chapter count set yet.";
     }
 
+    if (checkedInCountText) checkedInCountText.textContent = `${checkedInCount}/${totalMembers}`;
+    if (progressPercentText) progressPercentText.textContent = `${percent}%`;
+
     if (checkinsList) {
-      checkinsList.innerHTML = Object.values(checkins).map(member => `
-        <div class="checkin-row">
-          <span>${member.name}</span>
-          <span>✅ Checked in</span>
+      checkinsList.innerHTML = checkinArray.map(member => `
+        <div class="member-checkin-card">
+          <div class="member-checkin-avatar">
+            ${(member.name || "R").charAt(0).toUpperCase()}
+          </div>
+          <div class="member-checkin-name">
+            ${escapeHTML(member.name || "Reader")}
+          </div>
         </div>
       `).join("");
     }
 
-    const checkedInCount = Object.keys(checkins).length;
-    const totalMembers = window.currentClubMemberCount || 1;
-    const everyoneCheckedIn = checkedInCount >= totalMembers;
+    if (feed) {
+      feed.innerHTML = checkinArray.length
+        ? checkinArray.map(member => `
+          <div class="mock-feed-item">
+            <div class="member-checkin-avatar">
+              ${(member.name || "R").charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <strong>${escapeHTML(member.name || "Reader")} checked in</strong>
+              <span>${escapeHTML(member.progress || "Reading progress updated")}</span>
+            </div>
+            <small>${formatCheckInTime(member.timestamp)}</small>
+          </div>
+        `).join("")
+        : `<p class="status">No check-ins yet.</p>`;
+    }
+
+    const fill = document.getElementById("clubProgressFill");
+    if (fill) fill.style.width = `${percent}%`;
 
     if (finishedBtn) {
       finishedBtn.disabled = !everyoneCheckedIn;
       finishedBtn.textContent = everyoneCheckedIn
-        ? "Finished Book ✅"
-        : "Finished Book 🔒";
+        ? "Mark as Finished ✅"
+        : "Mark as Finished 🔒";
     }
 
     if (lockText) {
@@ -5671,27 +5706,7 @@ function renderFeaturedVolumePage(nextRead) {
     <div class="mock-card-title">📝 Recent Check-Ins</div>
   </div>
 
-  <div class="mock-feed">
-
-    <div class="mock-feed-item">
-      <img src="https://i.pravatar.cc/60?img=32">
-      <div>
-        <strong>Asia checked in</strong>
-        <span>Chapters 1–5</span>
-      </div>
-      <small>Today</small>
-    </div>
-
-    <div class="mock-feed-item">
-      <img src="https://i.pravatar.cc/60?img=12">
-      <div>
-        <strong>Maya checked in</strong>
-        <span>Pages 120–185</span>
-      </div>
-      <small>9:18 AM</small>
-    </div>
-
-  </div>
+  <div id="recentCheckInsFeed" class="mock-feed"></div>
 
 </section>
     </div>
@@ -5704,6 +5719,25 @@ window.openFeaturedVolumePage = function () {
     renderFeaturedVolumePage(window.currentNextRead);
   }
 };
+function formatCheckInTime(timestamp) {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) {
+    return date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+
+  return date.toLocaleDateString([], {
+    month: "short",
+    day: "numeric"
+  });
+}
 </script>
 <div id="toast"></div>
 </body>
