@@ -4479,6 +4479,62 @@ function listenToFeaturedVolumeProgress(clubId) {
     }
   });
 }
+function renderFeaturedVolumePage(nextRead) {
+  const featuredPageArea = document.getElementById("featuredVolumePageArea");
+  if (!featuredPageArea) return;
+
+  if (!nextRead) {
+    featuredPageArea.innerHTML = `<p class="status">No featured volume set yet.</p>`;
+    return;
+  }
+
+  featuredPageArea.innerHTML = `
+    <div class="featured-volume-card">
+      <div class="featured-kicker">Currently Reading Together</div>
+
+      <div class="featured-cover-wrap">
+        ${
+          nextRead.image
+            ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+            : `<div class="cover-placeholder">S</div>`
+        }
+      </div>
+
+      <div class="featured-title">${escapeHTML(nextRead.title)}</div>
+
+      ${
+        nextRead.author
+          ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
+          : ""
+      }
+
+      <div class="book-category">
+        ${escapeHTML(nextRead.category || "Featured Volume")}
+      </div>
+
+      <div class="club-progress-box">
+        <h3>Reading Goal</h3>
+
+        <input id="totalChaptersInput" type="number" placeholder="How many chapters?" />
+        <button onclick="saveTotalChapters()">Save Chapters</button>
+
+        <p id="chapterCountText">No chapter count set yet.</p>
+
+        <button onclick="checkInForBook()">Check In</button>
+
+        <div id="memberCheckinsList"></div>
+
+        <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+          Finished Book 🔒
+        </button>
+
+        <p id="finishLockText" class="helper">
+          Everyone must check in before finishing this book.
+        </p>
+      </div>
+    </div>
+  `;
+}
 </script>
 <div id="toast"></div>
 </body>
