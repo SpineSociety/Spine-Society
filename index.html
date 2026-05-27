@@ -1647,6 +1647,69 @@ body::before {
   color: var(--muted);
   font-size: .8rem;
 }
+.checkin-section {
+  margin-top: 22px;
+}
+
+.member-checkin-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-top: 14px;
+  padding-bottom: 4px;
+}
+
+.member-checkin-card {
+  min-width: 82px;
+  text-align: center;
+}
+
+.member-checkin-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  margin-inline: auto;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.14), transparent 60%),
+    rgba(25,18,14,.96);
+  border: 2px solid rgba(200,163,106,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-pale);
+  font-weight: 700;
+  font-size: 1.15rem;
+  position: relative;
+}
+
+.member-checkin-avatar::after {
+  content: "✓";
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #63c25b;
+  color: white;
+  font-size: .8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #120d09;
+}
+
+.member-checkin-name {
+  margin-top: 8px;
+  font-size: .82rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.checkin-count {
+  color: #85c46b;
+  font-size: .85rem;
+}
 </style>
 </head>
 
@@ -4974,7 +5037,19 @@ function renderFeaturedVolumePage(nextRead) {
   </div>
 </div>
 
-<div id="memberCheckinsList"></div>
+<div class="checkin-section">
+
+  <div class="section-row">
+    <div class="mini-label">Checked In</div>
+
+    <div class="checkin-count">
+      Everyone’s in ✨
+    </div>
+  </div>
+
+  <div id="memberCheckinsList" class="member-checkin-row"></div>
+
+</div>
 
 <div class="progress-actions">
   <button onclick="checkInForBook()">Check In</button>
