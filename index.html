@@ -1503,7 +1503,7 @@ body::before {
   <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Club Room</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
   <section class="current-club-panel" id="clubHero"><div class="club-emblem">📚</div><div><div class="panel-kicker">Current Club</div><h3>Choose a Shelf</h3><p class="small">Open one of your shelves to begin.</p></div></section>
   <div class="club-room-tabs">
-  <button class="active" onclick="showScreen('featuredVolume')">Featured Volume</button>
+  <button class="active" onclick="openFeaturedVolumePage()">Featured Volume</button>
   <button onclick="showClubRoomTab('chat')">Marginalia</button>
   <button onclick="showClubRoomTab('books')">The Collection</button>
   <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
@@ -3292,6 +3292,7 @@ window.updateBookStatus = async function (bookId, type, status) {
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
+    window.currentNextRead = nextRead;
     updateNookNextRead(nextRead);
     const marginaliaTitle = document.getElementById("marginaliaBookTitle");
     const marginaliaAuthor = document.getElementById("marginaliaBookAuthor");
@@ -4535,6 +4536,13 @@ function renderFeaturedVolumePage(nextRead) {
     </div>
   `;
 }
+window.openFeaturedVolumePage = function () {
+  showScreen("featuredVolume");
+
+  if (window.currentNextRead) {
+    renderFeaturedVolumePage(window.currentNextRead);
+  }
+};
 </script>
 <div id="toast"></div>
 </body>
