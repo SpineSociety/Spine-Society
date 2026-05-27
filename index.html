@@ -3097,7 +3097,28 @@ function listenToNextRead(clubId) {
     <div class="featured-kicker">
       Currently Reading Together
     </div>
+<div class="club-progress-box">
+  <h3>Club Progress</h3>
 
+  <label>Total Chapters</label>
+  <input id="totalChaptersInput" type="number" placeholder="How many chapters?" />
+
+  <button onclick="saveTotalChapters()">Save Chapters</button>
+
+  <p id="chapterCountText">No chapter count set yet.</p>
+
+  <button onclick="checkInForBook()">Check In</button>
+
+  <div id="memberCheckinsList"></div>
+
+  <button id="finishedBookBtn" disabled>
+    Finished Book 🔒
+  </button>
+
+  <p id="finishLockText" class="helper">
+    Everyone must check in before finishing this book.
+  </p>
+</div>
     <div class="featured-cover-wrap">
       ${
         nextRead.image
