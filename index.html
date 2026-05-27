@@ -1710,6 +1710,79 @@ body::before {
   color: #85c46b;
   font-size: .85rem;
 }
+.featured-hero-layout {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 34px;
+}
+
+.featured-meta {
+  text-align: left;
+}
+
+.featured-meta .featured-title {
+  font-size: 2.35rem;
+  line-height: .92;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.featured-meta .small {
+  margin-top: 6px;
+  font-size: 1rem;
+}
+
+.featured-meta .book-category {
+  display: inline-flex;
+  margin-top: 14px;
+  margin-bottom: 16px;
+}
+
+.reading-social-row {
+  margin-top: 8px;
+}
+
+.member-stack {
+  display: flex;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.12), transparent 60%),
+    rgba(30,22,17,.95);
+  border: 2px solid rgba(200,163,106,.25);
+  color: var(--gold-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-left: -10px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+}
+
+.member-avatar:first-child {
+  margin-left: 0;
+}
+
+.reading-meta-text {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: .92rem;
+}
+
+#featuredVolumeScreen .cover {
+  width: 145px;
+  height: 215px;
+  border-radius: 22px;
+}
 </style>
 </head>
 
@@ -4971,25 +5044,50 @@ function renderFeaturedVolumePage(nextRead) {
 
       <div class="featured-kicker">Currently Reading Together</div>
 
-      <div class="featured-cover-wrap">
-        ${
-          nextRead.image
-            ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-            : `<div class="cover-placeholder">S</div>`
-        }
+      <div class="featured-hero-layout">
+
+  <div class="featured-cover-wrap">
+    ${
+      nextRead.image
+        ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+        : `<div class="cover-placeholder">S</div>`
+    }
+  </div>
+
+  <div class="featured-meta">
+
+    <div class="featured-title">
+      ${escapeHTML(nextRead.title)}
+    </div>
+
+    ${
+      nextRead.author
+        ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
+        : ""
+    }
+
+    <div class="book-category">
+      ${escapeHTML(nextRead.category || "Featured Volume")}
+    </div>
+
+    <div class="reading-social-row">
+
+      <div class="member-stack">
+        <div class="member-avatar">A</div>
+        <div class="member-avatar">M</div>
+        <div class="member-avatar">J</div>
+        <div class="member-avatar">+</div>
       </div>
 
-      <div class="featured-title">${escapeHTML(nextRead.title)}</div>
-
-      ${
-        nextRead.author
-          ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
-          : ""
-      }
-
-      <div class="book-category">
-        ${escapeHTML(nextRead.category || "Featured Volume")}
+      <div class="reading-meta-text">
+        6 members reading together
       </div>
+
+    </div>
+
+  </div>
+
+</div>
 
       <div class="reading-goal-card">
         <div class="section-row">
