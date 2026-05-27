@@ -1503,7 +1503,7 @@ body::before {
   <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Club Room</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
   <section class="current-club-panel" id="clubHero"><div class="club-emblem">📚</div><div><div class="panel-kicker">Current Club</div><h3>Choose a Shelf</h3><p class="small">Open one of your shelves to begin.</p></div></section>
   <div class="club-room-tabs">
-  <button class="active" onclick="showClubRoomTab('current')">Featured Volume</button>
+  <button class="active" onclick="showScreen('featuredVolume')">Featured Volume</button>
   <button onclick="showClubRoomTab('chat')">Marginalia</button>
   <button onclick="showClubRoomTab('books')">The Collection</button>
   <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
@@ -1523,7 +1523,19 @@ body::before {
       </p>
     </div>
   </section>
+<section id="featuredVolumeScreen" class="screen">
+  <div class="page-top">
+    <button class="icon-button secondary" onclick="showScreen('club')">←</button>
+    <div class="page-title">Featured Volume</div>
+    <button class="icon-button secondary">✦</button>
+  </div>
 
+  <section class="card">
+    <div id="featuredVolumePageArea">
+      <p class="status">Open a shelf to view the featured volume.</p>
+    </div>
+  </section>
+</section>
 </div>
  <div id="randomizerPanel" class="club-room-panel">
   <section class="randomizer-shelf">
