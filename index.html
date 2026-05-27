@@ -2339,13 +2339,12 @@ window.openClub = async function (clubId) {
   `;
 
 
-  listenToCollectionBooks(clubId);
-  listenToNextRead(clubId);
-  listenToBooksRead(clubId);
-  listenToMembers(clubId);
-  listenToCheckIns(clubId);
-  listenToDiscussion(clubId);
-  listenToFeaturedVolumeProgress(clubId);
+   listenToCollectionBooks(clubId);
+   listenToNextRead(clubId);
+   listenToBooksRead(clubId);
+   listenToMembers(clubId);
+   listenToDiscussion(clubId);
+   listenToFeaturedVolumeProgress(clubId);
  showScreen("club");
 };
 
@@ -3265,21 +3264,6 @@ if (featuredReaderRow) {
 }
   });
 }
-function listenToCheckIns(clubId) {
-  onValue(ref(database, "clubs/" + clubId + "/checkIns"), (snapshot) => {
-    const checkIns = snapshot.val() || {};
-    const checkedInReaders = Object.values(checkIns);
-get(ref(database, "clubs/" + clubId + "/members")).then((membersSnapshot) => {
-  const members = membersSnapshot.val() || {};
-  const totalMembers = Object.keys(members).length || 1;
-  const checkedInCount = checkedInReaders.length;
-
-  const percent =
-    Math.min((checkedInCount / totalMembers) * 100, 100);
-
-  if (featuredProgressFill) {
-    featuredProgressFill.style.width = percent + "%";
-  }
 
   if (featuredProgressNote) {
     featuredProgressNote.textContent =
