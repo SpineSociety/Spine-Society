@@ -1181,6 +1181,67 @@ body::before {
   opacity: .45;
   cursor: not-allowed;
 }
+.club-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+#chapterCountBadge {
+  font-size: .72rem;
+  color: var(--gold-pale);
+  border: 1px solid rgba(200,163,106,.22);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.progress-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  text-align: left;
+}
+
+.mini-label {
+  color: var(--gold-soft);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 6px;
+}
+
+.progress-bar-shell {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.09);
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+}
+
+.reader-checkin-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.reader-checkin-row .checkin-row {
+  width: 100%;
+}
+
+.progress-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 </style>
 </head>
 
