@@ -3265,35 +3265,6 @@ if (featuredReaderRow) {
   });
 }
 
-  if (featuredProgressNote) {
-    featuredProgressNote.textContent =
-      checkedInCount +
-      " of " +
-      totalMembers +
-      " readers checked in.";
-  }
-});
-    const featuredReaderRow = document.getElementById("featuredReaderRow");
-    const featuredProgressFill =
-  document.getElementById("featuredProgressFill");
-
-const featuredProgressNote =
-  document.getElementById("featuredProgressNote");
-    if (!featuredReaderRow) return;
-
-    if (checkedInReaders.length === 0) {
-      featuredReaderRow.innerHTML =
-        `<span class="small">Readers checked in will appear here.</span>`;
-      return;
-    }
-
-    featuredReaderRow.innerHTML = checkedInReaders.map(reader => `
-      <div class="featured-reader-avatar" title="${escapeAttr(reader.name || "Reader")}">
-        ${escapeHTML(reader.avatar || "📚")}
-      </div>
-    `).join("");
-  });
-}
 function listenToDiscussion(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
     const discussion = snapshot.val() || {};
