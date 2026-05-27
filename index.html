@@ -1616,6 +1616,37 @@ body::before {
   padding: 0 !important;
   margin-top: 10px !important;
 }
+.club-progress-mini {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.14);
+}
+
+.progress-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.progress-mini-grid div {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.18);
+}
+
+.progress-mini-grid strong {
+  display: block;
+  color: var(--gold-pale);
+  font-size: 1.5rem;
+}
+
+.progress-mini-grid span {
+  color: var(--muted);
+  font-size: .8rem;
+}
 </style>
 </head>
 
@@ -4926,6 +4957,22 @@ function renderFeaturedVolumePage(nextRead) {
 <p id="chapterCountText" class="goal-status-text">
   No chapter count set yet.
 </p>
+
+<div class="club-progress-mini">
+  <div class="mini-label">Club Progress</div>
+
+  <div class="progress-mini-grid">
+    <div>
+      <strong id="checkedInCountText">0/0</strong>
+      <span>Checked in</span>
+    </div>
+
+    <div>
+      <strong id="progressPercentText">0%</strong>
+      <span>Ready</span>
+    </div>
+  </div>
+</div>
 
 <div id="memberCheckinsList"></div>
 
