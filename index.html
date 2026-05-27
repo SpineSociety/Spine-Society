@@ -4236,6 +4236,36 @@ onAuthStateChanged(auth, async (user) => {
     alert("You signed in, but something failed while loading your profile: " + error.message);
   }
 });
+window.saveTotalChapters = function () {
+  const input = document.getElementById("totalChaptersInput");
+  const text = document.getElementById("chapterCountText");
+
+  if (!input.value) {
+    alert("Enter the total number of chapters.");
+    return;
+  }
+
+  text.textContent = `This book has ${input.value} chapters.`;
+};
+
+window.checkInForBook = function () {
+  const list = document.getElementById("memberCheckinsList");
+
+  const row = document.createElement("div");
+  row.className = "checkin-row";
+
+  row.innerHTML = `
+    <span>You</span>
+    <span>✅ Checked In</span>
+  `;
+
+  list.appendChild(row);
+
+  const finishedBtn = document.getElementById("finishedBookBtn");
+
+  finishedBtn.disabled = false;
+  finishedBtn.textContent = "Finished Book ✅";
+};
 </script>
 <div id="toast"></div>
 </body>
