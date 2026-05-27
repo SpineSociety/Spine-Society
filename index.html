@@ -2061,6 +2061,198 @@ body::before {
   gap: 10px !important;
   margin-top: 20px !important;
 }
+#featuredVolumeScreen .card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.mock-feature-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mock-current-hero,
+.mock-card {
+  border: 1px solid rgba(200,163,106,.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(200,163,106,.10), transparent 38%),
+    rgba(10,7,5,.82);
+  padding: 18px;
+  box-shadow: 0 16px 38px rgba(0,0,0,.34);
+}
+
+.mock-hero-header h2,
+.mock-card-title {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  font-size: 1.65rem;
+  margin: 0;
+}
+
+.mock-hero-header p {
+  color: var(--gold-soft);
+  font-style: italic;
+  margin: 4px 0 16px;
+}
+
+.mock-hero-body {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.mock-cover-wrap img {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(200,163,106,.22);
+  box-shadow: 0 18px 34px rgba(0,0,0,.42);
+}
+
+.mock-book-info h1 {
+  font-size: 1.75rem;
+  line-height: 1.05;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.mock-book-info p {
+  color: var(--gold-soft);
+  margin: 0 0 10px;
+}
+
+.mock-book-info > span,
+.mock-card-row > span,
+#chapterCountBadge {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid rgba(200,163,106,.20);
+  padding: 6px 10px;
+  color: var(--gold-pale);
+  font-size: .78rem;
+}
+
+.mock-avatar-row {
+  display: flex;
+  margin-top: 14px;
+}
+
+.mock-avatar-row div {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-left: -8px;
+  display: grid;
+  place-items: center;
+  background: rgba(30,22,17,.95);
+  border: 2px solid rgba(200,163,106,.28);
+  color: var(--gold-pale);
+  font-weight: 700;
+}
+
+.mock-avatar-row div:first-child {
+  margin-left: 0;
+}
+
+.mock-book-info small {
+  display: block;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+.mock-goal-grid,
+.mock-progress-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mock-goal-grid div,
+.mock-progress-stats div {
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.12);
+  padding: 14px;
+}
+
+.mock-goal-grid small,
+.mock-progress-stats small {
+  display: block;
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: .65rem;
+  margin-bottom: 8px;
+}
+
+.mock-goal-grid strong,
+.mock-progress-stats strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.mock-goal-grid input {
+  min-height: 42px !important;
+  margin: 0 !important;
+  text-align: center;
+}
+
+.mock-card button {
+  margin-top: 14px;
+}
+
+.mock-progress-line {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.mock-progress-line div {
+  height: 100%;
+  width: 63%;
+  background: linear-gradient(90deg, #f0a94d, #d8953d);
+}
+
+.mock-status-text {
+  color: var(--gold-soft);
+  margin: 12px 0 0;
+}
+
+.mock-card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.mock-green {
+  color: #85c46b !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.mock-checkin-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 14px 0;
+}
+
+.mock-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 </style>
 </head>
 
