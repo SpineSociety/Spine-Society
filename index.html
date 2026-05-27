@@ -3130,9 +3130,9 @@ function listenToNextRead(clubId) {
 
   <div id="memberCheckinsList"></div>
 
-  <button id="finishedBookBtn" disabled>
-    Finished Book 🔒
-  </button>
+  <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+  Finished Book 🔒
+</button>
 
   <p id="finishLockText" class="helper">
     Everyone must check in before finishing this book.
@@ -4265,6 +4265,9 @@ window.checkInForBook = function () {
 
   finishedBtn.disabled = false;
   finishedBtn.textContent = "Finished Book ✅";
+};
+window.finishFeaturedBook = function () {
+  alert("Book finished! Next we’ll move this book to Books Read.");
 };
 </script>
 <div id="toast"></div>
