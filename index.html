@@ -2346,7 +2346,7 @@ window.openClub = async function (clubId) {
   listenToMembers(clubId);
   listenToCheckIns(clubId);
   listenToDiscussion(clubId);
-
+  listenToFeaturedVolumeProgress(clubId);
  showScreen("club");
 };
 
@@ -4267,6 +4267,55 @@ window.checkInForBook = async function () {
     checkedInAt: Date.now()
   });
 };
+function listenToFeaturedVolumeProgress(clubId) {
+  const progressRef = ref(database, `clubs/${clubId}/featuredVolume`);
+
+  onValue(progressRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    const totalChapters = data.totalChapters || null;
+    const checkins = data.checkins || {};
+
+    const input = document.getElementById("totalChaptersInput");
+    const chapterText = document.getElementById("chapterCountText");
+    const checkinsList = document.getElementById("memberCheckinsList");
+    const finishedBtn = document.getElementById("finishedBookBtn");
+    const lockText = document.getElementById("finishLockText");
+
+    if (input && totalChapters) input.value = totalChapters;
+
+    if (chapterText) {
+      chapterText.textContent = totalChapters
+        ? `This book has ${totalChapters} chapters.`
+        : "No chapter count set yet.";
+    }
+
+    if (checkinsList) {
+      checkinsList.innerHTML = Object.values(checkins).map(member => `
+        <div class="checkin-row">
+          <span>${member.name}</span>
+          <span>✅ Checked in</span>
+        </div>
+      `).join("");
+    }
+
+    const checkedInCount = Object.keys(checkins).length;
+    const totalMembers = window.currentClubMemberCount || 1;
+    const everyoneCheckedIn = checkedInCount >= totalMembers;
+
+    if (finishedBtn) {
+      finishedBtn.disabled = !everyoneCheckedIn;
+      finishedBtn.textContent = everyoneCheckedIn
+        ? "Finished Book ✅"
+        : "Finished Book 🔒";
+    }
+
+    if (lockText) {
+      lockText.textContent = everyoneCheckedIn
+        ? "Everyone has checked in. You can finish the book."
+        : `${checkedInCount}/${totalMembers} members checked in.`;
+    }
+  });
+}
 </script>
 <div id="toast"></div>
 </body>
