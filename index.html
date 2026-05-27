@@ -1587,6 +1587,35 @@ body::before {
   color: var(--ink-soft);
   font-size: .95rem;
 }
+.goal-feature-row {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.goal-display {
+  min-height: 86px;
+  border-radius: 22px;
+  border: 1px solid rgba(200,163,106,.14);
+  background: rgba(255,255,255,.035);
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.75rem;
+  color: var(--gold-pale);
+}
+
+.goal-status-text {
+  text-align: center;
+  color: #85c46b !important;
+  background: transparent !important;
+  border: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  margin-top: 10px !important;
+}
 </style>
 </head>
 
@@ -4870,41 +4899,47 @@ function renderFeaturedVolumePage(nextRead) {
 
       <div class="reading-goal-card">
         <div class="section-row">
-          <h3>Reading Goal</h3>
-          <span id="chapterCountBadge">Set Chapters</span>
-        </div>
+  <h3>Reading Goal</h3>
+  <span id="chapterCountBadge">Active</span>
+</div>
 
-        <div class="goal-summary">
-          <div>
-            <div class="mini-label">Total Chapters</div>
-            <input id="totalChaptersInput" type="number" placeholder="46" />
-          </div>
+<div class="goal-feature-row">
+  <div>
+    <div class="mini-label">Current Goal</div>
+    <div id="readingGoalDisplay" class="goal-display">
+      Chapters 1–5
+    </div>
+  </div>
 
-          <div>
-            <div class="mini-label">Status</div>
-            <p id="chapterCountText">No chapter count set yet.</p>
-          </div>
-        </div>
+  <div>
+    <div class="mini-label">Total Chapters</div>
+    <input id="totalChaptersInput" type="number" placeholder="46" />
+  </div>
+</div>
 
-        <button onclick="saveTotalChapters()">Save Chapters</button>
+<button onclick="saveTotalChapters()">Save Goal</button>
 
-        <div class="progress-bar-shell">
-          <div id="clubProgressFill" class="progress-bar-fill"></div>
-        </div>
+<div class="progress-bar-shell">
+  <div id="clubProgressFill" class="progress-bar-fill"></div>
+</div>
 
-        <div id="memberCheckinsList"></div>
+<p id="chapterCountText" class="goal-status-text">
+  No chapter count set yet.
+</p>
 
-        <div class="progress-actions">
-          <button onclick="checkInForBook()">Check In</button>
+<div id="memberCheckinsList"></div>
 
-          <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-            Finished Book 🔒
-          </button>
-        </div>
+<div class="progress-actions">
+  <button onclick="checkInForBook()">Check In</button>
 
-        <p id="finishLockText" class="helper">
-          Everyone must check in before finishing this book.
-        </p>
+  <button class="secondary" id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+    Finished Book 🔒
+  </button>
+</div>
+
+<p id="finishLockText" class="helper">
+  Everyone must check in before finishing this book.
+</p>
       </div>
 
     </div>
