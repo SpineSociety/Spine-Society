@@ -1377,6 +1377,27 @@ body::before {
   color: var(--muted);
   font-size: .84rem;
 }
+.reading-goal-hero {
+  display: none;
+}
+
+.goal-inline-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.14);
+}
+
+.goal-inline-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.35rem;
+  line-height: 1.15;
+  color: var(--gold-pale);
+}
 </style>
 </head>
 
@@ -3348,12 +3369,15 @@ function listenToNextRead(clubId) {
 <div class="club-progress-box">
   <div class="club-progress-head">
     <h3>Club Progress</h3>
-    <div class="reading-goal-hero">
-  <div class="goal-kicker">This Week’s Reading Goal</div>
-  <div id="readingGoalDisplay" class="goal-main">
-    Set your club’s next milestone.
+   <div class="goal-inline-card">
+  <div>
+    <div class="goal-kicker">This Week’s Reading Goal</div>
+    <div id="readingGoalDisplay" class="goal-inline-main">
+      Set your club’s next milestone.
+    </div>
   </div>
-  </div>
+  <span id="chapterCountBadge">Set Chapters</span>
+</div>
 `;
 const featuredReaderRow =
   document.getElementById("featuredReaderRow");
