@@ -2101,24 +2101,24 @@ body::before {
 
 .mock-hero-body {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 18px;
+  grid-template-columns: 95px 1fr;
+  gap: 16px;
   align-items: center;
 }
 
 .mock-cover-wrap img {
-  width: 120px;
-  height: 180px;
+  width: 95px;
+  height: 142px;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(200,163,106,.22);
-  box-shadow: 0 18px 34px rgba(0,0,0,.42);
+  box-shadow: 0 12px 28px rgba(0,0,0,.42);
 }
 
 .mock-book-info h1 {
-  font-size: 1.75rem;
-  line-height: 1.05;
-  margin: 0 0 8px;
+  font-size: 1.25rem;
+  line-height: 1.02;
+  margin: 0 0 6px;
   color: var(--ink);
 }
 
@@ -2143,11 +2143,13 @@ body::before {
   margin-top: 14px;
 }
 
+.mock-avatar-row img,
 .mock-avatar-row div {
   width: 34px;
   height: 34px;
   border-radius: 50%;
   margin-left: -8px;
+  object-fit: cover;
   display: grid;
   place-items: center;
   background: rgba(30,22,17,.95);
@@ -2252,6 +2254,45 @@ body::before {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+.mock-feed {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mock-feed-item {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.mock-feed-item img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(200,163,106,.22);
+}
+
+.mock-feed-item strong {
+  display: block;
+  color: var(--ink);
+  font-size: .95rem;
+}
+
+.mock-feed-item span {
+  display: block;
+  color: var(--gold-soft);
+  font-size: .82rem;
+  margin-top: 2px;
+}
+
+.mock-feed-item small {
+  color: var(--muted);
+  font-size: .78rem;
 }
 </style>
 </head>
@@ -5540,11 +5581,10 @@ function renderFeaturedVolumePage(nextRead) {
             <span>${escapeHTML(nextRead.category || "Featured Volume")}</span>
 
             <div class="mock-avatar-row">
-              <div>A</div>
-              <div>M</div>
-              <div>J</div>
-              <div>+</div>
-            </div>
+              <img src="https://i.pravatar.cc/60?img=32">
+<img src="https://i.pravatar.cc/60?img=12">
+<img src="https://i.pravatar.cc/60?img=47">
+<div>+3</div>
 
             <small>6 members reading</small>
           </div>
@@ -5618,7 +5658,35 @@ function renderFeaturedVolumePage(nextRead) {
           Everyone must check in before finishing this book.
         </p>
       </section>
+<section class="mock-card">
 
+  <div class="mock-card-row">
+    <div class="mock-card-title">📝 Recent Check-Ins</div>
+  </div>
+
+  <div class="mock-feed">
+
+    <div class="mock-feed-item">
+      <img src="https://i.pravatar.cc/60?img=32">
+      <div>
+        <strong>Asia checked in</strong>
+        <span>Chapters 1–5</span>
+      </div>
+      <small>Today</small>
+    </div>
+
+    <div class="mock-feed-item">
+      <img src="https://i.pravatar.cc/60?img=12">
+      <div>
+        <strong>Maya checked in</strong>
+        <span>Pages 120–185</span>
+      </div>
+      <small>9:18 AM</small>
+    </div>
+
+  </div>
+
+</section>
     </div>
   `;
 }
