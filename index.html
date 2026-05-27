@@ -98,7 +98,6 @@ body::after {
       rgba(0,0,0,.28)
     );
 
-  animation: ambientShift 18s ease-in-out infinite alternate;
 }
 @keyframes ambientShift {
 
@@ -1137,7 +1136,7 @@ button:hover {
   transform:translateX(-50%) translateY(0);
 }
 body::before {
-  animation: dustFloat 28s linear infinite;
+  
 }
 
 @keyframes dustFloat {
@@ -3064,20 +3063,7 @@ window.saveEditedBook = async function () {
 
     showToast("Book updated.");
 };
-window.updateBookStatus = async function (bookId, type, status) {
-  const path =
-    type === "collection"
-      ? "clubs/" + window.currentClubId + "/collection/" + bookId
-      : "users/" + currentUser.uid + "/library/" + bookId;
 
-  await update(ref(database, path), {
-    status,
-    updatedAt: Date.now()
-  });
-
-  closeBookModal();
-  showToast("Book moved to " + status + ".");
-};
 window.updateBookStatus = async function (bookId, type, status) {
   const path =
     type === "collection"
@@ -3159,26 +3145,7 @@ function listenToNextRead(clubId) {
     <div class="book-category">
       ${escapeHTML(nextRead.category || "Featured Volume")}
     </div>
-<div class="featured-progress">
 
-  <div class="featured-progress-top">
-    <span>Club Progress</span>
-    <span>${escapeHTML(nextRead.progress || "Set progress")}</span>
-  </div>
-
-  <div class="featured-progress-bar">
-    <div class="featured-progress-fill" id="featuredProgressFill"></div>
-  </div>
-  <div class="featured-reader-row" id="featuredReaderRow">
-  <span class="small">Readers checked in will appear here.</span>
-</div>
-<div class="featured-progress-note" id="featuredProgressNote">
-  0 readers checked in.
-</div>
-<button class="secondary" onclick="updateClubProgress()">
-  Update Club Progress
-</button>
-</div>
     <button onclick="markNextReadFinished()">
       Mark as Finished
     </button>
