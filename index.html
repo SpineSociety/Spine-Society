@@ -1422,6 +1422,38 @@ body::before {
 
   color: #f7f1ea;
 }
+.club-current-top {
+  padding: 8px 4px 14px;
+}
+
+.club-current-cover {
+  position: relative;
+}
+
+.club-current-cover::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 22px;
+  background: rgba(200,163,106,.24);
+  filter: blur(22px);
+  z-index: -1;
+}
+
+.club-current-cover img {
+  width: 132px;
+  height: 198px;
+  object-fit: cover;
+}
+
+.club-current-top h2 {
+  letter-spacing: -.04em;
+  text-shadow: 0 14px 34px rgba(0,0,0,.45);
+}
+
+.club-current-read .book-category {
+  margin-top: -8px;
+}
 </style>
 </head>
 
