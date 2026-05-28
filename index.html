@@ -3814,6 +3814,13 @@ const featuredReaderRow =
 if (featuredReaderRow) {
   featuredReaderRow.innerHTML = previewHTML;
 }
+const featuredReaderCount =
+  document.getElementById("featuredReaderCount");
+
+if (featuredReaderCount) {
+  featuredReaderCount.textContent =
+    `${clubMembers.length} readers in this club`;
+}
   });
 }
 
