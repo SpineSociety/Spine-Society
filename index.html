@@ -1306,6 +1306,17 @@ body::before {
 .new-club-progress {
   margin-top: 20px;
 }
+.club-reading-together {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.14);
+}
+
+.club-reading-together .featured-reader-row {
+  justify-content: flex-start;
+}
 </style>
 </head>
 
@@ -3262,7 +3273,13 @@ function listenToNextRead(clubId) {
         <div class="book-category">
           ${escapeHTML(nextRead.category || "Featured Volume")}
         </div>
+<div class="club-reading-together">
+  <div class="mini-label">Reading Circle</div>
 
+  <div id="featuredReaderRow" class="featured-reader-row">
+    <div class="featured-reader-avatar">✦</div>
+  </div>
+</div>
         <div class="club-progress-box new-club-progress">
           <div class="club-progress-head">
             <h3>Reading Progress</h3>
