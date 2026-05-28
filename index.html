@@ -3595,13 +3595,9 @@ function listenToNextRead(clubId) {
         ? `<p class="club-current-author">by ${escapeHTML(nextRead.author)}</p>`
         : ""
     }
-  </div>
-            
-        </div>
-
-        <div class="book-category">
-          ${escapeHTML(nextRead.category || "Featured Volume")}
-        </div>
+    <div class="book-category">
+  ${escapeHTML(nextRead.category || "Featured Volume")}
+</div>
 <div class="club-reading-together">
   <div class="mini-label">Reading Circle</div>
 
@@ -3609,6 +3605,10 @@ function listenToNextRead(clubId) {
     <div class="featured-reader-avatar">✦</div>
   </div>
 </div>
+  </div>
+            
+        </div>
+
         <div class="club-progress-box new-club-progress">
           <div class="club-progress-head">
             <h3>Reading Progress</h3>
