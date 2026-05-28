@@ -1324,10 +1324,26 @@ body::before {
 }
 
 .club-current-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 22px;
   align-items: center;
+}
+
+.club-current-info {
+  text-align: left;
+}
+
+.club-current-info h2 {
+  font-size: 2rem;
+  line-height: 1.05;
+  color: #f7f1ea;
+}
+
+.club-current-cover img {
+  width: 150px;
+  height: 225px;
+  object-fit: cover;
 }
 
 .club-current-top h2 {
@@ -1619,7 +1635,7 @@ body::before {
 
 </section>
         <section id="clubScreen" class="screen">
-  <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Club Room</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
+  <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Current Read</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
   <div id="clubHero" style="display:none;"></div>
   
   <div id="chatPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Marginalia</h2></div><p class="helper">Chat with your reading circle.</p><input id="discussionInputClub" placeholder="Share your thoughts..." /><button onclick="postDiscussionCommentFromClub()">Post Note</button><div id="discussionListClub"><p class="status">No notes yet. Start the conversation.</p></div></section></div>
