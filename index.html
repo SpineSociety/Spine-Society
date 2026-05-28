@@ -3216,81 +3216,99 @@ window.updateBookStatus = async function (bookId, type, status) {
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
+
     updateNookNextRead(nextRead);
+
     const marginaliaTitle = document.getElementById("marginaliaBookTitle");
     const marginaliaAuthor = document.getElementById("marginaliaBookAuthor");
     const area = document.getElementById("nextReadArea");
+
     if (!area) return;
 
     if (!nextRead) {
-      area.innerHTML = `
-  <div class="club-current-read">
+      area.innerHTML = `<p class="status">No next read set yet.</p>`;
 
-    <div class="club-current-top">
-      <div>
-        <div class="featured-kicker">Currently Reading Together</div>
-        <h2>${escapeHTML(nextRead.title)}</h2>
-        ${
-          nextRead.author
-            ? `<p class="club-current-author">by ${escapeHTML(nextRead.author)}</p>`
-            : ""
-        }
-      </div>
+      if (marginaliaTitle) marginaliaTitle.textContent = "Current Read";
+      if (marginaliaAuthor) marginaliaAuthor.textContent = "Open a shelf to see notes.";
 
-      <div class="club-current-cover">
-        ${
-          nextRead.image
-            ? `<img src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-            : `<div class="cover-placeholder">S</div>`
-        }
-      </div>
-    </div>
+      return;
+    }
 
-    <div class="book-category">
-      ${escapeHTML(nextRead.category || "Featured Volume")}
-    </div>
+    if (marginaliaTitle) marginaliaTitle.textContent = nextRead.title || "Current Read";
+    if (marginaliaAuthor) marginaliaAuthor.textContent = nextRead.author || "";
 
-    <div class="club-progress-box new-club-progress">
-      <div class="club-progress-head">
-        <h3>Reading Progress</h3>
-        <span id="chapterCountBadge">Set Chapters</span>
-      </div>
+    area.innerHTML = `
+      <div class="club-current-read">
 
-      <div class="progress-stat-grid">
-        <div>
-          <p class="mini-label">Total Chapters</p>
-          <input id="totalChaptersInput" type="number" placeholder="46" />
+        <div class="club-current-top">
+          <div>
+            <div class="featured-kicker">Currently Reading Together</div>
+
+            <h2>${escapeHTML(nextRead.title)}</h2>
+
+            ${
+              nextRead.author
+                ? `<p class="club-current-author">by ${escapeHTML(nextRead.author)}</p>`
+                : ""
+            }
+          </div>
+
+          <div class="club-current-cover">
+            ${
+              nextRead.image
+                ? `<img src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+                : `<div class="cover-placeholder">S</div>`
+            }
+          </div>
         </div>
 
-        <div>
-          <p class="mini-label">Progress</p>
-          <p id="chapterCountText">No chapter count set yet.</p>
+        <div class="book-category">
+          ${escapeHTML(nextRead.category || "Featured Volume")}
         </div>
+
+        <div class="club-progress-box new-club-progress">
+          <div class="club-progress-head">
+            <h3>Reading Progress</h3>
+            <span id="chapterCountBadge">Set Chapters</span>
+          </div>
+
+          <div class="progress-stat-grid">
+            <div>
+              <p class="mini-label">Total Chapters</p>
+              <input id="totalChaptersInput" type="number" placeholder="46" />
+            </div>
+
+            <div>
+              <p class="mini-label">Progress</p>
+              <p id="chapterCountText">No chapter count set yet.</p>
+            </div>
+          </div>
+
+          <button onclick="saveTotalChapters()">Save Chapters</button>
+
+          <div class="progress-bar-shell">
+            <div id="clubProgressFill" class="progress-bar-fill"></div>
+          </div>
+
+          <div id="memberCheckinsList" class="reader-checkin-row"></div>
+
+          <div class="progress-actions">
+            <button class="secondary" onclick="checkInForBook()">Check In</button>
+
+            <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+              Finished Book 🔒
+            </button>
+          </div>
+
+          <p id="finishLockText" class="helper">
+            Everyone must check in before finishing this book.
+          </p>
+        </div>
+
       </div>
-
-      <button onclick="saveTotalChapters()">Save Chapters</button>
-
-      <div class="progress-bar-shell">
-        <div id="clubProgressFill" class="progress-bar-fill"></div>
-      </div>
-
-      <div id="memberCheckinsList" class="reader-checkin-row"></div>
-
-      <div class="progress-actions">
-        <button class="secondary" onclick="checkInForBook()">Check In</button>
-
-        <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-          Finished Book 🔒
-        </button>
-      </div>
-
-      <p id="finishLockText" class="helper">
-        Everyone must check in before finishing this book.
-      </p>
-    </div>
-
-  </div>
-`;
+    `;
+  });
+}
 const featuredReaderRow =
   document.getElementById("featuredReaderRow");
 
