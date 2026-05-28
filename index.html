@@ -3239,13 +3239,10 @@ function listenToNextRead(clubId) {
 
     area.innerHTML = `
       <div class="club-current-read">
-
         <div class="club-current-top">
           <div>
             <div class="featured-kicker">Currently Reading Together</div>
-
             <h2>${escapeHTML(nextRead.title)}</h2>
-
             ${
               nextRead.author
                 ? `<p class="club-current-author">by ${escapeHTML(nextRead.author)}</p>`
@@ -3304,17 +3301,8 @@ function listenToNextRead(clubId) {
             Everyone must check in before finishing this book.
           </p>
         </div>
-
       </div>
     `;
-  });
-}
-const featuredReaderRow =
-  document.getElementById("featuredReaderRow");
-
-if (featuredReaderRow && currentMemberAvatarsHTML) {
-  featuredReaderRow.innerHTML = currentMemberAvatarsHTML;
-}
   });
 }
 function listenToBooksRead(clubId) {
