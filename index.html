@@ -1270,6 +1270,42 @@ body::before {
   border: 1px solid rgba(200,163,106,.18);
   box-shadow: 0 22px 52px rgba(0,0,0,.48);
 }
+.club-current-read {
+  text-align: left;
+}
+
+.club-current-top {
+  display: grid;
+  grid-template-columns: 1fr 118px;
+  gap: 18px;
+  align-items: center;
+}
+
+.club-current-top h2 {
+  font-size: 2.45rem;
+  line-height: .9;
+  color: var(--gold-pale);
+  margin: 8px 0;
+}
+
+.club-current-author {
+  color: var(--ink-soft);
+  margin: 0;
+  font-size: .95rem;
+}
+
+.club-current-cover img {
+  width: 118px;
+  height: 176px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid rgba(200,163,106,.24);
+  box-shadow: 0 18px 36px rgba(0,0,0,.46);
+}
+
+.new-club-progress {
+  margin-top: 20px;
+}
 </style>
 </head>
 
@@ -3187,86 +3223,71 @@ function listenToNextRead(clubId) {
     if (!area) return;
 
     if (!nextRead) {
-      area.innerHTML = `<p class="status">No next read set yet.</p>`;
-      if (marginaliaTitle) marginaliaTitle.textContent = "Current Read";
-      if (marginaliaAuthor) marginaliaAuthor.textContent = "Open a shelf to see notes.";
-      return;
-    }
-    if (marginaliaTitle) marginaliaTitle.textContent = nextRead.title || "Current Read";
-    if (marginaliaAuthor) marginaliaAuthor.textContent = nextRead.author || "";
+      area.innerHTML = `
+  <div class="club-current-read">
 
-    area.innerHTML = `
-  <div class="featured-volume-card">
+    <div class="club-current-top">
+      <div>
+        <div class="featured-kicker">Currently Reading Together</div>
+        <h2>${escapeHTML(nextRead.title)}</h2>
+        ${
+          nextRead.author
+            ? `<p class="club-current-author">by ${escapeHTML(nextRead.author)}</p>`
+            : ""
+        }
+      </div>
 
-    <div class="featured-kicker">Currently Reading Together</div>
-
-<div id="currentReadHero">
-  <p class="status">No current read set yet.</p>
-</div>
-
-<div class="club-progress-box">
-  <div class="club-progress-head">
-    <h3>Club Progress</h3>
-    <span id="chapterCountBadge">Set Chapters</span>
-  </div>
-
-  <div class="progress-stat-grid">
-    <div>
-      <p class="mini-label">Total Chapters</p>
-      <input id="totalChaptersInput" type="number" placeholder="46" />
+      <div class="club-current-cover">
+        ${
+          nextRead.image
+            ? `<img src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+            : `<div class="cover-placeholder">S</div>`
+        }
+      </div>
     </div>
-
-    <div>
-      <p class="mini-label">Progress</p>
-      <p id="chapterCountText">No chapter count set yet.</p>
-    </div>
-  </div>
-
-  <button onclick="saveTotalChapters()">Save Chapters</button>
-
-  <div class="progress-bar-shell">
-    <div id="clubProgressFill" class="progress-bar-fill"></div>
-  </div>
-
-  <div id="memberCheckinsList" class="reader-checkin-row"></div>
-
-  <div class="progress-actions">
-    <button class="secondary" onclick="checkInForBook()">Check In</button>
-
-    <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-      Finished Book 🔒
-    </button>
-  </div>
-
-  <p id="finishLockText" class="helper">
-    Everyone must check in before finishing this book.
-  </p>
-</div>
-    <div class="featured-cover-wrap">
-      ${
-        nextRead.image
-          ? `<img class="cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">`
-          : `<div class="cover-placeholder">S</div>`
-      }
-    </div>
-
-    <div class="featured-title">
-      ${escapeHTML(nextRead.title)}
-    </div>
-
-    ${
-      nextRead.author
-        ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>`
-        : ""
-    }
 
     <div class="book-category">
       ${escapeHTML(nextRead.category || "Featured Volume")}
     </div>
 
-    <button onclick="markNextReadFinished()">
-      Mark as Finished
-    </button>
+    <div class="club-progress-box new-club-progress">
+      <div class="club-progress-head">
+        <h3>Reading Progress</h3>
+        <span id="chapterCountBadge">Set Chapters</span>
+      </div>
+
+      <div class="progress-stat-grid">
+        <div>
+          <p class="mini-label">Total Chapters</p>
+          <input id="totalChaptersInput" type="number" placeholder="46" />
+        </div>
+
+        <div>
+          <p class="mini-label">Progress</p>
+          <p id="chapterCountText">No chapter count set yet.</p>
+        </div>
+      </div>
+
+      <button onclick="saveTotalChapters()">Save Chapters</button>
+
+      <div class="progress-bar-shell">
+        <div id="clubProgressFill" class="progress-bar-fill"></div>
+      </div>
+
+      <div id="memberCheckinsList" class="reader-checkin-row"></div>
+
+      <div class="progress-actions">
+        <button class="secondary" onclick="checkInForBook()">Check In</button>
+
+        <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+          Finished Book 🔒
+        </button>
+      </div>
+
+      <p id="finishLockText" class="helper">
+        Everyone must check in before finishing this book.
+      </p>
+    </div>
 
   </div>
 `;
