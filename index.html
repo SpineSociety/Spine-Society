@@ -1708,6 +1708,11 @@ body::before {
     linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
     rgba(11,8,6,.92) !important;
 }
+.featured-reader-count {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
 </style>
 </head>
 
@@ -3656,6 +3661,9 @@ function listenToNextRead(clubId) {
   <div id="featuredReaderRow" class="featured-reader-row">
     <div class="featured-reader-avatar">✦</div>
   </div>
+  <div id="featuredReaderCount" class="featured-reader-count">
+  Loading readers...
+</div>
 </div>
   </div>
             
