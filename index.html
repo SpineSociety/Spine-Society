@@ -1610,6 +1610,26 @@ body::before {
 .new-club-progress {
   margin-top: 8px !important;
 }
+#clubScreen .page-title {
+  display: none;
+}
+
+#clubScreen .page-top {
+  margin-bottom: 8px;
+}
+.club-hero-heading h1 {
+  font-size: 2.4rem;
+  margin: 0;
+  color: var(--gold-pale);
+}
+
+.club-hero-heading p {
+  margin: 4px 0 18px;
+  color: var(--gold-soft);
+  font-style: italic;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.15rem;
+}
 </style>
 </head>
 
@@ -3527,6 +3547,10 @@ function listenToNextRead(clubId) {
 
     area.innerHTML = `
       <div class="club-current-read">
+      <div class="club-hero-heading">
+  <h1>Current Read</h1>
+  <p>Reading together as a club</p>
+</div>
         <div class="club-current-top">
 
   <div class="club-current-cover">
