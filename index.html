@@ -1346,12 +1346,7 @@ body::before {
         <section id="clubScreen" class="screen">
   <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Club Room</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
   <section class="current-club-panel" id="clubHero"><div class="club-emblem">📚</div><div><div class="panel-kicker">Current Club</div><h3>Choose a Shelf</h3><p class="small">Open one of your shelves to begin.</p></div></section>
-  <div class="club-room-tabs">
-  <button class="active" onclick="showClubRoomTab('current')">Featured Volume</button>
-  <button onclick="showClubRoomTab('chat')">Marginalia</button>
-  <button onclick="showClubRoomTab('books')">The Collection</button>
-  <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
-</div>
+  
   <div id="chatPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Marginalia</h2></div><p class="helper">Chat with your reading circle.</p><input id="discussionInputClub" placeholder="Share your thoughts..." /><button onclick="postDiscussionCommentFromClub()">Post Note</button><div id="discussionListClub"><p class="status">No notes yet. Start the conversation.</p></div></section></div>
   <div id="currentPanel" class="club-room-panel active"><section class="card"><div class="card-header"><h2>Current Read</h2></div><div id="nextReadArea"><p class="status">No next read set yet.</p></div></section><section class="card">
   <div class="card-header">
@@ -1384,6 +1379,27 @@ body::before {
       </p>
     </div>
   </section>
+ <section class="bookshelf-case">
+    <div id="clubCollectionGrid">
+      <p class="status">
+        Your collection is waiting for its first story.
+      </p>
+    </div>
+  </section>
+  <section class="bookshelf-case">
+    <div id="clubCollectionGrid">
+      <p class="status">
+        Your collection is waiting for its first story.
+      </p>
+    </div>
+    <div class="club-room-tabs club-room-tabs-bottom">
+  <button class="active" onclick="showClubRoomTab('current')">Featured Volume</button>
+  <button onclick="showClubRoomTab('chat')">Marginalia</button>
+  <button onclick="showClubRoomTab('books')">The Collection</button>
+  <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
+</div>
+  </section>
+</div>
 
 </div>
  <div id="randomizerPanel" class="club-room-panel">
