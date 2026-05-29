@@ -1949,6 +1949,26 @@ body::before {
   color: var(--gold-soft);
   font-weight: 600;
 }
+.goal-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.goal-detail-card {
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(212,175,55,.14);
+}
+
+.goal-detail-card strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink);
+  font-size: 1.15rem;
+}
 </style>
 </head>
 
@@ -5171,14 +5191,26 @@ window.closeReadingGoalModal = function () {
       </button>
     </div>
 
-    <h3>Current Goal</h3>
-<p id="modalGoalDisplay">Chapters 1–5</p>
+    <div class="goal-detail-grid">
 
-<h3>Due Date</h3>
-<p id="modalDueDisplay">May 30</p>
+  <div class="goal-detail-card">
+    <p class="mini-label">Goal</p>
+    <strong id="modalGoalDisplay">Chapters 1–5</strong>
+  </div>
 
-<h3>Total Chapters</h3>
-<p id="modalTotalChapterDisplay">46</p>
+  <div class="goal-detail-card">
+    <p class="mini-label">Due</p>
+    <strong id="modalDueDisplay">May 30</strong>
+    <span class="due-countdown">(3 days left)</span>
+  </div>
+
+  <div class="goal-detail-card">
+    <p class="mini-label">Total</p>
+    <strong id="modalTotalChapterDisplay">46</strong>
+    <span class="due-countdown">chapters</span>
+  </div>
+
+</div>
 
 <hr>
 
