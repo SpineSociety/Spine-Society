@@ -3878,50 +3878,48 @@ function listenToNextRead(clubId) {
         </div>
 
         <div class="club-progress-box new-club-progress">
-          <div class="club-progress-head">
-  <h3>Reading Goal</h3>
-  
-</div>
 
-<div class="reading-goal-summary goal-combined-panel">
-  <div>
-    <p class="mini-label">Current Goal</p>
-    <strong id="readingGoalDisplay">Chapters 1–5</strong>
+  <div class="club-progress-head">
+    <h3>Reading Goal</h3>
   </div>
 
-  
+  <div class="reading-goal-summary goal-combined-panel">
 
-  <div>
-  <p class="mini-label">Due</p>
-  <strong id="readingDueDisplay">May 30</strong>
-  <div id="readingDueCountdown" class="due-countdown">
-    (3 days left)
-  </div>
-</div>
-</div>
+    <div>
+      <p class="mini-label">Current Goal</p>
+      <strong id="readingGoalDisplay">Chapters 1–5</strong>
+    </div>
 
-          <div class="progress-stat-grid">
-         
+    <div>
+      <p class="mini-label">Due</p>
+      <strong id="readingDueDisplay">May 30</strong>
+      <div id="readingDueCountdown" class="due-countdown">
+        (3 days left)
+      </div>
+    </div>
 
-            
-          </div>
-
-          <div class="goal-bar-row">
-  <div class="progress-bar-shell">
-    <div id="clubProgressFill" class="progress-bar-fill"></div>
   </div>
 
-  <strong id="goalProgressPercent">0%</strong>
+  <div class="goal-bar-row">
+    <div class="progress-bar-shell">
+      <div id="clubProgressFill" class="progress-bar-fill"></div>
+    </div>
+
+    <strong id="goalProgressPercent">0%</strong>
+  </div>
+
+  <div class="goal-card-footer">
+    <span id="goalProgressMessage">Most are on track! ✨</span>
+
+    <button class="goal-details-btn" onclick="openReadingGoalModal()">
+      View Details ›
+    </button>
+  </div>
+
 </div>
 
-<div class="goal-card-footer">
-  <span id="goalProgressMessage">Most are on track! ✨</span>
 
-  <button class="goal-details-btn" onclick="openReadingGoalModal()">
-    View Details ›
-</button>
-        </div>
-        <div class="club-progress-card">
+<div class="club-progress-card">
 
   <div class="club-progress-head">
     <h3>Club Progress</h3>
@@ -3929,28 +3927,36 @@ function listenToNextRead(clubId) {
   </div>
 
   <div id="clubProgressContent" class="club-progress-grid">
-  <div>
-  
-    <p class="mini-label">Total Chapters</p>
-    <input id="totalChaptersInput" type="number" placeholder="46" />
+
+    <div>
+      <p class="mini-label">Total Chapters</p>
+      <input id="totalChaptersInput" type="number" placeholder="46" />
+    </div>
+
+    <div>
+      <p class="mini-label">Progress</p>
+      <p id="chapterCountText">No chapter count set yet.</p>
+    </div>
+
   </div>
-  <div>
-  <p class="mini-label">Progress</p>
-  <p id="chapterCountText">No chapter count set yet.</p>
-</div>
-</div>
 
 </div>
+
+
 <div class="checked-in-card">
 
   <div id="memberCheckinsList" class="reader-checkin-row"></div>
 
   <div class="progress-actions">
-    <button class="secondary" onclick="checkInForBook()">Check In</button>
+
+    <button class="secondary" onclick="checkInForBook()">
+      Check In
+    </button>
 
     <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
       Finished Book 🔒
     </button>
+
   </div>
 
   <p id="finishLockText" class="helper">
@@ -3958,10 +3964,6 @@ function listenToNextRead(clubId) {
   </p>
 
 </div>
-      </div>
-    `;
-  });
-}
 function listenToBooksRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
     const booksRead = snapshot.val() || {};
