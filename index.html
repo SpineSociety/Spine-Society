@@ -4900,6 +4900,17 @@ function listenToFeaturedVolumeProgress(clubId) {
     const checkinsList = document.getElementById("memberCheckinsList");
     const finishedBtn = document.getElementById("finishedBookBtn");
     const lockText = document.getElementById("finishLockText");
+    const fill = document.getElementById("clubProgressFill");
+    const goalPercent = document.getElementById("goalProgressPercent");
+    const goalMessage = document.getElementById("goalProgressMessage");
+
+    const checkedInCount = Object.keys(checkins).length;
+    const totalMembers = window.currentClubMemberCount || 1;
+    const percent = Math.min(
+      Math.round((checkedInCount / totalMembers) * 100),
+      100
+    );
+    const everyoneCheckedIn = checkedInCount >= totalMembers;
 
     if (input && totalChapters) input.value = totalChapters;
 
@@ -4918,9 +4929,17 @@ function listenToFeaturedVolumeProgress(clubId) {
       `).join("");
     }
 
-    const checkedInCount = Object.keys(checkins).length;
-    const totalMembers = window.currentClubMemberCount || 1;
-    const everyoneCheckedIn = checkedInCount >= totalMembers;
+    if (fill) fill.style.width = `${percent}%`;
+
+    if (goalPercent) {
+      goalPercent.textContent = `${percent}%`;
+    }
+
+    if (goalMessage) {
+      goalMessage.textContent = everyoneCheckedIn
+        ? "Everyone is on track! 🎉"
+        : "Most are on track! ✨";
+    }
 
     if (finishedBtn) {
       finishedBtn.disabled = !everyoneCheckedIn;
