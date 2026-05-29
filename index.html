@@ -1744,6 +1744,25 @@ body::before {
   border-radius: 50% !important;
   object-fit: cover !important;
 }
+.reading-goal-summary {
+  display: grid;
+  grid-template-columns: 1.4fr .8fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.reading-goal-summary > div {
+  border-radius: 20px;
+  padding: 14px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.12);
+}
+
+.reading-goal-summary strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
 </style>
 </head>
 
@@ -3702,9 +3721,21 @@ function listenToNextRead(clubId) {
 
         <div class="club-progress-box new-club-progress">
           <div class="club-progress-head">
-            <h3>Reading Progress</h3>
-            <span id="chapterCountBadge">Set Chapters</span>
-          </div>
+  <h3>Reading Goal</h3>
+  <span id="chapterCountBadge">Set Chapters</span>
+</div>
+
+<div class="reading-goal-summary">
+  <div>
+    <p class="mini-label">Current Goal</p>
+    <strong id="readingGoalDisplay">Chapters 1–5</strong>
+  </div>
+
+  <div>
+    <p class="mini-label">Due</p>
+    <strong id="readingDueDisplay">May 30</strong>
+  </div>
+</div>
 
           <div class="progress-stat-grid">
             <div>
