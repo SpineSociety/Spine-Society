@@ -3964,6 +3964,10 @@ function listenToNextRead(clubId) {
   </p>
 
 </div>
+      </div>
+    `;
+  });
+}
 function listenToBooksRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
     const booksRead = snapshot.val() || {};
