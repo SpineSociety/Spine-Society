@@ -3815,7 +3815,20 @@ const avatarHTML =
         </div>
       `;
     }
-
+if (hiddenMemberCount > 0) {
+  previewHTML += `
+    <div onclick="openMembersModal()"
+      class="featured-reader-avatar"
+      style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:700;
+      ">
+      +${hiddenMemberCount}
+    </div>
+  `;
+}
     currentMemberAvatarsHTML = previewHTML;
 
 if (preview) preview.innerHTML = previewHTML;
