@@ -5009,10 +5009,10 @@ function listenToFeaturedVolumeProgress(clubId) {
     }
 
     if (goalMessage) {
-      goalMessage.textContent = everyoneCheckedIn
-        ? "Everyone is on track! 🎉"
-        : "Most are on track! ✨";
-    }
+  goalMessage.textContent = everyoneCheckedIn
+    ? "Everyone's in! 🎉"
+    : "Most are on track! ✨";
+}
 
     if (finishedBtn) {
       finishedBtn.disabled = !everyoneCheckedIn;
