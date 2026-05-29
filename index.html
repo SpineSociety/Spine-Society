@@ -3762,7 +3762,10 @@ function listenToMembers(clubId) {
     let previewHTML = "";
     let modalHTML = "";
 
-    for (const uid of memberIds) {
+    const visibleMemberIds = memberIds.slice(0, 4);
+const hiddenMemberCount = memberIds.length - visibleMemberIds.length;
+
+for (const uid of visibleMemberIds) {
       const userSnapshot = await get(ref(database, "users/" + uid));
       const userData = userSnapshot.val() || {};
 
