@@ -1803,6 +1803,20 @@ body::before {
   color: var(--gold-pale);
   font-size: 1.1rem;
 }
+.goal-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.goal-details-btn {
+  width: auto;
+  min-height: 38px;
+  padding: 8px 16px;
+  margin: 0;
+  border-radius: 999px;
+  font-size: .85rem;
+}
 </style>
 </head>
 
@@ -3783,7 +3797,12 @@ function listenToNextRead(clubId) {
             
           </div>
 
-          <button onclick="saveTotalChapters()">Save Chapters</button>
+          <div class="goal-card-footer">
+  <span></span>
+  <button class="goal-details-btn" onclick="saveTotalChapters()">
+    View Details ›
+  </button>
+</div>
 
           <div class="progress-bar-shell">
             <div id="clubProgressFill" class="progress-bar-fill"></div>
