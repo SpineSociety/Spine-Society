@@ -5090,7 +5090,21 @@ function listenToFeaturedVolumeProgress(clubId) {
         </div>
       `).join("");
     }
+const modalCheckinsPreview =
+  document.getElementById("modalCheckinsPreview");
 
+if (modalCheckinsPreview) {
+  const checkedMembers = Object.values(checkins);
+
+  modalCheckinsPreview.innerHTML = checkedMembers.length
+    ? checkedMembers.map(member => `
+        <div class="modal-checkin-row">
+          <span class="modal-checkin-name">${member.name}</span>
+          <span class="modal-checkin-status">✅ Checked In</span>
+        </div>
+      `).join("")
+    : `<div class="checkin-loading">No one has checked in yet.</div>`;
+}
     if (fill) fill.style.width = `${percent}%`;
 
     if (goalPercent) {
