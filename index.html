@@ -1912,6 +1912,15 @@ body::before {
   white-space: nowrap !important;
   font-size: .75rem !important;
 }
+.goal-bar-row {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+}
+
+.goal-bar-row .progress-bar-shell {
+  max-width: none !important;
+  width: 100% !important;
+}
 </style>
 </head>
 
