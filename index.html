@@ -1789,6 +1789,20 @@ body::before {
   background: rgba(255,255,255,.035);
   border: 1px solid rgba(200,163,106,.12);
 }
+.goal-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  color: var(--gold-soft);
+  font-size: .9rem;
+}
+
+.goal-progress-row strong {
+  color: var(--gold-pale);
+  font-size: 1.1rem;
+}
 </style>
 </head>
 
@@ -3774,7 +3788,10 @@ function listenToNextRead(clubId) {
           <div class="progress-bar-shell">
             <div id="clubProgressFill" class="progress-bar-fill"></div>
           </div>
-
+<div class="goal-progress-row">
+  <span id="goalProgressMessage">Most are on track! ✨</span>
+  <strong id="goalProgressPercent">0%</strong>
+</div>
         </div>
         <div class="club-progress-card">
 
