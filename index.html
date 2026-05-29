@@ -1776,6 +1776,12 @@ body::before {
   border-radius:999px;
   border:1px solid rgba(200,163,106,.2);
 }
+.club-progress-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
 </style>
 </head>
 
@@ -3751,10 +3757,7 @@ function listenToNextRead(clubId) {
 </div>
 
           <div class="progress-stat-grid">
-            <div>
-              <p class="mini-label">Total Chapters</p>
-              <input id="totalChaptersInput" type="number" placeholder="46" />
-            </div>
+         
 
             <div>
               <p class="mini-label">Progress</p>
@@ -3789,9 +3792,12 @@ function listenToNextRead(clubId) {
     <span class="chapter-pill">46 Chapters</span>
   </div>
 
-  <div id="clubProgressContent">
-    <p class="status">Club progress will appear here.</p>
+  <div id="clubProgressContent" class="club-progress-grid">
+  <div>
+    <p class="mini-label">Total Chapters</p>
+    <input id="totalChaptersInput" type="number" placeholder="46" />
   </div>
+</div>
 
 </div>
       </div>
