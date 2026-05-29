@@ -1817,6 +1817,35 @@ body::before {
   border-radius: 999px;
   font-size: .85rem;
 }
+.goal-bar-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.goal-bar-row .progress-bar-shell {
+  margin: 0;
+}
+
+.goal-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  color: var(--gold-soft);
+}
+
+.goal-details-btn {
+  width: auto;
+  min-height: 38px;
+  padding: 8px 16px;
+  margin: 0;
+  border-radius: 999px;
+  font-size: .85rem;
+}
 </style>
 </head>
 
@@ -3797,19 +3826,20 @@ function listenToNextRead(clubId) {
             
           </div>
 
-          <div class="goal-card-footer">
-  <span></span>
+          <div class="goal-bar-row">
+  <div class="progress-bar-shell">
+    <div id="clubProgressFill" class="progress-bar-fill"></div>
+  </div>
+
+  <strong id="goalProgressPercent">0%</strong>
+</div>
+
+<div class="goal-card-footer">
+  <span id="goalProgressMessage">Most are on track! ✨</span>
+
   <button class="goal-details-btn" onclick="saveTotalChapters()">
     View Details ›
   </button>
-</div>
-
-          <div class="progress-bar-shell">
-            <div id="clubProgressFill" class="progress-bar-fill"></div>
-          </div>
-<div class="goal-progress-row">
-  <span id="goalProgressMessage">Most are on track! ✨</span>
-  <strong id="goalProgressPercent">0%</strong>
 </div>
         </div>
         <div class="club-progress-card">
