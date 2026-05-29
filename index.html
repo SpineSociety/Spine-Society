@@ -1782,6 +1782,13 @@ body::before {
   gap: 12px;
   margin-top: 14px;
 }
+.checked-in-card {
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: 28px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.12);
+}
 </style>
 </head>
 
@@ -3789,19 +3796,23 @@ function listenToNextRead(clubId) {
 </div>
 
 </div>
-<div id="memberCheckinsList" class="reader-checkin-row"></div>
+<div class="checked-in-card">
 
-<div class="progress-actions">
-  <button class="secondary" onclick="checkInForBook()">Check In</button>
+  <div id="memberCheckinsList" class="reader-checkin-row"></div>
 
-  <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-    Finished Book 🔒
-  </button>
+  <div class="progress-actions">
+    <button class="secondary" onclick="checkInForBook()">Check In</button>
+
+    <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+      Finished Book 🔒
+    </button>
+  </div>
+
+  <p id="finishLockText" class="helper">
+    Everyone must check in before finishing this book.
+  </p>
+
 </div>
-
-<p id="finishLockText" class="helper">
-  Everyone must check in before finishing this book.
-</p>
       </div>
     `;
   });
