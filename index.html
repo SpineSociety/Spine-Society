@@ -1871,26 +1871,27 @@ body::before {
   font-size: .8rem !important;
 }
 .goal-combined-panel {
-  display: flex;
-  align-items: center;
-  gap: 24px;
+  display: grid !important;
+  grid-template-columns: 1.4fr 1px .8fr !important;
+  align-items: center !important;
+  gap: 18px !important;
 
-  padding: 20px;
-  border-radius: 24px;
+  padding: 16px !important;
+  border-radius: 24px !important;
 
-  background: rgba(255,255,255,.02);
-  border: 1px solid rgba(212,184,128,.12);
+  background: rgba(255,255,255,.02) !important;
+  border: 1px solid rgba(212,184,128,.12) !important;
 }
 
 .goal-combined-panel > div {
-  flex: 1;
+  min-width: 0 !important;
 }
 
 .goal-divider {
-  flex: 0 0 1px;
-  width: 1px;
-  align-self: stretch;
-  background: rgba(212,184,128,.18);
+  width: 1px !important;
+  height: 70px !important;
+  background: rgba(212,184,128,.18) !important;
+  border-radius: 999px !important;
 }
 </style>
 </head>
