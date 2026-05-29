@@ -1713,6 +1713,11 @@ body::before {
   color: var(--ink-soft);
   font-size: .82rem;
 }
+.reader-icon{
+  font-size: 0.9rem;
+  opacity: .9;
+  margin-right: 4px;
+}
 </style>
 </head>
 
@@ -3818,8 +3823,8 @@ const featuredReaderCount =
   document.getElementById("featuredReaderCount");
 
 if (featuredReaderCount) {
-  featuredReaderCount.textContent =
-  `👥 ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
+  featuredReaderCount.innerHTML =
+  `<span class="reader-icon">👥</span> ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
 }
   });
 }
