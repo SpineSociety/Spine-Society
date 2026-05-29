@@ -3789,7 +3789,7 @@ const avatarHTML =
     : escapeHTML(avatarValue || displayName.charAt(0).toUpperCase());
 
       previewHTML += `
-        <div style="
+        <div onclick="openMembersModal()" style="
           width:38px;
           height:38px;
           border-radius:50%;
