@@ -3770,19 +3770,7 @@ function listenToNextRead(clubId) {
 
         </div>
         <div class="club-progress-card">
-<div id="memberCheckinsList" class="reader-checkin-row"></div>
 
-          <div class="progress-actions">
-            <button class="secondary" onclick="checkInForBook()">Check In</button>
-
-            <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
-              Finished Book 🔒
-            </button>
-          </div>
-
-          <p id="finishLockText" class="helper">
-            Everyone must check in before finishing this book.
-          </p>
   <div class="club-progress-head">
     <h3>Club Progress</h3>
     <span class="chapter-pill">46 Chapters</span>
@@ -3790,6 +3778,7 @@ function listenToNextRead(clubId) {
 
   <div id="clubProgressContent" class="club-progress-grid">
   <div>
+  
     <p class="mini-label">Total Chapters</p>
     <input id="totalChaptersInput" type="number" placeholder="46" />
   </div>
@@ -3800,6 +3789,19 @@ function listenToNextRead(clubId) {
 </div>
 
 </div>
+<div id="memberCheckinsList" class="reader-checkin-row"></div>
+
+<div class="progress-actions">
+  <button class="secondary" onclick="checkInForBook()">Check In</button>
+
+  <button id="finishedBookBtn" onclick="finishFeaturedBook()" disabled>
+    Finished Book 🔒
+  </button>
+</div>
+
+<p id="finishLockText" class="helper">
+  Everyone must check in before finishing this book.
+</p>
       </div>
     `;
   });
