@@ -1718,6 +1718,11 @@ body::before {
   opacity: .9;
   margin-right: 4px;
 }
+.member-count-icon{
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-right: 6px;
+}
 </style>
 </head>
 
@@ -3824,7 +3829,7 @@ const featuredReaderCount =
 
 if (featuredReaderCount) {
   featuredReaderCount.innerHTML =
-  `<span class="reader-icon">👥</span> ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
+  `<span class="member-count-icon">👥</span> ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
 }
   });
 }
