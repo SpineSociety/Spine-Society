@@ -1886,6 +1886,11 @@ body::before {
   background: rgba(212,184,128,.18) !important;
   border-radius: 999px !important;
 }
+.due-countdown {
+  margin-top: 4px;
+  font-size: .8rem;
+  color: var(--gold-soft);
+}
 </style>
 </head>
 
@@ -3859,6 +3864,9 @@ function listenToNextRead(clubId) {
   <div>
     <p class="mini-label">Due</p>
     <strong id="readingDueDisplay">May 30</strong>
+    <div id="readingDueCountdown" class="due-countdown">
+  3 days left
+</div>
   </div>
 </div>
 
