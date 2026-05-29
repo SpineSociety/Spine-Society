@@ -1921,6 +1921,34 @@ body::before {
   max-width: none !important;
   width: 100% !important;
 }
+.modal-checkins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.modal-checkin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(212,175,55,.12);
+}
+
+.modal-checkin-name {
+  color: #f5efe2;
+}
+
+.modal-checkin-status {
+  color: var(--gold-soft);
+  font-weight: 600;
+}
 </style>
 </head>
 
@@ -5154,8 +5182,10 @@ window.closeReadingGoalModal = function () {
 
 <h3>Member Check-Ins</h3>
 
-<div id="modalCheckinsPreview">
-  Member check-ins will appear here.
+<div id="modalCheckinsPreview" class="modal-checkins-list">
+  <div class="checkin-loading">
+    Loading readers...
+  </div>
 </div>
 
 <hr>
