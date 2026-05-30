@@ -5219,6 +5219,17 @@ window.saveGoalEditor = async function () {
 
   showToast("Reading goal updated.");
 };
+window.toggleDueDateEditor = function () {
+  const editor = document.getElementById("dueDateEditor");
+  if (!editor) return;
+
+  editor.style.display =
+    editor.style.display === "none" ? "block" : "none";
+};
+
+window.saveDueDateEditor = function () {
+  alert("Due date saving comes next!");
+};
 </script>
 <div id="toast"></div>
 <div id="readingGoalModal" style="
@@ -5310,9 +5321,22 @@ window.saveGoalEditor = async function () {
   </button>
 
 </div>
-<button class="secondary">
+<button class="secondary" onclick="toggleDueDateEditor()">
   Change Due Date
 </button>
+
+<div id="dueDateEditor" style="display:none; margin-top:12px;">
+
+  <div class="modal-field">
+    <label>Due Date</label>
+    <input id="goalDueDateInput" type="date">
+  </div>
+
+  <button onclick="saveDueDateEditor()">
+    Save Due Date
+  </button>
+
+</div>
 <h3>Reader Actions</h3>
 <button>
   Check In
