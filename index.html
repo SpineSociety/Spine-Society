@@ -5321,6 +5321,17 @@ window.saveDueDateEditor = async function () {
 
   showToast("Due date updated.");
 };
+window.toggleTotalChaptersEditor = function () {
+  const editor = document.getElementById("totalChaptersEditor");
+  if (!editor) return;
+
+  editor.style.display =
+    editor.style.display === "none" ? "block" : "none";
+};
+
+window.saveTotalChaptersEditor = function () {
+  alert("Total chapters saving comes next!");
+};
 </script>
 <div id="toast"></div>
 <div id="readingGoalModal" style="
