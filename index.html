@@ -5139,7 +5139,21 @@ if (modalCheckinsPreview) {
     ? "Everyone's in! 🎉"
     : "Most are on track! ✨";
 }
+const modalClubStatus =
+  document.getElementById("modalClubStatus");
 
+const modalClubStatusPercent =
+  document.getElementById("modalClubStatusPercent");
+
+if (modalClubStatus) {
+  modalClubStatus.textContent =
+    `${checkedInCount} of ${totalMembers} checked in`;
+}
+
+if (modalClubStatusPercent) {
+  modalClubStatusPercent.textContent =
+    `${percent}% complete`;
+}
     if (finishedBtn) {
       finishedBtn.disabled = !everyoneCheckedIn;
       finishedBtn.textContent = everyoneCheckedIn
@@ -5229,7 +5243,11 @@ window.saveGoalEditor = function () {
   </div>
 
 </div>
-
+<div class="goal-detail-card">
+  <p class="mini-label">Club Status</p>
+  <strong id="modalClubStatus">0 of 0 checked in</strong>
+  <span id="modalClubStatusPercent" class="due-countdown">0% complete</span>
+</div>
 <hr>
 
 
