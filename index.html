@@ -5072,6 +5072,25 @@ window.checkInForBook = async function () {
     checkedInAt: Date.now()
   });
 };
+function getDaysLeftText(dueDate) {
+  if (!dueDate) return "";
+
+  const [year, month, day] = dueDate.split("-").map(Number);
+
+  const due = new Date(year, month - 1, day);
+  const today = new Date();
+
+  due.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const daysLeft =
+    (due.getTime() - today.getTime()) / 86400000;
+
+  if (daysLeft > 1) return `(${daysLeft} days left)`;
+  if (daysLeft === 1) return "(1 day left)";
+  if (daysLeft === 0) return "(Due today)";
+  return "(Past due)";
+}
 function listenToFeaturedVolumeProgress(clubId) {
   const progressRef = ref(database, `clubs/${clubId}/featuredVolume`);
 
