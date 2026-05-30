@@ -5415,7 +5415,20 @@ window.saveDueDateEditor = async function () {
 <button class="secondary" onclick="toggleDueDateEditor()">
   Change Due Date
 </button>
+<button class="secondary" onclick="toggleTotalChaptersEditor()">
+  Edit Total Chapters
+</button>
 
+<div id="totalChaptersEditor" style="display:none; margin-top:12px;">
+  <div class="modal-field">
+    <label>Total Chapters</label>
+    <input id="modalTotalChaptersInput" type="number" placeholder="46">
+  </div>
+
+  <button onclick="saveTotalChaptersEditor()">
+    Save Total Chapters
+  </button>
+</div>
 <div id="dueDateEditor" style="display:none; margin-top:12px;">
 
   <div class="modal-field">
