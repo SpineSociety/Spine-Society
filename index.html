@@ -5227,8 +5227,34 @@ window.toggleDueDateEditor = function () {
     editor.style.display === "none" ? "block" : "none";
 };
 
-window.saveDueDateEditor = function () {
-  alert("Due date saving comes next!");
+window.saveDueDateEditor = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const dueDate = document.getElementById("goalDueDateInput").value;
+
+  if (!dueDate) {
+    alert("Choose a due date.");
+    return;
+  }
+
+  const formattedDate = new Date(dueDate + "T00:00:00").toLocaleDateString([], {
+    month: "short",
+    day: "numeric"
+  });
+
+  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+    dueDate,
+    dueDateLabel: formattedDate,
+    updatedAt: Date.now()
+  });
+
+  document.getElementById("readingDueDisplay").textContent = formattedDate;
+  document.getElementById("modalDueDisplay").textContent = formattedDate;
+
+  showToast("Due date updated.");
 };
 </script>
 <div id="toast"></div>
