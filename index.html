@@ -2785,10 +2785,11 @@ window.showClubRoomTab = function (tabName) {
 
   const buttons = document.querySelectorAll(".club-room-tabs button");
 
-  if (tabName === "current") buttons[0].classList.add("active");
-  if (tabName === "chat") buttons[1].classList.add("active");
-  if (tabName === "books") buttons[2].classList.add("active");
-  if (tabName === "randomizer") buttons[3].classList.add("active");
+  const buttons = document.querySelectorAll(".club-tools-row button");
+
+if (tabName === "chat" && buttons[0]) buttons[0].classList.add("active");
+if (tabName === "books" && buttons[1]) buttons[1].classList.add("active");
+if (tabName === "randomizer" && buttons[2]) buttons[2].classList.add("active");
 };
 document.getElementById("nookTab").addEventListener("click", () => showScreen("nook"));
 document.getElementById("libraryTab").addEventListener("click", () => showScreen("library"));
