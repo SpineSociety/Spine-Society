@@ -5112,42 +5112,21 @@ if (modalGoalDisplay) modalGoalDisplay.textContent = currentGoal;
 
 if (readingDueDisplay) readingDueDisplay.textContent = dueDateLabel;
 if (modalDueDisplay) modalDueDisplay.textContent = dueDateLabel;
-const readingDueCountdown = document.getElementById("readingDueCountdown");
-const modalDueCountdown = document.getElementById("modalDueCountdown");
+const readingDueCountdown =
+  document.getElementById("readingDueCountdown");
 
-let countdownText = "";
+const modalDueCountdown =
+  document.getElementById("modalDueCountdown");
 
-if (dueDate) {
-  const today = new Date();
+const countdownText = getDaysLeftText(dueDate);
 
-const todayUTC = Date.UTC(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate()
-);
-
-const [year, month, day] = dueDate.split("-").map(Number);
-
-const dueUTC = Date.UTC(
-  year,
-  month - 1,
-  day
-);
-
-const daysLeft = Math.floor(
-  (dueUTC - todayUTC) / (1000 * 60 * 60 * 24)
-);
-
-  if (daysLeft > 1) countdownText = `(${daysLeft} days left)`;
-  else if (daysLeft === 1) countdownText = "(1 day left)";
-  else if (daysLeft === 0) countdownText = "(Due today)";
-  else countdownText = "(Past due)";
-} else {
-  countdownText = "";
+if (readingDueCountdown) {
+  readingDueCountdown.textContent = countdownText;
 }
 
-if (readingDueCountdown) readingDueCountdown.textContent = countdownText;
-if (modalDueCountdown) modalDueCountdown.textContent = countdownText;
+if (modalDueCountdown) {
+  modalDueCountdown.textContent = countdownText;
+}
 const dueCountdown =
   document.getElementById("readingDueCountdown");
 
