@@ -5329,8 +5329,40 @@ window.toggleTotalChaptersEditor = function () {
     editor.style.display === "none" ? "block" : "none";
 };
 
-window.saveTotalChaptersEditor = function () {
-  alert("Total chapters saving comes next!");
+window.saveTotalChaptersEditor = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const totalChapters =
+    document.getElementById("modalTotalChaptersInput").value.trim();
+
+  if (!totalChapters) {
+    alert("Enter total chapters.");
+    return;
+  }
+
+  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+    totalChapters: Number(totalChapters),
+    updatedAt: Date.now()
+  });
+
+  const modalTotal =
+    document.getElementById("modalTotalChapterDisplay");
+
+  if (modalTotal) {
+    modalTotal.textContent = totalChapters;
+  }
+
+  const mainInput =
+    document.getElementById("totalChaptersInput");
+
+  if (mainInput) {
+    mainInput.value = totalChapters;
+  }
+
+  showToast("Total chapters updated.");
 };
 </script>
 <div id="toast"></div>
