@@ -5191,8 +5191,33 @@ window.toggleGoalEditor = function () {
       : "none";
 };
 
-window.saveGoalEditor = function () {
-  alert("Goal saving comes next!");
+window.saveGoalEditor = async function () {
+  if (!window.currentClubId) {
+    alert("Open a club first.");
+    return;
+  }
+
+  const start = document.getElementById("goalStartChapter").value.trim();
+  const end = document.getElementById("goalEndChapter").value.trim();
+
+  if (!start || !end) {
+    alert("Enter both a start and end chapter.");
+    return;
+  }
+
+  const goalText = `Chapters ${start}–${end}`;
+
+  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+    currentGoal: goalText,
+    goalStart: start,
+    goalEnd: end,
+    updatedAt: Date.now()
+  });
+
+  document.getElementById("readingGoalDisplay").textContent = goalText;
+  document.getElementById("modalGoalDisplay").textContent = goalText;
+
+  showToast("Reading goal updated.");
 };
 </script>
 <div id="toast"></div>
