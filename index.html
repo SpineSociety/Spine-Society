@@ -1969,6 +1969,26 @@ body::before {
   color: var(--ink);
   font-size: 1.15rem;
 }
+.club-tools-card {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 28px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.12);
+}
+
+.club-tools-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.club-tools-row button {
+  min-height: 78px;
+  margin: 0;
+  border-radius: 20px;
+  font-size: .85rem;
+}
 </style>
 </head>
 
@@ -2136,17 +2156,25 @@ body::before {
 
   </section>
 </div>
-<div class="club-room-tabs club-room-tabs-bottom">
+<section class="club-tools-card">
+  <div class="section-row">
+    <h2>Club Tools</h2>
+  </div>
 
-  <button onclick="showClubRoomTab('current')">Featured Volume</button>
+  <div class="club-tools-row">
+    <button onclick="showClubRoomTab('chat')">
+      ✍️<br>Marginalia
+    </button>
 
-  <button onclick="showClubRoomTab('chat')">Marginalia</button>
+    <button onclick="showClubRoomTab('books')">
+      📚<br>The Collection
+    </button>
 
-  <button onclick="showClubRoomTab('books')">The Collection</button>
-
-  <button onclick="showClubRoomTab('randomizer')">Fate Decides</button>
-
-</div>
+    <button onclick="showClubRoomTab('randomizer')">
+      ✦<br>Fate Decides
+    </button>
+  </div>
+</section>
 
 </section>
 <section id="stacksScreen" class="screen">
