@@ -5164,11 +5164,18 @@ if (dueCountdown && dueDate) {
 
     if (input && totalChapters) input.value = totalChapters;
 
-    if (chapterText) {
-      chapterText.textContent = totalChapters
-        ? `This book has ${totalChapters} chapters.`
-        : "No chapter count set yet.";
-    }
+    const clubProgressPercentText =
+  document.getElementById("clubProgressPercentText");
+
+if (clubProgressPercentText) {
+  clubProgressPercentText.textContent = `${percent}%`;
+}
+
+if (chapterText) {
+  chapterText.textContent = everyoneCheckedIn
+    ? "All caught up! 📚"
+    : `${totalMembers - checkedInCount} reader${(totalMembers - checkedInCount) === 1 ? "" : "s"} still catching up`;
+}
 
     if (checkinsList) {
       checkinsList.innerHTML = Object.values(checkins).map(member => `
