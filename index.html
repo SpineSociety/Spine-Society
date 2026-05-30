@@ -3945,8 +3945,8 @@ function listenToNextRead(clubId) {
       <p class="mini-label">Due</p>
       <strong id="readingDueDisplay">May 30</strong>
       <div id="readingDueCountdown" class="due-countdown">
-        (3 days left)
-      </div>
+  —
+</div>
     </div>
 
   </div>
@@ -5093,6 +5093,30 @@ if (modalGoalDisplay) modalGoalDisplay.textContent = currentGoal;
 
 if (readingDueDisplay) readingDueDisplay.textContent = dueDateLabel;
 if (modalDueDisplay) modalDueDisplay.textContent = dueDateLabel;
+const readingDueCountdown = document.getElementById("readingDueCountdown");
+const modalDueCountdown = document.getElementById("modalDueCountdown");
+
+let countdownText = "";
+
+if (dueDate) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const due = new Date(dueDate + "T00:00:00");
+  due.setHours(0, 0, 0, 0);
+
+  const daysLeft = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+  if (daysLeft > 1) countdownText = `(${daysLeft} days left)`;
+  else if (daysLeft === 1) countdownText = "(1 day left)";
+  else if (daysLeft === 0) countdownText = "(Due today)";
+  else countdownText = "(Past due)";
+} else {
+  countdownText = "";
+}
+
+if (readingDueCountdown) readingDueCountdown.textContent = countdownText;
+if (modalDueCountdown) modalDueCountdown.textContent = countdownText;
 const dueCountdown =
   document.getElementById("readingDueCountdown");
 
