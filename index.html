@@ -5081,6 +5081,7 @@ function listenToFeaturedVolumeProgress(clubId) {
     const checkins = data.checkins || {};
     const currentGoal = data.currentGoal || "Chapters 1–5";
     const dueDateLabel = data.dueDateLabel || "May 30";
+    const dueDate = data.dueDate || null;
     const input = document.getElementById("totalChaptersInput");
     const chapterText = document.getElementById("chapterCountText");
     const readingGoalDisplay = document.getElementById("readingGoalDisplay");
@@ -5092,6 +5093,29 @@ if (modalGoalDisplay) modalGoalDisplay.textContent = currentGoal;
 
 if (readingDueDisplay) readingDueDisplay.textContent = dueDateLabel;
 if (modalDueDisplay) modalDueDisplay.textContent = dueDateLabel;
+const dueCountdown =
+  document.getElementById("readingDueCountdown");
+
+if (dueCountdown && dueDate) {
+
+  const today = new Date();
+  const due = new Date(dueDate + "T23:59:59");
+
+  const diffMs = due - today;
+  const daysLeft = Math.ceil(
+    diffMs / (1000 * 60 * 60 * 24)
+  );
+
+  if (daysLeft > 1) {
+    dueCountdown.textContent = `(${daysLeft} days left)`;
+  } else if (daysLeft === 1) {
+    dueCountdown.textContent = "(1 day left)";
+  } else if (daysLeft === 0) {
+    dueCountdown.textContent = "(Due today)";
+  } else {
+    dueCountdown.textContent = "(Past due)";
+  }
+}
     const checkinsList = document.getElementById("memberCheckinsList");
     const finishedBtn = document.getElementById("finishedBookBtn");
     const lockText = document.getElementById("finishLockText");
