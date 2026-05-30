@@ -5098,6 +5098,10 @@ function listenToFeaturedVolumeProgress(clubId) {
     const data = snapshot.val() || {};
     const totalChapters = data.totalChapters || null;
     const checkins = data.checkins || {};
+    console.log("CHECKINS", checkins);
+console.log("TOTAL MEMBERS", totalMembers);
+console.log("CHECKED IN", checkedInCount);
+console.log("PERCENT", percent);
     const currentGoal = data.currentGoal || "Chapters 1–5";
     const dueDateLabel = data.dueDateLabel || "May 30";
     const dueDate = data.dueDate || null;
