@@ -5079,7 +5079,8 @@ function listenToFeaturedVolumeProgress(clubId) {
     const data = snapshot.val() || {};
     const totalChapters = data.totalChapters || null;
     const checkins = data.checkins || {};
-
+    const currentGoal = data.currentGoal || "Chapters 1–5";
+    const dueDateLabel = data.dueDateLabel || "May 30";
     const input = document.getElementById("totalChaptersInput");
     const chapterText = document.getElementById("chapterCountText");
     const checkinsList = document.getElementById("memberCheckinsList");
