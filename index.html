@@ -2774,22 +2774,11 @@ window.showClubRoomTab = function (tabName) {
     panel.classList.remove("active");
   });
 
-  document.querySelectorAll(".club-room-tabs button").forEach(button => {
-    button.classList.remove("active");
-  });
-
   const panel = document.getElementById(tabName + "Panel");
+
   if (panel) {
     panel.classList.add("active");
   }
-
-  const buttons = document.querySelectorAll(".club-room-tabs button");
-
-  const buttons = document.querySelectorAll(".club-tools-row button");
-
-if (tabName === "chat" && buttons[0]) buttons[0].classList.add("active");
-if (tabName === "books" && buttons[1]) buttons[1].classList.add("active");
-if (tabName === "randomizer" && buttons[2]) buttons[2].classList.add("active");
 };
 document.getElementById("nookTab").addEventListener("click", () => showScreen("nook"));
 document.getElementById("libraryTab").addEventListener("click", () => showScreen("library"));
