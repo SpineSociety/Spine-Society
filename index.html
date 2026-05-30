@@ -1989,6 +1989,21 @@ body::before {
   border-radius: 20px;
   font-size: .85rem;
 }
+.club-tools-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.club-tools-row button {
+  min-height: 95px;
+  border-radius: 22px;
+  padding: 16px 10px;
+}
+
+.club-tools-row button span {
+  display: block;
+}
 </style>
 </head>
 
@@ -2163,16 +2178,19 @@ body::before {
 
   <div class="club-tools-row">
     <button onclick="openMembersModal()">
-  👥<br>Members
+  👥
+  <span>Members</span>
 </button>
 
     <button onclick="showClubRoomTab('books')">
-      📚<br>The Collection
-    </button>
+  📚
+  <span>The Collection</span>
+</button>
 
-    <button onclick="showClubRoomTab('randomizer')">
-      ✦<br>Fate Decides
-    </button>
+<button onclick="showClubRoomTab('randomizer')">
+  🎲
+  <span>Fate Decides</span>
+</button>
   </div>
 </section>
 
