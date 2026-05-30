@@ -5083,6 +5083,15 @@ function listenToFeaturedVolumeProgress(clubId) {
     const dueDateLabel = data.dueDateLabel || "May 30";
     const input = document.getElementById("totalChaptersInput");
     const chapterText = document.getElementById("chapterCountText");
+    const readingGoalDisplay = document.getElementById("readingGoalDisplay");
+    const modalGoalDisplay = document.getElementById("modalGoalDisplay");
+    const readingDueDisplay = document.getElementById("readingDueDisplay");
+    const modalDueDisplay = document.getElementById("modalDueDisplay");
+    if (readingGoalDisplay) readingGoalDisplay.textContent = currentGoal;
+if (modalGoalDisplay) modalGoalDisplay.textContent = currentGoal;
+
+if (readingDueDisplay) readingDueDisplay.textContent = dueDateLabel;
+if (modalDueDisplay) modalDueDisplay.textContent = dueDateLabel;
     const checkinsList = document.getElementById("memberCheckinsList");
     const finishedBtn = document.getElementById("finishedBookBtn");
     const lockText = document.getElementById("finishLockText");
