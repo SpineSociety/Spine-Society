@@ -5163,6 +5163,20 @@ window.closeReadingGoalModal = function () {
   const modal = document.getElementById("readingGoalModal");
   if (modal) modal.style.display = "none";
 };
+window.toggleGoalEditor = function () {
+  const editor = document.getElementById("goalEditor");
+
+  if (!editor) return;
+
+  editor.style.display =
+    editor.style.display === "none"
+      ? "block"
+      : "none";
+};
+
+window.saveGoalEditor = function () {
+  alert("Goal saving comes next!");
+};
 </script>
 <div id="toast"></div>
 <div id="readingGoalModal" style="
@@ -5232,7 +5246,23 @@ window.closeReadingGoalModal = function () {
 <button class="secondary" onclick="toggleGoalEditor()">
   Edit Goal
 </button>
+<div id="goalEditor" style="display:none; margin-top:12px;">
 
+  <div class="modal-field">
+    <label>Start Chapter</label>
+    <input id="goalStartChapter" type="number" placeholder="1">
+  </div>
+
+  <div class="modal-field">
+    <label>End Chapter</label>
+    <input id="goalEndChapter" type="number" placeholder="5">
+  </div>
+
+  <button onclick="saveGoalEditor()">
+    Save Goal
+  </button>
+
+</div>
 <button class="secondary">
   Change Due Date
 </button>
