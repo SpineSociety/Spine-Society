@@ -2106,89 +2106,159 @@ body::before {
 
 </section>
         <section id="clubScreen" class="screen">
-  <div class="page-top"><button class="icon-button secondary" onclick="showScreen('nook')">←</button><div class="page-title">Current Read</div><button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button></div>
+
+  <div class="page-top">
+    <button class="icon-button secondary" onclick="showScreen('nook')">←</button>
+    <div class="page-title">Current Read</div>
+    <button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button>
+  </div>
+
   <div id="clubHero" style="display:none;"></div>
-  
-  <div id="chatPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Marginalia</h2></div><p class="helper">Chat with your reading circle.</p><input id="discussionInputClub" placeholder="Share your thoughts..." /><button onclick="postDiscussionCommentFromClub()">Post Note</button><div id="discussionListClub"><p class="status">No notes yet. Start the conversation.</p></div></section></div>
-  <div id="currentPanel" class="club-room-panel active"><section class="club-featured-shell">
-  <div id="nextReadArea">
-    <p class="status">No next read set yet.</p>
-  </div>
-</section>
-<section class="club-tools-card">
-  <div class="section-row">
-    <h2>Club Tools</h2>
+
+  <!-- MAIN CLUB ROOM -->
+  <div id="currentPanel" class="club-room-panel active">
+
+    <section class="club-featured-shell">
+      <div id="nextReadArea">
+        <p class="status">No next read set yet.</p>
+      </div>
+    </section>
+
+    <div id="clubMarginaliaEmbed" class="club-room-embed">
+      <section class="card">
+        <div class="card-header">
+          <h2>Marginalia</h2>
+        </div>
+
+        <p class="helper">Chat with your reading circle.</p>
+
+        <input
+          id="discussionInputClub"
+          placeholder="Share your thoughts..."
+        />
+
+        <button onclick="postDiscussionCommentFromClub()">
+          Post Note
+        </button>
+
+        <div id="discussionListClub">
+          <p class="status">No notes yet. Start the conversation.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Finished Reads</h2>
+        <span id="booksReadCount" class="small"></span>
+      </div>
+
+      <div id="booksReadList">
+        <p class="status">No finished reads yet.</p>
+      </div>
+    </section>
+
+    <section class="club-tools-card">
+      <div class="section-row">
+        <h2>Club Tools</h2>
+      </div>
+
+      <div class="club-tools-row">
+
+        <button onclick="openMembersModal()">
+          👥
+          <span>Members</span>
+        </button>
+
+        <button onclick="showClubRoomTab('books')">
+          📚
+          <span>The Collection</span>
+        </button>
+
+        <button onclick="showClubRoomTab('randomizer')">
+          🎲
+          <span>Fate Decides</span>
+        </button>
+
+      </div>
+    </section>
+
   </div>
 
-  <div class="club-tools-row">
-    ...
-  </div>
-</section>
-<section class="card"><div class="card-header"><h2>Finished Reads</h2><span id="booksReadCount" class="small"></span></div><div id="booksReadList"><p class="status">No finished reads yet.</p></div></section></div>
-  
-
-  <div id="pollsPanel" class="club-room-panel"><section class="card"><div class="card-header"><h2>Polls</h2></div><p class="status">Polls are coming soon.</p></section></div>
+  <!-- COLLECTION PAGE -->
   <div id="booksPanel" class="club-room-panel">
+
     <div class="page-top">
-  <button class="icon-button secondary" onclick="showClubRoomTab('current')">←</button>
-  <div class="page-title">The Collection</div>
-  <button class="icon-button secondary" onclick="openAddCollectionBookModal()">＋</button>
-</div>
-
-
-  <section class="bookshelf-case">
-    <div id="clubCollectionGrid">
-      <p class="status">
-        Your collection is waiting for its first story.
-      </p>
-    </div>
-  </section>
-
-</div>
- <div id="randomizerPanel" class="club-room-panel">
-  <button class="secondary" onclick="showClubRoomTab('current')">
-  ← Back to Club Room
-</button>
-  <section class="randomizer-shelf">
-<div class="fate-title">✦ FATE DECIDES ✦</div>
-<div class="fate-subtitle">Let chance choose the next chapter.</div>
-    <div id="randomizerBooksClub" class="randomizer-books">
-      <p class="status">Open a shelf to load books.</p>
+      <button class="icon-button secondary" onclick="showClubRoomTab('current')">←</button>
+      <div class="page-title">The Collection</div>
+      <button class="icon-button secondary" onclick="openAddCollectionBookModal()">＋</button>
     </div>
 
-    <div class="randomizer-controls">
-      <select id="spinCategoryClub">
-        <option>All Books</option>
-        <option>Book Club Pick</option>
-        <option>Thriller</option>
-        <option>Romance</option>
-        <option>Fantasy</option>
-        <option>Mystery</option>
-        <option>Cozy Read</option>
-        <option>Wild Card</option>
-      </select>
+    <section class="bookshelf-case">
+      <div id="clubCollectionGrid">
+        <p class="status">
+          Your collection is waiting for its first story.
+        </p>
+      </div>
+    </section>
 
-      <select id="spinMoodClub">
-        <option>All Moods</option>
-        <option>Thoughtful</option>
-        <option>Uplifting</option>
-        <option>Dark & Twisty</option>
-        <option>Adventurous</option>
-        <option>Relaxing</option>
-      </select>
+  </div>
+
+  <!-- FATE DECIDES PAGE -->
+  <div id="randomizerPanel" class="club-room-panel">
+
+    <div class="page-top">
+      <button class="icon-button secondary" onclick="showClubRoomTab('current')">←</button>
+      <div class="page-title">Fate Decides</div>
+      <button class="icon-button secondary">✦</button>
     </div>
 
-    <button id="spinButtonClub" class="surprise-dial" onclick="spinBookFromClub()">
-      Fate<br>Decides
-    </button>
+    <section class="randomizer-shelf">
 
-    <div id="winnerClub" class="randomizer-result">
-      Your next pick will appear here.
-    </div>
+      <div class="fate-title">✦ FATE DECIDES ✦</div>
+      <div class="fate-subtitle">Let chance choose the next chapter.</div>
 
-  </section>
-</div>
+      <div id="randomizerBooksClub" class="randomizer-books">
+        <p class="status">Open a shelf to load books.</p>
+      </div>
 
+      <div class="randomizer-controls">
+        <select id="spinCategoryClub">
+          <option>All Books</option>
+          <option>Book Club Pick</option>
+          <option>Thriller</option>
+          <option>Romance</option>
+          <option>Fantasy</option>
+          <option>Mystery</option>
+          <option>Cozy Read</option>
+          <option>Wild Card</option>
+        </select>
+
+        <select id="spinMoodClub">
+          <option>All Moods</option>
+          <option>Thoughtful</option>
+          <option>Uplifting</option>
+          <option>Dark & Twisty</option>
+          <option>Adventurous</option>
+          <option>Relaxing</option>
+        </select>
+      </div>
+
+      <button
+        id="spinButtonClub"
+        class="surprise-dial"
+        onclick="spinBookFromClub()"
+      >
+        Fate<br>Decides
+      </button>
+
+      <div id="winnerClub" class="randomizer-result">
+        Your next pick will appear here.
+      </div>
+
+    </section>
+
+  </div>
 
 </section>
 <section id="stacksScreen" class="screen">
