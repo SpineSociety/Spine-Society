@@ -2004,6 +2004,9 @@ body::before {
 .club-tools-row button span {
   display: block;
 }
+#clubScreen .club-featured-shell {
+  margin-top: -40px !important;
+}
 </style>
 </head>
 
@@ -2107,11 +2110,11 @@ body::before {
 </section>
         <section id="clubScreen" class="screen">
 
-  <div class="page-top">
-    <button class="icon-button secondary" onclick="showScreen('nook')">←</button>
-    <div class="page-title">Current Read</div>
-    <button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button>
-  </div>
+  <div class="page-top club-header">
+  <div></div>
+  <div class="page-title">Current Read</div>
+  <button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button>
+</div>
 
   <div id="clubHero" style="display:none;"></div>
 
