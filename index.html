@@ -2007,12 +2007,31 @@ body::before {
 #clubScreen .club-featured-shell {
   margin-top: 0 !important;
 }
+
+
+#clubScreen .club-featured-shell {
+  margin-top: 0 !important;
+}
 #clubScreen .page-top {
   display: none !important;
 }
 
 #clubScreen .club-featured-shell {
+  position: relative;
   margin-top: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(10,8,6,.96), rgba(8,6,5,.96)) !important;
+}
+
+.club-card-menu {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  z-index: 5;
 }
 </style>
 </head>
@@ -2129,6 +2148,7 @@ body::before {
   <div id="currentPanel" class="club-room-panel active">
 
     <section class="club-featured-shell">
+  <button class="club-card-menu" onclick="openShelfSettingsModal()">•••</button>
       <div id="nextReadArea">
         <p class="status">No next read set yet.</p>
       </div>
