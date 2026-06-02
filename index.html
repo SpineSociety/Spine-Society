@@ -5296,9 +5296,7 @@ if (modalDueCountdown) {
 
     const checkedInCount = Object.keys(checkins).length;
     const totalMembers = window.currentClubMemberCount || 1;
-    alert(
-  `Members: ${window.currentClubMemberCount} | Checkins: ${checkedInCount}`
-);
+    
     const percent = Math.min(
       Math.round((checkedInCount / totalMembers) * 100),
       100
