@@ -5295,7 +5295,11 @@ if (modalDueCountdown) {
     const goalMessage = document.getElementById("goalProgressMessage");
 
     const checkedInCount = Object.keys(checkins).length;
-    const totalMembers = window.currentClubMemberCount || 1;
+    const visibleMemberCount =
+  document.querySelectorAll(".featured-reader-avatar").length;
+
+const totalMembers =
+  window.currentClubMemberCount || visibleMemberCount || 1;
     
     const percent = Math.min(
       Math.round((checkedInCount / totalMembers) * 100),
