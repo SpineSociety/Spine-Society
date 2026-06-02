@@ -5251,12 +5251,17 @@ function getDaysLeftText(dueDate) {
   return "(Past due)";
 }
 function listenToFeaturedVolumeProgress(clubId) {
-  const progressRef = ref(database, `clubs/${clubId}/featuredVolume`);
+  const progressRef = ref(database, `clubs/${clubId}`);
 
   onValue(progressRef, (snapshot) => {
-    const data = snapshot.val() || {};
-    const totalChapters = data.totalChapters || null;
-    const checkins = data.checkins || {};
+    const clubData = snapshot.val() || {};
+const data = clubData.featuredVolume || {};
+
+const totalChapters = data.totalChapters || null;
+const checkins = data.checkins || {};
+
+const members = clubData.members || {};
+const memberCount = Object.keys(members).length;
     const currentGoal = data.currentGoal || "Chapters 1–5";
     const dueDateLabel = data.dueDateLabel || "May 30";
     const dueDate = data.dueDate || null;
@@ -5298,8 +5303,8 @@ if (modalDueCountdown) {
     const visibleMemberCount =
   document.querySelectorAll(".featured-reader-avatar").length;
 
-const totalMembers =
-  window.currentClubMemberCount || visibleMemberCount || 1;
+const totalMembers = Math.max(memberCount, checkedInCount, 1);
+window.currentClubMemberCount = totalMembers;
     
     const percent = Math.min(
       Math.round((checkedInCount / totalMembers) * 100),
