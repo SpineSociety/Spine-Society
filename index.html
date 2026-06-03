@@ -5201,8 +5201,40 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-window.finishFeaturedBook = function () {
-  alert("Book finished! Next we’ll move this book to Books Read.");
+window.finishFeaturedBook = async function () {
+  const user = auth.currentUser;
+  const clubId = window.currentClubId;
+  const nextRead = window.currentNextRead;
+
+  if (!user) return alert("Please log in first.");
+  if (!clubId) return alert("Open a club first.");
+  if (!nextRead) return alert("No featured volume selected.");
+
+  const confirmFinish = confirm(
+    `Move "${nextRead.title}" to Finished Reads and clear the current reading goal?`
+  );
+
+  if (!confirmFinish) return;
+
+  const finishedRef = push(ref(database, `clubs/${clubId}/booksRead`));
+
+  await set(finishedRef, {
+    ...nextRead,
+    finishedAt: Date.now(),
+    finishedBy: user.uid
+  });
+
+  await remove(ref(database, `clubs/${clubId}/nextRead`));
+  await remove(ref(database, `clubs/${clubId}/featuredVolume`));
+
+  showToast("Book moved to Finished Reads.");
+
+  window.currentNextRead = null;
+
+  const modal = document.getElementById("readingGoalModal");
+  if (modal) modal.style.display = "none";
+
+  showClubRoomTab("current");
 };
 window.saveTotalChapters = async function () {
   const user = auth.currentUser;
