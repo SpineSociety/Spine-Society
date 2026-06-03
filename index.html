@@ -4025,7 +4025,7 @@ window.updateBookStatus = async function (bookId, type, status) {
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
     const nextRead = snapshot.val();
-
+window.currentNextRead = nextRead;
     updateNookNextRead(nextRead);
 
     const marginaliaTitle = document.getElementById("marginaliaBookTitle");
@@ -4035,6 +4035,7 @@ function listenToNextRead(clubId) {
     if (!area) return;
 
     if (!nextRead) {
+      window.currentNextRead = null;
       area.innerHTML = `<p class="status">No next read set yet.</p>`;
 
       if (marginaliaTitle) marginaliaTitle.textContent = "Current Read";
