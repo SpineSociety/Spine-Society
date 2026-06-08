@@ -5236,12 +5236,17 @@ window.finishFeaturedBook = async function () {
 
   showToast("Book moved to Finished Reads.");
 
-  window.currentNextRead = null;
+window.currentNextRead = null;
 
-  const modal = document.getElementById("readingGoalModal");
-  if (modal) modal.style.display = "none";
+const modal = document.getElementById("readingGoalModal");
+if (modal) modal.style.display = "none";
 
-  showClubRoomTab("current");
+const area = document.getElementById("nextReadArea");
+if (area) {
+  area.innerHTML = `<p class="status">No next read set yet.</p>`;
+}
+
+showClubRoomTab("current");
 };
 window.saveTotalChapters = async function () {
   const user = auth.currentUser;
