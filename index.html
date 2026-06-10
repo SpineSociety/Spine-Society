@@ -5581,7 +5581,54 @@ window.saveTotalChaptersEditor = async function () {
   showToast("Total chapters updated.");
 };
 window.openFinishedBookDetails = function (book) {
-  alert(`Finished Book Details coming next for: ${book.title}`);
+
+  const modal =
+    document.getElementById("finishedBookModal");
+
+  const content =
+    document.getElementById("finishedBookModalContent");
+
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <h2>${book.title || "Untitled Book"}</h2>
+
+    <p class="helper">
+      ${book.author || ""}
+    </p>
+
+    <hr>
+
+    <h3>Club Rating</h3>
+
+    <p>
+      ⭐⭐⭐⭐⭐
+      <span class="helper">(Coming Soon)</span>
+    </p>
+
+    <h3>Reviews</h3>
+
+    <p class="helper">
+      Club reviews will appear here.
+    </p>
+
+    <h3>Suggested Next Reads</h3>
+
+    <p class="helper">
+      Future recommendations will appear here.
+    </p>
+  `;
+
+  modal.style.display = "flex";
+};
+
+window.closeFinishedBookModal = function () {
+  const modal =
+    document.getElementById("finishedBookModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
 };
 </script>
 <div id="toast"></div>
@@ -5710,6 +5757,25 @@ window.openFinishedBookDetails = function (book) {
 <button id="modalFinishBookBtn">
   Finish Book
 </button>
+  </div>
+</div>
+<div id="finishedBookModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+
+    <div class="page-top">
+      <div class="page-title">Finished Read</div>
+
+      <button
+        class="icon-button secondary"
+        onclick="closeFinishedBookModal()">
+        ✕
+      </button>
+    </div>
+
+    <div id="finishedBookModalContent">
+      Loading...
+    </div>
+
   </div>
 </div>
 </body>
