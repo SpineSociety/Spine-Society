@@ -5655,9 +5655,22 @@ window.openFinishedBookDetails = function (book) {
       </section>
 
       <section class="finished-detail-section">
-        <h3>Reader Reviews</h3>
-        <p class="helper">Reviews will appear here after members share their thoughts.</p>
-      </section>
+  <h3>Reader Reviews</h3>
+
+  <textarea
+    id="finishedBookReviewInput"
+    placeholder="Share your thoughts about this book..."
+    style="width:100%; min-height:90px; margin-top:10px;"
+  ></textarea>
+
+  <button onclick='saveFinishedBookReview(${JSON.stringify(book)})'>
+    Post Review
+  </button>
+
+  <div id="finishedBookReviewsList">
+    <p class="helper">Reviews will appear here after members share their thoughts.</p>
+  </div>
+</section>
 
       <section class="finished-detail-section">
         <h3>Suggested Next Reads</h3>
