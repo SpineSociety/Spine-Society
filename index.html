@@ -5226,7 +5226,9 @@ window.finishFeaturedBook = async function () {
   });
 
   await remove(ref(database, `clubs/${clubId}/nextRead`));
-  await set(ref(database, `clubs/${clubId}/featuredVolume`), {
+await remove(ref(database, `clubs/${clubId}/checkIns`));
+
+await set(ref(database, `clubs/${clubId}/featuredVolume`), {
   currentGoal: "Set your next reading goal",
   dueDateLabel: "No due date",
   dueDate: null,
