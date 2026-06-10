@@ -5484,11 +5484,12 @@ window.saveGoalEditor = async function () {
   const goalText = `Chapters ${start}–${end}`;
 
   await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
-    currentGoal: goalText,
-    goalStart: start,
-    goalEnd: end,
-    updatedAt: Date.now()
-  });
+  currentGoal: goalText,
+  goalStart: start,
+  goalEnd: end,
+  updatedAt: Date.now(),
+  checkins: {}
+});
 
   document.getElementById("readingGoalDisplay").textContent = goalText;
   document.getElementById("modalGoalDisplay").textContent = goalText;
