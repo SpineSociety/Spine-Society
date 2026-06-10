@@ -5515,7 +5515,30 @@ window.toggleGoalEditor = function () {
       ? "block"
       : "none";
 };
+window.saveFinishedBookReview = async function (book) {
+  const user = auth.currentUser;
+  const clubId = window.currentClubId;
+  const input = document.getElementById("finishedBookReviewInput");
 
+  if (!user) return alert("Please log in first.");
+  if (!clubId) return alert("Open a club first.");
+  if (!book || !book.title) return alert("Book not found.");
+  if (!input || !input.value.trim()) return alert("Write a review first.");
+
+  const reviewRef = push(
+    ref(database, `clubs/${clubId}/finishedBookReviews/${book.title}`)
+  );
+
+  await set(reviewRef, {
+    userId: user.uid,
+    name: window.currentUsername || user.email || "Reader",
+    text: input.value.trim(),
+    createdAt: Date.now()
+  });
+
+  input.value = "";
+  showToast("Review posted!");
+};
 window.saveGoalEditor = async function () {
   if (!window.currentClubId) {
     alert("Open a club first.");
