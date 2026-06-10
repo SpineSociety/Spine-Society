@@ -5225,30 +5225,30 @@ window.finishFeaturedBook = async function () {
     finishedBy: user.uid
   });
 
-  await remove(ref(database, `clubs/${clubId}/nextRead`));
-await remove(ref(database, `clubs/${clubId}/checkIns`));
+  await update(ref(database, `clubs/${clubId}`), {
+    nextRead: null,
+    checkIns: null,
+    featuredVolume: {
+      currentGoal: "Set your next reading goal",
+      dueDateLabel: "No due date",
+      dueDate: null,
+      totalChapters: null,
+      checkins: {}
+    }
+  });
 
-await set(ref(database, `clubs/${clubId}/featuredVolume`), {
-  currentGoal: "Set your next reading goal",
-  dueDateLabel: "No due date",
-  dueDate: null,
-  totalChapters: null,
-  checkins: {}
-});
+  window.currentNextRead = null;
+
+  const modal = document.getElementById("readingGoalModal");
+  if (modal) modal.style.display = "none";
+
+  const area = document.getElementById("nextReadArea");
+  if (area) {
+    area.innerHTML = `<p class="status">No next read set yet.</p>`;
+  }
 
   showToast("Book moved to Finished Reads.");
-
-window.currentNextRead = null;
-
-const modal = document.getElementById("readingGoalModal");
-if (modal) modal.style.display = "none";
-
-const area = document.getElementById("nextReadArea");
-if (area) {
-  area.innerHTML = `<p class="status">No next read set yet.</p>`;
-}
-
-showClubRoomTab("current");
+  showClubRoomTab("current");
 };
 window.saveTotalChapters = async function () {
   const user = auth.currentUser;
