@@ -5370,13 +5370,13 @@ if (chapterText) {
 }
 
     if (checkinsList) {
-      checkinsList.innerHTML = Object.values(checkins).map(member => `
-        <div class="checkin-row">
-          <span>${member.name}</span>
-          <span>✅ Checked in</span>
-        </div>
-      `).join("");
-    }
+  checkinsList.innerHTML = Object.values(checkins).map(member => `
+    <div class="checkin-row">
+      <span>${member.name}</span>
+      <span>✅ Goal complete</span>
+    </div>
+  `).join("");
+}
 const modalCheckinsPreview =
   document.getElementById("modalCheckinsPreview");
 
@@ -5384,13 +5384,13 @@ if (modalCheckinsPreview) {
   const checkedMembers = Object.values(checkins);
 
   modalCheckinsPreview.innerHTML = checkedMembers.length
-    ? checkedMembers.map(member => `
-        <div class="modal-checkin-row">
-          <span class="modal-checkin-name">${member.name}</span>
-          <span class="modal-checkin-status">✅ Checked In</span>
-        </div>
-      `).join("")
-    : `<div class="checkin-loading">No one has checked in yet.</div>`;
+  ? checkedMembers.map(member => `
+      <div class="modal-checkin-row">
+        <span class="modal-checkin-name">${member.name}</span>
+        <span class="modal-checkin-status">✅ Goal Complete</span>
+      </div>
+    `).join("")
+  : `<div class="checkin-loading">No one has completed this goal yet.</div>`;
 }
     if (fill) fill.style.width = `${percent}%`;
 
