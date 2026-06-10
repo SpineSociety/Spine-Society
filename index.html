@@ -2060,6 +2060,51 @@ body::before {
       rgba(18,14,11,.96)
     ) !important;
 }
+.finished-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.finished-detail-hero {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.finished-detail-cover,
+.finished-detail-placeholder {
+  width: 96px;
+  height: 144px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid rgba(200,163,106,.22);
+  box-shadow: 0 16px 34px rgba(0,0,0,.45);
+}
+
+.finished-detail-placeholder {
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.04);
+  font-size: 2rem;
+}
+
+.finished-detail-section {
+  padding: 16px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(200,163,106,.08), transparent 42%),
+    rgba(18,14,11,.76);
+  border: 1px solid rgba(200,163,106,.16);
+}
+
+.finished-stars {
+  color: var(--gold-pale);
+  font-size: 1.45rem;
+  letter-spacing: 2px;
+  margin: 10px 0 4px;
+}
 </style>
 </head>
 
@@ -5581,42 +5626,45 @@ window.saveTotalChaptersEditor = async function () {
   showToast("Total chapters updated.");
 };
 window.openFinishedBookDetails = function (book) {
-
-  const modal =
-    document.getElementById("finishedBookModal");
-
-  const content =
-    document.getElementById("finishedBookModalContent");
+  const modal = document.getElementById("finishedBookModal");
+  const content = document.getElementById("finishedBookModalContent");
 
   if (!modal || !content) return;
 
   content.innerHTML = `
-    <h2>${book.title || "Untitled Book"}</h2>
+    <div class="finished-detail-card">
 
-    <p class="helper">
-      ${book.author || ""}
-    </p>
+      <div class="finished-detail-hero">
+        ${
+          book.image
+            ? `<img src="${escapeAttr(book.image)}" class="finished-detail-cover">`
+            : `<div class="finished-detail-placeholder">📚</div>`
+        }
 
-    <hr>
+        <div>
+          <p class="mini-label">Finished Read</p>
+          <h2>${escapeHTML(book.title || "Untitled Book")}</h2>
+          <p class="helper">by ${escapeHTML(book.author || "Unknown Author")}</p>
+        </div>
+      </div>
 
-    <h3>Club Rating</h3>
+      <section class="finished-detail-section">
+        <h3>Club Rating</h3>
+        <p class="finished-stars">★★★★★</p>
+        <p class="helper">Ratings coming soon.</p>
+      </section>
 
-    <p>
-      ⭐⭐⭐⭐⭐
-      <span class="helper">(Coming Soon)</span>
-    </p>
+      <section class="finished-detail-section">
+        <h3>Reader Reviews</h3>
+        <p class="helper">Reviews will appear here after members share their thoughts.</p>
+      </section>
 
-    <h3>Reviews</h3>
+      <section class="finished-detail-section">
+        <h3>Suggested Next Reads</h3>
+        <p class="helper">Members will be able to suggest similar books here.</p>
+      </section>
 
-    <p class="helper">
-      Club reviews will appear here.
-    </p>
-
-    <h3>Suggested Next Reads</h3>
-
-    <p class="helper">
-      Future recommendations will appear here.
-    </p>
+    </div>
   `;
 
   modal.style.display = "flex";
