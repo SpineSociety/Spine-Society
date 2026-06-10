@@ -5536,8 +5536,24 @@ window.saveFinishedBookReview = async function (book) {
     createdAt: Date.now()
   });
 
-  input.value = "";
-  showToast("Review posted!");
+  const reviewText = input.value.trim();
+
+input.value = "";
+
+const reviewsList = document.getElementById("finishedBookReviewsList");
+
+if (reviewsList) {
+  reviewsList.innerHTML = `
+    <div class="finished-review-card">
+      <strong>${window.currentUsername || user.email || "Reader"}</strong>
+      <p>${reviewText}</p>
+    </div>
+  `;
+} else {
+  alert("Reviews list not found.");
+}
+
+showToast("Review posted!");
 };
 window.saveGoalEditor = async function () {
   if (!window.currentClubId) {
