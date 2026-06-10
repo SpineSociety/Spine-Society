@@ -5418,18 +5418,30 @@ if (modalClubStatusPercent) {
   modalClubStatusPercent.textContent =
     `${percent}% complete`;
 }
-    if (finishedBtn) {
-      finishedBtn.disabled = !everyoneCheckedIn;
-      finishedBtn.textContent = everyoneCheckedIn
-        ? "Finished Book ✅"
-        : "Finished Book 🔒";
-    }
+    const isOwner = auth.currentUser?.uid === currentClubOwner;
 
-    if (lockText) {
-      lockText.textContent = everyoneCheckedIn
-        ? "Everyone has checked in. You can finish the book."
-        : `${checkedInCount}/${totalMembers} members checked in.`;
-    }
+if (finishedBtn) {
+  finishedBtn.disabled = !everyoneCheckedIn || !isOwner;
+
+  if (!isOwner) {
+    finishedBtn.textContent = "Owner Only 🔒";
+  } else {
+    finishedBtn.textContent = everyoneCheckedIn
+      ? "Finished Book ✅"
+      : "Finished Book 🔒";
+  }
+}
+
+if (lockText) {
+  if (!isOwner) {
+    lockText.textContent =
+      `${checkedInCount}/${totalMembers} members checked in. Only the club owner can finish the book.`;
+  } else {
+    lockText.textContent = everyoneCheckedIn
+      ? "Everyone has checked in. You can finish the book."
+      : `${checkedInCount}/${totalMembers} members checked in.`;
+  }
+}
   });
 }
 function openReadingGoalModal() {
