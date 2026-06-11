@@ -2177,6 +2177,23 @@ body::before {
   opacity: .65;
   text-align: right;
 }
+.review-rating-picker {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 12px 0 16px;
+}
+
+.review-rating-picker span {
+  font-size: 2rem;
+  color: var(--gold-pale);
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.review-rating-picker span:hover {
+  transform: scale(1.15);
+}
 </style>
 </head>
 
@@ -5884,11 +5901,13 @@ window.openFinishedBookDetails = function (book) {
       <section class="finished-detail-section">
   <h3>Reader Reviews</h3>
 <div class="review-rating-picker">
-  <button onclick="setReviewRating(1)">★</button>
-  <button onclick="setReviewRating(2)">★</button>
-  <button onclick="setReviewRating(3)">★</button>
-  <button onclick="setReviewRating(4)">★</button>
-  <button onclick="setReviewRating(5)">★</button>
+
+  <span onclick="setReviewRating(1)">★</span>
+  <span onclick="setReviewRating(2)">★</span>
+  <span onclick="setReviewRating(3)">★</span>
+  <span onclick="setReviewRating(4)">★</span>
+  <span onclick="setReviewRating(5)">★</span>
+
 </div>
 
 <input type="hidden" id="finishedBookReviewRating" value="">
