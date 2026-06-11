@@ -5625,6 +5625,26 @@ if (reviewsList) {
 
 showToast("Review posted!");
 };
+window.saveFinishedBookRating = async function (book, rating) {
+  const user = auth.currentUser;
+  const clubId = window.currentClubId;
+
+  if (!user) return alert("Please log in first.");
+  if (!clubId) return alert("Open a club first.");
+  if (!book || !book.title) return alert("Book not found.");
+
+  await set(
+    ref(database, `clubs/${clubId}/finishedBookRatings/${book.title}/${user.uid}`),
+    {
+      userId: user.uid,
+      name: user.displayName || user.email || "Reader",
+      rating,
+      createdAt: Date.now()
+    }
+  );
+
+  showToast(`Rated ${rating} stars!`);
+};
 window.saveGoalEditor = async function () {
   if (!window.currentClubId) {
     alert("Open a club first.");
