@@ -5643,7 +5643,8 @@ window.saveFinishedBookRating = async function (book, rating) {
     }
   );
 
-  showToast(`Rated ${rating} stars!`);
+  loadFinishedBookRatings(book);
+showToast(`Rated ${rating} stars!`);
 };
 window.loadFinishedBookRatings = function (book) {
   const clubId = window.currentClubId;
