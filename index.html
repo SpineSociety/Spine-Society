@@ -5651,8 +5651,8 @@ window.loadFinishedBookReviews = function (book) {
   </div>
 
   <div class="finished-review-stars">
-    ★★★★★
-  </div>
+  ${"★".repeat(review.rating || 0)}${"☆".repeat(5 - (review.rating || 0))}
+</div>
 
   <p class="finished-review-text">
     ${review.text || ""}
@@ -5681,12 +5681,13 @@ window.saveFinishedBookReview = async function (book) {
   const user = auth.currentUser;
   const clubId = window.currentClubId;
   const input = document.getElementById("finishedBookReviewInput");
-
+const ratingInput = document.getElementById("finishedBookReviewRating");
+const rating = Number(ratingInput?.value || 0);
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
   if (!book || !book.title) return alert("Book not found.");
   if (!input || !input.value.trim()) return alert("Write a review first.");
-
+if (!rating) return alert("Choose a star rating first.");
   const reviewRef = push(
     ref(database, `clubs/${clubId}/finishedBookReviews/${book.title}`)
   );
@@ -5694,6 +5695,7 @@ window.saveFinishedBookReview = async function (book) {
   await set(reviewRef, {
   userId: user.uid,
   name: user.displayName || user.email || "Reader",
+  rating,
   text: input.value.trim(),
   createdAt: Date.now()
 });
