@@ -5545,7 +5545,7 @@ const reviewsList = document.getElementById("finishedBookReviewsList");
 if (reviewsList) {
   reviewsList.innerHTML = `
     <div class="finished-review-card">
-      <strong>${window.currentUsername || user.email || "Reader"}</strong>
+      <strong>${user.displayName || user.email || "Reader"}</strong>
       <p>${reviewText}</p>
     </div>
   `;
