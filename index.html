@@ -5515,6 +5515,35 @@ window.toggleGoalEditor = function () {
       ? "block"
       : "none";
 };
+window.loadFinishedBookReviews = function (book) {
+  const clubId = window.currentClubId;
+  const reviewsList =
+    document.getElementById("finishedBookReviewsList");
+
+  if (!clubId || !book || !book.title || !reviewsList) return;
+
+  onValue(
+    ref(database,
+      `clubs/${clubId}/finishedBookReviews/${book.title}`
+    ),
+    (snapshot) => {
+
+      const reviews = snapshot.val() || {};
+
+      reviewsList.innerHTML =
+        Object.values(reviews).length
+          ? Object.values(reviews).map(review => `
+              <div class="finished-review-card">
+                <strong>${review.name || "Reader"}</strong>
+                <p>${review.text || ""}</p>
+              </div>
+            `).join("")
+          : `<p class="helper">
+               No reviews yet. Be the first to share your thoughts.
+             </p>`;
+    }
+  );
+};
 window.saveFinishedBookReview = async function (book) {
   const user = auth.currentUser;
   const clubId = window.currentClubId;
@@ -5718,7 +5747,7 @@ window.openFinishedBookDetails = function (book) {
 
     </div>
   `;
-
+loadFinishedBookReviews(book);
   modal.style.display = "flex";
 };
 
