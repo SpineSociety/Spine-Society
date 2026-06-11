@@ -2105,6 +2105,25 @@ body::before {
   letter-spacing: 2px;
   margin: 10px 0 4px;
 }
+.finished-review-card {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.14);
+}
+
+.finished-review-name {
+  color: var(--gold-pale);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.finished-review-text {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.45;
+}
 </style>
 </head>
 
@@ -5533,10 +5552,15 @@ window.loadFinishedBookReviews = function (book) {
       reviewsList.innerHTML =
         Object.values(reviews).length
           ? Object.values(reviews).map(review => `
-              <div class="finished-review-card">
-                <strong>${review.name || "Reader"}</strong>
-                <p>${review.text || ""}</p>
-              </div>
+             <div class="finished-review-card">
+  <div class="finished-review-name">
+    ${review.name || "Reader"}
+  </div>
+
+  <p class="finished-review-text">
+    ${review.text || ""}
+  </p>
+</div>
             `).join("")
           : `<p class="helper">
                No reviews yet. Be the first to share your thoughts.
