@@ -2194,6 +2194,28 @@ body::before {
 .review-rating-picker span:hover {
   transform: scale(1.15);
 }
+.review-rating-picker {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.review-rating-picker span {
+  font-size: 2rem;
+  color: var(--gold-pale);
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.review-rating-picker span:hover {
+  transform: scale(1.15);
+}
+
+#selectedReviewRatingText {
+  text-align: center;
+  margin-bottom: 12px;
+}
 </style>
 </head>
 
@@ -5696,10 +5718,20 @@ if (reviewsList) {
 showToast("Review posted!");
 };
 window.setReviewRating = function (rating) {
-  const input = document.getElementById("finishedBookReviewRating");
-  if (input) input.value = rating;
+  const input =
+    document.getElementById("finishedBookReviewRating");
 
-  showToast(`Review rating set to ${rating} stars.`);
+  if (input) {
+    input.value = rating;
+  }
+
+  const label =
+    document.getElementById("selectedReviewRatingText");
+
+  if (label) {
+    label.textContent =
+      `Your Rating: ${"★".repeat(rating)}${"☆".repeat(5-rating)}`;
+  }
 };
 window.saveFinishedBookRating = async function (book, rating) {
   const user = auth.currentUser;
@@ -5908,6 +5940,10 @@ window.openFinishedBookDetails = function (book) {
   <span onclick="setReviewRating(4)">★</span>
   <span onclick="setReviewRating(5)">★</span>
 
+</div>
+
+<div id="selectedReviewRatingText" class="helper">
+  No rating selected.
 </div>
 
 <input type="hidden" id="finishedBookReviewRating" value="">
