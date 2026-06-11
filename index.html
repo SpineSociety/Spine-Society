@@ -2124,6 +2124,23 @@ body::before {
   color: var(--ink);
   line-height: 1.45;
 }
+.rating-picker {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.rating-picker button {
+  width: auto;
+  min-height: 42px;
+  padding: 4px 8px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--gold-pale);
+  font-size: 1.8rem;
+}
 </style>
 </head>
 
@@ -5741,10 +5758,20 @@ window.openFinishedBookDetails = function (book) {
       </div>
 
       <section class="finished-detail-section">
-        <h3>Club Rating</h3>
-        <p class="finished-stars">★★★★★</p>
-        <p class="helper">Ratings coming soon.</p>
-      </section>
+  <h3>Club Rating</h3>
+
+  <div class="rating-picker">
+    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 1)'>★</button>
+    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 2)'>★</button>
+    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 3)'>★</button>
+    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 4)'>★</button>
+    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 5)'>★</button>
+  </div>
+
+  <p id="finishedBookRatingSummary" class="helper">
+    No ratings yet.
+  </p>
+</section>
 
       <section class="finished-detail-section">
   <h3>Reader Reviews</h3>
