@@ -5559,11 +5559,11 @@ window.saveFinishedBookReview = async function (book) {
   );
 
   await set(reviewRef, {
-    userId: user.uid,
-    name: window.currentUsername || user.email || "Reader",
-    text: input.value.trim(),
-    createdAt: Date.now()
-  });
+  userId: user.uid,
+  name: user.displayName || user.email || "Reader",
+  text: input.value.trim(),
+  createdAt: Date.now()
+});
 
   const reviewText = input.value.trim();
 
