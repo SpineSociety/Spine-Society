@@ -5688,9 +5688,10 @@ const rating = Number(ratingInput?.value || 0);
   if (!book || !book.title) return alert("Book not found.");
   if (!input || !input.value.trim()) return alert("Write a review first.");
 if (!rating) return alert("Choose a star rating first.");
-  const reviewRef = push(
-    ref(database, `clubs/${clubId}/finishedBookReviews/${book.title}`)
-  );
+  const reviewRef = ref(
+  database,
+  `clubs/${clubId}/finishedBookReviews/${book.title}/${user.uid}`
+);
 
   await set(reviewRef, {
   userId: user.uid,
