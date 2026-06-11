@@ -5594,13 +5594,30 @@ window.loadFinishedBookReviews = function (book) {
         Object.values(reviews).length
           ? Object.values(reviews).map(review => `
              <div class="finished-review-card">
+
   <div class="finished-review-name">
     ${review.name || "Reader"}
+  </div>
+
+  <div class="finished-review-stars">
+    ★★★★★
   </div>
 
   <p class="finished-review-text">
     ${review.text || ""}
   </p>
+
+  <div class="finished-review-date">
+    ${new Date(review.createdAt || Date.now()).toLocaleDateString(
+      "en-US",
+      {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }
+    )}
+  </div>
+
 </div>
             `).join("")
           : `<p class="helper">
