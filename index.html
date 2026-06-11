@@ -5645,6 +5645,34 @@ window.saveFinishedBookRating = async function (book, rating) {
 
   showToast(`Rated ${rating} stars!`);
 };
+window.loadFinishedBookRatings = function (book) {
+  const clubId = window.currentClubId;
+  const summary = document.getElementById("finishedBookRatingSummary");
+
+  if (!clubId || !book || !book.title || !summary) return;
+
+  onValue(
+    ref(database, `clubs/${clubId}/finishedBookRatings/${book.title}`),
+    (snapshot) => {
+      const ratings = snapshot.val() || {};
+      const ratingArray = Object.values(ratings);
+
+      if (!ratingArray.length) {
+        summary.textContent = "No ratings yet.";
+        return;
+      }
+
+      const total = ratingArray.reduce((sum, item) => {
+        return sum + Number(item.rating || 0);
+      }, 0);
+
+      const average = (total / ratingArray.length).toFixed(1);
+
+      summary.textContent =
+        `Club Rating: ${average} ★ · Based on ${ratingArray.length} rating${ratingArray.length === 1 ? "" : "s"}`;
+    }
+  );
+};
 window.saveGoalEditor = async function () {
   if (!window.currentClubId) {
     alert("Open a club first.");
@@ -5819,7 +5847,9 @@ window.openFinishedBookDetails = function (book) {
     </div>
   `;
 loadFinishedBookReviews(book);
-  modal.style.display = "flex";
+loadFinishedBookRatings(book);
+
+modal.style.display = "flex";
 };
 
 window.closeFinishedBookModal = function () {
