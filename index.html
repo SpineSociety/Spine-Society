@@ -5766,13 +5766,12 @@ window.openReaderProfile = async function (uid) {
       </div>
 
       <section class="finished-detail-section">
-        <h3>Friend Status</h3>
-        <p class="helper">Not friends yet.</p>
+  <h3>Friend Status</h3>
 
-        <button onclick="sendFriendRequest('${uid}')">
-          Add Friend
-        </button>
-      </section>
+  <div id="readerFriendStatus">
+    <p class="helper">Checking friend status...</p>
+  </div>
+</section>
 
       <section class="finished-detail-section">
         <h3>Stacks</h3>
@@ -5794,7 +5793,7 @@ window.openReaderProfile = async function (uid) {
 
     </div>
   `;
-
+loadReaderFriendStatus(uid);
   modal.style.display = "flex";
 };
 
@@ -5879,6 +5878,30 @@ window.acceptFriendRequest = async function (uid) {
   );
 
   showToast("Friend added!");
+};
+window.loadReaderFriendStatus = function (uid) {
+  const user = auth.currentUser;
+  const statusBox = document.getElementById("readerFriendStatus");
+
+  if (!user || !uid || !statusBox) return;
+
+  if (uid === user.uid) {
+    statusBox.innerHTML = `<p class="helper">This is your profile.</p>`;
+    return;
+  }
+
+  onValue(ref(database, `users/${user.uid}/friends/${uid}`), (snapshot) => {
+    if (snapshot.exists()) {
+      statusBox.innerHTML = `<p class="helper">✓ Friends</p>`;
+    } else {
+      statusBox.innerHTML = `
+        <p class="helper">Not friends yet.</p>
+        <button onclick="sendFriendRequest('${uid}')">
+          Add Friend
+        </button>
+      `;
+    }
+  });
 };
 window.setReviewRating = function (rating) {
   const input =
