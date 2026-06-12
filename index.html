@@ -2254,8 +2254,8 @@ body::before {
     <button class="icon-button secondary">♡</button>
   </div>
   
-  <section class="card"><div class="card-header"><h2>Create or Join a Society</h2></div><input id="newClubName" placeholder="New shelf name" /><button onclick="createClub()">Create Shelf</button><input id="joinClubId" placeholder="Paste invite code or link" /><button class="secondary" onclick="joinClubFromInput()">Join Shelf</button></section>
-  <section class="card"><div class="card-header"><h2>Reading Circles</h2><span id="clubCount" class="small"></span></div><div id="clubList"><p class="status">Loading shelves...</p></div></section>
+  <section class="card"><div class="card-header"><h2>Create or Join a Society</h2></div><input id="newClubName" placeholder="New circle name" /><button onclick="createClub()">Create Circle</button><input id="joinClubId" placeholder="Paste invite code or link" /><button class="secondary" onclick="joinClubFromInput()">Join Circle</button></section>
+  <section class="card"><div class="card-header"><h2>Reading Circles</h2><span id="clubCount" class="small"></span></div><div id="clubList"><p class="status">Loading circles...</p></div></section>
 </section>
 
 <section id="libraryScreen" class="screen">
@@ -2916,33 +2916,33 @@ overflow-y: auto;
     "
   >
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h2>Shelf Settings</h2>
+      <h2>Circle Settings</h2>
 
       <button
         class="secondary"
-        onclick="closeShelfSettingsModal()"
+        onclick="closeCircleSettingsModal()"
         style="width:auto;min-height:auto;padding:8px 14px;"
       >
         Close
       </button>
     </div>
 
-    <p class="helper">Manage this reading shelf.</p>
+    <p class="helper">Manage this reading Circle.</p>
 
-    <button class="secondary" onclick="editCurrentShelfName()">
-      Edit Shelf Name
+    <button class="secondary" onclick="editCurrentCircleName()">
+      Edit Circle Name
     </button>
 
-    <button class="secondary" onclick="copyCurrentShelfInvite()">
+    <button class="secondary" onclick="copyCurrentCircleInvite()">
       Copy Invite Link
     </button>
 
-    <button class="danger" onclick="leaveCurrentShelf()">
-      Leave Shelf
+    <button class="danger" onclick="leaveCurrentCircle()">
+      Leave Circle 
     </button>
 
-    <button class="danger" onclick="deleteCurrentShelf()">
-      Delete Shelf
+    <button class="danger" onclick="deleteCurrentCircle()">
+      Delete Circle 
     </button>
   </div>
 </div>
@@ -3267,7 +3267,7 @@ window.createClub = async function () {
   if (!currentUser) return alert("Please log in first.");
 
   const clubName = document.getElementById("newClubName").value.trim();
-  if (!clubName) return alert("Enter a shelf name.");
+  if (!clubName) return alert("Enter a circle name.");
 
   const clubRef = push(ref(database, "clubs"));
   const clubId = clubRef.key;
@@ -3288,7 +3288,7 @@ window.createClub = async function () {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("newClubName").value = "";
-  showToast("Shelf created.");
+  showToast("Circle created.");
   openClub(clubId);
 };
 let cropper;
@@ -5140,60 +5140,60 @@ window.closeMembersModal = function () {
 
 window.removeClub = async function (clubId) {
   if (!currentUser) return alert("Please log in first.");
-  if (!confirm("Remove this shelf from your list?")) return;
+  if (!confirm("Remove this circle from your list?")) return;
 
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
-  alert("Shelf removed from your list.");
+  alert("Circle removed from your list.");
 };
-window.editShelfName = async function (clubId) {
+window.editcircleName = async function (clubId) {
   if (!currentUser) return alert("Please log in first.");
 
   const clubSnapshot = await get(ref(database, "clubs/" + clubId));
   const club = clubSnapshot.val();
 
-  if (!club) return alert("Shelf not found.");
+  if (!club) return alert("Circle not found.");
 
   if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
-    return alert("Only the shelf creator can rename this shelf.");
+    return alert("Only the circle creator can rename this circle.");
   }
 
-  const newName = prompt("Edit shelf name:", club.name || "");
+  const newName = prompt("Edit circle name:", club.name || "");
 
   if (newName === null) return;
-  if (!newName.trim()) return alert("Shelf name cannot be blank.");
+  if (!newName.trim()) return alert("Circle name cannot be blank.");
 
   await update(ref(database, "clubs/" + clubId), {
     name: newName.trim(),
     updatedAt: Date.now()
   });
 
-  showToast("Shelf updated.");
+  showToast("Circle updated.");
 };
 
-window.deleteShelf = async function (clubId) {
+window.deleteCircle = async function (clubId) {
   if (!currentUser) return alert("Please log in first.");
 
   const clubSnapshot = await get(ref(database, "clubs/" + clubId));
   const club = clubSnapshot.val();
 
-  if (!club) return alert("Shelf not found.");
+  if (!club) return alert("circle not found.");
 
   if (club.owner === currentUser.uid || currentUser.email === appCreatorEmail) {
-    if (!confirm("Delete this shelf for everyone?")) return;
+    if (!confirm("Delete this circle for everyone?")) return;
 
     await set(ref(database, "clubs/" + clubId), null);
     await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
 
-    showToast("Shelf deleted.");
+    showToast("Circle deleted.");
     return;
   }
 
-  if (!confirm("Leave this shelf?")) return;
+  if (!confirm("Leave this circle?")) return;
 
   await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), null);
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
 
-  showToast("Shelf removed.");
+  showToast("Circle removed.");
 };
 function formatTimeAgo(timestamp) {
   if (!timestamp) return "Just now";
@@ -5209,7 +5209,7 @@ function formatTimeAgo(timestamp) {
 }
 
 window.reactToComment = async function (commentId, reactionType) {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!window.currentClubId) return alert("Open a circle first.");
 
   const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
   const snapshot = await get(commentRef);
@@ -5229,7 +5229,7 @@ window.toggleReactionPicker = function (commentId) {
 };
 
 window.editDiscussionComment = async function (commentId) {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!window.currentClubId) return alert("Open a circle first.");
 
   const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
   const snapshot = await get(commentRef);
@@ -5251,7 +5251,7 @@ window.editDiscussionComment = async function (commentId) {
 };
 
 window.deleteDiscussionComment = async function (commentId) {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+  if (!window.currentClubId) return alert("Open a circle first.");
   if (!confirm("Delete this Marginalia note?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId), null);
@@ -5263,7 +5263,7 @@ function buildInviteText(clubId, clubName) {
 
   return {
     inviteLink,
-    inviteText: "Join my Spine Society shelf: " + clubName + "\n" + inviteLink
+    inviteText: "Join my Spine Society Circle: " + clubName + "\n" + inviteLink
   };
 }
 
@@ -5274,7 +5274,7 @@ window.textCurrentClubInvite = function (clubId, clubName) {
 
 window.emailCurrentClubInvite = function (clubId, clubName) {
   const invite = buildInviteText(clubId, clubName);
-  const subject = "Join my Spine Society shelf: " + clubName;
+  const subject = "Join my Spine Society circle: " + clubName;
 
   window.location.href =
     "mailto:?subject=" + encodeURIComponent(subject) +
@@ -5299,7 +5299,7 @@ function handleInviteLink() {
   if (clubId) {
     document.getElementById("joinClubId").value = clubId;
     showScreen("nook");
-    alert("Invite detected. Tap Join Shelf.");
+    alert("Invite detected. Tap Join Circle.");
   }
 }
 function showToast(message) {
