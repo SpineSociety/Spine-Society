@@ -5724,8 +5724,78 @@ if (reviewsList) {
 
 showToast("Review posted!");
 };
-window.openReaderProfile = function (uid) {
-  alert("Reader profile coming next for: " + uid);
+window.openReaderProfile = async function (uid) {
+  const modal = document.getElementById("readerProfileModal");
+  const content = document.getElementById("readerProfileContent");
+
+  if (!modal || !content) return;
+
+  const userSnapshot = await get(ref(database, "users/" + uid));
+  const userData = userSnapshot.val() || {};
+
+  const displayName =
+    userData.username ||
+    userData.email ||
+    "Reader";
+
+  const avatar =
+    userData.avatar || "📚";
+
+  content.innerHTML = `
+    <div class="finished-detail-card">
+
+      <div class="finished-detail-hero">
+        <div class="finished-detail-placeholder">
+          ${avatar}
+        </div>
+
+        <div>
+          <p class="mini-label">Reader Profile</p>
+          <h2>${escapeHTML(displayName)}</h2>
+          <p class="helper">Spine Society reader</p>
+        </div>
+      </div>
+
+      <section class="finished-detail-section">
+        <h3>Friend Status</h3>
+        <p class="helper">Not friends yet.</p>
+
+        <button onclick="sendFriendRequest('${uid}')">
+          Add Friend
+        </button>
+      </section>
+
+      <section class="finished-detail-section">
+        <h3>Stacks</h3>
+        <p class="helper">Public stacks will appear here.</p>
+
+        <button class="secondary">
+          View Stacks
+        </button>
+      </section>
+
+      <section class="finished-detail-section">
+        <h3>Library</h3>
+        <p class="helper">Full library unlocks for friends.</p>
+
+        <button class="secondary">
+          View Library
+        </button>
+      </section>
+
+    </div>
+  `;
+
+  modal.style.display = "flex";
+};
+
+window.closeReaderProfileModal = function () {
+  const modal = document.getElementById("readerProfileModal");
+  if (modal) modal.style.display = "none";
+};
+
+window.sendFriendRequest = function (uid) {
+  alert("Friend request coming next for: " + uid);
 };
 window.setReviewRating = function (rating) {
   const input =
