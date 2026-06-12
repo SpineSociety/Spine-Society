@@ -2563,6 +2563,13 @@ body::before {
   />
 </div>
 <p class="helper" id="currentAvatar">Current Avatar: 📚</p>
+<div class="card-header">
+  <h2>Friend Requests</h2>
+</div>
+
+<div id="friendRequestsList">
+  <p class="status">No friend requests yet.</p>
+</div>
             <button class="danger" onclick="logoutUser()">Log Out</button>
           </section>
         </section>
@@ -5808,6 +5815,68 @@ window.sendFriendRequest = async function (uid) {
   });
 
   showToast("Friend request sent!");
+};
+window.listenForFriendRequests = function () {
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  const container =
+    document.getElementById("friendRequestsList");
+
+  if (!container) return;
+
+  onValue(
+    ref(database, `users/${user.uid}/friendRequests`),
+    (snapshot) => {
+
+      const requests = snapshot.val() || {};
+
+      const requestIds = Object.keys(requests);
+
+      if (!requestIds.length) {
+        container.innerHTML =
+          `<p class="status">No friend requests yet.</p>`;
+        return;
+      }
+
+      container.innerHTML =
+        requestIds.map(uid => `
+          <div class="book-item">
+
+            <div class="item-title">
+              ${requests[uid].email || "Reader"}
+            </div>
+
+            <button onclick="acceptFriendRequest('${uid}')">
+              Accept
+            </button>
+
+          </div>
+        `).join("");
+    }
+  );
+};
+window.acceptFriendRequest = async function (uid) {
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  await set(
+    ref(database, `users/${user.uid}/friends/${uid}`),
+    true
+  );
+
+  await set(
+    ref(database, `users/${uid}/friends/${user.uid}`),
+    true
+  );
+
+  await remove(
+    ref(database, `users/${user.uid}/friendRequests/${uid}`)
+  );
+
+  showToast("Friend added!");
 };
 window.setReviewRating = function (rating) {
   const input =
