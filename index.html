@@ -2216,6 +2216,34 @@ body::before {
   text-align: center;
   margin-bottom: 12px;
 }
+.dog-ear-btn {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  width: 46px;
+  min-height: 46px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(12, 8, 5, .58);
+  border: 1px solid rgba(228, 201, 139, .35);
+  box-shadow: none;
+  display: grid;
+  place-items: center;
+}
+
+.dog-ear-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--gold-pale);
+  stroke-width: 1.9;
+  stroke-linejoin: round;
+}
+
+.dog-ear-btn:hover {
+  transform: translateY(-1px);
+}
 </style>
 </head>
 
@@ -3904,7 +3932,17 @@ window.openBookModal = function (bookId) {
     currentCollectionBooks.some(b => b.id === bookId);
 
   body.innerHTML = `
-    <div style="text-align:center;">
+  <div style="text-align:center; position:relative;">
+
+    <button
+      class="dog-ear-btn"
+      onclick='event.stopPropagation(); saveToBookmarks(${JSON.stringify(book)})'
+      title="Save to Dog-Eared Pages"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 3h12v18l-6-4-6 4V3z"></path>
+      </svg>
+    </button>
 
       ${
         book.image
