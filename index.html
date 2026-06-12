@@ -5794,8 +5794,20 @@ window.closeReaderProfileModal = function () {
   if (modal) modal.style.display = "none";
 };
 
-window.sendFriendRequest = function (uid) {
-  alert("Friend request coming next for: " + uid);
+window.sendFriendRequest = async function (uid) {
+  const user = auth.currentUser;
+
+  if (!user) return alert("Please log in first.");
+  if (!uid) return alert("Reader not found.");
+  if (uid === user.uid) return alert("You can't add yourself.");
+
+  await set(ref(database, `users/${uid}/friendRequests/${user.uid}`), {
+    from: user.uid,
+    email: user.email || "",
+    createdAt: Date.now()
+  });
+
+  showToast("Friend request sent!");
 };
 window.setReviewRating = function (rating) {
   const input =
