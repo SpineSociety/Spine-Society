@@ -3594,7 +3594,7 @@ function listenToClubBooks(clubId) {
 
     if (currentClubBooks.length === 0) {
       document.getElementById("libraryGrid").innerHTML =
-        `<p class="status">Your shelf is waiting for its first story.</p>`;
+        `<p class="status">Your circle is waiting for its first story.</p>`;
       return;
     }
 
@@ -4047,7 +4047,7 @@ window.openEditBookModal = function (bookId, type) {
   document.getElementById("editBookAuthor").value = book.author || "";
   document.getElementById("editBookCategory").value = book.category || "Book Club Pick";
   document.getElementById("editBookImage").value = book.image || "";
-document.querySelector(".phone-frame").classList.add("modal-open");
+  document.querySelector(".phone-frame").classList.add("modal-open");
   document.getElementById("editBookModal").style.display = "flex";
 };
 
@@ -4057,48 +4057,48 @@ window.closeEditBookModal = function () {
   bookBeingEditedId = null;
   bookBeingEditedType = null;
 };
-window.openShelfSettingsModal = function () {
+window.opencircleSettingsModal = function () {
   if (!window.currentClubId) {
-    alert("Open a shelf first.");
+    alert("Open a circle first.");
     return;
   }
 
   document.querySelector(".phone-frame").classList.add("modal-open");
-  document.getElementById("shelfSettingsModal").style.display = "flex";
+  document.getElementById("circleSettingsModal").style.display = "flex";
 };
 
-window.closeShelfSettingsModal = function () {
+window.closecircleSettingsModal = function () {
   document.querySelector(".phone-frame").classList.remove("modal-open");
-  document.getElementById("shelfSettingsModal").style.display = "none";
+  document.getElementById("circleSettingsModal").style.display = "none";
 };
 
-window.editCurrentShelfName = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+window.editCurrentcircleName = async function () {
+  if (!window.currentClubId) return alert("Open a circle first.");
 
   const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
   const club = clubSnapshot.val();
 
-  if (!club) return alert("Shelf not found.");
+  if (!club) return alert("circle not found.");
 
   if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
-    return alert("Only the shelf creator can rename this shelf.");
+    return alert("Only the circle creator can rename this circle.");
   }
 
-  const newName = prompt("Edit shelf name:", club.name || "");
+  const newName = prompt("Edit circle name:", club.name || "");
   if (newName === null) return;
-  if (!newName.trim()) return alert("Shelf name cannot be blank.");
+  if (!newName.trim()) return alert("circle name cannot be blank.");
 
   await update(ref(database, "clubs/" + window.currentClubId), {
     name: newName.trim(),
     updatedAt: Date.now()
   });
 
-  closeShelfSettingsModal();
-  showToast("Shelf updated.");
+  closecircleSettingsModal();
+  showToast("circle updated.");
 };
 
-window.copyCurrentShelfInvite = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+window.copyCurrentcircleInvite = async function () {
+  if (!window.currentClubId) return alert("Open a circle first.");
 
   const inviteLink =
     window.location.origin + window.location.pathname + "?club=" + window.currentClubId;
@@ -4111,38 +4111,38 @@ window.copyCurrentShelfInvite = async function () {
   }
 };
 
-window.leaveCurrentShelf = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
-  if (!confirm("Leave this shelf?")) return;
+window.leaveCurrentcircle = async function () {
+  if (!window.currentClubId) return alert("Open a circle first.");
+  if (!confirm("Leave this circle?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId + "/members/" + currentUser.uid), null);
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
 
-  closeShelfSettingsModal();
+  closecircleSettingsModal();
   showScreen("nook");
-  showToast("Shelf removed.");
+  showToast("circle removed.");
 };
 
-window.deleteCurrentShelf = async function () {
-  if (!window.currentClubId) return alert("Open a shelf first.");
+window.deleteCurrentcircle = async function () {
+  if (!window.currentClubId) return alert("Open a circle first.");
 
   const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
   const club = clubSnapshot.val();
 
-  if (!club) return alert("Shelf not found.");
+  if (!club) return alert("circle not found.");
 
   if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
-    return alert("Only the shelf creator can delete this shelf.");
+    return alert("Only the circle creator can delete this circle.");
   }
 
-  if (!confirm("Delete this shelf for everyone?")) return;
+  if (!confirm("Delete this circle for everyone?")) return;
 
   await set(ref(database, "clubs/" + window.currentClubId), null);
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
 
-  closeShelfSettingsModal();
+  closecircleSettingsModal();
   showScreen("nook");
-  showToast("Shelf deleted.");
+  showToast("circle deleted.");
 };
 window.saveEditedBook = async function () {
   if (!bookBeingEditedId || !bookBeingEditedType) {
