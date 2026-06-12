@@ -3218,7 +3218,9 @@ function listenToUserClubs() {
       const clubSnapshot = await get(ref(database, "clubs/" + clubId));
       const club = clubSnapshot.val();
       if (!club) continue;
-
+const memberCount = club.members
+  ? Object.keys(club.members).length
+  : 0;
       html += `
   <section class="current-club-panel">
 
@@ -3233,7 +3235,9 @@ function listenToUserClubs() {
       <h3>
         ${escapeHTML(club.name)}
       </h3>
-
+<div class="small">
+  👥 ${memberCount} reader${memberCount === 1 ? "" : "s"}
+</div>
 
       <div style="
         display:flex;
