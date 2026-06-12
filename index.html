@@ -5362,10 +5362,11 @@ onAuthStateChanged(auth, async (user) => {
         "Current Avatar: " + userData.avatar;
     }
 
-    listenToUserClubs();
-    listenToPersonalLibrary();
-    handleInviteLink();
-    showScreen("nook");
+listenToUserClubs();
+listenToPersonalLibrary();
+listenForFriendRequests();
+handleInviteLink();
+showScreen("nook");
 
   } catch (error) {
     console.error("Login load error:", error);
