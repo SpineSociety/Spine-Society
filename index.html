@@ -3205,7 +3205,7 @@ function listenToUserClubs() {
     const clubIds = Object.keys(clubs);
 
     document.getElementById("clubCount").textContent =
-      clubIds.length + " shelf" + (clubIds.length === 1 ? "" : "s");
+      clubIds.length + " circle" + (clubIds.length === 1 ? "" : "s");
 
     if (clubIds.length === 0) {
       document.getElementById("clubList").innerHTML =
@@ -3381,7 +3381,7 @@ window.joinClubFromInput = async function () {
   if (!currentUser) return alert("Please log in first.");
 
   const input = document.getElementById("joinClubId").value.trim();
-  if (!input) return alert("Paste a shelf code or invite link.");
+  if (!input) return alert("Paste a circle code or invite link.");
 
   const clubId = extractClubId(input);
 
@@ -3397,7 +3397,7 @@ await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
   await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
 
   document.getElementById("joinClubId").value = "";
-  showToast("Joined shelf.");
+  showToast("Joined circle.");
   openClub(clubId);
 };
 
@@ -3405,7 +3405,7 @@ window.openClub = async function (clubId) {
   const clubSnapshot = await get(ref(database, "clubs/" + clubId));
   const club = clubSnapshot.val();
 
-  if (!club) return alert("Shelf not found.");
+  if (!club) return alert("circle not found.");
 
   window.currentClubId = clubId;
   
@@ -3541,7 +3541,7 @@ function renderClubCollection() {
   return;
 }
 
-  const shelfRows = [];
+  const circleRows = [];
 
   for (let i = 0; i < currentCollectionBooks.length; i += 4) {
     const rowBooks = currentCollectionBooks.slice(i, i + 4);
