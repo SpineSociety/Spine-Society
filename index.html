@@ -4427,11 +4427,15 @@ const avatarHTML =
       `;
 
       modalHTML += `
-        <div class="book-item">
-          <div class="item-title">${avatarHTML} ${escapeHTML(displayName)}</div>
-          <div class="small">Reading circle member</div>
-        </div>
-      `;
+  <div class="book-item">
+    <div class="item-title">${avatarHTML} ${escapeHTML(displayName)}</div>
+    <div class="small">Reading circle member</div>
+
+    <button class="secondary" onclick="openReaderProfile('${uid}')">
+      View Profile
+    </button>
+  </div>
+`;
     }
 if (hiddenMemberCount > 0) {
   previewHTML += `
@@ -5719,6 +5723,9 @@ if (reviewsList) {
 }
 
 showToast("Review posted!");
+};
+window.openReaderProfile = function (uid) {
+  alert("Reader profile coming next for: " + uid);
 };
 window.setReviewRating = function (rating) {
   const input =
