@@ -2570,7 +2570,16 @@ body::before {
 <div id="friendRequestsList">
   <p class="status">No friend requests yet.</p>
 </div>
-            <button class="danger" onclick="logoutUser()">Log Out</button>
+
+<div class="card-header">
+  <h2>Friends</h2>
+</div>
+
+<div id="friendsList">
+  <p class="status">No friends yet.</p>
+</div>
+
+<button class="danger" onclick="logoutUser()">Log Out</button>
           </section>
         </section>
       </div>
@@ -5366,6 +5375,7 @@ onAuthStateChanged(auth, async (user) => {
 listenToUserClubs();
 listenToPersonalLibrary();
 listenForFriendRequests();
+listenForFriends();
 handleInviteLink();
 showScreen("nook");
 
@@ -5878,6 +5888,59 @@ window.acceptFriendRequest = async function (uid) {
   );
 
   showToast("Friend added!");
+};
+window.listenForFriends = function () {
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  const container = document.getElementById("friendsList");
+
+  if (!container) return;
+
+  onValue(
+    ref(database, `users/${user.uid}/friends`),
+    async (snapshot) => {
+      const friends = snapshot.val() || {};
+      const friendIds = Object.keys(friends);
+
+      if (!friendIds.length) {
+        container.innerHTML =
+          `<p class="status">No friends yet.</p>`;
+        return;
+      }
+
+      let html = "";
+
+      for (const uid of friendIds) {
+        const userSnapshot =
+          await get(ref(database, `users/${uid}`));
+
+        const userData = userSnapshot.val() || {};
+
+        const displayName =
+          userData.username ||
+          userData.email ||
+          "Reader";
+
+        html += `
+          <div class="book-item">
+            <div class="item-title">
+              ${escapeHTML(displayName)}
+            </div>
+
+            <button
+              class="secondary"
+              onclick="openReaderProfile('${uid}')">
+              View Profile
+            </button>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+  );
 };
 window.loadReaderFriendStatus = function (uid) {
   const user = auth.currentUser;
