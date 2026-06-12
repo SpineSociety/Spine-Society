@@ -5391,6 +5391,7 @@ listenToUserClubs();
 listenToPersonalLibrary();
 listenForFriendRequests();
 listenForFriends();
+listenForBookmarks();
 handleInviteLink();
 showScreen("nook");
 
@@ -5987,6 +5988,68 @@ window.listenForFriends = function () {
       }
 
       container.innerHTML = html;
+    }
+  );
+};
+window.saveToBookmarks = async function (book) {
+  const user = auth.currentUser;
+
+  if (!user) return alert("Please log in first.");
+  if (!book || !book.title) return alert("Book not found.");
+
+  const bookmarkRef = push(
+    ref(database, `users/${user.uid}/bookmarks`)
+  );
+
+  await set(bookmarkRef, {
+    title: book.title || "",
+    author: book.author || "",
+    image: book.image || "",
+    category: book.category || "",
+    savedAt: Date.now()
+  });
+
+  showToast("Saved to Dog-Eared Pages 🔖");
+};
+window.listenForBookmarks = function () {
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  const container =
+    document.getElementById("bookmarksList");
+
+  if (!container) return;
+
+  onValue(
+    ref(database, `users/${user.uid}/bookmarks`),
+    (snapshot) => {
+
+      const bookmarks = snapshot.val() || {};
+      const bookmarkIds = Object.keys(bookmarks);
+
+      if (!bookmarkIds.length) {
+        container.innerHTML =
+          `<p class="status">No dog-eared pages yet.</p>`;
+        return;
+      }
+
+      container.innerHTML =
+        bookmarkIds.map(id => {
+          const book = bookmarks[id];
+
+          return `
+            <div class="book-item">
+              <div class="item-title">
+                📖 ${escapeHTML(book.title || "Untitled")}
+              </div>
+
+              <div class="small">
+                ${escapeHTML(book.author || "Unknown Author")}
+              </div>
+            </div>
+          `;
+        }).join("");
     }
   );
 };
