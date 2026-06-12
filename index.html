@@ -5787,9 +5787,11 @@ window.openReaderProfile = async function (uid) {
         <h3>Stacks</h3>
         <p class="helper">Public stacks will appear here.</p>
 
-        <button class="secondary">
-          View Stacks
-        </button>
+        <button
+  class="secondary"
+  onclick="openReaderStacks('${uid}')">
+  View Stacks
+</button>
       </section>
 
       <section class="finished-detail-section">
@@ -5806,7 +5808,38 @@ window.openReaderProfile = async function (uid) {
 loadReaderFriendStatus(uid);
   modal.style.display = "flex";
 };
+window.openReaderStacks = async function (uid) {
+  const modal = document.getElementById("readerStacksModal");
+  const content = document.getElementById("readerStacksContent");
 
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <div class="finished-detail-card">
+      <section class="finished-detail-section">
+        <h3>Public Stacks</h3>
+        <p class="helper">This reader's public stacks will appear here.</p>
+      </section>
+
+      <section class="finished-detail-section">
+        <h3>Recent Reviews</h3>
+        <p class="helper">Reviews and ratings from finished books will appear here.</p>
+      </section>
+
+      <section class="finished-detail-section">
+        <h3>Suggested Reads</h3>
+        <p class="helper">Book suggestions from this reader will appear here.</p>
+      </section>
+    </div>
+  `;
+
+  modal.style.display = "flex";
+};
+
+window.closeReaderStacks = function () {
+  const modal = document.getElementById("readerStacksModal");
+  if (modal) modal.style.display = "none";
+};
 window.closeReaderProfileModal = function () {
   const modal = document.getElementById("readerProfileModal");
   if (modal) modal.style.display = "none";
@@ -6413,6 +6446,35 @@ window.closeFinishedBookModal = function () {
     </div>
 
     <div id="readerProfileContent">
+      Loading...
+    </div>
+  </div>
+</div>
+<div id="readerStacksModal" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(14px);
+  z-index:9999;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  overflow-y:auto;
+  padding:80px 20px 120px;
+">
+  <div style="
+    width:min(100%,420px);
+    border-radius:32px;
+    padding:24px;
+    background:linear-gradient(180deg, rgba(26,18,13,.98), rgba(10,8,6,.98));
+    border:1px solid rgba(200,163,106,.18);
+  ">
+    <div class="page-top">
+      <div class="page-title">Reader Stacks</div>
+      <button class="icon-button secondary" onclick="closeReaderStacks()">✕</button>
+    </div>
+
+    <div id="readerStacksContent">
       Loading...
     </div>
   </div>
