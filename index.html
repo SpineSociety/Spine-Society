@@ -2327,7 +2327,12 @@ body::before {
   font-weight: 600;
   margin-top: 8px;
 }
-
+.book-detail-rating {
+  margin-top: 10px;
+  color: var(--gold-pale);
+  font-size: .95rem;
+  font-weight: 500;
+}
 .book-detail-divider {
   height: 1px;
   background: rgba(200,163,106,.18);
@@ -4058,8 +4063,21 @@ window.openBookModal = function (bookId) {
           }
 
           <div class="book-detail-meta">
-            ${escapeHTML(book.category || "Uncategorized")}
-          </div>
+  ${escapeHTML(book.genre || book.category || "Genre Unknown")}
+  ${
+    book.pageCount
+      ? ` • ${book.pageCount} pages`
+      : ""
+  }
+</div>
+
+<div class="book-detail-rating">
+  ${
+    book.rating
+      ? `★★★★★ ${book.rating}`
+      : ""
+  }
+</div>
 
          
         </div>
