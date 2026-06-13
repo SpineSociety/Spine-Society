@@ -4508,8 +4508,7 @@ window.openEditBookModal = function (bookId, type) {
 
   document.getElementById("editBookTitle").value = book.title || "";
   document.getElementById("editBookAuthor").value = book.author || "";
-  document.getElementById("editBookCategory").value =
-  book.category || "Book Club Pick";
+  
 
 document.getElementById("editBookGenre").value =
   book.genre || "";
@@ -4630,7 +4629,6 @@ window.saveEditedBook = async function () {
 
   const title = document.getElementById("editBookTitle").value.trim();
   const author = document.getElementById("editBookAuthor").value.trim();
-  const category = document.getElementById("editBookCategory").value;
   const genre = document.getElementById("editBookGenre").value.trim();
   const lengthType = document.getElementById("editBookLengthType").value;
   const lengthCount = document.getElementById("editBookLengthCount").value.trim();
