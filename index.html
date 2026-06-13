@@ -4365,8 +4365,23 @@ window.openEditBookModal = function (bookId, type) {
 
   document.getElementById("editBookTitle").value = book.title || "";
   document.getElementById("editBookAuthor").value = book.author || "";
-  document.getElementById("editBookCategory").value = book.category || "Book Club Pick";
-  document.getElementById("editBookImage").value = book.image || "";
+  document.getElementById("editBookCategory").value =
+  book.category || "Book Club Pick";
+
+document.getElementById("editBookGenre").value =
+  book.genre || "";
+
+document.getElementById("editBookLengthType").value =
+  book.lengthType || "pages";
+
+document.getElementById("editBookLengthCount").value =
+  book.lengthCount || "";
+
+document.getElementById("editBookSynopsis").value =
+  book.synopsis || "";
+
+document.getElementById("editBookImage").value =
+  book.image || "";
   document.querySelector(".phone-frame").classList.add("modal-open");
   document.getElementById("editBookModal").style.display = "flex";
 };
