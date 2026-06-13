@@ -4488,6 +4488,10 @@ window.saveEditedBook = async function () {
   const title = document.getElementById("editBookTitle").value.trim();
   const author = document.getElementById("editBookAuthor").value.trim();
   const category = document.getElementById("editBookCategory").value;
+  const genre = document.getElementById("editBookGenre").value.trim();
+  const lengthType = document.getElementById("editBookLengthType").value;
+  const lengthCount = document.getElementById("editBookLengthCount").value.trim();
+  const synopsis = document.getElementById("editBookSynopsis").value.trim();
   const image = document.getElementById("editBookImage").value.trim();
 
   if (!title) {
@@ -4504,6 +4508,10 @@ window.saveEditedBook = async function () {
     title,
     author,
     category,
+    genre,
+    lengthType,
+    lengthCount,
+    synopsis,
     image,
     updatedAt: Date.now()
   });
@@ -4511,7 +4519,7 @@ window.saveEditedBook = async function () {
   closeEditBookModal();
   closeBookModal();
 
-    showToast("Book updated.");
+  showToast("Book updated.");
 };
 
 window.updateBookStatus = async function (bookId, type, status) {
