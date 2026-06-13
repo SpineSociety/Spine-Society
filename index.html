@@ -2992,7 +2992,12 @@ overflow-y: auto;
     <input id="bookAuthorClub" placeholder="Author" />
 <input id="bookGenreClub" placeholder="Genre (Fantasy, Thriller, Romance...)" />
 
-<input id="bookPagesClub" type="number" placeholder="Page count" />
+<select id="bookLengthTypeClub">
+  <option value="pages">Pages</option>
+  <option value="chapters">Chapters</option>
+</select>
+
+<input id="bookLengthCountClub" type="number" placeholder="Count" />
 
 <textarea
   id="bookSynopsisClub"
