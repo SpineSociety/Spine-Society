@@ -4920,8 +4920,11 @@ window.addBookToClubCollection = async function () {
 const genre =
   document.getElementById("bookGenreClub").value.trim();
 
-const pageCount =
-  document.getElementById("bookPagesClub").value.trim();
+const lengthType =
+  document.getElementById("bookLengthTypeClub").value;
+
+const lengthCount =
+  document.getElementById("bookLengthCountClub").value.trim();
 
 const synopsis =
   document.getElementById("bookSynopsisClub").value.trim();
@@ -4941,7 +4944,8 @@ const synopsis =
   image,
 
   genre,
-  pageCount,
+  lengthType,
+  lengthCount,
   synopsis,
 
   addedBy: currentUser.uid,
@@ -4953,7 +4957,8 @@ document.getElementById("bookAuthorClub").value = "";
 document.getElementById("bookImageClub").value = "";
 
 document.getElementById("bookGenreClub").value = "";
-document.getElementById("bookPagesClub").value = "";
+document.getElementById("bookLengthTypeClub").value = "pages";
+document.getElementById("bookLengthCountClub").value = "";
 document.getElementById("bookSynopsisClub").value = "";
 closeAddCollectionBookModal();
   showToast("Added to The Collection.");
