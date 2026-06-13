@@ -4924,13 +4924,18 @@ const synopsis =
   );
 
   await set(bookRef, {
-    title,
-    author,
-    category,
-    image,
-    addedBy: currentUser.uid,
-    createdAt: Date.now()
-  });
+  title,
+  author,
+  category,
+  image,
+
+  genre,
+  pageCount,
+  synopsis,
+
+  addedBy: currentUser.uid,
+  createdAt: Date.now()
+});
 
   document.getElementById("bookTitleClub").value = "";
   document.getElementById("bookAuthorClub").value = "";
