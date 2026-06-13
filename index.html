@@ -2387,6 +2387,45 @@ body::before {
   line-height: 1.2;
   text-align: center;
 }
+.section-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.section-header h3 {
+  margin:0;
+}
+
+.text-link {
+  background:none;
+  border:none;
+  color:var(--gold-soft);
+  font-size:.9rem;
+  padding:0;
+  min-height:auto;
+  width:auto;
+}
+.library-tabs {
+  display: flex !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(200,163,106,.14) !important;
+}
+
+.library-tabs button {
+  white-space: nowrap !important;
+  flex: none !important;
+  width: auto !important;
+  padding: 12px 18px !important;
+  min-height: 42px !important;
+}
+
+.library-tabs button.active {
+  border-bottom: 3px solid var(--gold-soft) !important;
+}
 </style>
 </head>
 
@@ -2443,15 +2482,26 @@ body::before {
 </div>
 
   <section class="bookshelf-case">
-    <h3>Dog-Eared Pages 🔖</h3>
 
-    <div id="bookmarksList">
-      <p class="status">No dog-eared pages yet.</p>
-    </div>
-  </section>
+  <div class="section-header">
+    <h3>Dog-Eared Pages</h3>
+
+    <button
+      class="text-link"
+      onclick="openBookmarksPage()"
+    >
+      View All →
+    </button>
+  </div>
+
+  <div id="bookmarksList">
+    <p class="status">No dog-eared pages yet.</p>
+  </div>
+
+</section>
 
   <section class="bookshelf-case">
-  <h3>My Collection 📚</h3>
+  <h3>My Collection </h3>
 
   <div id="libraryGrid">
       <p class="status">Open a shelf to see its books.</p>
