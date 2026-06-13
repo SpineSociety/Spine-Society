@@ -2346,6 +2346,47 @@ body::before {
   color: var(--ink-soft);
   line-height: 1.6;
 }
+.dog-eared-shelf {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 2px 18px;
+  border-bottom: 8px solid rgba(88,51,27,.75);
+}
+
+.dog-eared-book {
+  width: 92px;
+  flex: 0 0 auto;
+}
+
+.dog-eared-book img,
+.dog-eared-placeholder {
+  width: 92px;
+  height: 138px;
+  border-radius: 10px 12px 12px 10px;
+  object-fit: cover;
+  border: 1px solid rgba(200,163,106,.22);
+  box-shadow: 0 12px 24px rgba(0,0,0,.35);
+}
+
+.dog-eared-placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 13%),
+    linear-gradient(180deg, #4a2f1f, #14100c);
+  color: var(--gold-pale);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.2rem;
+}
+
+.dog-eared-title {
+  margin-top: 8px;
+  font-size: .75rem;
+  color: var(--ink-soft);
+  line-height: 1.2;
+  text-align: center;
+}
 </style>
 </head>
 
@@ -6200,7 +6241,6 @@ window.listenForBookmarks = function () {
   onValue(
     ref(database, `users/${user.uid}/bookmarks`),
     (snapshot) => {
-
       const bookmarks = snapshot.val() || {};
       const bookmarkIds = Object.keys(bookmarks);
 
@@ -6210,22 +6250,31 @@ window.listenForBookmarks = function () {
         return;
       }
 
-      container.innerHTML =
-        bookmarkIds.map(id => {
-          const book = bookmarks[id];
+      container.innerHTML = `
+        <div class="dog-eared-shelf">
+          ${
+            bookmarkIds.map(id => {
+              const book = bookmarks[id];
 
-          return `
-            <div class="book-item">
-              <div class="item-title">
-                📖 ${escapeHTML(book.title || "Untitled")}
-              </div>
+              return `
+                <div class="dog-eared-book">
+                  ${
+                    book.image
+                      ? `<img src="${escapeAttr(book.image)}" alt="Book cover">`
+                      : `<div class="dog-eared-placeholder">
+                          ${escapeHTML((book.title || "B").charAt(0))}
+                        </div>`
+                  }
 
-              <div class="small">
-                ${escapeHTML(book.author || "Unknown Author")}
-              </div>
-            </div>
-          `;
-        }).join("");
+                  <div class="dog-eared-title">
+                    ${escapeHTML(book.title || "Untitled")}
+                  </div>
+                </div>
+              `;
+            }).join("")
+          }
+        </div>
+      `;
     }
   );
 };
