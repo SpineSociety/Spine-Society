@@ -3932,85 +3932,82 @@ window.openBookModal = function (bookId) {
     currentCollectionBooks.some(b => b.id === bookId);
 
   body.innerHTML = `
-  body.innerHTML = `
-  <div class="book-detail-page">
+    <div class="book-detail-page">
 
-    <div class="book-detail-topbar">
-      <button class="book-back-btn" onclick="closeBookModal()">←</button>
-
-      <button
-        class="book-bookmark-btn"
-        onclick='event.stopPropagation(); saveToBookmarks(${JSON.stringify(book)})'
-        title="Save to Dog-Eared Pages"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 3h12v18l-6-4-6 4V3z"></path>
-        </svg>
-      </button>
-    </div>
-
-    <div class="book-detail-hero">
-      ${
-        book.image
-          ? `<img class="book-detail-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
-          : `<div class="book-detail-placeholder">S</div>`
-      }
-
-      <div class="book-detail-info">
-        <h2>${escapeHTML(book.title)}</h2>
-
-        ${
-          book.author
-            ? `<p class="book-detail-author">${escapeHTML(book.author)}</p>`
-            : ""
-        }
-
-        <div class="book-detail-meta">
-          ${escapeHTML(book.category || "Uncategorized")}
-        </div>
+      <div class="book-detail-topbar">
+        <button class="book-back-btn" onclick="closeBookModal()">←</button>
 
         <button
-          class="primary"
+          class="book-bookmark-btn"
           onclick='event.stopPropagation(); saveToBookmarks(${JSON.stringify(book)})'
+          title="Save to Dog-Eared Pages"
         >
-          Save to Dog-Eared Pages
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 3h12v18l-6-4-6 4V3z"></path>
+          </svg>
         </button>
       </div>
-    </div>
 
-    <div class="book-detail-divider"></div>
+      <div class="book-detail-hero">
+        ${
+          book.image
+            ? `<img class="book-detail-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+            : `<div class="book-detail-placeholder">${escapeHTML((book.title || "S").charAt(0))}</div>`
+        }
 
-    <section class="book-detail-section">
-      <h3>Synopsis</h3>
-      <p>
-        More book details coming soon.
-      </p>
-    </section>
+        <div class="book-detail-info">
+          <h2>${escapeHTML(book.title || "Untitled Book")}</h2>
 
-    ${
-      canManageBook(book, isCollectionBook ? "collection" : "library")
-        ? `
-          <div class="book-actions">
-            <button
-              class="secondary"
-              onclick="event.stopPropagation(); openEditBookModal('${book.id}', '${isCollectionBook ? "collection" : "library"}')"
-            >
-              Edit Book
-            </button>
+          ${
+            book.author
+              ? `<p class="book-detail-author">by ${escapeHTML(book.author)}</p>`
+              : ""
+          }
 
-            <button
-              class="danger"
-              onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook('${book.id}')` : `deletePersonalBook('${book.id}')`}"
-            >
-              Delete Book
-            </button>
+          <div class="book-detail-meta">
+            ${escapeHTML(book.category || "Uncategorized")}
           </div>
-        `
-        : ""
-    }
 
-  </div>
-`;
+          <button
+            class="primary"
+            onclick='event.stopPropagation(); saveToBookmarks(${JSON.stringify(book)})'
+          >
+            Save to Dog-Eared Pages
+          </button>
+        </div>
+      </div>
+
+      <div class="book-detail-divider"></div>
+
+      <section class="book-detail-section">
+        <h3>Synopsis</h3>
+        <p>More book details coming soon.</p>
+      </section>
+
+      ${
+        canManageBook(book, isCollectionBook ? "collection" : "library")
+          ? `
+            <div class="book-actions">
+              <button
+                class="secondary"
+                onclick="event.stopPropagation(); openEditBookModal('${book.id}', '${isCollectionBook ? "collection" : "library"}')"
+              >
+                Edit Book
+              </button>
+
+              <button
+                class="danger"
+                onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook('${book.id}')` : `deletePersonalBook('${book.id}')`}"
+              >
+                Delete Book
+              </button>
+            </div>
+          `
+          : ""
+      }
+
+    </div>
+  `;
 
   modal.style.display = "flex";
 };
