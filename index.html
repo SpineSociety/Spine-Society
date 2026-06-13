@@ -6156,9 +6156,21 @@ window.saveToBookmarks = async function (book) {
   if (!user) return alert("Please log in first.");
   if (!book || !book.title) return alert("Book not found.");
 
-  const bookmarkRef = push(
-    ref(database, `users/${user.uid}/bookmarks`)
+  const bookmarksRef = ref(database, `users/${user.uid}/bookmarks`);
+  const snapshot = await get(bookmarksRef);
+  const existingBookmarks = snapshot.val() || {};
+
+  const alreadySaved = Object.values(existingBookmarks).some(savedBook =>
+    (savedBook.title || "").toLowerCase() === (book.title || "").toLowerCase() &&
+    (savedBook.author || "").toLowerCase() === (book.author || "").toLowerCase()
   );
+
+  if (alreadySaved) {
+    showToast("Already in Dog-Eared Pages 🔖");
+    return;
+  }
+
+  const bookmarkRef = push(bookmarksRef);
 
   await set(bookmarkRef, {
     title: book.title || "",
