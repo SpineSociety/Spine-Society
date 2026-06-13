@@ -4196,7 +4196,13 @@ window.openBookModal = function (bookId) {
 
       <section class="book-detail-section">
         <h3>Synopsis</h3>
-        <p>More book details coming soon.</p>
+        <p>
+  ${
+    book.synopsis
+      ? escapeHTML(book.synopsis)
+      : "More book details coming soon."
+  }
+</p>
       </section>
 
       ${
