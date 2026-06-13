@@ -2244,6 +2244,97 @@ body::before {
 .dog-ear-btn:hover {
   transform: translateY(-1px);
 }
+.book-detail-page {
+  text-align: left;
+}
+
+.book-detail-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.book-back-btn,
+.book-bookmark-btn {
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(200,163,106,.22);
+  box-shadow: none;
+  display: grid;
+  place-items: center;
+}
+
+.book-bookmark-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--gold-pale);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.book-detail-hero {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.book-detail-cover,
+.book-detail-placeholder {
+  width: 130px;
+  height: 195px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 1px solid rgba(200,163,106,.22);
+}
+
+.book-detail-placeholder {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #4a2f1f, #14100c);
+  color: var(--gold-pale);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 3rem;
+}
+
+.book-detail-info h2 {
+  font-size: 2rem;
+  line-height: 1;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.book-detail-author {
+  color: var(--gold-soft);
+  margin: 0 0 12px;
+}
+
+.book-detail-meta {
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.book-detail-divider {
+  height: 1px;
+  background: rgba(200,163,106,.18);
+  margin: 26px 0;
+}
+
+.book-detail-section h3 {
+  font-size: 1.65rem;
+  margin-bottom: 10px;
+}
+
+.book-detail-section p {
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
 </style>
 </head>
 
