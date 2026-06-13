@@ -2407,24 +2407,31 @@ body::before {
   min-height:auto;
   width:auto;
 }
-.library-tabs {
-  display: flex !important;
-  gap: 10px !important;
-  overflow-x: auto !important;
-  padding-bottom: 8px !important;
-  border-bottom: 1px solid rgba(200,163,106,.14) !important;
+.library-tabs{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  gap:12px !important;
+  padding-bottom:8px !important;
+  scrollbar-width:none;
 }
 
-.library-tabs button {
-  white-space: nowrap !important;
-  flex: none !important;
-  width: auto !important;
-  padding: 12px 18px !important;
-  min-height: 42px !important;
+.library-tabs::-webkit-scrollbar{
+  display:none;
 }
 
-.library-tabs button.active {
-  border-bottom: 3px solid var(--gold-soft) !important;
+.library-tabs button{
+  flex:0 0 auto !important;
+  white-space:nowrap !important;
+  padding:10px 18px !important;
+  width:auto !important;
+}
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:14px;
 }
 </style>
 </head>
