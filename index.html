@@ -4179,10 +4179,10 @@ window.openBookModal = function (bookId) {
           <div class="book-detail-meta">
   ${escapeHTML(book.genre || book.category || "Genre Unknown")}
   ${
-    book.pageCount
-      ? ` • ${book.pageCount} pages`
-      : ""
-  }
+  book.lengthCount
+    ? ` • ${book.lengthCount} ${book.lengthType === "chapters" ? "chapters" : "pages"}`
+    : ""
+}
 </div>
 
 <div class="book-detail-rating">
