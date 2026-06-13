@@ -3136,7 +3136,29 @@ overflow-y: auto;
       <option>Wild Card</option>
     </select>
 
-    <input id="editBookImage" placeholder="Book cover image URL optional" />
+    <input id="editBookGenre" placeholder="Genre (Fantasy, Thriller, Romance...)" />
+
+<select id="editBookLengthType">
+  <option value="pages">Pages</option>
+  <option value="chapters">Chapters</option>
+</select>
+
+<input
+  id="editBookLengthCount"
+  type="number"
+  placeholder="Count"
+/>
+
+<textarea
+  id="editBookSynopsis"
+  placeholder="Synopsis"
+  rows="4"
+></textarea>
+
+<input
+  id="editBookImage"
+  placeholder="Book cover image URL optional"
+/>
 
     <button onclick="saveEditedBook()">
       Save Changes
