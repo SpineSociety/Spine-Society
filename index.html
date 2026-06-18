@@ -2472,38 +2472,73 @@ body::before {
     
 
     <div class="app-content">
-      <div id="authScreen" class="login-scene">
-  <div class="login-overlay">
-    <div class="login-logo">
-      <div class="logo-arc">SPINE SOCIETY</div>
-      <div class="logo-book"><svg viewBox="0 0 80 80"><path d="M18 20c10 0 17 4 22 11v34c-5-7-12-11-22-11V20Z"></path><path d="M62 20c-10 0-17 4-22 11v34c5-7 12-11 22-11V20Z"></path><path d="M24 31h10M24 39h10M46 31h10M46 39h10"></path><path d="M40 18v47"></path></svg></div>
-      <div class="logo-est">EST. 2024</div>
+      <div id="authScreen" class="login-scene reading-room-login">
+
+  <div class="floating-page page-one"></div>
+  <div class="floating-page page-two"></div>
+  <div class="floating-page page-three"></div>
+
+  <div class="login-overlay reading-room-overlay">
+
+    <div class="reading-room-logo">
+      <div class="logo-book">
+        <svg viewBox="0 0 80 80">
+          <path d="M18 20c10 0 17 4 22 11v34c-5-7-12-11-22-11V20Z"></path>
+          <path d="M62 20c-10 0-17 4-22 11v34c5-7 12-11 22-11V20Z"></path>
+          <path d="M24 31h10M24 39h10M46 31h10M46 39h10"></path>
+          <path d="M40 18v47"></path>
+        </svg>
+      </div>
+
+      <h1 class="login-title">SPINE<br>SOCIETY</h1>
+
+      <div class="reading-room-subtitle">
+        The Society Reading Room
+      </div>
     </div>
-    <h1 class="login-title">SPINE<br>SOCIETY</h1>
-    <div class="login-tagline">BOOK CLUBS, REIMAGINED</div>
-    <div class="login-divider"></div>
-    <div class="login-welcome">
-  Welcome back, Reader.
-</div>
-    <p class="login-copy">
-  Gather your reading circle,<br>
-  choose your next book,<br>
-  and stay connected between chapters.
-</p>
-    <div class="login-form">
+
+    <div class="login-form reading-journal-card">
+      <div class="journal-flourish">⌘</div>
+
       <input id="loginEmail" type="email" placeholder="Email" />
       <input id="loginPassword" type="password" placeholder="Password" />
-      <button class="login-primary" onclick="loginWithEmail()">Sign In</button>
-      <div class="or-divider"><span></span><em>or</em><span></span></div>
-      <button class="login-secondary" onclick="signUpWithEmail()">Join the Society</button>
 
-<p class="login-small">
-  Create your shelves, join reading circles,
-  and stay connected between chapters.
-</p>
+      <button class="login-primary" onclick="loginWithEmail()">
+        Sign In
+      </button>
 
-<button class="login-link" onclick="loginWithGoogle()">Continue with Google</button>
+      <div class="or-divider">
+        <span></span><em>or</em><span></span>
+      </div>
+
+      <button class="login-secondary" onclick="signUpWithEmail()">
+        Join the Society
+      </button>
+
+      <p class="login-small">
+        Create your shelves, join reading circles,
+        and stay connected between chapters.
+      </p>
+
+      <button class="login-link" onclick="loginWithGoogle()">
+        Continue with Google
+      </button>
     </div>
+
+    <div class="bookish-thought-card">
+      <div class="tape-strip"></div>
+
+      <div class="thought-label">
+        Bookish Thought
+      </div>
+
+      <p>
+        Which character would you invite to your reading circle?
+      </p>
+
+      <div class="thought-heart">♡</div>
+    </div>
+
   </div>
 </div>
 
