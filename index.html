@@ -2466,7 +2466,7 @@ body::before {
 .reading-room-login {
   min-height: calc(100vh - 44px);
   margin: -8px -18px -96px;
-  padding: 48px 22px 70px;
+  padding: 34px 18px 48px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -2474,9 +2474,8 @@ body::before {
   overflow-y: auto;
   overflow-x: hidden;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.78)),
-    radial-gradient(circle at 12% 35%, rgba(217,151,71,.34), transparent 24%),
-    radial-gradient(circle at 90% 58%, rgba(167,103,48,.28), transparent 24%),
+    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.78)),
+    radial-gradient(circle at 12% 35%, rgba(217,151,71,.28), transparent 24%),
     linear-gradient(135deg, #1b1009, #080604 58%, #160d07);
 }
 
@@ -2485,9 +2484,9 @@ body::before {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(0,0,0,.62), transparent 32%, transparent 68%, rgba(0,0,0,.62)),
-    repeating-linear-gradient(90deg, rgba(200,163,106,.045) 0 2px, transparent 2px 34px);
-  opacity: .55;
+    linear-gradient(90deg, rgba(0,0,0,.62), transparent 34%, transparent 66%, rgba(0,0,0,.62)),
+    repeating-linear-gradient(90deg, rgba(200,163,106,.04) 0 2px, transparent 2px 34px);
+  opacity: .45;
   pointer-events: none;
 }
 
@@ -2495,43 +2494,48 @@ body::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 18%;
-  width: 150px;
-  height: 260px;
-  background:
-    radial-gradient(circle at 35% 22%, rgba(255,210,129,.72), transparent 20%),
-    radial-gradient(circle at 40% 34%, rgba(255,183,88,.28), transparent 42%);
-  filter: blur(14px);
-  opacity: .8;
+  top: 22%;
+  width: 130px;
+  height: 220px;
+  background: radial-gradient(circle at 35% 24%, rgba(255,210,129,.65), transparent 24%);
+  filter: blur(16px);
+  opacity: .65;
   pointer-events: none;
 }
 
 .reading-room-overlay {
   width: 100%;
-  max-width: 380px;
+  max-width: 340px;
   position: relative;
   z-index: 2;
   text-align: center;
 }
 
 .reading-room-logo {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .reading-room-logo .logo-book svg {
-  width: 78px;
-  height: 78px;
+  width: 58px;
+  height: 58px;
   stroke: var(--gold-soft);
   fill: none;
   stroke-width: 2;
   filter: drop-shadow(0 0 12px rgba(200,163,106,.22));
 }
 
+.reading-room-logo .login-title {
+  font-size: 2.55rem;
+  line-height: .92;
+  letter-spacing: 8px;
+  margin-bottom: 10px;
+}
+
 .reading-room-subtitle {
   color: var(--gold-pale);
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.25rem;
-  margin-top: 12px;
+  font-size: 1.05rem;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2547,32 +2551,46 @@ body::before {
 }
 
 .reading-journal-card {
-  position: relative;
-  padding: 28px 22px 24px;
-  border-radius: 30px;
-  background:
-    linear-gradient(180deg, rgba(237,214,176,.96), rgba(198,169,123,.94));
+  width: 88%;
+  margin: 0 auto -34px;
+  padding: 18px 14px 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(219,192,145,.95), rgba(176,139,91,.94));
   border: 1px solid rgba(255,232,180,.34);
-  box-shadow:
-    0 24px 70px rgba(0,0,0,.62),
-    inset 0 0 35px rgba(255,255,255,.16);
+  box-shadow: 0 24px 70px rgba(0,0,0,.62), inset 0 0 35px rgba(255,255,255,.16);
   color: #1a1008;
+  transform: scale(.92);
+  transform-origin: top center;
 }
 
 .journal-flourish {
   color: #58351f;
   font-size: 1.3rem;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
-.reading-journal-card input {
-  background: rgba(255,255,255,.24);
-  border: 1px solid rgba(54,34,18,.34);
+.reading-journal-card input,
+.reading-journal-card input:-webkit-autofill,
+.reading-journal-card input:-webkit-autofill:hover,
+.reading-journal-card input:-webkit-autofill:focus {
+  min-height: 44px;
+  font-size: .95rem;
+  background: rgba(255,255,255,.18) !important;
+  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.18) inset !important;
+  -webkit-text-fill-color: #1a1008 !important;
+  border: 1px solid rgba(54,34,18,.34) !important;
   color: #1a1008;
 }
 
 .reading-journal-card input::placeholder {
   color: rgba(45,28,16,.62);
+}
+
+.reading-journal-card .login-primary,
+.reading-journal-card .login-secondary,
+.reading-journal-card .login-link {
+  min-height: 44px;
+  font-size: 1.25rem;
 }
 
 .reading-journal-card .login-primary {
@@ -2583,14 +2601,15 @@ body::before {
 
 .reading-journal-card .login-secondary,
 .reading-journal-card .login-link {
-  background: rgba(255,255,255,.16) !important;
-  border: 1px solid rgba(54,34,18,.28) !important;
-  color: #1a1008 !important;
-  text-decoration: none !important;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(54,34,18,.28);
+  color: #1a1008;
+  text-decoration: none;
 }
 
 .reading-journal-card .or-divider {
   color: #5b3820;
+  margin: 14px 0 12px;
 }
 
 .reading-journal-card .or-divider span {
@@ -2603,15 +2622,17 @@ body::before {
 
 .reading-journal-card .login-small {
   color: rgba(45,28,16,.72);
+  font-size: .82rem;
+  line-height: 1.35;
+  margin: 8px 0 12px;
 }
 
 .bookish-thought-card {
   position: relative;
-  width: 88%;
-  margin: 34px auto 0;
-  padding: 30px 20px 24px;
-  background:
-    linear-gradient(180deg, rgba(237,219,184,.98), rgba(206,181,139,.96));
+  width: 78%;
+  margin: 6px auto 0;
+  padding: 20px 16px 18px;
+  background: linear-gradient(180deg, rgba(237,219,184,.98), rgba(206,181,139,.96));
   color: #1b1008;
   border-radius: 8px;
   box-shadow: 0 18px 45px rgba(0,0,0,.48);
@@ -2632,14 +2653,14 @@ body::before {
 .thought-label {
   text-transform: uppercase;
   letter-spacing: 3px;
-  font-size: .72rem;
+  font-size: .65rem;
   color: #5b3820;
   margin-bottom: 16px;
 }
 
 .bookish-thought-card p {
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.55rem;
+  font-size: 1.15rem;
   line-height: 1.25;
   margin: 0;
 }
@@ -2652,13 +2673,13 @@ body::before {
 
 .floating-page {
   position: absolute;
-  width: 74px;
-  height: 96px;
-  background: rgba(218,186,136,.78);
+  width: 52px;
+  height: 70px;
+  background: rgba(218,186,136,.50);
   border-radius: 4px;
-  opacity: .42;
+  opacity: .30;
   filter: blur(.2px);
-  animation: floatPage 9s ease-in-out infinite;
+  animation: floatPage 11s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -2684,127 +2705,12 @@ body::before {
 
 @keyframes floatPage {
   0%, 100% {
-    transform: translateY(0) rotate(var(--r, 0deg));
+    transform: translateY(0) rotate(0deg);
   }
+
   50% {
-    transform: translateY(-16px) rotate(6deg);
+    transform: translateY(-14px) rotate(6deg);
   }
-}
-.reading-room-login {
-  padding: 34px 18px 48px !important;
-}
-
-.reading-room-logo {
-  margin-bottom: 16px !important;
-}
-
-.reading-room-logo .logo-book svg {
-  width: 58px !important;
-  height: 58px !important;
-}
-
-.reading-room-logo .login-title {
-  font-size: 2.55rem !important;
-  line-height: .92 !important;
-  letter-spacing: 8px !important;
-  margin-bottom: 10px !important;
-}
-
-.reading-room-subtitle {
-  font-size: 1.05rem !important;
-  margin-top: 8px !important;
-}
-
-.reading-journal-card {
-  padding: 20px 16px 18px !important;
-  border-radius: 24px !important;
-}
-
-.journal-flourish {
-  margin-bottom: 8px !important;
-}
-
-.reading-journal-card input {
-  min-height: 50px !important;
-  font-size: .95rem !important;
-}
-
-.reading-journal-card .login-primary,
-.reading-journal-card .login-secondary,
-.reading-journal-card .login-link {
-  min-height: 50px !important;
-  font-size: 1.25rem !important;
-}
-
-.reading-journal-card .or-divider {
-  margin: 14px 0 12px !important;
-}
-
-.reading-journal-card .login-small {
-  font-size: .82rem !important;
-  line-height: 1.35 !important;
-  margin: 8px 0 12px !important;
-}
-
-.bookish-thought-card {
-  width: 86% !important;
-  margin-top: 24px !important;
-  padding: 24px 18px 20px !important;
-}
-
-.bookish-thought-card p {
-  font-size: 1.25rem !important;
-}
-.reading-room-overlay {
-  max-width: 340px !important;
-}
-
-.reading-journal-card {
-  width: 88% !important;
-  margin: 0 auto !important;
-  padding: 18px 14px 16px !important;
-  border-radius: 22px !important;
-  background:
-    linear-gradient(180deg, rgba(219,192,145,.95), rgba(176,139,91,.94)) !important;
-}
-
-.reading-journal-card input {
-  min-height: 44px !important;
-}
-
-.reading-journal-card .login-primary,
-.reading-journal-card .login-secondary,
-.reading-journal-card .login-link {
-  min-height: 44px !important;
-}
-
-.bookish-thought-card {
-  width: 78% !important;
-  margin-top: 22px !important;
-  padding: 20px 16px 18px !important;
-}
-
-.thought-label {
-  font-size: .65rem !important;
-}
-
-.bookish-thought-card p {
-  font-size: 1.15rem !important;
-}
-.reading-journal-card input,
-.reading-journal-card input:-webkit-autofill,
-.reading-journal-card input:-webkit-autofill:hover,
-.reading-journal-card input:-webkit-autofill:focus {
-  background: rgba(255,255,255,.18) !important;
-  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.18) inset !important;
-  -webkit-text-fill-color: #1a1008 !important;
-  border: 1px solid rgba(54,34,18,.34) !important;
-}
-
-.reading-journal-card {
-  transform: scale(.92);
-  transform-origin: top center;
-  margin-bottom: -34px !important;
 }
 
 .bookish-thought-card {
