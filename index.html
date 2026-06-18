@@ -2446,6 +2446,12 @@ body::before {
   margin-top:12px;
   margin-bottom:20px;
 }
+.login-small{
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.5;
+  margin:8px 0 18px;
+}
 </style>
 </head>
 
@@ -2478,14 +2484,14 @@ body::before {
       <input id="loginPassword" type="password" placeholder="Password" />
       <button class="login-primary" onclick="loginWithEmail()">Sign In</button>
       <div class="or-divider"><span></span><em>or</em><span></span></div>
-      <button class="login-secondary" onclick="signUpWithEmail()">
-  Join the Society
-</button>
+      <button class="login-secondary" onclick="signUpWithEmail()">Join the Society</button>
+
 <p class="login-small">
-Create your shelves, join reading circles,
-and discover your next favorite book.
+  Create your shelves, join reading circles,
+  and stay connected between chapters.
 </p>
-      <button class="login-link" onclick="loginWithGoogle()">Continue with Google</button>
+
+<button class="login-link" onclick="loginWithGoogle()">Continue with Google</button>
     </div>
   </div>
 </div>
