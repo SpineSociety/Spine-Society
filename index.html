@@ -2463,6 +2463,233 @@ body::before {
   line-height:1.5;
   margin:8px 0 18px;
 }
+.reading-room-login {
+  min-height: calc(100vh - 44px);
+  margin: -8px -18px -96px;
+  padding: 48px 22px 70px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.78)),
+    radial-gradient(circle at 12% 35%, rgba(217,151,71,.34), transparent 24%),
+    radial-gradient(circle at 90% 58%, rgba(167,103,48,.28), transparent 24%),
+    linear-gradient(135deg, #1b1009, #080604 58%, #160d07);
+}
+
+.reading-room-login::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.62), transparent 32%, transparent 68%, rgba(0,0,0,.62)),
+    repeating-linear-gradient(90deg, rgba(200,163,106,.045) 0 2px, transparent 2px 34px);
+  opacity: .55;
+  pointer-events: none;
+}
+
+.reading-room-login::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18%;
+  width: 150px;
+  height: 260px;
+  background:
+    radial-gradient(circle at 35% 22%, rgba(255,210,129,.72), transparent 20%),
+    radial-gradient(circle at 40% 34%, rgba(255,183,88,.28), transparent 42%);
+  filter: blur(14px);
+  opacity: .8;
+  pointer-events: none;
+}
+
+.reading-room-overlay {
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.reading-room-logo {
+  margin-bottom: 24px;
+}
+
+.reading-room-logo .logo-book svg {
+  width: 78px;
+  height: 78px;
+  stroke: var(--gold-soft);
+  fill: none;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 12px rgba(200,163,106,.22));
+}
+
+.reading-room-subtitle {
+  color: var(--gold-pale);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.25rem;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.reading-room-subtitle::before,
+.reading-room-subtitle::after {
+  content: "";
+  width: 54px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+}
+
+.reading-journal-card {
+  position: relative;
+  padding: 28px 22px 24px;
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(237,214,176,.96), rgba(198,169,123,.94));
+  border: 1px solid rgba(255,232,180,.34);
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.62),
+    inset 0 0 35px rgba(255,255,255,.16);
+  color: #1a1008;
+}
+
+.journal-flourish {
+  color: #58351f;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+
+.reading-journal-card input {
+  background: rgba(255,255,255,.24);
+  border: 1px solid rgba(54,34,18,.34);
+  color: #1a1008;
+}
+
+.reading-journal-card input::placeholder {
+  color: rgba(45,28,16,.62);
+}
+
+.reading-journal-card .login-primary {
+  background: linear-gradient(180deg, #2a160c, #090604);
+  color: var(--gold-pale);
+  box-shadow: none;
+}
+
+.reading-journal-card .login-secondary,
+.reading-journal-card .login-link {
+  background: rgba(255,255,255,.16) !important;
+  border: 1px solid rgba(54,34,18,.28) !important;
+  color: #1a1008 !important;
+  text-decoration: none !important;
+}
+
+.reading-journal-card .or-divider {
+  color: #5b3820;
+}
+
+.reading-journal-card .or-divider span {
+  background: linear-gradient(90deg, transparent, rgba(54,34,18,.4));
+}
+
+.reading-journal-card .or-divider span:last-child {
+  background: linear-gradient(90deg, rgba(54,34,18,.4), transparent);
+}
+
+.reading-journal-card .login-small {
+  color: rgba(45,28,16,.72);
+}
+
+.bookish-thought-card {
+  position: relative;
+  width: 88%;
+  margin: 34px auto 0;
+  padding: 30px 20px 24px;
+  background:
+    linear-gradient(180deg, rgba(237,219,184,.98), rgba(206,181,139,.96));
+  color: #1b1008;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.48);
+  transform: rotate(-1deg);
+}
+
+.tape-strip {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%) rotate(1deg);
+  width: 92px;
+  height: 32px;
+  background: rgba(190,153,103,.68);
+  box-shadow: inset 0 0 10px rgba(255,255,255,.18);
+}
+
+.thought-label {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: .72rem;
+  color: #5b3820;
+  margin-bottom: 16px;
+}
+
+.bookish-thought-card p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.thought-heart {
+  margin-top: 14px;
+  color: #7b3d23;
+  font-size: 1.5rem;
+}
+
+.floating-page {
+  position: absolute;
+  width: 74px;
+  height: 96px;
+  background: rgba(218,186,136,.78);
+  border-radius: 4px;
+  opacity: .42;
+  filter: blur(.2px);
+  animation: floatPage 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.page-one {
+  top: 76px;
+  left: 14px;
+  transform: rotate(-16deg);
+}
+
+.page-two {
+  top: 92px;
+  right: 18px;
+  transform: rotate(18deg);
+  animation-delay: 1.5s;
+}
+
+.page-three {
+  top: 210px;
+  right: 38px;
+  transform: rotate(-10deg);
+  animation-delay: 3s;
+}
+
+@keyframes floatPage {
+  0%, 100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-16px) rotate(6deg);
+  }
+}
 </style>
 </head>
 
