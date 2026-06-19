@@ -2450,15 +2450,21 @@ body::before {
   margin:8px 0 18px;
 }
 .reading-room-login {
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0 -18px -96px;
-  padding: 0 18px 48px;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    18px
+    max(48px, env(safe-area-inset-bottom));
+
   display: flex;
   align-items: flex-start;
   justify-content: center;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
+
   background:
     linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.78)),
     radial-gradient(circle at 12% 35%, rgba(217,151,71,.28), transparent 24%),
