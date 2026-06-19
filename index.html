@@ -2501,6 +2501,7 @@ body::before {
   position: relative;
   z-index: 2;
   text-align: center;
+  padding-top: clamp(8px, 2vw, 18px);
 }
 
 .reading-room-logo {
@@ -2517,7 +2518,7 @@ body::before {
 }
 
 .reading-room-logo .login-title {
-  font-size: 2.55rem;
+  font-size: clamp(2.55rem, 7vw, 3.2rem);
   line-height: .92;
   letter-spacing: 8px;
   margin-bottom: 10px;
@@ -2526,7 +2527,7 @@ body::before {
 .reading-room-subtitle {
   color: var(--gold-pale);
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.05rem;
+  font-size: clamp(1rem, 2.8vw, 1.2rem);
   margin-top: 8px;
   display: flex;
   align-items: center;
@@ -2543,7 +2544,7 @@ body::before {
 }
 
 .reading-journal-card {
-  width: 88%;
+  width: min(88%, 520px);
   margin: 0 auto -34px;
   padding: 18px 14px 16px;
   border-radius: 22px;
