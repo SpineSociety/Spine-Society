@@ -2818,6 +2818,46 @@ overflow: hidden;
       transparent 34px 74px
     );
 }
+.reading-room-logo{
+  position:relative;
+}
+
+.reading-room-logo::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:46%;
+  transform:translate(-50%, -50%);
+  width:280px;
+  height:190px;
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(228,201,139,.18),
+      rgba(166,124,58,.08) 42%,
+      transparent 70%
+    );
+
+  filter:blur(18px);
+  z-index:-1;
+  pointer-events:none;
+
+  animation:logoGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow{
+  from{
+    opacity:.45;
+    transform:translate(-50%, -50%) scale(.96);
+  }
+
+  to{
+    opacity:.85;
+    transform:translate(-50%, -50%) scale(1.05);
+  }
+}
 </style>
 </head>
 
