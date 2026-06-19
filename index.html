@@ -2685,30 +2685,51 @@ overflow: hidden;
 .floating-page{
   position:absolute;
 
-  width:58px;
-  height:78px;
+  width:72px;
+  height:96px;
 
   background:
     linear-gradient(
       180deg,
-      rgba(236,216,180,.16),
-      rgba(194,162,118,.08)
+      rgba(245,232,205,.18),
+      rgba(220,196,156,.10)
     );
 
-  border:1px solid rgba(255,225,180,.06);
+  border:1px solid rgba(255,225,180,.12);
 
-  border-radius:3px;
+  border-radius:4px;
 
-  opacity:.16;
+  opacity:.42;
+
+  backdrop-filter:blur(2px);
 
   box-shadow:
-    0 6px 14px rgba(0,0,0,.12);
-
-  pointer-events:none;
+    0 8px 24px rgba(0,0,0,.18);
 
   animation:floatPage 12s ease-in-out infinite;
-}
 
+  pointer-events:none;
+}
+.floating-page::after{
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  right:0;
+
+  width:16px;
+  height:16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.12),
+      transparent
+    );
+
+  clip-path:polygon(100% 0, 0 0, 100% 100%);
+}
 .page-one{
   top:90px;
   left:22px;
