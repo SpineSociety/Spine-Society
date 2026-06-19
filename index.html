@@ -2716,6 +2716,32 @@ body::before {
 .bookish-thought-card {
   margin-top: 6px !important;
 }
+/* Finished Book - full-frame cover */
+.finished-book-cover,
+.finished-detail-cover,
+.finished-cover {
+  width: 100% !important;
+  max-width: 100% !important;
+  aspect-ratio: 2 / 3 !important;
+  padding: 0 !important;
+  margin: 0 auto 16px !important;
+  border: none !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  border-radius: 26px !important;
+  box-shadow: 0 20px 44px rgba(0,0,0,.48) !important;
+}
+
+.finished-book-cover img,
+.finished-detail-cover img,
+.finished-cover img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border: none !important;
+  border-radius: 26px !important;
+}
 </style>
 </head>
 
