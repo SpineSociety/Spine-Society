@@ -119,24 +119,20 @@ body::after {
 }
 
 .app-shell {
-  width: min(100%, 430px);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   position: relative;
   z-index: 1;
 }
 
 .phone-frame {
-  border: 1px solid rgba(200,163,106,.26);
-  border-radius: 38px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
-    rgba(9,8,7,.72);
-  box-shadow:
-    0 22px 70px rgba(0,0,0,.65),
-    inset 0 1px 0 rgba(255,255,255,.06);
-  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
   isolation: isolate;
-  min-height: calc(100vh - 36px);
+  min-height: 100vh;
 }
 
 .app-content {
