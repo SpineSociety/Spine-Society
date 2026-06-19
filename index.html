@@ -55,21 +55,10 @@ background:
   rgba(138,154,138,.18),
   transparent 34%),
   var(--bg);
-  padding: 18px 12px 40px;
+  body {
+  padding: 0;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: .30;
-  background:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(circle at top, black, transparent 72%);
-}
 
 body::after {
   content: "";
