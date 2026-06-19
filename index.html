@@ -2802,6 +2802,21 @@ overflow: hidden;
 .reading-room-subtitle{
   margin-top: 14px !important;
 }
+.bookshelf-shadow{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.05;
+  z-index:0;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 30px,
+      rgba(218,186,136,.12) 30px 34px,
+      transparent 34px 74px
+    );
+}
 </style>
 </head>
 
@@ -2812,7 +2827,7 @@ overflow: hidden;
 
     <div class="app-content">
       <div id="authScreen" class="login-scene reading-room-login">
-
+<div class="bookshelf-shadow"></div>
   <div class="floating-page page-one"></div>
   <div class="floating-page page-two"></div>
   <div class="floating-page page-three"></div>
