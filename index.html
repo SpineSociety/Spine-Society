@@ -2668,13 +2668,27 @@ overflow: hidden;
 
 .floating-page {
   position: absolute;
-  width: 52px;
-  height: 70px;
-  background: rgba(218,186,136,.50);
-  border-radius: 4px;
-  opacity: .30;
-  filter: blur(.2px);
+  width: clamp(44px, 6vw, 60px);
+  height: clamp(60px, 8vw, 84px);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(236,216,180,.22),
+      rgba(194,162,118,.14)
+    );
+
+  border: 1px solid rgba(255,225,180,.08);
+
+  border-radius: 3px;
+
+  opacity: .22;
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.18);
+
   animation: floatPage 11s ease-in-out infinite;
+
   pointer-events: none;
 }
 
