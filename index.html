@@ -2529,7 +2529,37 @@ body::before {
   stroke-width: 2;
   filter: drop-shadow(0 0 12px rgba(200,163,106,.22));
 }
+.logo-book{
+  position:relative;
+  display:inline-block;
+}
 
+.logo-book::after{
+  content:"";
+
+  position:absolute;
+
+  top:50%;
+  left:50%;
+
+  width:140px;
+  height:140px;
+
+  transform:translate(-50%,-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(212,170,97,.16),
+      transparent 70%
+    );
+
+  animation:pulseGlow 6s ease-in-out infinite;
+
+  pointer-events:none;
+}
 .reading-room-logo .login-title {
   font-size: clamp(1.8rem, 7vw, 2.4rem);
   line-height: .92;
