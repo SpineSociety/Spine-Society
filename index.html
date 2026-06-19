@@ -2666,59 +2666,60 @@ overflow: hidden;
   font-size: 1.5rem;
 }
 
-.floating-page {
-  position: absolute;
-  width: clamp(44px, 6vw, 60px);
-  height: clamp(60px, 8vw, 84px);
+.floating-page{
+  position:absolute;
+
+  width:58px;
+  height:78px;
 
   background:
     linear-gradient(
       180deg,
-      rgba(236,216,180,.22),
-      rgba(194,162,118,.14)
+      rgba(236,216,180,.16),
+      rgba(194,162,118,.08)
     );
 
-  border: 1px solid rgba(255,225,180,.08);
+  border:1px solid rgba(255,225,180,.06);
 
-  border-radius: 3px;
+  border-radius:3px;
 
-  opacity: .22;
+  opacity:.16;
 
   box-shadow:
-    0 8px 18px rgba(0,0,0,.18);
+    0 6px 14px rgba(0,0,0,.12);
 
-  animation: floatPage 11s ease-in-out infinite;
+  pointer-events:none;
 
-  pointer-events: none;
+  animation:floatPage 12s ease-in-out infinite;
 }
 
-.page-one {
-  top: 76px;
-  left: 14px;
-  transform: rotate(-16deg);
+.page-one{
+  top:90px;
+  left:22px;
+  transform:rotate(-14deg);
 }
 
-.page-two {
-  top: 92px;
-  right: 18px;
-  transform: rotate(18deg);
-  animation-delay: 1.5s;
+.page-two{
+  top:105px;
+  right:22px;
+  transform:rotate(16deg);
+  animation-delay:2s;
 }
 
-.page-three {
-  top: 210px;
-  right: 38px;
-  transform: rotate(-10deg);
-  animation-delay: 3s;
+.page-three{
+  top:235px;
+  right:40px;
+  transform:rotate(-8deg);
+  animation-delay:4s;
 }
 
-@keyframes floatPage {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
+@keyframes floatPage{
+  0%,100%{
+    transform:translateY(0px);
   }
 
-  50% {
-    transform: translateY(-14px) rotate(6deg);
+  50%{
+    transform:translateY(-12px);
   }
 }
 
