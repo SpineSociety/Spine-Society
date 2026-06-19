@@ -2751,6 +2751,46 @@ overflow: hidden;
 .reading-room-overlay {
   padding-top: clamp(12px, 3vw, 24px);
 }
+.reading-room-login .reading-room-overlay::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(228,201,139,.22) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.10) 1px, transparent 2px);
+  background-size: 58px 58px, 92px 92px;
+  opacity: .18;
+  animation: readingDust 16s ease-in-out infinite alternate;
+}
+
+@keyframes readingDust {
+  from {
+    transform: translateY(0);
+    opacity: .12;
+  }
+
+  to {
+    transform: translateY(-18px);
+    opacity: .24;
+  }
+}
+
+.reading-room-login::after {
+  animation: lampGlow 5s ease-in-out infinite alternate;
+}
+
+@keyframes lampGlow {
+  from {
+    opacity: .45;
+    filter: blur(18px);
+  }
+
+  to {
+    opacity: .85;
+    filter: blur(12px);
+  }
+}
 </style>
 </head>
 
