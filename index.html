@@ -2821,6 +2821,29 @@ overflow: hidden;
       transparent 34px 74px
     );
 }
+.bookshelf-shadow::before,
+.bookshelf-shadow::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height:2px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(120,80,40,.18),
+      transparent
+    );
+}
+
+.bookshelf-shadow::before{
+  top:28%;
+}
+
+.bookshelf-shadow::after{
+  top:58%;
+}
 .reading-room-logo{
   position:relative;
 }
