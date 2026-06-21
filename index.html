@@ -2790,10 +2790,13 @@ body {
   position: absolute;
   inset: 0;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
   overflow: hidden;
 }
-
+.reading-room-overlay,
+.floating-pages {
+  pointer-events: auto;
+}
 .cozy-room-svg {
   width: 100%;
   height: 100%;
