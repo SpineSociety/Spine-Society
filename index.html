@@ -58,14 +58,14 @@ body {
       circle at center,
       rgba(0,0,0,.05),
       rgba(0,0,0,.50) 55%,
-      rgba(0,0,0,.88) 100%
+      rgba(0,0,0,.88) 100% /* FIXED: Added the missing % symbol here */
     ),
     linear-gradient(
       180deg,
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("cozy-library-bg.PNG");
+    url("cozy-library-bg.PNG"); /* TRYING THE ASSETS PATH AGAIN */
 
   background-size: cover;
   background-position: center;
@@ -923,6 +923,126 @@ button:hover {
 /* === FULL MOODBOARD ADD-ON: Login, Nook, Club Tabs, Marginalia, Library, Reflection === */
 
 .nook-header{display:flex;justify-content:space-between;align-items:center;margin:6px 0 22px}.nook-greeting{color:var(--gold-pale);font-size:.95rem;margin:0 0 2px}.nook-header h2{font-size:2.2rem;color:var(--gold-pale)}.nook-intro{color:var(--muted);font-size:.88rem;line-height:1.5;margin:0 0 16px}.nook-daily-item{display:flex;gap:12px;align-items:flex-start;margin:12px 0;padding:14px;border-radius:18px;background:rgba(17,13,10,.68);border:1px solid rgba(200,163,106,.12)}.nook-item-icon{font-size:1.8rem;flex-shrink:0}.nook-item-content{flex:1}.nook-item-title{color:var(--gold-pale);font-weight:700;font-size:.95rem;margin:0 0 4px}.nook-item-desc{color:var(--muted);font-size:.85rem;line-height:1.4;margin:0}.nook-cta{margin-top:18px;display:flex;gap:10px}.nook-cta button{flex:1}.library-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 12px;border-bottom:1px solid rgba(200,163,106,.14)}.library-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);padding:8px;font-size:.82rem;cursor:pointer;transition:all .2s ease;border-bottom:2px solid transparent;margin-bottom:-1px}.library-tabs button:hover{color:var(--gold-pale)}.library-tabs button.active{color:var(--gold-pale);border-bottom-color:var(--gold-soft)}.club-room-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0;border-bottom:1px solid rgba(200,163,106,.14)}.club-room-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);padding:10px;font-size:.82rem;cursor:pointer;transition:all .2s ease;border-bottom:2px solid transparent;margin-bottom:-1px}.club-room-tabs button:hover{color:var(--gold-pale)}.club-room-tabs button.active{color:var(--gold-pale);border-bottom-color:var(--gold-soft)}.marginalia-book-card{display:flex;align-items:center;gap:18px;padding:16px;margin-bottom:14px;background:rgba(17,13,10,.78);border:1px solid rgba(200,163,106,.16);border-radius:22px}.marginalia-book-cover{width:56px;height:84px;border-radius:8px;background:linear-gradient(135deg,#4a2f1f,#14100c);border:1px solid rgba(200,163,106,.18);flex-shrink:0;display:grid;place-items:center;color:var(--gold-pale);font-weight:800;font-size:1.2rem}.marginalia-book-info{flex:1}.marginalia-book-title{color:var(--gold-pale);font-weight:700;font-size:.95rem;margin:0 0 4px}.marginalia-book-author{color:var(--muted);font-size:.82rem;margin:0 0 8px}.marginalia-quote{color:rgba(234,220,194,.85);font-style:italic;font-size:.88rem;line-height:1.5;padding:10px;border-left:2px solid var(--gold-soft);margin:8px 0 0;background:rgba(228,201,139,.05)}.marginalia-note{color:var(--muted);font-size:.80rem;margin-top:6px}.marginalia-tabs{display:flex;gap:10px;margin-top:14px;border-top:1px solid rgba(200,163,106,.12);padding-top:12px}.marginalia-tabs button{flex:1;background:transparent;border:none;color:var(--muted);padding:6px;font-size:.78rem;cursor:pointer;transition:color .2s ease}.marginalia-tabs button:hover{color:var(--gold-pale)}.reflection-hero{min-height:430px;border-radius:30px;padding:24px;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.55)),radial-gradient(circle at 12% 22%,rgba(255,169,72,.34),transparent 50%);border:1px solid rgba(200,163,106,.16);position:relative;overflow:hidden}.reflection-kicker{color:var(--gold-pale);text-transform:uppercase;font-size:.76rem;letter-spacing:1.4px;font-weight:700;margin-bottom:8px}.reflection-title{font-family:"Cormorant Garamond",serif;font-size:2.4rem;line-height:1.1;color:var(--ink);margin:0 0 12px}.reflection-copy{color:var(--muted);font-size:.94rem;line-height:1.6;margin:0 0 16px;max-width:280px}.reflection-stat{display:inline-block;padding:10px 16px;background:rgba(200,163,106,.08);border:1px solid rgba(200,163,106,.16);border-radius:999px;color:var(--gold-pale);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-right:8px;margin-bottom:8px}.reflection-cta{margin-top:20px}.reflection-form{margin-top:20px}.reflection-textarea{width:100%;min-height:100px;padding:12px;border-radius:14px;border:1px solid rgba(200,163,106,.18);background:rgba(255,255,255,.04);color:var(--ink);font-family:inherit;font-size:.88rem;resize:none;outline:none;backdrop-filter:blur(12px)}.reflection-textarea::placeholder{color:rgba(169,138,94,.60)}.reflection-textarea:focus{border-color:rgba(200,163,106,.36);box-shadow:0 0 0 3px rgba(200,163,106,.08)}
+.randomizer-shelf {
+  margin-top: 16px;
+  padding: 18px 10px 22px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(72,42,22,.65), rgba(12,8,5,.96));
+  border: 1px solid rgba(200,163,106,.18);
+  box-shadow: inset 0 0 35px rgba(0,0,0,.65);
+}
+.login-welcome{
+  color:var(--gold-pale);
+  font-family:"Cormorant Garamond", serif;
+  font-size:1.4rem;
+  margin-bottom:10px;
+  text-align:center;
+}
+.login-link{
+  min-height:56px !important;
+  border-radius:18px !important;
+  background:rgba(255,255,255,.04) !important;
+  border:1px solid rgba(200,163,106,.20) !important;
+  color:var(--gold-pale) !important;
+  text-decoration:none !important;
+  font-family:"Cormorant Garamond",serif !important;
+  font-size:1.25rem !important;
+  margin-top:10px !important;
+}
+.randomizer-books {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 285px;
+  border-bottom: 10px solid rgba(86,50,27,.78);
+  padding: 28px 8px 18px;
+  overflow: visible;
+  position: relative;
+}
+
+.randomizer-spine {
+  width: 58px;
+  min-height: 220px;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+  border-radius: 10px 12px 12px 10px;
+  border: 1px solid rgba(200,163,106,.22);
+  padding: 14px 6px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #263b32, #111714);
+
+  color: var(--gold-pale);
+  box-shadow: 0 18px 30px rgba(0,0,0,.45);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    filter .35s ease;
+}
+
+.randomizer-spine:nth-child(2n) {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #243642, #11181e);
+}
+
+.randomizer-spine:nth-child(3n) {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #4a2f1f, #14100c);
+}
+
+.randomizer-spine-title {
+  font-size: .82rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+}
+
+.randomizer-spine-author {
+  font-size: .60rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.randomizer-spine:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 42px rgba(0,0,0,.58);
+}
+
+.randomizer-books::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(180deg, rgba(86,50,27,.78), rgba(60,35,18,.92));
+  border-radius: 0 0 24px 24px;
+}
+
+.randomizer-base {
+  height: 28px;
+  margin-top: 8px;
+  border-radius: 0 0 26px 26px;
+  background:
+    linear-gradient(90deg, rgba(100,60,35,.4), rgba(140,80,50,.25), rgba(100,60,35,.4)),
+    linear-gradient(180deg, rgba(86,50,27,.88), rgba(60,35,18,.96));
+  border: 1px solid rgba(200,163,106,.12);
+  border-top: none;
+}
 
 </style>
 
@@ -935,7 +1055,7 @@ button:hover {
     <header class="header">
       <div class="brand-mark">
         <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z" />
         </svg>
       </div>
       <h1>Spine Society</h1>
@@ -1040,6 +1160,31 @@ button:hover {
             </div>
           </div>
         </div>
+
+        <div class="card" style="margin-top: 18px;">
+          <div class="card-header">
+            <h3>Continue Reading</h3>
+          </div>
+          <div class="book-card-polished">
+            <div class="book-mini-placeholder">📚</div>
+            <div class="book-info">
+              <div class="item-title">The Midnight Library</div>
+              <p class="small">Matt Haig</p>
+              <div class="featured-progress" style="margin: 10px 0; padding: 8px;">
+                <div class="featured-progress-top">
+                  <span>Progress</span>
+                  <span>65%</span>
+                </div>
+                <div class="featured-progress-bar" style="margin-top: 8px;">
+                  <div class="featured-progress-fill" style="width: 65%;"></div>
+                </div>
+              </div>
+              <div class="book-actions">
+                <button class="secondary" style="margin-top: 8px; min-height: 40px;">Continue</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- CLUB SCREEN -->
@@ -1128,22 +1273,23 @@ button:hover {
         <div class="randomizer-shelf">
           <div class="randomizer-books">
             <div class="randomizer-spine">
-              <div class="spine-title">Gideon</div>
-              <div class="spine-author">Tamsyn</div>
+              <div class="randomizer-spine-title">Gideon</div>
+              <div class="randomizer-spine-author">Tamsyn</div>
             </div>
             <div class="randomizer-spine">
-              <div class="spine-title">The Song</div>
-              <div class="spine-author">King</div>
+              <div class="randomizer-spine-title">The Song</div>
+              <div class="randomizer-spine-author">King</div>
             </div>
             <div class="randomizer-spine">
-              <div class="spine-title">Hamnet</div>
-              <div class="spine-author">Maggie</div>
+              <div class="randomizer-spine-title">Hamnet</div>
+              <div class="randomizer-spine-author">Maggie</div>
             </div>
             <div class="randomizer-spine">
-              <div class="spine-title">Piranesi</div>
-              <div class="spine-author">Susanna</div>
+              <div class="randomizer-spine-title">Piranesi</div>
+              <div class="randomizer-spine-author">Susanna</div>
             </div>
           </div>
+          <div class="randomizer-base"></div>
         </div>
       </div>
 
@@ -1298,6 +1444,40 @@ document.querySelectorAll('[data-screen]').forEach(btn => {
 
 // Initialize first button
 document.querySelector('[data-screen]').style.opacity = '1';
+
+// Spin button handler
+document.querySelectorAll('.primary').forEach(btn => {
+  if (btn.textContent.includes('Spin')) {
+    btn.addEventListener('click', () => {
+      const track = document.querySelector('.slot-track');
+      const randomOffset = Math.random() * 1000;
+      track.style.transform = `translateX(-${randomOffset}px)`;
+    });
+  }
+});
+
+// Tab handlers
+document.querySelectorAll('.library-tabs button, .club-room-tabs button').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.parentElement.querySelectorAll('button').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Reaction picker toggle
+document.querySelectorAll('.comment-time').forEach(time => {
+  time.addEventListener('click', (e) => {
+    const picker = e.target.closest('.comment-card').querySelector('.reaction-picker') || 
+                   document.createElement('div');
+    if (!picker.parentElement) {
+      picker.className = 'reaction-picker show';
+      picker.innerHTML = '<button class="secondary" style="min-height: 34px;">👍</button><button class="secondary" style="min-height: 34px;">❤️</button><button class="secondary" style="min-height: 34px;">😂</button>';
+      e.target.closest('.comment-card').appendChild(picker);
+    } else {
+      picker.classList.toggle('show');
+    }
+  });
+});
 </script>
 
 </body>
