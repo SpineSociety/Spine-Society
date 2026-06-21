@@ -50,11 +50,26 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-background:
-  radial-gradient(circle at top,
-  rgba(138,154,138,.18),
-  transparent 34%),
-  var(--bg);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.50) 55%,
+      rgba(0,0,0,.88) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10,5,2,.15),
+      rgba(8,4,2,.72)
+    ),
+    url("background.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
   padding: 0;
 }
 
