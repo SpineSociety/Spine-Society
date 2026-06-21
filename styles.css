@@ -413,13 +413,11 @@ button:hover {
   color: var(--ink);
 }
 
-.screen {
-  opacity: 0;
-  transform: translateY(14px);
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  transition: opacity .35s ease, transform .35s ease;
+.screen{
+  opacity:1;
+  transform:none;
+  pointer-events:auto;
+  position:relative;
 }
 
 .screen.active {
