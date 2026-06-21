@@ -51,10 +51,10 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  overflow: hidden; /* Prevents accidental scrolling on your login screen */
+  overflow: hidden;
 
-  /* This layers your dark cozy vignettes perfectly over your exact file name */
-  background:
+  /* We split the image and the gradients into two properties so the browser doesn't get confused */
+  background-image: 
     radial-gradient(
       circle at center,
       rgba(0,0,0,.05),
@@ -66,13 +66,14 @@ body {
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("cozy-library-bg.PNG"); /* REMOVED 'assets/' so it looks in your main folder */
+    url("./cozy-library-bg.PNG"); /* The './' explicitly forces it to look in the exact same folder as this file */
 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+
 
 
 
