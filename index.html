@@ -33,10 +33,116 @@
       </header>
 
       <main class="app-content">
-        <!-- Placeholder for app screens -->
-        <!-- Navigation will be managed by JavaScript -->
-        <div id="app-screens">
-          <!-- Screens will be rendered here -->
+        <!-- Lounge Screen -->
+        <div id="lounge" class="screen active">
+          <div class="lounge-hero">
+            <div class="lounge-kicker">Welcome Back</div>
+            <h2 class="lounge-title">Your Library Awaits</h2>
+            <p class="lounge-copy">Discover new books, connect with readers, and track your reading journey.</p>
+            <div class="shelf-preview">
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+              <div class="preview-spine"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Library Screen -->
+        <div id="library" class="screen">
+          <div class="page-top">
+            <h2 class="page-title">My Library</h2>
+          </div>
+          <div class="library-shelf">
+            <div class="library-grid">
+              <!-- Books will be populated here by JavaScript -->
+              <div class="spine-card">
+                <div class="spine-title">The Great</div>
+                <div class="spine-author">F. Scott</div>
+              </div>
+              <div class="spine-card">
+                <div class="spine-title">To Kill</div>
+                <div class="spine-author">Harper Lee</div>
+              </div>
+              <div class="spine-card">
+                <div class="spine-title">1984</div>
+                <div class="spine-author">Orwell</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Club Screen -->
+        <div id="club" class="screen">
+          <div class="page-top">
+            <h2 class="page-title">Book Club</h2>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Discussions</h3>
+            </div>
+            <div class="comment-card">
+              <div class="comment-row">
+                <div class="comment-avatar">A</div>
+                <div class="comment-content">
+                  <div class="comment-alias">Alice</div>
+                  <div class="note-message">Just finished the latest pick! Thoughts on chapter 5?</div>
+                  <div class="comment-time">2 hours ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spin Screen -->
+        <div id="spin" class="screen">
+          <div class="page-top">
+            <h2 class="page-title">Random Pick</h2>
+          </div>
+          <div class="randomizer-cabinet">
+            <div class="slot-window">
+              <div class="slot-track">
+                <div class="slot-item">
+                  <div class="slot-card">
+                    <div class="cover-placeholder">📚</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="primary" style="margin-top: 16px;">Spin the Shelf</button>
+          </div>
+        </div>
+
+        <!-- Notes Screen -->
+        <div id="notes" class="screen">
+          <div class="page-top">
+            <h2 class="page-title">My Notes</h2>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Marginalia</h3>
+            </div>
+            <p class="helper">Add your thoughts and quotes from books you're reading.</p>
+          </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile" class="screen">
+          <div class="page-top">
+            <h2 class="page-title">Profile</h2>
+          </div>
+          <div class="card">
+            <h3>Reader Stats</h3>
+            <div class="featured-progress">
+              <div class="featured-progress-top">
+                <span>Books Read</span>
+                <span>12 / 24</span>
+              </div>
+              <div class="featured-progress-bar">
+                <div class="featured-progress-fill"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
