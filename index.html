@@ -2810,38 +2810,83 @@ body {
 
 .floating-page {
   position: absolute;
-  top: -140px;
+  top: -150px;
   left: 0;
 
   width: var(--page-width);
-  height: calc(var(--page-width) * 1.32);
+  height: calc(var(--page-width) * 1.42);
 
   opacity: var(--page-opacity);
 
-  background-color: #fcfaf2;
-  background-image:
-    linear-gradient(90deg, rgba(91,58,31,.16), transparent 12%),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 9px,
-      rgba(70,45,24,.22) 10px,
-      transparent 11px 15px
-    ),
-    linear-gradient(180deg, rgba(255,255,255,.65), rgba(210,176,125,.34));
+  background-color: #f4eedb;
 
-  border: 1px solid rgba(126,86,46,.20);
-  border-radius: 4px 8px 8px 4px;
+  background-image:
+    radial-gradient(
+      circle at 25% 18%,
+      rgba(255,255,255,.35),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 80% 88%,
+      rgba(105,70,35,.22),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 52%,
+      rgba(48,28,12,.20) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(244,238,219,.96),
+      rgba(218,198,158,.88)
+    );
+
+  border: 1px solid rgba(111,72,36,.24);
+
+  clip-path: polygon(
+    3% 0%,
+    12% 2%,
+    21% 0%,
+    34% 3%,
+    48% 1%,
+    61% 4%,
+    75% 1%,
+    88% 3%,
+    98% 0%,
+    100% 12%,
+    97% 24%,
+    100% 38%,
+    96% 52%,
+    100% 67%,
+    97% 82%,
+    100% 100%,
+    86% 97%,
+    74% 100%,
+    59% 96%,
+    45% 100%,
+    31% 97%,
+    18% 100%,
+    5% 96%,
+    0% 84%,
+    3% 69%,
+    0% 54%,
+    4% 39%,
+    0% 25%,
+    3% 11%
+  );
 
   box-shadow:
-    var(--shadow-x) 18px 32px rgba(0,0,0,.24),
-    inset 5px 0 0 rgba(86,55,30,.10),
-    inset -1px 0 0 rgba(255,255,255,.34);
-
-  filter: blur(.15px);
+    calc(var(--shadow-x) * .8) 22px 44px rgba(0,0,0,.22),
+    0 4px 14px rgba(0,0,0,.14),
+    inset 5px 0 10px rgba(95,58,28,.12),
+    inset -6px 0 12px rgba(255,255,255,.18);
 
   transform-style: preserve-3d;
   backface-visibility: visible;
   will-change: transform, opacity, box-shadow;
+
+  filter: blur(.05px) sepia(.08);
 
   animation-name: pageFall;
   animation-duration: var(--fall-duration);
@@ -2849,25 +2894,33 @@ body {
   animation-fill-mode: forwards;
 }
 
+/* Paragraph-like fake book text */
 .floating-page::before {
   content: "";
   position: absolute;
-  inset: 12% 14% 10% 16%;
+  inset: 14% 13% 12% 17%;
 
   background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(54,34,18,.34) 0 1px,
-      transparent 1px 7px,
-      rgba(54,34,18,.20) 8px,
-      transparent 9px 14px
-    );
+    linear-gradient(rgba(62,39,21,.36), rgba(62,39,21,.36)) 0 0 / 76% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.30), rgba(62,39,21,.30)) 0 9px / 92% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.32), rgba(62,39,21,.32)) 0 18px / 84% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.27), rgba(62,39,21,.27)) 0 27px / 67% 1px no-repeat,
 
-  opacity: .42;
-  filter: blur(.45px);
+    linear-gradient(rgba(62,39,21,.34), rgba(62,39,21,.34)) 0 48px / 88% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.30), rgba(62,39,21,.30)) 0 57px / 71% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.28), rgba(62,39,21,.28)) 0 66px / 94% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.24), rgba(62,39,21,.24)) 0 75px / 58% 1px no-repeat,
+
+    linear-gradient(rgba(62,39,21,.33), rgba(62,39,21,.33)) 0 104px / 80% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.29), rgba(62,39,21,.29)) 0 113px / 96% 1px no-repeat,
+    linear-gradient(rgba(62,39,21,.25), rgba(62,39,21,.25)) 0 122px / 72% 1px no-repeat;
+
+  opacity: .62;
+  filter: blur(.35px);
   transform: translateZ(1px);
 }
 
+/* Folded/weathered corner */
 .floating-page::after {
   content: "";
   position: absolute;
@@ -2878,69 +2931,80 @@ body {
   height: 18%;
 
   background:
-    linear-gradient(135deg, rgba(255,255,255,.55), rgba(120,80,40,.16));
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.45),
+      rgba(139,92,46,.18)
+    );
 
   clip-path: polygon(100% 0, 0 0, 100% 100%);
-  border-radius: 0 7px 0 0;
+  border-radius: 0 5px 0 0;
 
+  opacity: .75;
   transform: translateZ(2px);
 }
 
 @keyframes pageFall {
   0% {
     transform:
-      translate3d(0, -15vh, 0)
+      translate3d(0, -18vh, 0)
       rotateX(0deg)
       rotateY(0deg)
       rotateZ(var(--start-rotate));
+
     box-shadow:
-      var(--shadow-x) 18px 32px rgba(0,0,0,.22),
-      inset 5px 0 0 rgba(86,55,30,.10);
+      calc(var(--shadow-x) * .8) 22px 44px rgba(0,0,0,.18),
+      inset 5px 0 10px rgba(95,58,28,.10);
   }
 
   25% {
     transform:
-      translate3d(calc(var(--sway) * .35), 25vh, 70px)
-      rotateX(70deg)
-      rotateY(45deg)
-      rotateZ(calc(var(--start-rotate) + 70deg));
+      translate3d(calc(var(--sway) * .35), 24vh, 70px)
+      rotateX(68deg)
+      rotateY(42deg)
+      rotateZ(calc(var(--start-rotate) + 72deg));
+
     box-shadow:
-      calc(var(--shadow-x) * -1) 22px 38px rgba(0,0,0,.26),
-      inset -4px 0 0 rgba(86,55,30,.10);
+      calc(var(--shadow-x) * -1) 26px 54px rgba(0,0,0,.24),
+      inset -5px 0 12px rgba(95,58,28,.12);
   }
 
   50% {
     transform:
       translate3d(calc(var(--sway) * -0.25), 55vh, -35px)
-      rotateX(145deg)
-      rotateY(95deg)
+      rotateX(142deg)
+      rotateY(96deg)
       rotateZ(calc(var(--start-rotate) + 145deg));
+
     box-shadow:
-      var(--shadow-x) 16px 30px rgba(0,0,0,.22),
-      inset 4px 0 0 rgba(86,55,30,.10);
+      calc(var(--shadow-x) * .7) 20px 44px rgba(0,0,0,.22),
+      inset 5px 0 10px rgba(95,58,28,.10);
   }
 
   75% {
     transform:
-      translate3d(calc(var(--sway) * .55), 85vh, 60px)
-      rotateX(220deg)
-      rotateY(150deg)
-      rotateZ(calc(var(--start-rotate) + 220deg));
+      translate3d(calc(var(--sway) * .55), 86vh, 60px)
+      rotateX(218deg)
+      rotateY(154deg)
+      rotateZ(calc(var(--start-rotate) + 225deg));
+
     box-shadow:
-      calc(var(--shadow-x) * -1) 24px 42px rgba(0,0,0,.28),
-      inset -5px 0 0 rgba(86,55,30,.12);
+      calc(var(--shadow-x) * -1) 30px 62px rgba(0,0,0,.25),
+      inset -6px 0 12px rgba(95,58,28,.13);
   }
 
   100% {
     transform:
-      translate3d(var(--sway), 120vh, 0)
+      translate3d(var(--sway), 123vh, 0)
       rotateX(300deg)
-      rotateY(210deg)
-      rotateZ(calc(var(--start-rotate) + 300deg));
+      rotateY(215deg)
+      rotateZ(calc(var(--start-rotate) + 310deg));
+
     opacity: 0;
+
     box-shadow:
-      var(--shadow-x) 18px 34px rgba(0,0,0,.18),
-      inset 5px 0 0 rgba(86,55,30,.08);
+      calc(var(--shadow-x) * .6) 22px 48px rgba(0,0,0,.16),
+      inset 5px 0 8px rgba(95,58,28,.08);
   }
 }
 
