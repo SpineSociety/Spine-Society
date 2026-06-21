@@ -2700,9 +2700,17 @@ body::before {
 .bookish-thought-card {
   position: relative;
   z-index: 1;
-  width: min(84%, 520px);
+  width: min(84%, 560px);
   margin: -4px auto 0;
-  padding: 20px 16px 18px;
+  
+
+padding:
+
+  clamp(18px, 3vw, 24px)
+
+  clamp(16px, 4vw, 28px)
+
+  clamp(18px, 3vw, 24px);
   background: linear-gradient(180deg, rgba(237,219,184,.98), rgba(206,181,139,.96));
   color: #1b1008;
   border-radius: 8px;
