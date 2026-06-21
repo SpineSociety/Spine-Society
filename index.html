@@ -2986,55 +2986,55 @@ body {
   }
 
   25% {
-    transform:
-      translate3d(calc(var(--sway) * .35), 24vh, 80px)
-      rotateX(70deg)
-      rotateY(48deg)
-      rotateZ(calc(var(--start-rotate) + 72deg));
+  transform:
+    translate3d(calc(var(--sway) * .22), 24vh, 80px)
+    rotateX(70deg)
+    rotateY(48deg)
+    rotateZ(calc(var(--start-rotate) + 72deg));
 
-    box-shadow:
-      calc(var(--shadow-x) * -1) 30px 62px rgba(0,0,0,.26),
-      inset -7px 0 14px rgba(86,52,26,.15);
-  }
-
-  50% {
-    transform:
-      translate3d(calc(var(--sway) * -0.25), 55vh, -40px)
-      rotateX(145deg)
-      rotateY(96deg)
-      rotateZ(calc(var(--start-rotate) + 145deg));
-
-    box-shadow:
-      calc(var(--shadow-x) * .7) 22px 48px rgba(0,0,0,.22),
-      inset 7px 0 12px rgba(86,52,26,.13);
-  }
-
-  75% {
-    transform:
-      translate3d(calc(var(--sway) * .55), 86vh, 65px)
-      rotateX(220deg)
-      rotateY(154deg)
-      rotateZ(calc(var(--start-rotate) + 225deg));
-
-    box-shadow:
-      calc(var(--shadow-x) * -1) 34px 70px rgba(0,0,0,.27),
-      inset -8px 0 14px rgba(86,52,26,.16);
-  }
-
-  100% {
-    transform:
-      translate3d(var(--sway), 123vh, 0)
-      rotateX(300deg)
-      rotateY(215deg)
-      rotateZ(calc(var(--start-rotate) + 310deg));
-
-    opacity: 0;
-
-    box-shadow:
-      calc(var(--shadow-x) * .6) 22px 48px rgba(0,0,0,.16),
-      inset 7px 0 10px rgba(86,52,26,.10);
-  }
+  box-shadow:
+    calc(var(--shadow-x) * -1) 30px 62px rgba(0,0,0,.26),
+    inset -7px 0 14px rgba(86,52,26,.15);
 }
+
+50% {
+  transform:
+    translate3d(calc(var(--sway) * -0.16), 55vh, -40px)
+    rotateX(145deg)
+    rotateY(96deg)
+    rotateZ(calc(var(--start-rotate) + 145deg));
+
+  box-shadow:
+    calc(var(--shadow-x) * .7) 22px 48px rgba(0,0,0,.22),
+    inset 7px 0 12px rgba(86,52,26,.13);
+}
+
+75% {
+  transform:
+    translate3d(calc(var(--sway) * .35), 86vh, 65px)
+    rotateX(220deg)
+    rotateY(154deg)
+    rotateZ(calc(var(--start-rotate) + 225deg));
+
+  box-shadow:
+    calc(var(--shadow-x) * -1) 34px 70px rgba(0,0,0,.27),
+    inset -8px 0 14px rgba(86,52,26,.16);
+}
+
+100% {
+  transform:
+    translate3d(var(--sway), 123vh, 0)
+    rotateX(300deg)
+    rotateY(215deg)
+    rotateZ(calc(var(--start-rotate) + 310deg));
+
+  opacity: 0;
+
+  box-shadow:
+    calc(var(--shadow-x) * .6) 22px 48px rgba(0,0,0,.16),
+    inset 7px 0 10px rgba(86,52,26,.10);
+}
+
 
 /* Login stays crisp above background */
 .login-card {
@@ -7712,6 +7712,9 @@ window.closeFinishedBookModal = function () {
 };
 const pageLayer = document.getElementById("floatingPages");
 
+const MAX_ACTIVE_PAGES = 5;
+const SPAWN_DELAY = 3600;
+
 const bookTextSnippets = [
   "The lamp burned low beside the shelves as the readers gathered quietly between chapters. Some stories felt like secrets, others like doors waiting to be opened.",
   "A page turned softly in the dark, carrying with it the scent of dust, ink, and old paper. The room listened as if every book had something left to say.",
@@ -7727,6 +7730,12 @@ function randomBetween(min, max) {
 function createFloatingPage() {
   if (!pageLayer) return;
 
+  const activePages = pageLayer.querySelectorAll(".floating-page").length;
+
+  if (activePages >= MAX_ACTIVE_PAGES) {
+    return;
+  }
+
   const page = document.createElement("div");
   page.className = "floating-page";
 
@@ -7741,13 +7750,17 @@ function createFloatingPage() {
   text.textContent = randomText;
   page.appendChild(text);
 
-  const size = randomBetween(56, 108);
-  const startX = randomBetween(-8, 100);
-  const opacity = randomBetween(0.28, 0.62);
-  const duration = randomBetween(10, 24);
-  const sway = randomBetween(-150, 150);
-  const rotate = randomBetween(-24, 24);
-  const shadowX = randomBetween(-16, 16);
+  const size = randomBetween(52, 104);
+  const startX = randomBetween(-6, 96);
+  const opacity = randomBetween(0.24, 0.52);
+
+  // Smaller/background pages drift slower. Larger/foreground pages fall slightly faster.
+  const sizeRatio = (size - 52) / (104 - 52);
+  const duration = 18 - sizeRatio * 6;
+
+  const sway = randomBetween(-70, 70);
+  const rotate = randomBetween(-18, 18);
+  const shadowX = randomBetween(-12, 12);
 
   page.style.left = `${startX}vw`;
   page.style.setProperty("--page-width", `${size}px`);
@@ -7769,7 +7782,7 @@ function startFloatingPages() {
 
   setInterval(() => {
     createFloatingPage();
-  }, 950);
+  }, SPAWN_DELAY);
 }
 
 startFloatingPages();
