@@ -3243,3 +3243,7 @@ body {
 .reading-room-overlay {
   
 }
+
+#authScreen {
+  background: red !important;
+}
