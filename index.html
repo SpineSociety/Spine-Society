@@ -3281,8 +3281,8 @@ body {
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
-/* FINAL LOGIN BACKGROUND FIX */
-.reading-room-login {
+/* FINAL DIRECT BACKGROUND TEST */
+#authScreen {
   background:
     radial-gradient(
       circle at center,
@@ -3295,19 +3295,20 @@ body {
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("./cozy-library-bg.PNG") !important;
+    url("https://raw.githubusercontent.com/SpineSociety/Spine-Society/main/cozy-library-bg.PNG") !important;
 
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
 
-.floating-pages {
+#floatingPages {
   z-index: 2 !important;
 }
 
-.reading-room-overlay {
+#authScreen .reading-room-overlay {
   width: min(92vw, 520px) !important;
+  max-width: 520px !important;
   z-index: 3 !important;
 }
 </style>
