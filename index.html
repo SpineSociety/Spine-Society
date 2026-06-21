@@ -58,20 +58,21 @@ body {
       circle at center,
       rgba(0,0,0,.05),
       rgba(0,0,0,.50) 55%,
-      rgba(0,0,0,.88) 100%
+      rgba(0,0,0,.88) 100% /* FIXED: Added the missing % symbol here */
     ),
     linear-gradient(
       180deg,
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("cozy-library-bg.PNG");
+    url("assets/cozy-library-bg.PNG"); /* TRYING THE ASSETS PATH AGAIN */
 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+
 
 body::after {
   content: "";
