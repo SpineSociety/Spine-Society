@@ -46,15 +46,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  color: var(--ink);
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  overflow: hidden;
-
-  /* We split the image and the gradients into two properties so the browser doesn't get confused */
-  background-image: 
+  background:
     radial-gradient(
       circle at center,
       rgba(0,0,0,.05),
@@ -66,7 +58,7 @@ body {
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("cozy-library-bg.PNG"); /* The './' explicitly forces it to look in the exact same folder as this file */
+    url("./cozy-library-bg.PNG");
 
   background-size: cover;
   background-position: center;
