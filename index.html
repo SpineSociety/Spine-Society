@@ -2642,8 +2642,8 @@ body::before {
 .reading-journal-card input:-webkit-autofill,
 .reading-journal-card input:-webkit-autofill:hover,
 .reading-journal-card input:-webkit-autofill:focus {
-  min-height: 44px;
-  font-size: .95rem;
+  min-height: clamp(44px, 6vw, 52px);
+  font-size: clamp(.95rem, 2vw, 1rem);
   background: rgba(255,255,255,.18) !important;
   -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.18) inset !important;
   -webkit-text-fill-color: #1a1008 !important;
@@ -2658,8 +2658,8 @@ body::before {
 .reading-journal-card .login-primary,
 .reading-journal-card .login-secondary,
 .reading-journal-card .login-link {
-  min-height: 44px;
-  font-size: 1.25rem;
+  min-height: clamp(48px, 6vw, 58px);
+  font-size: clamp(1.1rem, 3vw, 1.25rem);
 }
 
 .reading-journal-card .login-primary {
