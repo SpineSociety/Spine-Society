@@ -3241,9 +3241,8 @@ body {
   }
 }
 .reading-room-overlay {
-  
-}
-
-#authScreen {
+  #authScreen {
   background: red !important;
 }
+}
+
