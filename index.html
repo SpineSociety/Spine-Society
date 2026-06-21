@@ -1,183 +1,1304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Spine Society" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="description" content="A cozy digital library for book lovers—organize, share, and discuss your reading collection." />
-  <meta name="theme-color" content="#080706" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Spine Society" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
-  <link rel="stylesheet" href="./styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <title>Spine Society</title>
+<title>Spine Society</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/cropperjs/dist/cropper.min.css"
+/>
+
+<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+
+<style>
+:root {
+  --bg: #080706;
+  --ink: #eadcc2;
+  --ink-soft: #c8b994;
+  --muted: #a58a5e;
+  --gold: #a67c3a;
+  --gold-soft: #c8a36a;
+  --gold-pale: #e4c98b;
+  --panel: rgba(19, 15, 12, .84);
+  --panel-strong: rgba(26, 18, 13, .96);
+  --line: rgba(200, 163, 106, .20);
+  --line-soft: rgba(200, 163, 106, .10);
+  --sage: #5e6b4a;
+  --rust: #7a2f2f;
+  --bluebook: #223640;
+  --greenbook: #303923;
+  --danger: #d8a1a1;
+  --shadow: 0 28px 70px rgba(0,0,0,.62);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.50) 55%,
+      rgba(0,0,0,.88) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10,5,2,.15),
+      rgba(8,4,2,.72)
+    ),
+    url("cozy-library-bg.PNG");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(circle at 20% 18%,
+      rgba(255,191,120,.12),
+      transparent 20%),
+
+    radial-gradient(circle at 82% 78%,
+      rgba(200,163,106,.10),
+      transparent 24%),
+
+    radial-gradient(circle at 50% 50%,
+      rgba(94,107,74,.06),
+      transparent 42%),
+
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.38),
+      transparent 20%,
+      transparent 80%,
+      rgba(0,0,0,.28)
+    );
+}
+
+@keyframes ambientShift {
+  0% {
+    transform: scale(1) translateY(0px);
+    filter: blur(0px);
+  }
+  50% {
+    transform: scale(1.03) translateY(-6px);
+    filter: blur(2px);
+  }
+  100% {
+    transform: scale(1.06) translateY(4px);
+    filter: blur(0px);
+  }
+}
+
+
+.app-shell {
+  width: 100%;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.phone-frame {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+.app-content {
+  padding: 0 18px 92px;
+}
+
+.header {
+  text-align: center;
+  padding: 8px 0 18px;
+}
+
+.brand-mark {
+  width: 70px;
+  height: 70px;
+  margin: 2px auto 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--gold-pale);
+  background:
+    radial-gradient(circle at 32% 24%, rgba(228,201,139,.32), transparent 26%),
+    linear-gradient(145deg, rgba(166,124,58,.24), rgba(15,12,9,.94));
+  border: 1px solid rgba(200,163,106,.36);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.42),
+    0 0 34px rgba(166,124,58,.18),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.brand-mark svg {
+  width: 42px;
+  height: 42px;
+}
+
+h1, h2, h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: .25px;
+}
+
+h1 {
+  font-size: 2.65rem;
+  line-height: .94;
+  color: var(--gold-soft);
+  margin: 0 0 8px;
+  text-shadow: 0 12px 30px rgba(166,124,58,.22);
+}
+
+h2 {
+  font-size: 1.52rem;
+  margin: 0;
+}
+
+h3 {
+  font-size: 1.35rem;
+  margin: 10px 0 4px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0;
+  letter-spacing: .35px;
+}
+
+.card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)),
+    radial-gradient(circle at top left, rgba(200,163,106,.09), transparent 42%),
+    rgba(18,14,11,.76);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 25px;
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow:
+    0 14px 42px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter: blur(16px);
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  padding-bottom: 11px;
+  margin-bottom: 14px;
+}
+
+.card-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 76px;
+  background: linear-gradient(90deg, rgba(200,163,106,.70), transparent);
+}
+
+.helper {
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.45;
+  margin: 0 0 12px;
+}
+
+input, select, button {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 15px;
+  margin: 7px 0;
+  border-radius: 16px;
+  font-size: .94rem;
+  font-family: inherit;
+}
+
+input, select {
+  background: rgba(255,255,255,.035);
+  color: var(--ink);
+  border: 1px solid rgba(200,163,106,.18);
+  outline: none;
+  backdrop-filter: blur(12px);
+}
+
+input::placeholder { color: rgba(169,138,94,.74); }
+
+input:focus, select:focus {
+  border-color: rgba(200,163,106,.42);
+  box-shadow: 0 0 0 4px rgba(200,163,106,.08);
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid rgba(200,163,106,.25);
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(166,124,58,.32), rgba(166,124,58,.14));
+  font-weight: 650;
+  box-shadow: 0 10px 22px rgba(0,0,0,.24);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(228,201,139,.38);
+  box-shadow: 0 14px 28px rgba(0,0,0,.30);
+}
+
+.primary {
+  color: #0e0c0a;
+  background: linear-gradient(180deg, rgba(228,201,139,.92), rgba(166,124,58,.82));
+}
+
+.secondary {
+  color: var(--muted);
+  background: rgba(255,255,255,.02);
+  border-color: rgba(200,163,106,.16);
+  box-shadow: none;
+}
+
+.danger {
+  color: var(--danger);
+  background: transparent;
+  border-color: rgba(216,161,161,.28);
+  box-shadow: none;
+}
+
+.screen{
+  opacity:0;
+  transform:translateY(14px);
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  transition:
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+.screen.active{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+  position:relative;
+}
+
+.page-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0 18px;
+}
+
+.page-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.95rem;
+  color: var(--gold-pale);
+}
+
+.icon-button {
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.top-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - 18px));
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
+  padding: 6px;
+  border-radius: 24px;
+  background: rgba(14,11,8,.88);
+  border: 1px solid rgba(200,163,106,.20);
+  box-shadow: 0 18px 42px rgba(0,0,0,.54);
+  backdrop-filter: blur(18px);
+}
+
+.nav-btn {
+  min-height: 52px;
+  margin: 0;
+  padding: 6px 2px;
+  border-radius: 17px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: .62rem;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.nav-btn .nav-icon {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  line-height: 1;
+  font-size: 18px;
+}
+
+.nav-btn svg {
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.lounge-hero {
+  min-height: 210px;
+  border-radius: 28px;
+  padding: 22px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(200,163,106,.18);
+  background:
+    linear-gradient(90deg, rgba(9,7,5,.94), rgba(9,7,5,.60)),
+    radial-gradient(circle at 84% 28%, rgba(200,163,106,.20), transparent 26%),
+    linear-gradient(135deg, rgba(49,35,21,.96), rgba(8,7,6,.95));
+  box-shadow: var(--shadow);
+}
+
+.lounge-hero::before {
+  content: "";
+  position: absolute;
+  right: -24px;
+  bottom: -42px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(200,163,106,.18), transparent 64%);
+  filter: blur(2px);
+}
+.lounge-hero::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle,
+      rgba(255,220,150,.12),
+      transparent 40%);
+
+  animation: heroGlow 10s ease-in-out infinite alternate;
+  z-index:-1;
+}
+
+@keyframes heroGlow{
+
+  0%{
+    transform:translateX(-10%) translateY(-4%);
+  }
+
+  100%{
+    transform:translateX(12%) translateY(8%);
+  }
+
+}
+.lounge-kicker {
+  color: var(--gold-pale);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  margin-bottom: 8px;
+}
+
+.lounge-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2.15rem;
+  line-height: 1;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.lounge-copy {
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 260px;
+  margin: 0;
+  font-size: .92rem;
+}
+
+.shelf-preview {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  margin-top: 18px;
+}
+
+.preview-spine {
+  width: 34px;
+  border-radius: 6px 6px 3px 3px;
+  border: 1px solid rgba(200,163,106,.18);
+  box-shadow: 0 10px 20px rgba(0,0,0,.28);
+}
+
+.preview-spine:nth-child(1) { height: 72px; background: linear-gradient(180deg, #3b4a35, #1c251b); }
+.preview-spine:nth-child(2) { height: 90px; background: linear-gradient(180deg, #6b3527, #2b1712); }
+.preview-spine:nth-child(3) { height: 62px; background: linear-gradient(180deg, #2a3f4a, #121f26); }
+.preview-spine:nth-child(4) { height: 80px; background: linear-gradient(180deg, #4b341f, #1d130c); }
+
+.club-card, .book-item, .picked-item, .winner, .next-read-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)),
+    rgba(17,13,10,.82);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 21px;
+  padding: 14px;
+  margin: 10px 0;
+}
+
+.item-title {
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.small {
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.35;
+}
+
+.status {
+  color: var(--muted);
+  font-size: .94rem;
+  text-align: center;
+  line-height: 1.45;
+  padding: 18px 10px;
+}
+
+.book-card-polished {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.book-mini-cover {
+  width: 62px;
+  height: 94px;
+  border-radius: 8px 10px 10px 8px;
+  object-fit: cover;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.38),
+    4px 0 0 rgba(255,255,255,.04);
+}
+
+.book-mini-placeholder {
+  width: 62px;
+  height: 94px;
+  border-radius: 8px 10px 10px 8px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #4a2f1f, #16100c);
+  border: 1px solid var(--line);
+  color: var(--gold-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.38),
+    4px 0 0 rgba(255,255,255,.04);
+}
+
+.book-info { flex: 1; }
+.book-actions { margin-top: 10px; }
+
+.book-category {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(200,163,106,.08);
+  border: 1px solid rgba(200,163,106,.13);
+  color: var(--gold-pale);
+  font-size: .70rem;
+}
+
+.library-shelf {
+  padding: 16px 12px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)),
+    radial-gradient(circle at top, rgba(200,163,106,.08), transparent 35%),
+    rgba(14,11,8,.72);
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.spine-card {
+  min-height: 172px;
+  border-radius: 9px 11px 11px 9px;
+  border: 1px solid rgba(200,163,106,.22);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #42311f, #15100d);
+  padding: 12px 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  box-shadow: 0 12px 24px rgba(0,0,0,.36);
+}
+
+.spine-title {
+  font-size: 1.02rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+
+.spine-author {
+  font-size: .68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.spine-card:nth-child(4n+1) { background: linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%), linear-gradient(180deg, #23343a, #10191d); }
+.spine-card:nth-child(4n+2) { background: linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%), linear-gradient(180deg, #3b4228, #171b10); }
+.spine-card:nth-child(4n+3) { background: linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%), linear-gradient(180deg, #6a3627, #281410); }
+
+.cover {
+  width: 140px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 17px;
+  border: 1px solid rgba(200,163,106,.18);
+  box-shadow: 0 18px 38px rgba(0,0,0,.48);
+}
+
+.cover-placeholder {
+  width: 140px;
+  height: 210px;
+  border-radius: 17px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10), transparent 12%),
+    linear-gradient(180deg, #4a2f1f, #14100c);
+  border: 1px solid rgba(200,163,106,.18);
+  color: var(--gold-pale);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.4rem;
+  box-shadow: 0 18px 38px rgba(0,0,0,.48);
+}
+
+.next-read-card {
+  text-align: center;
+}
+.featured-volume-card {
+  text-align: center;
+  padding: 22px;
+  border-radius: 28px;
+  border: 1px solid rgba(200,163,106,.22);
+  background:
+    radial-gradient(circle at top, rgba(228,201,139,.14), transparent 42%),
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+    rgba(14,10,7,.88);
+  box-shadow:
+    0 22px 48px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.featured-kicker {
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: .72rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.featured-title {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--gold-pale);
+  font-size: 2rem;
+  line-height: 1.05;
+  margin-top: 12px;
+}
+
+.featured-cover-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.featured-volume-card .cover,
+.featured-volume-card .cover-placeholder {
+  width: 126px;
+  height: 188px;
+}
+.featured-progress {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(200,163,106,.14);
+}
+
+.featured-progress-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--gold-soft);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  white-space: nowrap;
+}
+
+.featured-progress-bar {
+  height: 9px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  overflow: hidden;
+}
+.featured-reader-row {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.featured-reader-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+  color: #120b06;
+  font-size: .72rem;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,.18);
+}
+.featured-progress-fill {
+  height: 100%;
+  width: 35%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+}
+
+.next-read-card .cover,
+.next-read-card .cover-placeholder {
+  width: 96px;
+  height: 144px;
+}
+
+.spin-display {
+  min-height: 390px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spin-card {
+  width: 100%;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: finalPop .35s ease both;
+}
+
+@keyframes finalPop {
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.randomizer-cabinet {
+  border-radius: 30px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at top, rgba(200,163,106,.12), transparent 34%),
+    linear-gradient(180deg, #1d130d, #080706);
+  border: 1px solid rgba(200,163,106,.20);
+  box-shadow: var(--shadow);
+}
+
+.slot-window {
+  height: 360px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(200,163,106,.18);
+  background:
+    radial-gradient(circle at top, rgba(200,163,106,.11), transparent 46%),
+    rgba(15,12,9,.94);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.slot-track {
+  transition: transform 2.4s cubic-bezier(.12,.82,.22,1);
+}
+
+.slot-item {
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.slot-card {
+  width: 100%;
+  text-align: center;
+}
+
+.comment-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.052), rgba(255,255,255,.018)),
+    rgba(17,13,10,.72);
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 20px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.comment-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  flex-shrink: 0;
+
+  background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+  color: #0b0806;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 800;
+}
+
+.comment-content { flex: 1; }
+
+.comment-alias {
+  color: var(--gold-pale);
+  font-weight: 700;
+  font-size: .94rem;
+  margin-bottom: 6px;
+}
+
+.note-message {
+  color: rgba(234,220,194,.90);
+  line-height: 1.5;
+  font-size: .92rem;
+}
+
+.comment-time {
+  margin-top: 9px;
+  font-size: .70rem;
+  opacity: .58;
+}
+
+.reaction-summary {
+  margin-top: 9px;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.reaction-picker {
+  display: none;
+  gap: 8px;
+  margin-top: 10px;
+  border-radius: 999px;
+  padding: 8px;
+  justify-content: center;
+  background: rgba(255,255,255,.07);
+  border: 1px solid var(--line);
+}
+
+.reaction-picker.show { display: flex; }
+
+.reaction-picker button {
+  width: auto;
+  min-height: 34px;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  box-shadow: none;
+}
+.checkin-label {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold-soft);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.checkin-text {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.checkin-book {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--gold-pale);
+  margin-top: 6px;
+}
+/* === FULL MOODBOARD ADD-ON: Login, Nook, Club Tabs, Marginalia, Library, Reflection === */
+
+.nook-header{display:flex;justify-content:space-between;align-items:center;margin:6px 0 22px}.nook-greeting{color:var(--gold-pale);font-size:.95rem;margin:0 0 2px}.nook-header h2{font-size:2.2rem;color:var(--gold-pale)}.nook-intro{color:var(--muted);font-size:.88rem;line-height:1.5;margin:0 0 16px}.nook-daily-item{display:flex;gap:12px;align-items:flex-start;margin:12px 0;padding:14px;border-radius:18px;background:rgba(17,13,10,.68);border:1px solid rgba(200,163,106,.12)}.nook-item-icon{font-size:1.8rem;flex-shrink:0}.nook-item-content{flex:1}.nook-item-title{color:var(--gold-pale);font-weight:700;font-size:.95rem;margin:0 0 4px}.nook-item-desc{color:var(--muted);font-size:.85rem;line-height:1.4;margin:0}.nook-cta{margin-top:18px;display:flex;gap:10px}.nook-cta button{flex:1}.library-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 12px;border-bottom:1px solid rgba(200,163,106,.14)}.library-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);padding:8px;font-size:.82rem;cursor:pointer;transition:all .2s ease;border-bottom:2px solid transparent;margin-bottom:-1px}.library-tabs button:hover{color:var(--gold-pale)}.library-tabs button.active{color:var(--gold-pale);border-bottom-color:var(--gold-soft)}.club-room-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0;border-bottom:1px solid rgba(200,163,106,.14)}.club-room-tabs button{background:transparent;border:none;box-shadow:none;color:var(--muted);padding:10px;font-size:.82rem;cursor:pointer;transition:all .2s ease;border-bottom:2px solid transparent;margin-bottom:-1px}.club-room-tabs button:hover{color:var(--gold-pale)}.club-room-tabs button.active{color:var(--gold-pale);border-bottom-color:var(--gold-soft)}.marginalia-book-card{display:flex;align-items:center;gap:18px;padding:16px;margin-bottom:14px;background:rgba(17,13,10,.78);border:1px solid rgba(200,163,106,.16);border-radius:22px}.marginalia-book-cover{width:56px;height:84px;border-radius:8px;background:linear-gradient(135deg,#4a2f1f,#14100c);border:1px solid rgba(200,163,106,.18);flex-shrink:0;display:grid;place-items:center;color:var(--gold-pale);font-weight:800;font-size:1.2rem}.marginalia-book-info{flex:1}.marginalia-book-title{color:var(--gold-pale);font-weight:700;font-size:.95rem;margin:0 0 4px}.marginalia-book-author{color:var(--muted);font-size:.82rem;margin:0 0 8px}.marginalia-quote{color:rgba(234,220,194,.85);font-style:italic;font-size:.88rem;line-height:1.5;padding:10px;border-left:2px solid var(--gold-soft);margin:8px 0 0;background:rgba(228,201,139,.05)}.marginalia-note{color:var(--muted);font-size:.80rem;margin-top:6px}.marginalia-tabs{display:flex;gap:10px;margin-top:14px;border-top:1px solid rgba(200,163,106,.12);padding-top:12px}.marginalia-tabs button{flex:1;background:transparent;border:none;color:var(--muted);padding:6px;font-size:.78rem;cursor:pointer;transition:color .2s ease}.marginalia-tabs button:hover{color:var(--gold-pale)}.reflection-hero{min-height:430px;border-radius:30px;padding:24px;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.55)),radial-gradient(circle at 12% 22%,rgba(255,169,72,.34),transparent 50%);border:1px solid rgba(200,163,106,.16);position:relative;overflow:hidden}.reflection-kicker{color:var(--gold-pale);text-transform:uppercase;font-size:.76rem;letter-spacing:1.4px;font-weight:700;margin-bottom:8px}.reflection-title{font-family:"Cormorant Garamond",serif;font-size:2.4rem;line-height:1.1;color:var(--ink);margin:0 0 12px}.reflection-copy{color:var(--muted);font-size:.94rem;line-height:1.6;margin:0 0 16px;max-width:280px}.reflection-stat{display:inline-block;padding:10px 16px;background:rgba(200,163,106,.08);border:1px solid rgba(200,163,106,.16);border-radius:999px;color:var(--gold-pale);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-right:8px;margin-bottom:8px}.reflection-cta{margin-top:20px}.reflection-form{margin-top:20px}.reflection-textarea{width:100%;min-height:100px;padding:12px;border-radius:14px;border:1px solid rgba(200,163,106,.18);background:rgba(255,255,255,.04);color:var(--ink);font-family:inherit;font-size:.88rem;resize:none;outline:none;backdrop-filter:blur(12px)}.reflection-textarea::placeholder{color:rgba(169,138,94,.60)}.reflection-textarea:focus{border-color:rgba(200,163,106,.36);box-shadow:0 0 0 3px rgba(200,163,106,.08)}
+
+</style>
+
 </head>
 
 <body>
-  <div class="app-shell">
-    <div class="phone-frame">
-      <header class="header">
-        <div class="brand-mark">
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-          </svg>
-        </div>
-        <h1>Spine Society</h1>
-        <p class="subtitle">Your Literary Haven</p>
-      </header>
+<div class="app-shell">
+  <div class="phone-frame">
 
-      <main class="app-content">
-        <!-- Lounge Screen -->
-        <div id="lounge" class="screen active">
-          <div class="lounge-hero">
-            <div class="lounge-kicker">Welcome Back</div>
-            <h2 class="lounge-title">Your Library Awaits</h2>
-            <p class="lounge-copy">Discover new books, connect with readers, and track your reading journey.</p>
-            <div class="shelf-preview">
-              <div class="preview-spine"></div>
-              <div class="preview-spine"></div>
-              <div class="preview-spine"></div>
-              <div class="preview-spine"></div>
+    <header class="header">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+        </svg>
+      </div>
+      <h1>Spine Society</h1>
+      <p class="subtitle">Your Literary Haven</p>
+    </header>
+
+    <main class="app-content">
+
+      <!-- LOUNGE SCREEN -->
+      <div id="lounge" class="screen active">
+        <div class="lounge-hero">
+          <div class="lounge-kicker">Welcome, Reader</div>
+          <h2 class="lounge-title">The Lounge</h2>
+          <p class="lounge-copy">Your cozy corner for bookish conversations and literary discoveries.</p>
+          <div class="shelf-preview">
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+            <div class="preview-spine"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Featured Chat</h3>
+          </div>
+          <div class="comment-card">
+            <div class="comment-row">
+              <div class="comment-avatar">M</div>
+              <div class="comment-content">
+                <div class="comment-alias">Maya</div>
+                <div class="note-message">Just finished "Midnight Library"—absolutely transformative! 📖✨</div>
+                <div class="comment-time">2 hours ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="comment-card">
+            <div class="comment-row">
+              <div class="comment-avatar">J</div>
+              <div class="comment-content">
+                <div class="comment-alias">James</div>
+                <div class="note-message">That's next on my list! The premise is incredible.</div>
+                <div class="comment-time">1 hour ago</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Library Screen -->
-        <div id="library" class="screen">
-          <div class="page-top">
-            <h2 class="page-title">My Library</h2>
+        <div class="card">
+          <div class="card-header">
+            <h3>New Arrivals</h3>
           </div>
-          <div class="library-shelf">
-            <div class="library-grid">
-              <!-- Books will be populated here by JavaScript -->
-              <div class="spine-card">
-                <div class="spine-title">The Great</div>
-                <div class="spine-author">F. Scott</div>
-              </div>
-              <div class="spine-card">
-                <div class="spine-title">To Kill</div>
-                <div class="spine-author">Harper Lee</div>
-              </div>
-              <div class="spine-card">
-                <div class="spine-title">1984</div>
-                <div class="spine-author">Orwell</div>
-              </div>
+          <div class="club-card">
+            <div class="item-title">Lessons in Chemistry</div>
+            <p class="small">Elizabeth Acevedo • Added today</p>
+          </div>
+          <div class="club-card">
+            <div class="item-title">Fourth Wing</div>
+            <p class="small">Rebecca Yarros • Trending</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIBRARY SCREEN -->
+      <div id="library" class="screen">
+        <div class="page-top">
+          <h2 class="page-title">My Library</h2>
+        </div>
+
+        <div class="library-tabs">
+          <button class="active">All</button>
+          <button>Reading</button>
+          <button>Wishlist</button>
+          <button>Finished</button>
+        </div>
+
+        <div class="library-shelf">
+          <div class="library-grid">
+            <div class="spine-card">
+              <div class="spine-title">The Great Gatsby</div>
+              <div class="spine-author">F. Scott</div>
+            </div>
+            <div class="spine-card">
+              <div class="spine-title">To Kill a</div>
+              <div class="spine-author">Harper Lee</div>
+            </div>
+            <div class="spine-card">
+              <div class="spine-title">1984</div>
+              <div class="spine-author">Orwell</div>
+            </div>
+            <div class="spine-card">
+              <div class="spine-title">Pride &</div>
+              <div class="spine-author">Jane Austen</div>
+            </div>
+            <div class="spine-card">
+              <div class="spine-title">The Catcher</div>
+              <div class="spine-author">J.D. Salinger</div>
+            </div>
+            <div class="spine-card">
+              <div class="spine-title">Beloved</div>
+              <div class="spine-author">Toni Morrison</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLUB SCREEN -->
+      <div id="club" class="screen">
+        <div class="page-top">
+          <h2 class="page-title">The Club</h2>
+        </div>
+
+        <div class="club-room-tabs">
+          <button class="active">Discussion</button>
+          <button>Members</button>
+          <button>Schedule</button>
+          <button>Picks</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Current Pick: The Midnight Library</h3>
+          </div>
+          <p class="helper">31 members • Chapter 7 discussion active</p>
+          <div class="featured-progress">
+            <div class="featured-progress-top">
+              <span>Club Progress</span>
+              <span>65%</span>
+            </div>
+            <div class="featured-progress-bar">
+              <div class="featured-progress-fill" style="width: 65%;"></div>
+            </div>
+            <div class="featured-reader-row">
+              <div class="featured-reader-avatar">M</div>
+              <div class="featured-reader-avatar">J</div>
+              <div class="featured-reader-avatar">S</div>
+              <div class="featured-reader-avatar">+28</div>
             </div>
           </div>
         </div>
 
-        <!-- Club Screen -->
-        <div id="club" class="screen">
-          <div class="page-top">
-            <h2 class="page-title">Book Club</h2>
+        <div class="card">
+          <div class="card-header">
+            <h3>Latest Comments</h3>
           </div>
-          <div class="card">
-            <div class="card-header">
-              <h3>Recent Discussions</h3>
+          <div class="comment-card">
+            <div class="comment-row">
+              <div class="comment-avatar">S</div>
+              <div class="comment-content">
+                <div class="comment-alias">Sophie</div>
+                <div class="note-message">Chapter 7 really hits different. The parallel universes concept is brilliant.</div>
+                <div class="comment-time">30 mins ago</div>
+              </div>
             </div>
-            <div class="comment-card">
-              <div class="comment-row">
-                <div class="comment-avatar">A</div>
-                <div class="comment-content">
-                  <div class="comment-alias">Alice</div>
-                  <div class="note-message">Just finished the latest pick! Thoughts on chapter 5?</div>
-                  <div class="comment-time">2 hours ago</div>
+          </div>
+          <div class="comment-card">
+            <div class="comment-row">
+              <div class="comment-avatar">A</div>
+              <div class="comment-content">
+                <div class="comment-alias">Alex</div>
+                <div class="note-message">I loved how she explored regret and second chances. Really resonated with me.</div>
+                <div class="comment-time">15 mins ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPIN SCREEN -->
+      <div id="spin" class="screen">
+        <div class="page-top">
+          <h2 class="page-title">Spin the Shelf</h2>
+        </div>
+
+        <div class="randomizer-cabinet">
+          <div class="slot-window">
+            <div class="slot-track">
+              <div class="slot-item">
+                <div class="slot-card">
+                  <div class="cover-placeholder">📚</div>
+                  <p class="small" style="margin-top: 12px;">Ready to be surprised?</p>
                 </div>
               </div>
             </div>
           </div>
+          <button class="primary" style="margin-top: 16px;">🎲 Spin for Next Read</button>
+          <p class="helper" style="text-align: center; margin-top: 12px;">Let fate choose your next adventure</p>
         </div>
 
-        <!-- Spin Screen -->
-        <div id="spin" class="screen">
-          <div class="page-top">
-            <h2 class="page-title">Random Pick</h2>
-          </div>
-          <div class="randomizer-cabinet">
-            <div class="slot-window">
-              <div class="slot-track">
-                <div class="slot-item">
-                  <div class="slot-card">
-                    <div class="cover-placeholder">📚</div>
-                  </div>
-                </div>
-              </div>
+        <div class="randomizer-shelf">
+          <div class="randomizer-books">
+            <div class="randomizer-spine">
+              <div class="spine-title">Gideon</div>
+              <div class="spine-author">Tamsyn</div>
             </div>
-            <button class="primary" style="margin-top: 16px;">Spin the Shelf</button>
-          </div>
-        </div>
-
-        <!-- Notes Screen -->
-        <div id="notes" class="screen">
-          <div class="page-top">
-            <h2 class="page-title">My Notes</h2>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <h3>Marginalia</h3>
+            <div class="randomizer-spine">
+              <div class="spine-title">The Song</div>
+              <div class="spine-author">King</div>
             </div>
-            <p class="helper">Add your thoughts and quotes from books you're reading.</p>
-          </div>
-        </div>
-
-        <!-- Profile Screen -->
-        <div id="profile" class="screen">
-          <div class="page-top">
-            <h2 class="page-title">Profile</h2>
-          </div>
-          <div class="card">
-            <h3>Reader Stats</h3>
-            <div class="featured-progress">
-              <div class="featured-progress-top">
-                <span>Books Read</span>
-                <span>12 / 24</span>
-              </div>
-              <div class="featured-progress-bar">
-                <div class="featured-progress-fill"></div>
-              </div>
+            <div class="randomizer-spine">
+              <div class="spine-title">Hamnet</div>
+              <div class="spine-author">Maggie</div>
+            </div>
+            <div class="randomizer-spine">
+              <div class="spine-title">Piranesi</div>
+              <div class="spine-author">Susanna</div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
-      <!-- Bottom Navigation -->
-      <nav class="top-nav" role="navigation" aria-label="Main navigation">
-        <button class="nav-btn" data-screen="lounge" title="Lounge">
-          <span class="nav-icon">🏛️</span>
-          <span>Lounge</span>
-        </button>
-        <button class="nav-btn" data-screen="library" title="Library">
-          <span class="nav-icon">📚</span>
-          <span>Library</span>
-        </button>
-        <button class="nav-btn" data-screen="club" title="Club">
-          <span class="nav-icon">👥</span>
-          <span>Club</span>
-        </button>
-        <button class="nav-btn" data-screen="spin" title="Randomizer">
-          <span class="nav-icon">🎲</span>
-          <span>Spin</span>
-        </button>
-        <button class="nav-btn" data-screen="notes" title="Marginalia">
-          <span class="nav-icon">✏️</span>
-          <span>Notes</span>
-        </button>
-        <button class="nav-btn" data-screen="profile" title="Profile">
-          <span class="nav-icon">👤</span>
-          <span>Profile</span>
-        </button>
-      </nav>
-    </div>
+      <!-- NOTES/MARGINALIA SCREEN -->
+      <div id="notes" class="screen">
+        <div class="page-top">
+          <h2 class="page-title">Marginalia</h2>
+        </div>
+
+        <div class="marginalia-book-card">
+          <div class="marginalia-book-cover">🎭</div>
+          <div class="marginalia-book-info">
+            <div class="marginalia-book-title">Lessons in Chemistry</div>
+            <div class="marginalia-book-author">Elizabeth Acevedo</div>
+            <div class="marginalia-quote">"She understood then that some chemistry cannot be undone, only accepted."</div>
+            <div class="marginalia-note">Bookmark: Chapter 12</div>
+            <div class="marginalia-tabs">
+              <button>Edit</button>
+              <button>Share</button>
+              <button>×</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="marginalia-book-card">
+          <div class="marginalia-book-cover">🌙</div>
+          <div class="marginalia-book-info">
+            <div class="marginalia-book-title">The Midnight Library</div>
+            <div class="marginalia-book-author">Matt Haig</div>
+            <div class="marginalia-quote">"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived."</div>
+            <div class="marginalia-note">Reading: 65%</div>
+            <div class="marginalia-tabs">
+              <button>Edit</button>
+              <button>Share</button>
+              <button>×</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 18px;">
+          <div class="card-header">
+            <h3>Add a Quote</h3>
+          </div>
+          <textarea class="reflection-textarea" placeholder="Paste a quote from your current read..."></textarea>
+          <button class="secondary" style="margin-top: 10px;">Save Quote</button>
+        </div>
+      </div>
+
+      <!-- PROFILE/REFLECTION SCREEN -->
+      <div id="profile" class="screen">
+        <div class="reflection-hero">
+          <div class="reflection-kicker">Your Reading Story</div>
+          <h2 class="reflection-title">Reading Reflections</h2>
+          <p class="reflection-copy">Track your literary journey and celebrate your reading goals.</p>
+          
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <div class="reflection-stat">18 Books</div>
+            <div class="reflection-stat">2,847 Pages</div>
+            <div class="reflection-stat">4 Clubs</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>2024 Reading Goal</h3>
+          </div>
+          <div class="featured-progress">
+            <div class="featured-progress-top">
+              <span>Books Read</span>
+              <span>18 / 24</span>
+            </div>
+            <div class="featured-progress-bar">
+              <div class="featured-progress-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Your Top Genres</h3>
+          </div>
+          <div class="club-card">
+            <div class="item-title">Literary Fiction</div>
+            <p class="small">8 books • Avg rating: 4.5★</p>
+          </div>
+          <div class="club-card">
+            <div class="item-title">Fantasy</div>
+            <p class="small">6 books • Avg rating: 4.3★</p>
+          </div>
+          <div class="club-card">
+            <div class="item-title">Mystery</div>
+            <p class="small">4 books • Avg rating: 4.0★</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Share Your Thoughts</h3>
+          </div>
+          <p class="helper">What was your favorite read this year?</p>
+          <textarea class="reflection-textarea" placeholder="Write your reading reflection..."></textarea>
+          <button class="primary" style="margin-top: 12px;">Post Reflection</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="top-nav" role="navigation" aria-label="Main navigation">
+      <button class="nav-btn" data-screen="lounge" title="Lounge">
+        <span class="nav-icon">🏛️</span>
+        <span>Lounge</span>
+      </button>
+      <button class="nav-btn" data-screen="library" title="Library">
+        <span class="nav-icon">📚</span>
+        <span>Library</span>
+      </button>
+      <button class="nav-btn" data-screen="club" title="Book Club">
+        <span class="nav-icon">👥</span>
+        <span>Club</span>
+      </button>
+      <button class="nav-btn" data-screen="spin" title="Randomizer">
+        <span class="nav-icon">🎲</span>
+        <span>Spin</span>
+      </button>
+      <button class="nav-btn" data-screen="notes" title="Marginalia">
+        <span class="nav-icon">✏️</span>
+        <span>Notes</span>
+      </button>
+      <button class="nav-btn" data-screen="profile" title="Profile">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </button>
+    </nav>
+
   </div>
+</div>
 
-  <!-- External Scripts -->
-  <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-  <script src="./app.js"></script>
+<script>
+// Screen navigation
+document.querySelectorAll('[data-screen]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const screenId = btn.dataset.screen;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    
+    // Update active nav button
+    document.querySelectorAll('[data-screen]').forEach(b => b.style.opacity = '0.5');
+    btn.style.opacity = '1';
+  });
+});
+
+// Initialize first button
+document.querySelector('[data-screen]').style.opacity = '1';
+</script>
+
 </body>
 </html>
