@@ -2797,30 +2797,51 @@ body {
   perspective: 900px;
 }
 
-/* Individual page */
+.floating-pages {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
 .floating-page {
   position: absolute;
   top: -140px;
   left: 0;
 
   width: var(--page-width);
-  height: calc(var(--page-width) * 1.38);
+  height: calc(var(--page-width) * 1.32);
 
   opacity: var(--page-opacity);
 
-  background:
-    linear-gradient(90deg, var(--page-edge), transparent 14%),
-    linear-gradient(180deg, var(--page-light), rgba(190,150,98,.22));
+  background-color: #fcfaf2;
+  background-image:
+    linear-gradient(90deg, rgba(91,58,31,.16), transparent 12%),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 9px,
+      rgba(70,45,24,.22) 10px,
+      transparent 11px 15px
+    ),
+    linear-gradient(180deg, rgba(255,255,255,.65), rgba(210,176,125,.34));
 
-  border: 1px solid rgba(255,235,200,.16);
-  border-radius: 3px 8px 8px 3px;
+  border: 1px solid rgba(126,86,46,.20);
+  border-radius: 4px 8px 8px 4px;
 
   box-shadow:
-    0 16px 34px rgba(0,0,0,.28),
-    inset 5px 0 0 rgba(78,48,24,.10);
+    var(--shadow-x) 18px 32px rgba(0,0,0,.24),
+    inset 5px 0 0 rgba(86,55,30,.10),
+    inset -1px 0 0 rgba(255,255,255,.34);
+
+  filter: blur(.15px);
 
   transform-style: preserve-3d;
   backface-visibility: visible;
+  will-change: transform, opacity, box-shadow;
 
   animation-name: pageFall;
   animation-duration: var(--fall-duration);
@@ -2828,40 +2849,43 @@ body {
   animation-fill-mode: forwards;
 }
 
-/* Page folded corner */
+.floating-page::before {
+  content: "";
+  position: absolute;
+  inset: 12% 14% 10% 16%;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(54,34,18,.34) 0 1px,
+      transparent 1px 7px,
+      rgba(54,34,18,.20) 8px,
+      transparent 9px 14px
+    );
+
+  opacity: .42;
+  filter: blur(.45px);
+  transform: translateZ(1px);
+}
+
 .floating-page::after {
   content: "";
   position: absolute;
   top: 0;
   right: 0;
 
-  width: 22%;
-  height: 16%;
+  width: 24%;
+  height: 18%;
 
   background:
-    linear-gradient(135deg, rgba(255,255,255,.22), rgba(120,80,40,.08));
+    linear-gradient(135deg, rgba(255,255,255,.55), rgba(120,80,40,.16));
 
   clip-path: polygon(100% 0, 0 0, 100% 100%);
-  border-radius: 0 6px 0 0;
+  border-radius: 0 7px 0 0;
+
+  transform: translateZ(2px);
 }
 
-/* Faint paper lines */
-.floating-page::before {
-  content: "";
-  position: absolute;
-  inset: 18% 14% 14% 18%;
-
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(90,60,35,.12) 0 1px,
-      transparent 1px 9px
-    );
-
-  opacity: .35;
-}
-
-/* 3D fall animation */
 @keyframes pageFall {
   0% {
     transform:
@@ -2869,39 +2893,54 @@ body {
       rotateX(0deg)
       rotateY(0deg)
       rotateZ(var(--start-rotate));
+    box-shadow:
+      var(--shadow-x) 18px 32px rgba(0,0,0,.22),
+      inset 5px 0 0 rgba(86,55,30,.10);
   }
 
   25% {
     transform:
-      translate3d(calc(var(--sway) * .35), 25vh, 40px)
-      rotateX(120deg)
-      rotateY(80deg)
-      rotateZ(calc(var(--start-rotate) + 80deg));
+      translate3d(calc(var(--sway) * .35), 25vh, 70px)
+      rotateX(70deg)
+      rotateY(45deg)
+      rotateZ(calc(var(--start-rotate) + 70deg));
+    box-shadow:
+      calc(var(--shadow-x) * -1) 22px 38px rgba(0,0,0,.26),
+      inset -4px 0 0 rgba(86,55,30,.10);
   }
 
   50% {
     transform:
-      translate3d(calc(var(--sway) * -0.25), 55vh, -20px)
-      rotateX(250deg)
-      rotateY(170deg)
-      rotateZ(calc(var(--start-rotate) + 160deg));
+      translate3d(calc(var(--sway) * -0.25), 55vh, -35px)
+      rotateX(145deg)
+      rotateY(95deg)
+      rotateZ(calc(var(--start-rotate) + 145deg));
+    box-shadow:
+      var(--shadow-x) 16px 30px rgba(0,0,0,.22),
+      inset 4px 0 0 rgba(86,55,30,.10);
   }
 
   75% {
     transform:
-      translate3d(calc(var(--sway) * .55), 85vh, 30px)
-      rotateX(360deg)
-      rotateY(260deg)
-      rotateZ(calc(var(--start-rotate) + 250deg));
+      translate3d(calc(var(--sway) * .55), 85vh, 60px)
+      rotateX(220deg)
+      rotateY(150deg)
+      rotateZ(calc(var(--start-rotate) + 220deg));
+    box-shadow:
+      calc(var(--shadow-x) * -1) 24px 42px rgba(0,0,0,.28),
+      inset -5px 0 0 rgba(86,55,30,.12);
   }
 
   100% {
     transform:
       translate3d(var(--sway), 120vh, 0)
-      rotateX(480deg)
-      rotateY(360deg)
-      rotateZ(calc(var(--start-rotate) + 360deg));
+      rotateX(300deg)
+      rotateY(210deg)
+      rotateZ(calc(var(--start-rotate) + 300deg));
     opacity: 0;
+    box-shadow:
+      var(--shadow-x) 18px 34px rgba(0,0,0,.18),
+      inset 5px 0 0 rgba(86,55,30,.08);
   }
 }
 
@@ -7586,15 +7625,18 @@ function randomBetween(min, max) {
 }
 
 function createFloatingPage() {
+  if (!pageLayer) return;
+
   const page = document.createElement("div");
   page.className = "floating-page";
 
-  const size = randomBetween(36, 88);
-  const startX = randomBetween(-5, 100);
-  const opacity = randomBetween(0.18, 0.55);
-  const duration = randomBetween(9, 22);
-  const sway = randomBetween(-140, 140);
-  const rotate = randomBetween(-25, 25);
+  const size = randomBetween(54, 104);
+  const startX = randomBetween(-8, 100);
+  const opacity = randomBetween(0.26, 0.58);
+  const duration = randomBetween(10, 24);
+  const sway = randomBetween(-150, 150);
+  const rotate = randomBetween(-22, 22);
+  const shadowX = randomBetween(-14, 14);
 
   page.style.left = `${startX}vw`;
   page.style.setProperty("--page-width", `${size}px`);
@@ -7602,6 +7644,7 @@ function createFloatingPage() {
   page.style.setProperty("--fall-duration", `${duration}s`);
   page.style.setProperty("--sway", `${sway}px`);
   page.style.setProperty("--start-rotate", `${rotate}deg`);
+  page.style.setProperty("--shadow-x", `${shadowX}px`);
 
   pageLayer.appendChild(page);
 
@@ -7615,7 +7658,7 @@ function startFloatingPages() {
 
   setInterval(() => {
     createFloatingPage();
-  }, 900);
+  }, 1000);
 }
 
 startFloatingPages();
