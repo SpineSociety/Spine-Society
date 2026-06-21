@@ -3026,7 +3026,7 @@ body {
     calc(var(--shadow-x) * .6) 22px 48px rgba(0,0,0,.16),
     inset 7px 0 10px rgba(86,52,26,.10);
 }
-
+}
 
 /* Login stays crisp above background */
 .login-card {
