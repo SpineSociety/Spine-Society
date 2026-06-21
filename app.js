@@ -42,11 +42,11 @@ function setupNavigation() {
  */
 function showScreen(screenName) {
   if (currentScreen === screenName) return;
-  
-  const screens = document.querySelectorAll('.screen');
-  screens.forEach(screen => screen.classList.remove('active'));
-  
-  const targetScreen = document.getElementById(screenName);
+
+  const allScreens = document.querySelectorAll('.screen');
+  allScreens.forEach(screen => screen.classList.remove('active'));
+
+  const targetScreen = document.getElementById(screens[screenName] || screenName);
   if (targetScreen) {
     targetScreen.classList.add('active');
     currentScreen = screenName;
