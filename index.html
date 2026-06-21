@@ -51,22 +51,21 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  overflow-x: hidden; /* Keeps screen perfectly snug on mobile devices */
+  overflow-x: hidden;
 
-  /* Your beautiful cinematic layers matched to your exact uppercase file name */
   background:
     radial-gradient(
       circle at center,
       rgba(0,0,0,.05),
       rgba(0,0,0,.50) 55%,
-      rgba(0,0,0,.88) 100
+      rgba(0,0,0,.88) 100%
     ),
     linear-gradient(
       180deg,
       rgba(10,5,2,.15),
       rgba(8,4,2,.72)
     ),
-    url("cozy-library-bg.PNG"); /* Removed './' and 'assets/' to match your root setup */
+    url("cozy-library-bg.PNG");
 
   background-size: cover;
   background-position: center;
@@ -74,12 +73,12 @@ body {
   background-attachment: fixed;
 }
 
-/* FIXED: Removed the extra curly bracket that was breaking the code structure here */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
+  z-index: 0;
 
   background:
     radial-gradient(circle at 20% 18%,
@@ -118,58 +117,6 @@ body::after {
   }
 }
 
-
-
-
-
-body::after {
-  display: none;
-}
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-
-  background:
-    radial-gradient(circle at 20% 18%,
-      rgba(255,191,120,.12),
-      transparent 20%),
-
-    radial-gradient(circle at 82% 78%,
-      rgba(200,163,106,.10),
-      transparent 24%),
-
-    radial-gradient(circle at 50% 50%,
-      rgba(94,107,74,.06),
-      transparent 42%),
-
-    linear-gradient(
-      90deg,
-      rgba(0,0,0,.38),
-      transparent 20%,
-      transparent 80%,
-      rgba(0,0,0,.28)
-    );
-
-}
-@keyframes ambientShift {
-
-  0% {
-    transform: scale(1) translateY(0px);
-    filter: blur(0px);
-  }
-
-  50% {
-    transform: scale(1.03) translateY(-6px);
-    filter: blur(2px);
-  }
-
-  100% {
-    transform: scale(1.06) translateY(4px);
-    filter: blur(0px);
-  }
-
-}
 
 .app-shell {
   width: 100%;
