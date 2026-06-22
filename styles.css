@@ -3240,23 +3240,23 @@ body {
 .reading-room-overlay {
 
 }
-#authScreen {
+#authScreen.reading-room-login {
   background:
     radial-gradient(
       circle at center,
-      rgba(0,0,0,.08),
-      rgba(0,0,0,.55) 55%,
-      rgba(0,0,0,.90) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(10,5,2,.15),
-      rgba(8,4,2,.72)
+      rgba(0,0,0,.12),
+      rgba(0,0,0,.38) 52%,
+      rgba(0,0,0,.72) 100%
     ),
     url("cozy-library-bg.PNG") !important;
 
   background-size: cover !important;
-  background-position: center !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
+}
+
+#authScreen.reading-room-login::before,
+#authScreen.reading-room-login::after {
+  display: none !important;
 }
 
