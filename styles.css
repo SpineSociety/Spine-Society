@@ -2765,10 +2765,6 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(216,179,106,.18), transparent 28%),
-    linear-gradient(180deg, #120b07, var(--bg-dark));
-  font-family: Georgia, serif;
 }
 
 /* Main login area */
