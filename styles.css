@@ -3676,3 +3676,219 @@ button{
     max-width:500px !important;
   }
 }
+/* ==========================================
+   FULL-FRAME LOGIN REBUILD
+   ========================================== */
+
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden !important;
+  position:fixed;
+  inset:0;
+  overscroll-behavior:none;
+}
+
+button,
+input,
+select,
+textarea{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.login-scene.reading-room-login{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  overflow:hidden !important;
+  background:#080604 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+.login-bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.06),
+      rgba(0,0,0,.42) 55%,
+      rgba(0,0,0,.82) 100%
+    ),
+    url("cozy-library-bg.PNG");
+
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+}
+
+.bookshelf-shadow{
+  z-index:1 !important;
+}
+
+.floating-pages{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:2 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+}
+
+.login-content{
+  position:relative;
+  z-index:5;
+
+  width:100%;
+  height:100%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  padding:24px;
+  box-sizing:border-box;
+}
+
+.reading-journal-card{
+  width:min(74vw, 300px) !important;
+  max-width:300px !important;
+
+  padding:14px !important;
+  margin:0 !important;
+
+  transform:scale(.82) !important;
+  transform-origin:center center !important;
+
+  border-radius:24px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,22,16,.42),
+      rgba(12,8,5,.34)
+    ) !important;
+
+  backdrop-filter:blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter:blur(6px) saturate(120%) !important;
+
+  border:1px solid rgba(228,201,139,.18) !important;
+
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+
+  color:#f3e6cf !important;
+}
+
+.reading-room-logo{
+  text-align:center !important;
+  margin-bottom:24px !important;
+}
+
+.reading-room-logo::before,
+.logo-book,
+.journal-flourish{
+  display:none !important;
+}
+
+.reading-room-logo .login-title{
+  color:rgba(255,245,225,.92) !important;
+  font-size:clamp(1.6rem, 5vw, 2.15rem) !important;
+  letter-spacing:5px !important;
+  line-height:.92 !important;
+  margin:0 0 10px !important;
+
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.75),
+    0 0 18px rgba(228,201,139,.18) !important;
+}
+
+.bookclub-tagline{
+  color:rgba(228,201,139,.88) !important;
+  text-align:center !important;
+  font-size:.72rem !important;
+  letter-spacing:2px !important;
+  text-transform:uppercase !important;
+  margin:0 0 8px !important;
+}
+
+.established{
+  color:rgba(228,201,139,.72) !important;
+  text-align:center !important;
+  font-size:.65rem !important;
+  letter-spacing:3px !important;
+  margin:0 !important;
+}
+
+.reading-journal-card input,
+.reading-journal-card button{
+  min-height:42px !important;
+  font-size:.95rem !important;
+}
+
+.reading-journal-card .login-small{
+  color:rgba(255,245,225,.72) !important;
+  text-align:center !important;
+  font-size:.78rem !important;
+  line-height:1.35 !important;
+}
+
+.bookish-thought-card{
+  width:min(76vw, 300px) !important;
+  max-width:300px !important;
+
+  padding:14px 18px !important;
+  margin:-48px 0 0 !important;
+
+  position:relative !important;
+  z-index:4 !important;
+
+  transform:rotate(-1deg) !important;
+}
+
+.bookish-thought-card p{
+  font-size:1rem !important;
+}
+
+.bookish-thought-card .thought-label{
+  font-size:.72rem !important;
+  letter-spacing:3px !important;
+}
+
+/* SMALL PHONES */
+
+@media (max-width:480px){
+  .login-content{
+    padding:18px;
+  }
+
+  .reading-journal-card{
+    width:74vw !important;
+    max-width:290px !important;
+  }
+
+  .bookish-thought-card{
+    width:76vw !important;
+    max-width:300px !important;
+  }
+}
+
+/* TABLET / DESKTOP */
+
+@media (min-width:768px){
+  .reading-journal-card{
+    max-width:340px !important;
+  }
+
+  .bookish-thought-card{
+    max-width:340px !important;
+  }
+}
