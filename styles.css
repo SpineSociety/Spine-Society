@@ -3274,3 +3274,40 @@ body {
 
   color: #f3e6cf !important;
 }
+/* LOGIN CARD FINAL OVERRIDES */
+
+.reading-room-logo{
+  text-align: center !important;
+  margin-bottom: 28px !important;
+}
+
+.reading-room-logo::before{
+  display: none !important;
+}
+
+.logo-book{
+  display: none !important;
+}
+
+.reading-room-logo .login-title{
+  color: rgba(255,245,225,.92) !important;
+  font-size: clamp(2rem, 7vw, 2.75rem) !important;
+  letter-spacing: 6px !important;
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.75),
+    0 0 18px rgba(228,201,139,.18) !important;
+}
+
+.bookclub-tagline{
+  color: rgba(228,201,139,.88) !important;
+  text-align: center !important;
+  letter-spacing: 3px !important;
+}
+
+.established{
+  text-align: center !important;
+}
+
+.journal-flourish{
+  display: none !important;
+}
