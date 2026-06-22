@@ -3532,3 +3532,22 @@ body{
   min-height:clamp(72px, 18vw, 95px) !important;
   padding:clamp(10px, 3vw, 16px) !important;
 }
+/* RESPONSIVE PROFILE */
+
+#profileScreen .card{
+  width:100% !important;
+  max-width:100% !important;
+}
+
+#profileAvatar,
+#membersModalList .item-title img{
+  width:clamp(54px, 18vw, 90px) !important;
+  height:clamp(54px, 18vw, 90px) !important;
+}
+
+input,
+select,
+textarea,
+button{
+  max-width:100%;
+}
