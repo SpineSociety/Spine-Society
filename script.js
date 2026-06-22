@@ -119,10 +119,12 @@ document.getElementById("profileTab").addEventListener("click", () => showScreen
 window.signUpWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
-  if (!email || !password) return alert("Enter email and password.");
+  if (!validateLoginInputs()) return;
 
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    await setPersistence(auth, browserLocalPersistence);
+
+await createUserWithEmailAndPassword(auth, email, password);
   } catch (error) {
     alert(error.message);
   }
@@ -174,6 +176,41 @@ function validateLoginInputs() {
 
   return isValid;
 }
+function setupLiveLoginValidation() {
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const emailWarning = document.getElementById("emailWarning");
+  const passwordWarning = document.getElementById("passwordWarning");
+
+  if (!emailInput || !passwordInput || !emailWarning || !passwordWarning) return;
+
+  emailInput.addEventListener("input", () => {
+    const email = emailInput.value.trim();
+    const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    emailInput.classList.remove("input-error");
+    emailWarning.textContent = "";
+
+    if (email && !emailLooksValid) {
+      emailInput.classList.add("input-error");
+      emailWarning.textContent = "Enter a valid email address.";
+    }
+  });
+
+  passwordInput.addEventListener("input", () => {
+    const password = passwordInput.value;
+
+    passwordInput.classList.remove("input-error");
+    passwordWarning.textContent = "";
+
+    if (password && password.length < 6) {
+      passwordInput.classList.add("input-error");
+      passwordWarning.textContent = "Password must be at least 6 characters.";
+    }
+  });
+}
+
+setupLiveLoginValidation();
 window.loginWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
