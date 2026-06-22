@@ -3338,3 +3338,42 @@ body {
 
   padding:18px !important;
 }
+.reading-journal-card{
+  width:74% !important;
+  max-width:300px !important;
+  padding:14px 14px !important;
+  margin-top:8px !important;
+  transform:scale(.82) !important;
+  transform-origin:top center !important;
+}
+
+.reading-room-logo .login-title{
+  font-size:clamp(1.65rem, 5.4vw, 2.25rem) !important;
+  letter-spacing:5px !important;
+}
+
+.bookclub-tagline{
+  font-size:.72rem !important;
+  letter-spacing:2px !important;
+}
+
+.established{
+  font-size:.68rem !important;
+}
+
+.reading-journal-card input,
+.reading-journal-card button{
+  min-height:44px !important;
+  font-size:1rem !important;
+}
+
+.bookish-thought-card{
+  width:78% !important;
+  max-width:330px !important;
+  padding:14px 18px !important;
+  margin-top:-18px !important;
+}
+
+.bookish-thought-card p{
+  font-size:1.05rem !important;
+}
