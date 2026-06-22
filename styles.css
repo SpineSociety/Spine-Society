@@ -2764,7 +2764,8 @@ padding:
 body {
   margin: 0;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  font-family: Georgia, serif;
 }
 
 /* Main login area */
@@ -3239,5 +3240,23 @@ body {
 .reading-room-overlay {
 
 }
+#authScreen {
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.08),
+      rgba(0,0,0,.55) 55%,
+      rgba(0,0,0,.90) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10,5,2,.15),
+      rgba(8,4,2,.72)
+    ),
+    url("cozy-library-bg.PNG") !important;
 
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
 
