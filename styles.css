@@ -3257,7 +3257,7 @@ body {
 }
 .reading-journal-card{
   background: rgba(20,16,12,.25) !important;
-backdrop-filter: blur(18px);
+backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(18px) !important;
 
   border: 1px solid rgba(255,255,255,.14) !important;
