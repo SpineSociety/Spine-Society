@@ -3292,3 +3292,8 @@ body {
   text-align: center !important;
   font-size: .82rem !important;
 }
+.login-scene.reading-room-login {
+  background-size: contain !important;
+  background-position: center top !important;
+  background-color: #080604 !important;
+}
