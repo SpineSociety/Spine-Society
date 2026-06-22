@@ -3505,3 +3505,30 @@ body{
     font-size:.85rem;
   }
 }
+/* RESPONSIVE CLUB ROOM */
+
+.club-current-top{
+  grid-template-columns:minmax(95px, 135px) minmax(0, 1fr) !important;
+  gap:clamp(12px, 4vw, 20px) !important;
+}
+
+.club-current-cover img{
+  width:100% !important;
+  max-width:135px !important;
+  height:auto !important;
+  aspect-ratio:2 / 3;
+}
+
+.club-current-info h2{
+  font-size:clamp(1.35rem, 6vw, 2rem) !important;
+}
+
+.club-tools-row{
+  grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+  gap:clamp(8px, 3vw, 12px) !important;
+}
+
+.club-tools-row button{
+  min-height:clamp(72px, 18vw, 95px) !important;
+  padding:clamp(10px, 3vw, 16px) !important;
+}
