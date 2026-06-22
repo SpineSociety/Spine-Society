@@ -3460,3 +3460,18 @@ body{
   grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
   gap:16px;
 }
+/* RESPONSIVE MODALS */
+
+#bookModalContent,
+#readerProfileModal > div,
+#readerStacksModal > div,
+#finishedBookModal > div,
+#membersModal > div,
+#addCollectionBookModal > div,
+#addLibraryBookModal > div,
+#editBookModal > div,
+#shelfSettingsModal > div,
+#readingGoalModal > div{
+  width:min(92vw, 420px) !important;
+  max-width:420px !important;
+}
