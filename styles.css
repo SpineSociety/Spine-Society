@@ -3149,8 +3149,10 @@ body {
   }
 }
 .reading-journal-card{
-  width:80% !important;
-  max-width:320px !important;
+  width:86% !important;
+  max-width:360px !important;
+
+  padding:14px 16px !important;
 }
 .reading-room-logo{
   margin-bottom: 34px !important;
