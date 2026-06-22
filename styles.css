@@ -3303,3 +3303,7 @@ body {
   transform: scale(.86) !important;
   margin-top: -6px !important;
 }
+.reading-journal-card{
+  transform: scale(.86);
+  margin-top: 40px !important;
+}
