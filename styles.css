@@ -3259,18 +3259,18 @@ body {
   background:
     linear-gradient(
       180deg,
-      rgba(255,255,255,.12),
-      rgba(255,255,255,.04)
+      rgba(30,22,16,.42),
+      rgba(12,8,5,.34)
     ) !important;
 
-  backdrop-filter: blur(3px) !important;
-  -webkit-backdrop-filter: blur(3px) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
 
-  border: 1px solid rgba(255,255,255,.20) !important;
+  border: 1px solid rgba(228,201,139,.18) !important;
 
   box-shadow:
-    0 18px 45px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,255,255,.18) !important;
+    0 22px 55px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
 
   color: #f3e6cf !important;
 }
