@@ -3279,75 +3279,57 @@ body {
 /* LOGIN CARD FINAL OVERRIDES */
 
 .reading-room-logo{
-  text-align: center !important;
-  margin-bottom: 28px !important;
+  text-align:center !important;
+  margin-bottom:28px !important;
 }
 
 .reading-room-logo::before{
-  display: none !important;
+  display:none !important;
 }
 
 .logo-book{
-  display: none !important;
+  display:none !important;
+}
+
+.journal-flourish{
+  display:none !important;
+}
+
+.login-scene.reading-room-login{
+  background-size:108% auto !important;
+  background-position:center top !important;
+  background-color:#080604 !important;
+}
+
+/* LOGIN CARD SIZE */
+
+.reading-journal-card{
+  width:72% !important;
+  max-width:290px !important;
+  padding:14px !important;
+  margin-top:140px !important;
+  transform:scale(.80) !important;
+  transform-origin:top center !important;
 }
 
 .reading-room-logo .login-title{
-  color: rgba(255,245,225,.92) !important;
-  font-size: clamp(2rem, 7vw, 2.75rem) !important;
-  letter-spacing: 6px !important;
+  color:rgba(255,245,225,.92) !important;
+  font-size:clamp(1.6rem, 5vw, 2.15rem) !important;
+  letter-spacing:5px !important;
   text-shadow:
     0 2px 12px rgba(0,0,0,.75),
     0 0 18px rgba(228,201,139,.18) !important;
 }
 
 .bookclub-tagline{
-  color: rgba(228,201,139,.88) !important;
-  text-align: center !important;
-  letter-spacing: 3px !important;
-}
-
-.established{
-  text-align: center !important;
-}
-
-.journal-flourish{
-  display: none !important;
-}
-.reading-journal-card .login-small{
-  color: rgba(255,245,225,.72) !important;
-  text-align: center !important;
-  font-size: .82rem !important;
-}
-.login-scene.reading-room-login {
-  background-size: 108% auto !important;
-  background-position: center top !important;
-  background-color: #080604 !important;
-}
-/* LOGIN CARD SIZE */
-
-.reading-journal-card{
-  width:72% !important;
-  max-width:290px !important;
-
-  padding:14px !important;
-
-  margin-top:35px !important;
-
-  transform:scale(.80) !important;
-  transform-origin:top center !important;
-}
-
-.reading-room-logo .login-title{
-  font-size:clamp(1.6rem, 5vw, 2.15rem) !important;
-  letter-spacing:5px !important;
-}
-
-.bookclub-tagline{
+  color:rgba(228,201,139,.88) !important;
+  text-align:center !important;
   font-size:.72rem !important;
   letter-spacing:2px !important;
 }
 
 .established{
+  text-align:center !important;
   font-size:.65rem !important;
 }
 
@@ -3358,6 +3340,8 @@ body {
 }
 
 .reading-journal-card .login-small{
+  color:rgba(255,245,225,.72) !important;
+  text-align:center !important;
   font-size:.78rem !important;
 }
 
@@ -3366,11 +3350,8 @@ body {
 .bookish-thought-card{
   width:76% !important;
   max-width:300px !important;
-
   padding:14px 18px !important;
-
-  margin-top:-100px !important;
-
+  margin-top:-55px !important;
   transform:rotate(-1deg);
 }
 
