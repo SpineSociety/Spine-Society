@@ -3123,10 +3123,36 @@ body {
   }
 }
 .reading-journal-card{
-  width:86% !important;
-  max-width:360px !important;
+  width:82% !important;
+  max-width:340px !important;
 
-  padding:14px 16px !important;
+  padding:18px 18px !important;
+
+  margin-top:20px !important;
+}
+.login-title{
+  font-size:clamp(2rem,6vw,2.7rem) !important;
+}
+
+.bookclub-tagline{
+  font-size:.88rem !important;
+}
+
+.established{
+  font-size:.78rem !important;
+}
+
+.reading-journal-card input{
+  min-height:50px !important;
+}
+
+.reading-journal-card button{
+  min-height:50px !important;
+}
+
+.reading-journal-card .login-small{
+  font-size:.80rem !important;
+  line-height:1.4 !important;
 }
 .reading-room-logo{
   margin-bottom: 34px !important;
@@ -3293,7 +3319,7 @@ body {
   font-size: .82rem !important;
 }
 .login-scene.reading-room-login {
-  background-size: contain !important;
+  background-size: 108% auto !important;
   background-position: center top !important;
   background-color: #080604 !important;
 }
@@ -3303,4 +3329,12 @@ body {
   padding: 18px 18px !important;
   transform: none !important;
   margin-top: 18px !important;
+}
+.bookish-thought-card{
+  width:84% !important;
+  max-width:330px !important;
+
+  margin-top:-20px !important;
+
+  padding:18px !important;
 }
