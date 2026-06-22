@@ -3358,3 +3358,74 @@ body {
 .bookish-thought-card p{
   font-size:1rem !important;
 }
+/* ==========================================
+   RESPONSIVE APP FOUNDATION
+   ========================================== */
+
+html,
+body{
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+.app-shell{
+  width:100%;
+  max-width:100%;
+}
+
+.phone-frame{
+  width:100%;
+  max-width:100%;
+  min-height:100dvh;
+}
+
+.app-content{
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
+  padding-left:clamp(14px, 4vw, 28px);
+  padding-right:clamp(14px, 4vw, 28px);
+  padding-bottom:110px;
+}
+
+/* Phones */
+@media (max-width:480px){
+  .app-content{
+    max-width:100%;
+  }
+
+  .card,
+  .club-featured-shell,
+  .club-tools-card,
+  .bookshelf-case{
+    border-radius:clamp(20px, 6vw, 30px);
+  }
+
+  .page-title{
+    font-size:clamp(1.8rem, 8vw, 2.6rem);
+  }
+}
+
+/* Tablets / iPad */
+@media (min-width:768px){
+  .app-content{
+    max-width:680px;
+  }
+
+  .top-nav{
+    max-width:620px;
+  }
+}
+
+/* Desktop */
+@media (min-width:1024px){
+  .app-content{
+    max-width:760px;
+  }
+
+  .phone-frame{
+    display:flex;
+    justify-content:center;
+  }
+}
