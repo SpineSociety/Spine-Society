@@ -3617,3 +3617,62 @@ button{
 .dog-eared-shelf{
   max-width:100%;
 }
+/* FINAL MOBILE WIDTH CONTROL */
+
+#mainApp{
+  width:100%;
+  max-width:420px;
+  margin:0 auto;
+}
+
+#mainApp .screen{
+  width:100%;
+  max-width:420px;
+  margin:0 auto;
+  padding-left:14px !important;
+  padding-right:14px !important;
+}
+
+.card,
+.club-featured-shell,
+.club-tools-card,
+.bookshelf-case,
+.randomizer-shelf{
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+.top-nav{
+  width:min(92%, 390px) !important;
+}
+
+/* Smaller phones */
+@media (max-width:480px){
+  #mainApp,
+  #mainApp .screen{
+    max-width:390px;
+  }
+
+  #mainApp .screen{
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  .top-nav{
+    width:92% !important;
+    max-width:380px !important;
+  }
+}
+
+/* iPad/tablet */
+@media (min-width:768px){
+  #mainApp,
+  #mainApp .screen{
+    max-width:520px;
+  }
+
+  .top-nav{
+    max-width:500px !important;
+  }
+}
