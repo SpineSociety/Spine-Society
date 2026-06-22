@@ -3475,3 +3475,33 @@ body{
   width:min(92vw, 420px) !important;
   max-width:420px !important;
 }
+/* ==========================================
+   RESPONSIVE BOTTOM NAV
+   ========================================== */
+
+.top-nav{
+  width:min(96%, 700px) !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+}
+
+.nav-btn{
+  flex:1 1 0;
+  min-width:0;
+  font-size:clamp(.65rem, 2vw, .85rem);
+}
+
+.nav-icon{
+  font-size:clamp(1rem, 3vw, 1.25rem);
+}
+
+@media (min-width:768px){
+
+  .top-nav{
+    width:min(90%, 650px) !important;
+  }
+
+  .nav-btn{
+    font-size:.85rem;
+  }
+}
