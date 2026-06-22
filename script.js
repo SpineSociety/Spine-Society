@@ -127,12 +127,58 @@ window.signUpWithEmail = async function () {
     alert(error.message);
   }
 };
+function validateLoginInputs() {
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const emailWarning = document.getElementById("emailWarning");
+  const passwordWarning = document.getElementById("passwordWarning");
 
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  let isValid = true;
+
+  emailInput.classList.remove("input-error", "input-shake");
+  passwordInput.classList.remove("input-error", "input-shake");
+
+  emailWarning.textContent = "";
+  passwordWarning.textContent = "";
+
+  const emailLooksValid =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if (!email) {
+    emailWarning.textContent = "Enter your email.";
+    emailInput.classList.add("input-error", "input-shake");
+    isValid = false;
+  } else if (!emailLooksValid) {
+    emailWarning.textContent = "Enter a valid email address.";
+    emailInput.classList.add("input-error", "input-shake");
+    isValid = false;
+  }
+
+  if (!password) {
+    passwordWarning.textContent = "Enter your password.";
+    passwordInput.classList.add("input-error", "input-shake");
+    isValid = false;
+  } else if (password.length < 6) {
+    passwordWarning.textContent = "Password must be at least 6 characters.";
+    passwordInput.classList.add("input-error", "input-shake");
+    isValid = false;
+  }
+
+  setTimeout(() => {
+    emailInput.classList.remove("input-shake");
+    passwordInput.classList.remove("input-shake");
+  }, 320);
+
+  return isValid;
+}
 window.loginWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  if (!email || !password) return alert("Enter email and password.");
+  if (!validateLoginInputs()) return;
 
   try {
     await setPersistence(auth, browserLocalPersistence);
