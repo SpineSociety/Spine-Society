@@ -3452,3 +3452,11 @@ body{
 .section-header h3{
   font-size:clamp(1rem, 3vw, 1.25rem);
 }
+/* RESPONSIVE BOOK GRIDS */
+
+#libraryGrid,
+#clubCollectionGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+  gap:16px;
+}
