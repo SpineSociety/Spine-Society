@@ -3965,3 +3965,29 @@ body{
 .app-content{
   background:#080604 !important;
 }
+/* LOGIN INPUT VALIDATION */
+
+.input-warning{
+  min-height:14px;
+  margin:-2px 0 6px;
+  color:#ffb3b3;
+  font-size:.72rem;
+  text-align:left;
+  opacity:.95;
+}
+
+.input-error{
+  border-color:rgba(255,120,120,.75) !important;
+  box-shadow:0 0 0 3px rgba(255,80,80,.12) !important;
+}
+
+.input-shake{
+  animation:inputShake .28s ease;
+}
+
+@keyframes inputShake{
+  0%,100%{ transform:translateX(0); }
+  25%{ transform:translateX(-5px); }
+  50%{ transform:translateX(5px); }
+  75%{ transform:translateX(-3px); }
+}
