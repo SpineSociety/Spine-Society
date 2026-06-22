@@ -6,7 +6,9 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   onAuthStateChanged,
-  signOut
+  signOut,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase,
@@ -129,9 +131,12 @@ window.signUpWithEmail = async function () {
 window.loginWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
+
   if (!email || !password) return alert("Enter email and password.");
 
   try {
+    await setPersistence(auth, browserLocalPersistence);
+
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     alert(error.message);
@@ -140,6 +145,8 @@ window.loginWithEmail = async function () {
 
 window.loginWithGoogle = async function () {
   try {
+    await setPersistence(auth, browserLocalPersistence);
+
     await signInWithPopup(auth, provider);
   } catch (error) {
     alert(error.message);
