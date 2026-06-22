@@ -3892,3 +3892,76 @@ textarea{
     max-width:340px !important;
   }
 }
+/* ==========================================
+   FIX: APP SCROLL + REMOVE LOGIN BLOCKING
+   ========================================== */
+
+/* Let the app scroll normally after login */
+html,
+body{
+  width:100% !important;
+  min-height:100% !important;
+  height:auto !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  position:static !important;
+  background:#080604 !important;
+  overscroll-behavior:auto !important;
+}
+
+/* Remove login image from the app background */
+body{
+  background:#080604 !important;
+  background-image:none !important;
+  background-attachment:scroll !important;
+}
+
+/* Keep login full-frame ONLY when auth screen is showing */
+#authScreen.login-scene.reading-room-login{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  overflow:hidden !important;
+  z-index:999 !important;
+}
+
+/* If auth screen is hidden, make sure it cannot block the app */
+#authScreen[style*="display: none"]{
+  pointer-events:none !important;
+  z-index:-1 !important;
+}
+
+/* Main app should be usable and scrollable */
+#mainApp{
+  position:relative !important;
+  z-index:1 !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:100dvh !important;
+  overflow:visible !important;
+  background:#080604 !important;
+}
+
+/* Stop the screen from being too skinny */
+#mainApp .screen{
+  width:100% !important;
+  max-width:720px !important;
+  margin:0 auto !important;
+  padding-left:clamp(14px, 4vw, 28px) !important;
+  padding-right:clamp(14px, 4vw, 28px) !important;
+}
+
+/* Phone width */
+@media (max-width:480px){
+  #mainApp .screen{
+    max-width:100% !important;
+  }
+}
+
+/* Fix white side margins */
+.app-shell,
+.phone-frame,
+.app-content{
+  background:#080604 !important;
+}
