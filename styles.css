@@ -3298,12 +3298,9 @@ body {
   background-color: #080604 !important;
 }
 .reading-journal-card{
-  width: 78% !important;
-  max-width: 330px !important;
-  transform: scale(.86) !important;
-  margin-top: -6px !important;
-}
-.reading-journal-card{
-  transform: scale(.86);
-  margin-top: 40px !important;
+  width: 92% !important;
+  max-width: 430px !important;
+  padding: 18px 18px !important;
+  transform: none !important;
+  margin-top: 18px !important;
 }
