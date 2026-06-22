@@ -3311,3 +3311,8 @@ body {
 .journal-flourish{
   display: none !important;
 }
+.reading-journal-card .login-small{
+  color: rgba(255,245,225,.72) !important;
+  text-align: center !important;
+  font-size: .82rem !important;
+}
