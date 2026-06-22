@@ -3297,3 +3297,9 @@ body {
   background-position: center top !important;
   background-color: #080604 !important;
 }
+.reading-journal-card{
+  width: 78% !important;
+  max-width: 330px !important;
+  transform: scale(.86) !important;
+  margin-top: -6px !important;
+}
