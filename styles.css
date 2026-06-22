@@ -3551,3 +3551,26 @@ textarea,
 button{
   max-width:100%;
 }
+/* RESPONSIVE LOGIN */
+
+@media (max-width:480px){
+  .reading-journal-card{
+    width:72% !important;
+    max-width:290px !important;
+  }
+
+  .bookish-thought-card{
+    width:76% !important;
+    max-width:300px !important;
+  }
+}
+
+@media (min-width:768px){
+  .reading-journal-card{
+    max-width:340px !important;
+  }
+
+  .bookish-thought-card{
+    max-width:340px !important;
+  }
+}
