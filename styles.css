@@ -3574,3 +3574,23 @@ button{
     max-width:340px !important;
   }
 }
+/* RESPONSIVE NOOK */
+
+.nook-header{
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.nook-header h2{
+  font-size:clamp(1.8rem, 7vw, 2.6rem) !important;
+}
+
+.current-club-panel,
+.nook-pick-card,
+.marginalia-book-card{
+  flex-wrap:wrap;
+}
+
+.mood-grid{
+  grid-template-columns:repeat(auto-fit, minmax(58px, 1fr)) !important;
+}
