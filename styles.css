@@ -3594,3 +3594,26 @@ button{
 .mood-grid{
   grid-template-columns:repeat(auto-fit, minmax(58px, 1fr)) !important;
 }
+/* RESPONSIVE LIBRARY */
+
+.library-tabs{
+  max-width:100%;
+}
+
+.library-tabs button{
+  font-size:clamp(.78rem, 2.6vw, .95rem) !important;
+}
+
+.book-card-polished{
+  flex-wrap:wrap;
+}
+
+.book-mini-cover,
+.book-mini-placeholder{
+  width:clamp(54px, 18vw, 72px) !important;
+  height:clamp(82px, 27vw, 108px) !important;
+}
+
+.dog-eared-shelf{
+  max-width:100%;
+}
