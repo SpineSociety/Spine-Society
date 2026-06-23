@@ -4160,28 +4160,48 @@ body{
   }
 }
 .book-loader{
-  width:18px;
-  height:18px;
-
+  width:28px;
+  height:22px;
   display:inline-block;
-
-  border:2px solid rgba(255,255,255,.25);
-  border-top-color:var(--gold-pale);
-
-  border-radius:50%;
-
-  animation:bookSpin .8s linear infinite;
-
+  position:relative;
+  margin-left:8px;
+  perspective:90px;
   vertical-align:middle;
 }
 
-@keyframes bookSpin{
-  from{
-    transform:rotate(0deg);
+.book-loader::before,
+.book-loader::after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:14px;
+  height:22px;
+  background:rgba(228,201,139,.9);
+  border-radius:2px 6px 6px 2px;
+  transform-origin:left center;
+}
+
+.book-loader::before{
+  left:0;
+  background:rgba(160,110,55,.95);
+}
+
+.book-loader::after{
+  left:14px;
+  animation:pageTurn .65s ease-in-out infinite;
+}
+
+@keyframes pageTurn{
+  0%{
+    transform:rotateY(0deg);
   }
 
-  to{
-    transform:rotate(360deg);
+  50%{
+    transform:rotateY(-130deg);
+  }
+
+  100%{
+    transform:rotateY(0deg);
   }
 }
 
