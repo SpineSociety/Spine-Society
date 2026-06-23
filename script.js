@@ -126,8 +126,8 @@ window.signUpWithEmail = async function () {
 
 await createUserWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    alert(error.message);
-  }
+  showToast(getAuthErrorMessage(error), "error");
+}
 };
 function validateLoginInputs() {
   const emailInput = document.getElementById("loginEmail");
@@ -222,8 +222,8 @@ window.loginWithEmail = async function () {
 
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    alert(error.message);
-  }
+  showToast(getAuthErrorMessage(error), "error");
+}
 };
 
 window.loginWithGoogle = async function () {
@@ -232,8 +232,8 @@ window.loginWithGoogle = async function () {
 
     await signInWithPopup(auth, provider);
   } catch (error) {
-    alert(error.message);
-  }
+  showToast(getAuthErrorMessage(error), "error");
+}
 };
 
 window.logoutUser = async function () {
@@ -2497,6 +2497,32 @@ function handleInviteLink() {
     document.getElementById("joinClubId").value = clubId;
     showScreen("nook");
     alert("Invite detected. Tap Join Circle.");
+  }
+}
+function getAuthErrorMessage(error) {
+  switch (error.code) {
+    case "auth/invalid-email":
+      return "That email doesn’t look quite right.";
+
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return "Email or password doesn’t match our records.";
+
+    case "auth/email-already-in-use":
+      return "An account already exists with this email.";
+
+    case "auth/weak-password":
+      return "Password should be at least 6 characters.";
+
+    case "auth/popup-closed-by-user":
+      return "Google sign-in was closed before finishing.";
+
+    case "auth/network-request-failed":
+      return "Network issue. Check your connection and try again.";
+
+    default:
+      return "Something went wrong. Please try again.";
   }
 }
 function showToast(message, type = "success") {
