@@ -140,7 +140,9 @@ await sendEmailVerification(userCredential.user, {
 });
 
 await signOut(auth);
-
+const authScreen = document.getElementById("authScreen");
+const mainApp = document.getElementById("mainApp");
+const mainNav = document.getElementById("mainNav");
 authScreen.style.display = "block";
 mainApp.style.display = "none";
 mainNav.style.display = "none";
