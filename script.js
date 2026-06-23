@@ -2290,6 +2290,24 @@ window.editCollectionBook = async function (bookId) {
 
   alert("Collection book updated.");
 };
+window.togglePasswordVisibility = function () {
+  const passwordInput = document.getElementById("loginPassword");
+  const toggleButton = document.getElementById("passwordToggle");
+
+  if (!passwordInput || !toggleButton) return;
+
+  const isHidden = passwordInput.type === "password";
+
+  passwordInput.type = isHidden ? "text" : "password";
+
+  toggleButton.textContent = isHidden ? "📖" : "📕";
+  toggleButton.classList.toggle("open", isHidden);
+
+  toggleButton.setAttribute(
+    "aria-label",
+    isHidden ? "Hide password" : "Show password"
+  );
+};
 window.openMembersModal = function () {
   const modal = document.getElementById("membersModal");
   const modalList = document.getElementById("membersModalList");
