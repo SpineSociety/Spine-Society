@@ -4043,3 +4043,31 @@ body{
 .password-toggle.open{
   background:rgba(228,201,139,.16) !important;
 }
+/* SAFE BOOKISH INPUT FOCUS EFFECT */
+
+.reading-journal-card input{
+  transition:
+    border-color .25s cubic-bezier(.22, 1, .36, 1),
+    box-shadow .25s cubic-bezier(.22, 1, .36, 1),
+    background .25s ease,
+    transform .25s cubic-bezier(.22, 1, .36, 1);
+}
+
+.reading-journal-card input:focus{
+  border-color:rgba(228,201,139,.62) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(228,201,139,.10),
+    0 0 20px rgba(228,201,139,.16),
+    inset 6px 0 0 rgba(228,201,139,.14) !important;
+
+  background:rgba(255,255,255,.23) !important;
+  transform:translateY(-1px);
+}
+
+/* Error state always wins */
+.reading-journal-card input.input-error{
+  border-color:rgba(255,120,120,.75) !important;
+  box-shadow:0 0 0 3px rgba(255,80,80,.12) !important;
+  transform:none !important;
+}
