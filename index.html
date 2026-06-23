@@ -79,9 +79,10 @@
 
 <div id="passwordWarning" class="input-warning"></div>
 
-      <button class="login-primary" onclick="loginWithEmail()">
-        Sign In
-      </button>
+      <button id="loginButton" class="login-primary" onclick="loginWithEmail()">
+  <span id="loginBtnText">Sign In</span>
+  <span id="loginSpinner" class="book-loader" style="display:none;"></span>
+</button>
 <button
   type="button"
   class="login-link"
