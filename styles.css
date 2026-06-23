@@ -4159,3 +4159,35 @@ body{
     transform: scale(1) translateY(0);
   }
 }
+.book-loader{
+  width:18px;
+  height:18px;
+
+  display:inline-block;
+
+  border:2px solid rgba(255,255,255,.25);
+  border-top-color:var(--gold-pale);
+
+  border-radius:50%;
+
+  animation:bookSpin .8s linear infinite;
+
+  vertical-align:middle;
+}
+
+@keyframes bookSpin{
+  from{
+    transform:rotate(0deg);
+  }
+
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+#loginButton{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
