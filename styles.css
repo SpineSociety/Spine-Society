@@ -4120,3 +4120,7 @@ body{
 #mainNav[style*="display: none"]{
   pointer-events:none !important;
 }
+.login-card-blur
+.forgot-password-modal
+.forgot-password-card
+@keyframes modalBookPop
