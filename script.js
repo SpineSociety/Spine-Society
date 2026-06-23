@@ -2644,11 +2644,17 @@ onAuthStateChanged(auth, async (user) => {
   });
 
   showToast(
-    "Please verify your email before entering Spine Society.",
-    "error"
-  );
+  "Please verify your email before entering Spine Society.",
+  "error"
+);
 
-  return;
+const resendBtn = document.getElementById("resendVerificationBtn");
+
+if (resendBtn) {
+  resendBtn.style.display = "block";
+}
+
+return;
 }
 
   currentUser = user;
