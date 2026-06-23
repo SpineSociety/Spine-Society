@@ -4160,8 +4160,8 @@ body{
   }
 }
 .book-loader{
-  width:28px;
-  height:22px;
+  width:22px;
+  height:18px;
   display:inline-block;
   position:relative;
   margin-left:8px;
@@ -4174,8 +4174,8 @@ body{
   content:"";
   position:absolute;
   top:0;
-  width:14px;
-  height:22px;
+  width:11px;
+  height:18px;
   background:rgba(228,201,139,.9);
   border-radius:2px 6px 6px 2px;
   transform-origin:left center;
@@ -4187,7 +4187,7 @@ body{
 }
 
 .book-loader::after{
-  left:14px;
+  left:11px;
   animation:pageTurn .65s ease-in-out infinite;
 }
 
