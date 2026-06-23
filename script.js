@@ -9,7 +9,8 @@ import {
   signOut,
   setPersistence,
   browserLocalPersistence,
-  sendEmailVerification
+  sendEmailVerification,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase,
