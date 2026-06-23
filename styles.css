@@ -4160,49 +4160,40 @@ body{
   }
 }
 .book-loader{
-  width:22px;
+  width:24px;
   height:18px;
   display:inline-block;
   position:relative;
   margin-left:8px;
-  perspective:90px;
-  vertical-align:middle;
+  perspective:120px;
 }
 
-.book-loader::before,
+.book-loader::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:3px;
+  background:linear-gradient(90deg, #8b633c 0 48%, #d8b36a 50% 100%);
+  box-shadow:inset 12px 0 0 rgba(0,0,0,.18);
+}
+
 .book-loader::after{
   content:"";
   position:absolute;
   top:0;
-  width:11px;
+  left:12px;
+  width:12px;
   height:18px;
-  background:rgba(228,201,139,.9);
-  border-radius:2px 6px 6px 2px;
+  border-radius:2px 5px 5px 2px;
+  background:#f0d9a0;
   transform-origin:left center;
-}
-
-.book-loader::before{
-  left:0;
-  background:rgba(160,110,55,.95);
-}
-
-.book-loader::after{
-  left:11px;
-  animation:pageTurn .65s ease-in-out infinite;
+  animation:pageTurn .75s ease-in-out infinite;
 }
 
 @keyframes pageTurn{
-  0%{
-    transform:rotateY(0deg);
-  }
-
-  50%{
-    transform:rotateY(-130deg);
-  }
-
-  100%{
-    transform:rotateY(0deg);
-  }
+  0%{ transform:rotateY(0deg); }
+  50%{ transform:rotateY(-145deg); }
+  100%{ transform:rotateY(0deg); }
 }
 
 #loginButton{
