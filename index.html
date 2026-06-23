@@ -55,7 +55,20 @@
       <input id="loginEmail" type="email" placeholder="Email" />
 <div id="emailWarning" class="input-warning"></div>
 
-<input id="loginPassword" type="password" placeholder="Password" />
+<div class="password-wrap">
+  <input id="loginPassword" type="password" placeholder="Password" />
+
+  <button
+    type="button"
+    id="passwordToggle"
+    class="password-toggle"
+    onclick="togglePasswordVisibility()"
+    aria-label="Show password"
+  >
+    📕
+  </button>
+</div>
+
 <div id="passwordWarning" class="input-warning"></div>
 
       <button class="login-primary" onclick="loginWithEmail()">
