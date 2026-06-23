@@ -120,45 +120,46 @@ document.getElementById("profileTab").addEventListener("click", () => showScreen
 window.signUpWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
+
   if (!validateLoginInputs()) return;
 
   try {
     await setPersistence(auth, browserLocalPersistence);
 
-const userCredential = await createUserWithEmailAndPassword(
-  auth,
-  email,
-  password
-);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-await sendEmailVerification(userCredential.user, {
-  url: "https://spinesociety.github.io/Spine-Society/",
-  handleCodeInApp: false
-});
-  url: "https://spinesociety.github.io/Spine-Society/",
-  handleCodeInApp: false
-});
+    await sendEmailVerification(userCredential.user, {
+      url: "https://spinesociety.github.io/Spine-Society/",
+      handleCodeInApp: false
+    });
 
-await signOut(auth);
-const authScreen = document.getElementById("authScreen");
-const mainApp = document.getElementById("mainApp");
-const mainNav = document.getElementById("mainNav");
-authScreen.style.display = "block";
-mainApp.style.display = "none";
-mainNav.style.display = "none";
+    await signOut(auth);
 
-showToast(
-  "Verification email sent. Please check your inbox, then sign in.",
-  "success"
-);
-const resendBtn = document.getElementById("resendVerificationBtn");
+    const authScreen = document.getElementById("authScreen");
+    const mainApp = document.getElementById("mainApp");
+    const mainNav = document.getElementById("mainNav");
 
-if (resendBtn) {
-  resendBtn.style.display = "block";
-}
+    authScreen.style.display = "block";
+    mainApp.style.display = "none";
+    mainNav.style.display = "none";
+
+    showToast(
+      "Verification email sent. Please check your inbox, then sign in.",
+      "success"
+    );
+
+    const resendBtn = document.getElementById("resendVerificationBtn");
+
+    if (resendBtn) {
+      resendBtn.style.display = "block";
+    }
   } catch (error) {
-  showToast(getAuthErrorMessage(error), "error");
-}
+    showToast(getAuthErrorMessage(error), "error");
+  }
 };
 function validateLoginInputs() {
   const emailInput = document.getElementById("loginEmail");
@@ -284,28 +285,28 @@ window.resendVerificationEmail = async function () {
 
     if (userCredential.user.emailVerified) {
       showToast("Your email is already verified. You can sign in.", "success");
+      await signOut(auth);
       return;
     }
 
     await sendEmailVerification(userCredential.user, {
-  url: "https://spinesociety.github.io/Spine-Society/",
-  handleCodeInApp: false
-});
-  url: "https://spinesociety.github.io/Spine-Society/",
-  handleCodeInApp: false
-});
+      url: "https://spinesociety.github.io/Spine-Society/",
+      handleCodeInApp: false
+    });
+
     await signOut(auth);
 
     showToast("Verification email resent. Please check your inbox.", "success");
 
-    resendBtn.disabled = true;
-    resendBtn.textContent = "Resend available in 60s";
+    if (resendBtn) {
+      resendBtn.disabled = true;
+      resendBtn.textContent = "Resend available in 60s";
 
-    setTimeout(() => {
-      resendBtn.disabled = false;
-      resendBtn.textContent = "Resend Verification Email";
-    }, 60000);
-
+      setTimeout(() => {
+        resendBtn.disabled = false;
+        resendBtn.textContent = "Resend Verification Email";
+      }, 60000);
+    }
   } catch (error) {
     showToast(getAuthErrorMessage(error), "error");
   }
