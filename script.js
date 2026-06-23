@@ -2568,19 +2568,25 @@ onAuthStateChanged(auth, async (user) => {
 
   try {
   if (!user.emailVerified) {
-    currentUser = null;
+  currentUser = null;
+  window.currentClubId = null;
+  window.currentNextRead = null;
 
-    authScreen.style.display = "block";
-    mainApp.style.display = "none";
-    mainNav.style.display = "none";
+  authScreen.style.display = "block";
+  mainApp.style.display = "none";
+  mainNav.style.display = "none";
 
-    showToast(
-      "Please verify your email before entering your Nook.",
-      "error"
-    );
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
 
-    return;
-  }
+  showToast(
+    "Please verify your email before entering Spine Society.",
+    "error"
+  );
+
+  return;
+}
 
   currentUser = user;
 
