@@ -82,7 +82,12 @@
       <button class="login-primary" onclick="loginWithEmail()">
         Sign In
       </button>
-
+<button
+  class="login-link"
+  onclick="openForgotPasswordModal()"
+>
+  Forgot Password?
+</button>
       <div class="or-divider">
         <span></span><em>or</em><span></span>
       </div>
@@ -1278,6 +1283,36 @@ overflow-y: auto;
       Loading...
     </div>
   </div>
+</div>
+<div id="forgotPasswordModal" class="forgot-password-modal">
+
+  <div class="forgot-password-card">
+
+    <h2>Reset Password</h2>
+
+    <p class="helper">
+      Enter your email and we'll send you a password reset link.
+    </p>
+
+    <input
+      id="resetEmail"
+      type="email"
+      placeholder="Email Address"
+    >
+
+    <button onclick="sendPasswordReset()">
+      Send Reset Link
+    </button>
+
+    <button
+      class="login-link"
+      onclick="closeForgotPasswordModal()"
+    >
+      Back to Sign In
+    </button>
+
+  </div>
+
 </div>
 <script type="module" src="script.js"></script>
 </body>
