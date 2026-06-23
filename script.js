@@ -8,7 +8,8 @@ import {
   onAuthStateChanged,
   signOut,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase,
@@ -124,7 +125,18 @@ window.signUpWithEmail = async function () {
   try {
     await setPersistence(auth, browserLocalPersistence);
 
-await createUserWithEmailAndPassword(auth, email, password);
+const userCredential = await createUserWithEmailAndPassword(
+  auth,
+  email,
+  password
+);
+
+await sendEmailVerification(userCredential.user);
+
+showToast(
+  "Verification email sent. Please check your inbox before entering your Nook.",
+  "success"
+);
   } catch (error) {
   showToast(getAuthErrorMessage(error), "error");
 }
@@ -2555,11 +2567,26 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-    currentUser = user;
+  if (!user.emailVerified) {
+    currentUser = null;
 
-    authScreen.style.display = "none";
-    mainApp.style.display = "block";
-    mainNav.style.display = "grid";
+    authScreen.style.display = "block";
+    mainApp.style.display = "none";
+    mainNav.style.display = "none";
+
+    showToast(
+      "Please verify your email before entering your Nook.",
+      "error"
+    );
+
+    return;
+  }
+
+  currentUser = user;
+
+  authScreen.style.display = "none";
+  mainApp.style.display = "block";
+  mainNav.style.display = "grid";
 
     document.getElementById("accountEmail").textContent =
       "Signed in as " + (user.email || "Google user");
