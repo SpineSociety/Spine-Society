@@ -135,6 +135,9 @@ await sendEmailVerification(userCredential.user, {
   url: "https://spinesociety.github.io/Spine-Society/",
   handleCodeInApp: false
 });
+  url: "https://spinesociety.github.io/Spine-Society/",
+  handleCodeInApp: false
+});
 
 await signOut(auth);
 
@@ -283,6 +286,9 @@ window.resendVerificationEmail = async function () {
     }
 
     await sendEmailVerification(userCredential.user, {
+  url: "https://spinesociety.github.io/Spine-Society/",
+  handleCodeInApp: false
+});
   url: "https://spinesociety.github.io/Spine-Society/",
   handleCodeInApp: false
 });
