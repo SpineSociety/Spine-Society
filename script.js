@@ -2499,19 +2499,21 @@ function handleInviteLink() {
     alert("Invite detected. Tap Join Circle.");
   }
 }
-function showToast(message) {
+function showToast(message, type = "success") {
   const toast = document.getElementById("toast");
 
   if (!toast) return;
 
   toast.textContent = message;
-  toast.classList.add("show");
+
+  toast.className = "";
+  toast.classList.add("show", type);
 
   clearTimeout(window.toastTimeout);
 
   window.toastTimeout = setTimeout(() => {
     toast.classList.remove("show");
-  }, 2600);
+  }, 4000);
 }
 onAuthStateChanged(auth, async (user) => {
   const authScreen = document.getElementById("authScreen");
