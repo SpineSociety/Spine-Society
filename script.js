@@ -268,6 +268,45 @@ window.loginWithGoogle = async function () {
   showToast(getAuthErrorMessage(error), "error");
 }
 };
+window.openForgotPasswordModal = function () {
+  const modal = document.getElementById("forgotPasswordModal");
+  const loginCard = document.querySelector(".reading-journal-card");
+
+  if (modal) modal.style.display = "flex";
+  if (loginCard) loginCard.classList.add("login-card-blur");
+};
+
+window.closeForgotPasswordModal = function () {
+  const modal = document.getElementById("forgotPasswordModal");
+  const loginCard = document.querySelector(".reading-journal-card");
+
+  if (modal) modal.style.display = "none";
+  if (loginCard) loginCard.classList.remove("login-card-blur");
+};
+
+window.sendPasswordReset = async function () {
+  const resetEmail = document.getElementById("resetEmail").value.trim();
+  const loginEmail = document.getElementById("loginEmail").value.trim();
+
+  const email = resetEmail || loginEmail;
+
+  if (!email) {
+    showToast("Enter your email first.", "error");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email, {
+      url: "https://spinesociety.github.io/Spine-Society/",
+      handleCodeInApp: false
+    });
+
+    showToast("Password reset email sent. Check your inbox.", "success");
+    closeForgotPasswordModal();
+  } catch (error) {
+    showToast(getAuthErrorMessage(error), "error");
+  }
+};
 window.resendVerificationEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
