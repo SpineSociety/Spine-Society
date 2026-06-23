@@ -131,7 +131,10 @@ const userCredential = await createUserWithEmailAndPassword(
   password
 );
 
-await sendEmailVerification(userCredential.user);
+await sendEmailVerification(userCredential.user, {
+  url: "https://spinesociety.github.io/Spine-Society/",
+  handleCodeInApp: false
+});
 
 await signOut(auth);
 
@@ -279,7 +282,10 @@ window.resendVerificationEmail = async function () {
       return;
     }
 
-    await sendEmailVerification(userCredential.user);
+    await sendEmailVerification(userCredential.user, {
+  url: "https://spinesociety.github.io/Spine-Society/",
+  handleCodeInApp: false
+});
     await signOut(auth);
 
     showToast("Verification email resent. Please check your inbox.", "success");
