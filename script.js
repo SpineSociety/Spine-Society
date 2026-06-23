@@ -133,8 +133,14 @@ const userCredential = await createUserWithEmailAndPassword(
 
 await sendEmailVerification(userCredential.user);
 
+await signOut(auth);
+
+authScreen.style.display = "block";
+mainApp.style.display = "none";
+mainNav.style.display = "none";
+
 showToast(
-  "Verification email sent. Please check your inbox before entering your Nook.",
+  "Verification email sent. Please check your inbox, then sign in.",
   "success"
 );
   } catch (error) {
