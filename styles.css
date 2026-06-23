@@ -4043,3 +4043,38 @@ body{
 .password-toggle.open{
   background:rgba(228,201,139,.16) !important;
 }
+.book-field{
+  position:relative;
+  margin-bottom:18px;
+}
+
+.book-field input{
+  width:100%;
+}
+
+.book-field label{
+  position:absolute;
+  left:16px;
+  top:15px;
+
+  color:rgba(255,255,255,.65);
+
+  pointer-events:none;
+
+  transition:
+    transform .35s cubic-bezier(.22,1,.36,1),
+    color .35s ease,
+    font-size .35s ease;
+}
+
+.book-field input:focus + label,
+.book-field input:not(:placeholder-shown) + label{
+
+  transform:translateY(-28px);
+
+  font-size:.78rem;
+
+  color:var(--gold);
+
+  letter-spacing:.04em;
+}
