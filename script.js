@@ -143,6 +143,11 @@ showToast(
   "Verification email sent. Please check your inbox, then sign in.",
   "success"
 );
+const resendBtn = document.getElementById("resendVerificationBtn");
+
+if (resendBtn) {
+  resendBtn.style.display = "block";
+}
   } catch (error) {
   showToast(getAuthErrorMessage(error), "error");
 }
@@ -253,7 +258,44 @@ window.loginWithGoogle = async function () {
   showToast(getAuthErrorMessage(error), "error");
 }
 };
+window.resendVerificationEmail = async function () {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const resendBtn = document.getElementById("resendVerificationBtn");
 
+  if (!validateLoginInputs()) return;
+
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    if (userCredential.user.emailVerified) {
+      showToast("Your email is already verified. You can sign in.", "success");
+      return;
+    }
+
+    await sendEmailVerification(userCredential.user);
+    await signOut(auth);
+
+    showToast("Verification email resent. Please check your inbox.", "success");
+
+    resendBtn.disabled = true;
+    resendBtn.textContent = "Resend available in 60s";
+
+    setTimeout(() => {
+      resendBtn.disabled = false;
+      resendBtn.textContent = "Resend Verification Email";
+    }, 60000);
+
+  } catch (error) {
+    showToast(getAuthErrorMessage(error), "error");
+  }
+};
 window.logoutUser = async function () {
   await signOut(auth);
 };
