@@ -4004,35 +4004,29 @@ body{
 
 .password-toggle{
   position:absolute;
-  right:8px;
+  right:10px;
   top:50%;
   transform:translateY(-50%);
 
-  width:38px !important;
-  min-height:38px !important;
-  height:38px !important;
+  width:28px !important;
+  min-height:28px !important;
+  height:28px !important;
 
-  margin:0 !important;
   padding:0 !important;
+  margin:0 !important;
 
   border-radius:50% !important;
-  border:1px solid rgba(228,201,139,.20) !important;
 
-  background:rgba(12,8,5,.34) !important;
-  color:var(--gold-pale) !important;
+  background:rgba(20,15,12,.55) !important;
+  border:1px solid rgba(228,201,139,.18) !important;
+
+  font-size:.72rem !important;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  font-size:1.05rem !important;
-  line-height:1 !important;
-
   box-shadow:none !important;
-  transition:
-    transform .22s ease,
-    background .22s ease,
-    border-color .22s ease;
 }
 
 .password-toggle:hover{
@@ -4389,4 +4383,42 @@ body{
 .bookish-thought-card p{
   font-size:1.08rem !important;
   line-height:1.28 !important;
+}
+/* STEP 2: Elegant login input fields */
+
+.reading-journal-card input{
+  border-radius:18px !important;
+  background:rgba(255,245,225,.10) !important;
+  border:1px solid rgba(228,201,139,.26) !important;
+  color:rgba(255,245,225,.95) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 8px 18px rgba(0,0,0,.18) !important;
+}
+
+.reading-journal-card input::placeholder{
+  color:rgba(255,235,200,.58) !important;
+}
+
+.reading-journal-card input:focus{
+  border-color:rgba(228,201,139,.55) !important;
+  box-shadow:
+    0 0 0 3px rgba(228,201,139,.10),
+    0 0 18px rgba(228,201,139,.16) !important;
+}
+.reading-journal-card .login-primary{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(38,24,16,.96),
+      rgba(12,8,5,.96)
+    ) !important;
+
+  color:rgba(228,201,139,.92) !important;
+
+  border:1px solid rgba(228,201,139,.18) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 10px 24px rgba(0,0,0,.25) !important;
 }
