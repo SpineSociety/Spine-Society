@@ -2685,6 +2685,7 @@ onAuthStateChanged(auth, async (user) => {
     authScreen.style.display = "block";
     mainApp.style.display = "none";
     mainNav.style.display = "none";
+    hideLibraryLoader();
     return;
   }
 
@@ -2715,7 +2716,7 @@ if (resendBtn) {
 
 return;
 }
-
+  hideLibraryLoader();
   currentUser = user;
 
   authScreen.style.display = "none";
