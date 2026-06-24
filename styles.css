@@ -3846,7 +3846,7 @@ textarea{
   max-width:300px !important;
 
   padding:14px 18px !important;
-  margin:-48px 0 0 !important;
+  margin:-15px 0 0 !important;
 
   position:relative !important;
   z-index:4 !important;
@@ -4326,21 +4326,13 @@ body{
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  gap:14px !important;
-  margin:18px 0 16px !important;
-  color:rgba(228,201,139,.95) !important;
+  gap:18px !important;
+  margin:22px 0 20px !important;
 }
 
 .reading-journal-card .or-divider span{
-  display:block !important;
   flex:1 !important;
-  height:1px !important;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    rgba(228,201,139,.45),
-    transparent
-  ) !important;
+  max-width:none !important;
 }
 
 .reading-journal-card .or-divider em{
