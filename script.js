@@ -245,35 +245,32 @@ function setupLiveLoginValidation() {
 
 setupLiveLoginValidation();
 window.loginWithEmail = async function () {
-  const loginButton = document.getElementById("loginButton");
-const loginBtnText = document.getElementById("loginBtnText");
-const loginSpinner = document.getElementById("loginSpinner");
-
-
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  if (!validateLoginInputs()) {
-  return;
-}
+  if (!validateLoginInputs()) return;
+
+  showLibraryLoader();
 
   try {
     await setPersistence(auth, browserLocalPersistence);
-
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
-  showToast(getAuthErrorMessage(error), "error");
-}
+    hideLibraryLoader();
+    showToast(getAuthErrorMessage(error), "error");
+  }
 };
 
 window.loginWithGoogle = async function () {
+  showLibraryLoader();
+
   try {
     await setPersistence(auth, browserLocalPersistence);
-
     await signInWithPopup(auth, provider);
   } catch (error) {
-  showToast(getAuthErrorMessage(error), "error");
-}
+    hideLibraryLoader();
+    showToast(getAuthErrorMessage(error), "error");
+  }
 };
 window.openForgotPasswordModal = function () {
   const modal = document.getElementById("forgotPasswordModal");
@@ -2645,6 +2642,21 @@ function getAuthErrorMessage(error) {
 
     default:
       return "Something went wrong. Please try again.";
+  }
+}
+function showLibraryLoader() {
+  const loader = document.getElementById("libraryLoader");
+
+  if (loader) {
+    loader.classList.add("show");
+  }
+}
+
+function hideLibraryLoader() {
+  const loader = document.getElementById("libraryLoader");
+
+  if (loader) {
+    loader.classList.remove("show");
   }
 }
 function showToast(message, type = "success") {
