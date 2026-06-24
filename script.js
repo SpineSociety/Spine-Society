@@ -254,13 +254,6 @@ const loginSpinner = document.getElementById("loginSpinner");
   const password = document.getElementById("loginPassword").value;
 
   if (!validateLoginInputs()) {
-
-  if (loginButton && loginBtnText && loginSpinner) {
-    loginButton.disabled = false;
-    loginBtnText.textContent = "Sign In";
-    loginSpinner.style.display = "none";
-  }
-
   return;
 }
 
