@@ -4363,3 +4363,16 @@ body{
   height:32px !important;
   font-size:.8rem !important;
 }
+/* STEP 2: Polish Bookish Thought card */
+
+.bookish-thought-card{
+  width:min(82vw, 360px) !important;
+  max-width:360px !important;
+  border-radius:18px !important;
+  padding:18px 22px !important;
+}
+
+.bookish-thought-card p{
+  font-size:1.08rem !important;
+  line-height:1.28 !important;
+}
