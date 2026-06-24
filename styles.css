@@ -4187,7 +4187,23 @@ body{
   height:140px;
   perspective:1400px;
 }
+.library-book-loader{
+  position:relative;
+}
 
+.library-book-loader::after{
+  content:"";
+  position:absolute;
+  inset:-30px;
+  border-radius:50%;
+  background:radial-gradient(
+    circle,
+    rgba(212,170,97,.18),
+    transparent 70%
+  );
+  filter:blur(20px);
+  z-index:-1;
+}
 .book-shadow{
   position:absolute;
   left:50%;
@@ -4270,7 +4286,7 @@ body{
     inset 8px 0 12px rgba(0,0,0,.08),
     0 10px 22px rgba(0,0,0,.22);
 
-  animation:realPageFlip 1.85s cubic-bezier(.45,.05,.2,1) infinite;
+  animation:realPageFlip 2.8s cubic-bezier(.45,.05,.2,1) infinite;
 }
 
 @keyframes realPageFlip{
