@@ -57,10 +57,24 @@ let croppedAvatarDataUrl = "";
 const appCreatorEmail = "kokakisan@gmail.com";
 const loadingMessages = [
   "Opening Library...",
+
   "Turning Pages...",
-  "Finding Your Shelf...",
+
+  "Dusting the Shelves...",
+
+  "Finding Your Next Read...",
+
   "Gathering Your Circle...",
-  "Preparing Your Next Read..."
+
+  "Straightening the Bookmarks...",
+
+  "Brewing a Cup of Tea...",
+
+  "Lighting the Reading Lamp...",
+
+  "Uncovering Hidden Stories...",
+
+  "Reshelving Adventures..."
 ];
 function canManageBook(book, type = "library") {
   if (!currentUser) return false;
