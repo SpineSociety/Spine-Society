@@ -4352,8 +4352,22 @@ body{
 /* MAKE LOGIN FORM WIDER */
 
 .reading-journal-card{
-  width:min(82vw, 360px) !important;
-  max-width:360px !important;
+  width:min(84vw, 380px) !important;
+  max-width:380px !important;
+
+  padding:18px 20px !important;
+
+  border-radius:28px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(32,24,18,.52),
+      rgba(12,8,5,.42)
+    ) !important;
+
+  backdrop-filter:blur(10px) saturate(130%) !important;
+  -webkit-backdrop-filter:blur(10px) saturate(130%) !important;
 }
 /* STEP 1: Make password book icon smaller */
 
