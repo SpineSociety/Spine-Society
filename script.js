@@ -55,7 +55,13 @@ let currentMemberAvatarsHTML = "";
 let avatarCropper = null;
 let croppedAvatarDataUrl = "";
 const appCreatorEmail = "kokakisan@gmail.com";
-
+const loadingMessages = [
+  "Opening Library...",
+  "Turning Pages...",
+  "Finding Your Shelf...",
+  "Gathering Your Circle...",
+  "Preparing Your Next Read..."
+];
 function canManageBook(book, type = "library") {
   if (!currentUser) return false;
 
@@ -2646,6 +2652,14 @@ function getAuthErrorMessage(error) {
 }
 function showLibraryLoader() {
   const loader = document.getElementById("libraryLoader");
+  const loaderText = document.getElementById("loaderText");
+
+  if (loaderText) {
+    loaderText.textContent =
+      loadingMessages[
+        Math.floor(Math.random() * loadingMessages.length)
+      ];
+  }
 
   if (loader) {
     loader.classList.add("show");
