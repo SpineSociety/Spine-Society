@@ -4422,3 +4422,32 @@ body{
     inset 0 1px 0 rgba(255,255,255,.05),
     0 10px 24px rgba(0,0,0,.25) !important;
 }
+/* Elegant OR divider */
+
+.reading-journal-card .or-divider{
+  display:flex !important;
+  align-items:center !important;
+  gap:14px !important;
+
+  margin:18px 0 !important;
+
+  color:rgba(228,201,139,.82) !important;
+  letter-spacing:3px !important;
+  font-size:.72rem !important;
+}
+
+.reading-journal-card .or-divider::before,
+.reading-journal-card .or-divider::after{
+  content:"";
+  flex:1;
+
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(228,201,139,.25),
+      transparent
+    );
+}
