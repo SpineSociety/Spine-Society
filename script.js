@@ -249,11 +249,7 @@ window.loginWithEmail = async function () {
 const loginBtnText = document.getElementById("loginBtnText");
 const loginSpinner = document.getElementById("loginSpinner");
 
-if (loginButton && loginBtnText && loginSpinner) {
-  loginButton.disabled = true;
-  loginBtnText.textContent = "Opening Library...";
-  loginSpinner.style.display = "inline-block";
-}
+
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
