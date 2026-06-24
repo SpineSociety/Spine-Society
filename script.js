@@ -2659,6 +2659,9 @@ function hideLibraryLoader() {
     loader.classList.remove("show");
   }
 }
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 function showToast(message, type = "success") {
   const toast = document.getElementById("toast");
 
@@ -2714,14 +2717,19 @@ if (resendBtn) {
   resendBtn.style.display = "block";
 }
 
+hideLibraryLoader();
+
 return;
 }
-  hideLibraryLoader();
-  currentUser = user;
+  await wait(1500);
 
-  authScreen.style.display = "none";
-  mainApp.style.display = "block";
-  mainNav.style.display = "grid";
+hideLibraryLoader();
+
+currentUser = user;
+
+authScreen.style.display = "none";
+mainApp.style.display = "block";
+mainNav.style.display = "grid";
 
     document.getElementById("accountEmail").textContent =
       "Signed in as " + (user.email || "Google user");
