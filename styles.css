@@ -4357,3 +4357,9 @@ body{
   color:rgba(255,235,190,.95) !important;
   border:1px solid rgba(228,201,139,.32) !important;
 }
+/* MAKE LOGIN FORM WIDER */
+
+.reading-journal-card{
+  width:min(82vw, 360px) !important;
+  max-width:360px !important;
+}
