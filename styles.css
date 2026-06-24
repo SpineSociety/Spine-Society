@@ -4451,3 +4451,22 @@ body{
       transparent
     );
 }
+/* Softer Google button */
+
+.reading-journal-card .login-link:last-of-type{
+  background:rgba(255,255,255,.03) !important;
+
+  border:1px solid rgba(228,201,139,.18) !important;
+
+  color:rgba(255,235,190,.78) !important;
+
+  font-size:1rem !important;
+
+  min-height:42px !important;
+
+  box-shadow:none !important;
+}
+
+.reading-journal-card .login-link:last-of-type:hover{
+  border-color:rgba(228,201,139,.35) !important;
+}
