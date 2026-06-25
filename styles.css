@@ -4516,7 +4516,8 @@ font-size:1.15rem;
   font-size:1rem;
   pointer-events:none;
 }
-/* Google Sign In */
+
+/* ---------- Google Sign In Button ---------- */
 
 .google-login{
   display:flex;
@@ -4526,56 +4527,50 @@ font-size:1.15rem;
 
   width:100%;
   margin-top:18px;
-  padding:14px 18px;
 
-  border-radius:16px;
+  padding:16px 22px;
 
-  border:1px solid rgba(200,163,106,.18);
+  border:1px solid rgba(220,190,145,.28);
+  border-radius:18px;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.05),
-      rgba(255,255,255,.02)
-    );
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(10px);
 
+  color:var(--ink);
+  text-decoration:none;
   cursor:pointer;
 
   transition:
-    transform .25s,
-    box-shadow .25s,
-    border-color .25s;
+    transform .35s ease,
+    background .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
 }
 
 .google-login:hover{
   transform:translateY(-2px);
-
-  border-color:rgba(228,201,139,.45);
-
-  box-shadow:
-    0 10px 24px rgba(0,0,0,.25);
+  background:rgba(255,255,255,.05);
+  border-color:rgba(212,170,97,.55);
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
 }
 
 .google-icon{
-  width:23px;
-  height:23px;
-
+  width:22px;
+  height:22px;
+  display:block;
   flex-shrink:0;
 
-  filter:
-    drop-shadow(0 2px 4px rgba(0,0,0,.25));
-
-  transition:
-    transform .45s cubic-bezier(.2,.8,.2,1);
+  transition:transform .35s ease;
 }
 
 .google-login:hover .google-icon{
-  transform:
-    rotate(-15deg)
-    scale(1.18);
+  transform:rotate(-12deg) scale(1.12);
 }
 
 .google-login span{
+  font-family:"Cormorant Garamond", serif;
+  font-size:1.45rem;
   font-weight:600;
+  letter-spacing:.02em;
   color:var(--ink);
 }
