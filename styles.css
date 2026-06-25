@@ -4516,3 +4516,61 @@ font-size:1.15rem;
   font-size:1rem;
   pointer-events:none;
 }
+/* Google Sign In */
+
+.google-login{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+
+  width:100%;
+  margin-top:18px;
+  padding:14px 18px;
+
+  border-radius:16px;
+
+  border:1px solid rgba(200,163,106,.18);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.05),
+      rgba(255,255,255,.02)
+    );
+
+  cursor:pointer;
+
+  transition:
+    transform .25s,
+    box-shadow .25s,
+    border-color .25s;
+}
+
+.google-login:hover{
+  transform:translateY(-2px);
+
+  border-color:rgba(228,201,139,.45);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.25);
+}
+
+.google-icon{
+  width:22px;
+  height:22px;
+
+  flex-shrink:0;
+
+  transition:
+    transform .35s ease;
+}
+
+.google-login:hover .google-icon{
+  transform:rotate(-12deg) scale(1.12);
+}
+
+.google-login span{
+  font-weight:600;
+  color:var(--ink);
+}
