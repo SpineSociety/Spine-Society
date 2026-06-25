@@ -4470,3 +4470,29 @@ body{
 .reading-journal-card .login-link:last-of-type:hover{
   border-color:rgba(228,201,139,.35) !important;
 }
+/* Google login button */
+
+.google-login{
+
+display:flex !important;
+align-items:center;
+justify-content:center;
+gap:14px;
+
+}
+
+.google-icon{
+
+width:22px;
+height:22px;
+
+flex-shrink:0;
+
+}
+
+.google-login span{
+
+font-family:"Cormorant Garamond", serif;
+font-size:1.15rem;
+
+}
