@@ -4496,7 +4496,32 @@ font-family:"Cormorant Garamond", serif;
 font-size:1.15rem;
 
 }
+/* Google login button */
 
+.google-login{
+
+display:flex !important;
+align-items:center;
+justify-content:center;
+gap:14px;
+
+}
+
+.google-icon{
+
+width:22px;
+height:22px;
+
+flex-shrink:0;
+
+}
+
+.google-login span{
+
+font-family:"Cormorant Garamond", serif;
+font-size:1.15rem;
+
+}
 
 /* ---------- Google Sign In Button ---------- */
 
