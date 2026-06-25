@@ -4557,17 +4557,22 @@ font-size:1.15rem;
 }
 
 .google-icon{
-  width:22px;
-  height:22px;
+  width:23px;
+  height:23px;
 
   flex-shrink:0;
 
+  filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,.25));
+
   transition:
-    transform .35s ease;
+    transform .45s cubic-bezier(.2,.8,.2,1);
 }
 
 .google-login:hover .google-icon{
-  transform:rotate(-12deg) scale(1.12);
+  transform:
+    rotate(-15deg)
+    scale(1.18);
 }
 
 .google-login span{
