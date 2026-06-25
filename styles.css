@@ -4496,3 +4496,23 @@ font-family:"Cormorant Garamond", serif;
 font-size:1.15rem;
 
 }
+/* STEP 2: Email icon inside input */
+
+.input-wrap{
+  position:relative;
+  width:100%;
+}
+
+.input-wrap input{
+  padding-right:48px !important;
+}
+
+.field-icon{
+  position:absolute;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(228,201,139,.75);
+  font-size:1rem;
+  pointer-events:none;
+}
