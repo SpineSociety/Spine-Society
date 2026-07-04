@@ -4580,3 +4580,107 @@ font-size:1.15rem;
   letter-spacing:.02em;
   color:var(--ink);
 }
+/* TODAY'S BOOKISH THOUGHT CARD */
+
+.bookish-thought-card{
+  position:relative !important;
+  z-index:4 !important;
+
+  width:min(84vw, 390px) !important;
+  margin:-8px auto 0 !important;
+
+  padding:26px 24px 24px !important;
+  border-radius:18px !important;
+
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.45), transparent 28%),
+    linear-gradient(180deg, #f4e6c4, #e5c994) !important;
+
+  border:1px solid rgba(116,75,38,.22) !important;
+
+  box-shadow:
+    0 24px 45px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.45) !important;
+
+  color:#24150b !important;
+
+  transform:rotate(-1.5deg) !important;
+}
+
+/* vintage tape */
+.bookish-thought-card::before{
+  content:"";
+  position:absolute;
+  top:-18px;
+  left:50%;
+  transform:translateX(-50%) rotate(-2deg);
+
+  width:94px;
+  height:30px;
+
+  background:
+    linear-gradient(90deg, transparent 0 8px, rgba(255,238,196,.62) 8px 86px, transparent 86px),
+    linear-gradient(180deg, rgba(255,246,215,.78), rgba(197,160,105,.46));
+
+  clip-path:polygon(
+    0 14%, 8% 0, 18% 12%, 30% 0,
+    44% 10%, 58% 0, 72% 12%, 86% 0,
+    100% 14%, 94% 100%, 80% 88%, 66% 100%,
+    52% 90%, 38% 100%, 24% 88%, 10% 100%
+  );
+
+  opacity:.82;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+  backdrop-filter:blur(2px);
+}
+
+/* paper texture */
+.bookish-thought-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  pointer-events:none;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(100,60,25,.035) 0 1px,
+      transparent 1px 18px
+    );
+
+  opacity:.55;
+}
+
+.thought-label{
+  position:relative;
+  z-index:1;
+
+  margin-bottom:18px;
+
+  font-size:.78rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#6f4324;
+  font-weight:700;
+}
+
+.bookish-thought-card p{
+  position:relative;
+  z-index:1;
+
+  margin:0;
+  font-family:"Cormorant Garamond", Georgia, serif;
+  font-size:1.7rem !important;
+  line-height:1.18;
+  color:#1f1209;
+}
+
+.thought-heart{
+  position:relative;
+  z-index:1;
+
+  margin-top:24px;
+  font-size:2.1rem;
+  color:#8b4329;
+}
