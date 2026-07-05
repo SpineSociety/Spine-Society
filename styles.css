@@ -4707,3 +4707,122 @@ font-size:1.15rem;
   font-size:1.65rem !important;
   color:#7d3d25 !important;
 }
+/* TODAY'S BOOKISH THOUGHT CARD - FINAL */
+
+.bookish-thought-card{
+  position:relative !important;
+  z-index:4 !important;
+  width:min(86vw, 410px) !important;
+  margin:-10px auto 0 !important;
+  padding:28px 28px 30px !important;
+  border-radius:14px !important;
+  transform:rotate(-2.2deg) !important;
+  color:#2b1a0f !important;
+
+  background:
+    radial-gradient(circle at 88% 18%, rgba(86,54,28,.22) 0 6px, transparent 18px),
+    radial-gradient(circle at 72% 45%, rgba(92,61,35,.16) 0 8px, transparent 24px),
+    radial-gradient(circle at 38% 82%, rgba(74,44,22,.12) 0 10px, transparent 30px),
+    radial-gradient(circle at 18% 72%, rgba(125,88,45,.13) 0 12px, transparent 34px),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 27px,
+      rgba(111,78,43,.16) 28px,
+      transparent 29px
+    ),
+    linear-gradient(180deg, #f3dfac 0%, #e6c987 52%, #d7b978 100%) !important;
+
+  border:1px solid rgba(105,70,36,.28) !important;
+
+  box-shadow:
+    0 24px 42px rgba(0,0,0,.48),
+    0 6px 12px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,245,210,.45),
+    inset 0 -10px 28px rgba(98,60,27,.10) !important;
+
+  overflow:visible !important;
+}
+
+/* masking tape */
+.bookish-thought-card::before{
+  content:"";
+  position:absolute;
+  top:-24px;
+  left:50%;
+  width:128px;
+  height:34px;
+  transform:translateX(-50%) rotate(2deg);
+  z-index:5;
+
+  background:
+    radial-gradient(circle at 22% 38%, rgba(95,62,34,.12), transparent 18px),
+    radial-gradient(circle at 75% 62%, rgba(95,62,34,.10), transparent 16px),
+    linear-gradient(180deg, rgba(235,211,162,.78), rgba(174,132,77,.46));
+
+  clip-path:polygon(
+    0 18%, 8% 4%, 15% 15%, 24% 2%, 34% 14%,
+    45% 4%, 55% 14%, 66% 3%, 76% 15%,
+    86% 5%, 100% 18%,
+    96% 100%, 86% 86%, 76% 98%, 65% 87%,
+    54% 100%, 44% 88%, 32% 100%, 22% 86%,
+    12% 98%, 4% 86%
+  );
+
+  opacity:.86;
+  box-shadow:0 8px 18px rgba(0,0,0,.22);
+  backdrop-filter:blur(1px);
+}
+
+/* paper grain */
+.bookish-thought-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  pointer-events:none;
+  z-index:0;
+
+  background:
+    radial-gradient(circle at 82% 24%, rgba(70,40,20,.12), transparent 18px),
+    radial-gradient(circle at 24% 30%, rgba(255,246,210,.18), transparent 22px),
+    repeating-linear-gradient(
+      90deg,
+      rgba(85,55,28,.035) 0 1px,
+      transparent 1px 7px
+    );
+
+  opacity:.75;
+}
+
+.thought-label,
+.bookish-thought-card p,
+.thought-heart{
+  position:relative;
+  z-index:1;
+  font-family:"Courier Prime", "Courier New", monospace !important;
+}
+
+.thought-label{
+  margin-bottom:14px !important;
+  font-size:.78rem !important;
+  letter-spacing:.24em !important;
+  text-transform:uppercase !important;
+  color:#3b2516 !important;
+  font-weight:700 !important;
+}
+
+.bookish-thought-card p{
+  margin:0 !important;
+  max-width:92%;
+  font-size:1.28rem !important;
+  line-height:1.45 !important;
+  letter-spacing:-.03em !important;
+  color:#22140b !important;
+  text-shadow:.35px .35px 0 rgba(70,42,20,.22);
+}
+
+.thought-heart{
+  margin-top:18px !important;
+  font-size:1.25rem !important;
+  color:#7b3d23 !important;
+}
