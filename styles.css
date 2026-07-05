@@ -4684,3 +4684,85 @@ font-size:1.15rem;
   font-size:2.1rem;
   color:#8b4329;
 }
+/* FINAL FIX — Bookish Thought Card */
+
+.tape-strip{
+  display:none !important;
+}
+
+.bookish-thought-card{
+  position:relative !important;
+  z-index:10 !important;
+  width:min(84vw, 390px) !important;
+  margin:-8px auto 0 !important;
+  padding:28px 24px 24px !important;
+  border-radius:18px !important;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.45), transparent 28%),
+    linear-gradient(180deg, #f7e9c9, #e4c58f) !important;
+  border:1px solid rgba(116,75,38,.24) !important;
+  box-shadow:
+    0 24px 45px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.45) !important;
+  color:#24150b !important;
+  transform:rotate(-1.5deg) !important;
+  overflow:visible !important;
+}
+
+.bookish-thought-card::before{
+  content:"" !important;
+  position:absolute !important;
+  top:-18px !important;
+  left:50% !important;
+  transform:translateX(-50%) rotate(-2deg) !important;
+  width:100px !important;
+  height:30px !important;
+  background:rgba(245,222,175,.68) !important;
+  clip-path:polygon(
+    0 14%, 8% 0, 18% 12%, 30% 0,
+    44% 10%, 58% 0, 72% 12%, 86% 0,
+    100% 14%, 94% 100%, 80% 88%, 66% 100%,
+    52% 90%, 38% 100%, 24% 88%, 10% 100%
+  ) !important;
+  opacity:.86 !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.18) !important;
+}
+
+.bookish-thought-card::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:18px !important;
+  pointer-events:none !important;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(100,60,25,.04) 0 1px,
+    transparent 1px 18px
+  ) !important;
+}
+
+.bookish-thought-card .thought-label{
+  position:relative !important;
+  z-index:2 !important;
+  margin-bottom:18px !important;
+  font-size:.78rem !important;
+  letter-spacing:.22em !important;
+  color:#6f4324 !important;
+  font-weight:700 !important;
+}
+
+.bookish-thought-card p{
+  position:relative !important;
+  z-index:2 !important;
+  font-size:1.7rem !important;
+  line-height:1.18 !important;
+  color:#1f1209 !important;
+}
+
+.bookish-thought-card .thought-heart{
+  position:relative !important;
+  z-index:2 !important;
+  margin-top:24px !important;
+  font-size:2.1rem !important;
+  color:#8b4329 !important;
+}
