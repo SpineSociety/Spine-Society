@@ -4684,85 +4684,83 @@ font-size:1.15rem;
   font-size:2.1rem;
   color:#8b4329;
 }
-/* FINAL FIX — Bookish Thought Card */
+/* Import Typewriter Font */
+@import url('https://googleapis.com');
 
-.tape-strip{
-  display:none !important;
+.bookish-note-container {
+  position: relative;
+  display: inline-block;
+  margin: 40px auto;
+  padding-top: 20px; /* Space for the tape */
 }
 
-.bookish-thought-card{
-  position:relative !important;
-  z-index:10 !important;
-  width:min(84vw, 390px) !important;
-  margin:-8px auto 0 !important;
-  padding:28px 24px 24px !important;
-  border-radius:18px !important;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(255,255,255,.45), transparent 28%),
-    linear-gradient(180deg, #f7e9c9, #e4c58f) !important;
-  border:1px solid rgba(116,75,38,.24) !important;
-  box-shadow:
-    0 24px 45px rgba(0,0,0,.42),
-    inset 0 1px 0 rgba(255,255,255,.45) !important;
-  color:#24150b !important;
-  transform:rotate(-1.5deg) !important;
-  overflow:visible !important;
+/* The Authentic Vintage Note Card */
+.vintage-note {
+  position: relative;
+  width: 280px;
+  padding: 25px;
+  /* Aged paper gradient (warm sepia/cream tones) */
+  background: linear-gradient(135deg, #f4ecd8 0%, #e6d5b8 100%);
+  border: 1px solid #d4be96;
+  border-radius: 2px;
+  /* Soft, realistic paper shadow */
+  box-shadow: 2px 8px 20px rgba(66, 42, 19, 0.15);
+  /* Slight rotation for that hand-placed feel */
+  transform: rotate(-3deg);
+  font-family: 'Courier Prime', monospace;
+  color: #3e2723; /* Dark espresso brown instead of harsh black */
+  overflow: hidden;
 }
 
-.bookish-thought-card::before{
-  content:"" !important;
-  position:absolute !important;
-  top:-18px !important;
-  left:50% !important;
-  transform:translateX(-50%) rotate(-2deg) !important;
-  width:100px !important;
-  height:30px !important;
-  background:rgba(245,222,175,.68) !important;
-  clip-path:polygon(
-    0 14%, 8% 0, 18% 12%, 30% 0,
-    44% 10%, 58% 0, 72% 12%, 86% 0,
-    100% 14%, 94% 100%, 80% 88%, 66% 100%,
-    52% 90%, 38% 100%, 24% 88%, 10% 100%
-  ) !important;
-  opacity:.86 !important;
-  box-shadow:0 8px 18px rgba(0,0,0,.18) !important;
+/* Creating the Real Masking Tape */
+.vintage-note::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%) rotate(2deg);
+  width: 110px;
+  height: 32px;
+  /* Semi-transparent warm brown masking tape */
+  background-color: rgba(210, 180, 140, 0.65);
+  backdrop-filter: blur(1px);
+  /* Torn tape edge effect using a jagged clip-path */
+  clip-path: polygon(
+    0% 15%, 5% 0%, 10% 12%, 15% 3%, 20% 15%, 25% 2%, 30% 14%, 35% 4%, 40% 12%, 45% 1%, 50% 15%, 
+    55% 3%, 60% 11%, 65% 0%, 70% 14%, 75% 2%, 80% 13%, 85% 5%, 90% 15%, 95% 1%, 100% 12%,
+    100% 85%, 95% 100%, 90% 88%, 85% 97%, 80% 86%, 75% 99%, 70% 87%, 65% 96%, 60% 85%, 55% 98%, 
+    50% 86%, 45% 99%, 40% 88%, 35% 96%, 30% 85%, 25% 98%, 20% 86%, 15% 97%, 10% 89%, 5% 100%, 0% 88%
+  );
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 10;
 }
 
-.bookish-thought-card::after{
-  content:"" !important;
-  position:absolute !important;
-  inset:0 !important;
-  border-radius:18px !important;
-  pointer-events:none !important;
-  background:repeating-linear-gradient(
-    0deg,
-    rgba(100,60,25,.04) 0 1px,
-    transparent 1px 18px
-  ) !important;
+/* Typewriter Typography Styling */
+.typewriter-text h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  border-bottom: 1px dashed rgba(62, 39, 35, 0.2);
+  padding-bottom: 5px;
+  color: #5c3a21;
 }
 
-.bookish-thought-card .thought-label{
-  position:relative !important;
-  z-index:2 !important;
-  margin-bottom:18px !important;
-  font-size:.78rem !important;
-  letter-spacing:.22em !important;
-  color:#6f4324 !important;
-  font-weight:700 !important;
+.typewriter-text p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 700; /* Bold looks more like a hard ribbon strike */
+  letter-spacing: -0.5px; /* Mimics tight typewriter spacing */
 }
 
-.bookish-thought-card p{
-  position:relative !important;
-  z-index:2 !important;
-  font-size:1.7rem !important;
-  line-height:1.18 !important;
-  color:#1f1209 !important;
-}
-
-.bookish-thought-card .thought-heart{
-  position:relative !important;
-  z-index:2 !important;
-  margin-top:24px !important;
-  font-size:2.1rem !important;
-  color:#8b4329 !important;
+/* Faint Ink Smudge Effect */
+.ink-smudge {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  width: 40px;
+  height: 25px;
+  background: radial-gradient(circle, rgba(62, 39, 35, 0.04) 0%, transparent 70%);
+  transform: rotate(15deg);
+  pointer-events: none;
 }
