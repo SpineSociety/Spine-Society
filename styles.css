@@ -4580,119 +4580,130 @@ font-size:1.15rem;
   letter-spacing:.02em;
   color:var(--ink);
 }
-/* ==========================================
-   TODAY'S BOOKISH THOUGHT
-========================================== */
+/* ================================
+   TODAY'S BOOKISH THOUGHT CARD
+   Vintage aged paper version
+================================ */
 
 .bookish-thought-card{
-    position:relative;
-    width:min(88%,360px);
-    margin:28px auto 0;
-    padding:34px 26px 24px;
+  position:relative !important;
+  z-index:4 !important;
 
-    background:
-      radial-gradient(circle at 20% 15%,rgba(255,247,224,.55),transparent 30%),
-      repeating-linear-gradient(
-        0deg,
-        rgba(96,60,30,.04) 0 1px,
-        transparent 1px 18px
-      ),
-      linear-gradient(180deg,#ead6ab,#d8bb85);
+  width:min(84vw, 390px) !important;
+  max-width:390px !important;
 
-    border:1px solid rgba(92,63,32,.28);
-    border-radius:8px;
+  margin:-8px auto 0 !important;
+  padding:30px 26px 26px !important;
 
-    transform:rotate(-3deg);
+  border-radius:16px !important;
 
-    box-shadow:
-      0 18px 40px rgba(0,0,0,.28),
-      inset 0 1px 0 rgba(255,248,225,.55);
+  transform:rotate(-2.5deg) !important;
+  transform-origin:center;
 
-    overflow:visible;
+  color:#2a170c !important;
+
+  background:
+    radial-gradient(circle at 18% 78%, rgba(55,35,20,.22) 0 18px, transparent 44px),
+    radial-gradient(circle at 82% 82%, rgba(95,55,25,.16) 0 36px, transparent 70px),
+    radial-gradient(circle at 72% 26%, rgba(70,42,20,.18) 0 5px, transparent 12px),
+    radial-gradient(circle at 35% 14%, rgba(70,42,20,.12) 0 3px, transparent 8px),
+    radial-gradient(circle at 92% 18%, rgba(45,28,18,.20) 0 4px, transparent 11px),
+    repeating-linear-gradient(
+      0deg,
+      rgba(80,60,38,.08) 0 1px,
+      transparent 1px 22px
+    ),
+    linear-gradient(180deg, #ead4a4, #d7b87d) !important;
+
+  border:1px solid rgba(95,58,28,.34) !important;
+
+  box-shadow:
+    0 26px 45px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,246,215,.38),
+    inset 0 -16px 34px rgba(85,48,22,.12) !important;
+
+  overflow:visible !important;
 }
 
-/* Tape */
-
+/* torn masking tape */
 .bookish-thought-card::before{
-    content:"";
+  content:"";
+  position:absolute;
+  top:-18px;
+  left:50%;
+  transform:translateX(-50%) rotate(2deg);
 
-    position:absolute;
-    top:-18px;
-    left:50%;
+  width:112px;
+  height:34px;
 
-    width:110px;
-    height:34px;
+  background:
+    radial-gradient(circle at 24% 40%, rgba(80,52,27,.12) 0 2px, transparent 5px),
+    radial-gradient(circle at 70% 65%, rgba(80,52,27,.10) 0 3px, transparent 7px),
+    linear-gradient(180deg, rgba(232,202,144,.72), rgba(174,128,69,.52));
 
-    transform:translateX(-50%) rotate(3deg);
+  clip-path:polygon(
+    0 18%, 7% 0, 15% 14%, 25% 3%,
+    36% 12%, 48% 0, 60% 10%, 74% 2%,
+    86% 13%, 100% 4%, 94% 100%,
+    82% 88%, 69% 100%, 56% 91%,
+    42% 100%, 28% 88%, 14% 100%, 0 86%
+  );
 
-    background:
-      repeating-linear-gradient(
-        90deg,
-        rgba(120,86,45,.08) 0 4px,
-        transparent 4px 8px
-      ),
-      linear-gradient(
-        rgba(224,194,139,.78),
-        rgba(183,138,82,.55)
-      );
+  opacity:.82;
+  backdrop-filter:blur(1px);
+  box-shadow:0 8px 18px rgba(0,0,0,.20);
+}
 
-    opacity:.88;
+/* paper grime overlay */
+.bookish-thought-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  pointer-events:none;
 
-    clip-path:polygon(
-      0 15%,
-      8% 0,
-      16% 12%,
-      24% 0,
-      34% 12%,
-      48% 0,
-      60% 13%,
-      72% 0,
-      84% 14%,
-      100% 8%,
-      95% 100%,
-      84% 86%,
-      72% 100%,
-      58% 88%,
-      46% 100%,
-      32% 86%,
-      18% 100%,
-      6% 84%
-    );
+  background:
+    radial-gradient(circle at 12% 20%, rgba(60,38,18,.12) 0 2px, transparent 6px),
+    radial-gradient(circle at 88% 52%, rgba(60,38,18,.10) 0 3px, transparent 9px),
+    radial-gradient(circle at 48% 88%, rgba(60,38,18,.08) 0 4px, transparent 11px),
+    linear-gradient(90deg, rgba(90,55,25,.10), transparent 18%, transparent 82%, rgba(90,55,25,.10));
 
-    box-shadow:0 5px 14px rgba(0,0,0,.16);
+  opacity:.7;
 }
 
 .thought-label{
-    margin:0 0 18px;
+  position:relative;
+  z-index:1;
 
-    font-family:"Courier Prime",monospace;
-    font-size:.72rem;
-    letter-spacing:.14em;
-    text-transform:uppercase;
+  margin-bottom:18px;
 
-    color:#7a4f2b;
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:.78rem !important;
+  letter-spacing:.18em !important;
+  text-transform:uppercase;
+  color:#6b3f20 !important;
 }
 
-.thought-text{
-    margin:0;
+.bookish-thought-card p{
+  position:relative;
+  z-index:1;
 
-    font-family:"Courier Prime",monospace;
-    font-size:1.12rem;
-    line-height:1.55;
+  margin:0;
 
-    letter-spacing:-.02em;
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:1.05rem !important;
+  line-height:1.55 !important;
+  letter-spacing:-.02em;
 
-    color:#2f1c11;
+  color:#2b180c !important;
+  text-shadow:0 .4px 0 rgba(70,35,15,.20);
 }
 
 .thought-heart{
-    margin-top:18px;
+  position:relative;
+  z-index:1;
 
-    text-align:center;
-
-    font-size:1.35rem;
-
-    color:#7b4824;
-
-    font-family:"Courier Prime",monospace;
+  margin-top:22px;
+  font-size:1.65rem !important;
+  color:#7d3d25 !important;
 }
