@@ -4923,3 +4923,132 @@ font-size:1.15rem;
 
     background:#6f4d2f;
 }
+/* ==========================================
+   LIBRARIAN'S NOTE — MOBILE SIZE FIX
+========================================== */
+
+.librarian-note-card{
+  width:min(86vw, 360px) !important;
+  max-width:360px !important;
+
+  min-height:0 !important;
+  height:auto !important;
+
+  margin:16px auto 0 !important;
+  padding:24px 24px 20px !important;
+
+  border-radius:18px !important;
+  transform:rotate(-1.2deg) !important;
+
+  overflow:visible !important;
+}
+
+/* Smaller decorative pin */
+.librarian-note-pin{
+  width:15px !important;
+  height:15px !important;
+  top:-7px !important;
+}
+
+/* Compact header */
+.librarian-note-header{
+  gap:9px !important;
+  margin-bottom:8px !important;
+}
+
+.librarian-note-icon{
+  font-size:15px !important;
+}
+
+.librarian-note-title{
+  font-size:clamp(1.35rem, 6vw, 1.7rem) !important;
+  line-height:1 !important;
+}
+
+.librarian-note-divider{
+  margin:10px 0 14px !important;
+}
+
+/* Prompt category */
+.librarian-note-category{
+  margin:0 0 12px !important;
+
+  font-size:clamp(1.15rem, 5.2vw, 1.45rem) !important;
+  line-height:1.1 !important;
+}
+
+/* Main typewriter question */
+.librarian-note-prompt{
+  margin:0 0 12px !important;
+
+  font-size:clamp(1.15rem, 5.3vw, 1.45rem) !important;
+  line-height:1.3 !important;
+
+  letter-spacing:-0.02em !important;
+  overflow-wrap:anywhere !important;
+}
+
+/* Small closing instruction */
+.librarian-note-action{
+  margin:0 !important;
+  padding-right:34px !important;
+
+  font-size:clamp(.9rem, 3.7vw, 1.05rem) !important;
+  line-height:1.25 !important;
+}
+
+/* Heart placement */
+.librarian-note-heart{
+  right:20px !important;
+  bottom:17px !important;
+  font-size:1.55rem !important;
+}
+
+/* Rotation dots */
+.librarian-note-dots{
+  margin-top:14px !important;
+  gap:6px !important;
+}
+
+/* Keep the whole login layout inside the screen */
+.login-content{
+  justify-content:flex-start !important;
+
+  height:100dvh !important;
+  overflow-y:auto !important;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    18px
+    max(110px, env(safe-area-inset-bottom)) !important;
+}
+
+/* Restore a manageable login-card size */
+.reading-journal-card{
+  flex-shrink:0 !important;
+  margin-top:92px !important;
+  transform:scale(.82) !important;
+}
+
+/* Keep the note from shrinking */
+.librarian-note-card{
+  flex-shrink:0 !important;
+}
+
+/* Extra-small phones */
+@media (max-height:760px){
+  .reading-journal-card{
+    margin-top:55px !important;
+    transform:scale(.75) !important;
+  }
+
+  .librarian-note-card{
+    width:min(84vw, 340px) !important;
+    margin-top:-12px !important;
+    padding:21px 21px 18px !important;
+  }
+
+  .librarian-note-prompt{
+    font-size:1.12rem !important;
+  }
+}
