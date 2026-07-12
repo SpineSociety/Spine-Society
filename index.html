@@ -133,18 +133,54 @@ aria-hidden="true">
 
     </div>
 
-    <aside class="bookish-thought-card" aria-label="Today's Bookish Thought">
-  <div class="thought-smudge-one"></div>
-  <div class="thought-smudge-two"></div>
-  <div class="vintage-fingerprint"></div>
+    <!-- Rotating Librarian's Note -->
+<aside
+  class="librarian-note-card"
+  aria-labelledby="librarianNoteCategory"
+  aria-live="polite"
+>
+  <div class="librarian-note-pin" aria-hidden="true"></div>
 
-  <p class="thought-label">Today's Bookish Thought</p>
+  <div class="librarian-note-header">
+    <span class="librarian-note-icon" aria-hidden="true">▤</span>
 
-  <p class="thought-text">
-    Which character would you invite to your reading circle?
-  </p>
+    <p class="librarian-note-title">
+      Librarian’s Note
+    </p>
+  </div>
 
-  <p class="thought-heart">♡</p>
+  <div class="librarian-note-divider" aria-hidden="true"></div>
+
+  <div id="librarianNoteContent" class="librarian-note-content">
+    <p
+      id="librarianNoteCategory"
+      class="librarian-note-category"
+    >
+      Today’s Bookish Thought
+    </p>
+
+    <p
+      id="librarianNotePrompt"
+      class="librarian-note-prompt"
+    >
+      Which character would you invite to your reading circle?
+    </p>
+
+    <p
+      id="librarianNoteAction"
+      class="librarian-note-action"
+    >
+      Leave your answer in today’s discussion.
+    </p>
+  </div>
+
+  <div
+    id="librarianNoteDots"
+    class="librarian-note-dots"
+    aria-label="Rotating prompt indicator"
+  ></div>
+
+  <span class="librarian-note-heart" aria-hidden="true">♡</span>
 </aside>
 
 </div>
