@@ -281,7 +281,7 @@ window.loginWithEmail = async function () {
   }
 };
 
-window.loginWithGoogle = async function () {
+onclick="loginWithGoogle()"
   showLibraryLoader();
 
   try {
