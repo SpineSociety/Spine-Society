@@ -3847,109 +3847,212 @@ function startFloatingPages() {
 startFloatingPages();
 
 /* ==========================================
-   ROTATING LIBRARIAN'S NOTE
+   PREMIUM DAILY NOTE ROTATION
 ========================================== */
 
-const librarianNotes = [
+const premiumDailyNotes = [
   {
-    category: "Today’s Bookish Thought",
+    day: "Monday",
+    icon: "📖",
+    title: "Librarian’s Note",
     prompt: "Which character would you invite to your reading circle?",
-    action: "Leave your answer in today’s discussion."
+    secondary: "Leave your answer in today’s discussion.",
+    theme: "note-theme-librarian",
+    showReaders: false
   },
   {
-    category: "Coffee Break Question",
-    prompt: "Which fictional world would you visit for one afternoon?",
-    action: "Share your answer with your reading circle."
+    day: "Tuesday",
+    icon: "☕",
+    title: "Café Recommendation",
+    prompt: "Brew a cup and begin the chapter you keep putting off.",
+    secondary: "Ten quiet pages still count as a reading night.",
+    theme: "note-theme-cafe",
+    showReaders: false
   },
   {
-    category: "Reader Reflection",
-    prompt: "Which book has stayed with you long after the final chapter?",
-    action: "Tell your circle why it mattered to you."
+    day: "Wednesday",
+    icon: "💬",
+    title: "Readers Are Discussing",
+    prompt: "“I did not see that twist coming.”",
+    secondary: "The latest conversation is waiting inside your circle.",
+    theme: "note-theme-discussion",
+    showReaders: true,
+    readerText: "3 readers joined the conversation"
   },
   {
-    category: "Between the Pages",
-    prompt: "Which character deserved a completely different ending?",
-    action: "Add your opinion to today’s discussion."
+    day: "Thursday",
+    icon: "📚",
+    title: "Hidden Gem",
+    prompt: "Love a tense, unreliable narrator?",
+    secondary: "Choose a lesser-known thriller from your collection tonight.",
+    theme: "note-theme-hidden-gem",
+    showReaders: false
   },
   {
-    category: "Weekend Reading Prompt",
-    prompt: "What book would you happily read again for the first time?",
-    action: "Leave your pick for the other readers."
+    day: "Friday",
+    icon: "🎲",
+    title: "Weekend Challenge",
+    prompt: "Read somewhere you have never opened a book before.",
+    secondary: "Bonus points for fresh air, rain, or a warm drink.",
+    theme: "note-theme-challenge",
+    showReaders: false
+  },
+  {
+    day: "Saturday",
+    icon: "✨",
+    title: "Literary Fortune",
+    prompt: "The next book you open may surprise you.",
+    secondary: "Trust the shelf that catches your attention first.",
+    theme: "note-theme-fortune",
+    showReaders: false
+  },
+  {
+    day: "Sunday",
+    icon: "🕯️",
+    title: "Cozy Ritual",
+    prompt: "Light a candle. Put your phone away. Read one chapter.",
+    secondary: "Let the week end somewhere between the pages.",
+    theme: "note-theme-ritual",
+    showReaders: false
   }
 ];
 
-let librarianNoteIndex = 0;
-let librarianNoteTimer = null;
+let dailyNoteIndex = new Date().getDay() - 1;
+let dailyNoteTimer = null;
+let dailyNoteIsAnimating = false;
 
-function renderLibrarianNote(index) {
-  const category = document.getElementById("librarianNoteCategory");
-  const prompt = document.getElementById("librarianNotePrompt");
-  const action = document.getElementById("librarianNoteAction");
-  const content = document.getElementById("librarianNoteContent");
-  const dots = document.getElementById("librarianNoteDots");
+if (dailyNoteIndex < 0) {
+  dailyNoteIndex = 6;
+}
 
-  if (!category || !prompt || !action || !content) {
+function updateDailyNoteDots() {
+  const dotsContainer = document.getElementById("dailyNoteDots");
+
+  if (!dotsContainer) return;
+
+  dotsContainer.innerHTML = premiumDailyNotes
+    .map((note, index) => {
+      const activeClass =
+        index === dailyNoteIndex
+          ? " daily-note-dot-active"
+          : "";
+
+      return `
+        <button
+          type="button"
+          class="daily-note-dot${activeClass}"
+          aria-label="Show ${note.day} note"
+          onclick="showPremiumDailyNote(${index})"
+        ></button>
+      `;
+    })
+    .join("");
+}
+
+function applyDailyNoteContent(note, index) {
+  const card = document.getElementById("dailyNoteCard");
+  const icon = document.getElementById("dailyNoteIcon");
+  const eyebrow = document.getElementById("dailyNoteEyebrow");
+  const title = document.getElementById("dailyNoteTitle");
+  const number = document.getElementById("dailyNoteNumber");
+  const prompt = document.getElementById("dailyNotePrompt");
+  const secondary = document.getElementById("dailyNoteSecondary");
+  const readers = document.getElementById("dailyNoteReaders");
+  const readerText = document.getElementById("dailyNoteReaderText");
+
+  if (
+    !card ||
+    !icon ||
+    !eyebrow ||
+    !title ||
+    !number ||
+    !prompt ||
+    !secondary ||
+    !readers
+  ) {
     return;
   }
 
-  const note = librarianNotes[index];
+  card.className = `daily-note-card ${note.theme}`;
 
-  content.classList.add("is-changing");
+  icon.textContent = note.icon;
+  eyebrow.textContent = note.day;
+  title.textContent = note.title;
+  number.textContent = String(index + 1).padStart(2, "0");
+  prompt.textContent = note.prompt;
+  secondary.textContent = note.secondary;
 
-  setTimeout(() => {
-    category.textContent = note.category;
-    prompt.textContent = note.prompt;
-    action.textContent = note.action;
+  readers.hidden = !note.showReaders;
 
-    content.classList.remove("is-changing");
-  }, 250);
-
-  if (dots) {
-    dots.innerHTML = librarianNotes
-      .map((_, dotIndex) => {
-        const activeClass =
-          dotIndex === index ? " librarian-note-dot-active" : "";
-
-        return `
-          <button
-            type="button"
-            class="librarian-note-dot${activeClass}"
-            aria-label="Show Librarian's Note ${dotIndex + 1}"
-            onclick="showLibrarianNote(${dotIndex})"
-          ></button>
-        `;
-      })
-      .join("");
+  if (note.showReaders && readerText) {
+    readerText.textContent =
+      note.readerText || "Readers are talking about this.";
   }
+
+  updateDailyNoteDots();
 }
 
-window.showLibrarianNote = function (index) {
-  librarianNoteIndex = index;
-  renderLibrarianNote(librarianNoteIndex);
-  restartLibrarianNoteRotation();
+function animateDailyNoteChange(index) {
+  const paper = document.getElementById("dailyNotePaper");
+
+  if (!paper || dailyNoteIsAnimating) return;
+
+  dailyNoteIsAnimating = true;
+
+  paper.classList.remove(
+    "note-paper-enter",
+    "note-paper-leave"
+  );
+
+  paper.classList.add("note-paper-leave");
+
+  window.setTimeout(() => {
+    dailyNoteIndex =
+      (index + premiumDailyNotes.length) %
+      premiumDailyNotes.length;
+
+    applyDailyNoteContent(
+      premiumDailyNotes[dailyNoteIndex],
+      dailyNoteIndex
+    );
+
+    paper.classList.remove("note-paper-leave");
+
+    void paper.offsetWidth;
+
+    paper.classList.add("note-paper-enter");
+
+    window.setTimeout(() => {
+      paper.classList.remove("note-paper-enter");
+      dailyNoteIsAnimating = false;
+    }, 720);
+  }, 520);
+}
+
+window.showPremiumDailyNote = function (index) {
+  animateDailyNoteChange(index);
+  restartPremiumDailyNoteTimer();
 };
 
-function rotateLibrarianNote() {
-  librarianNoteIndex =
-    (librarianNoteIndex + 1) % librarianNotes.length;
-
-  renderLibrarianNote(librarianNoteIndex);
+function rotatePremiumDailyNote() {
+  animateDailyNoteChange(dailyNoteIndex + 1);
 }
 
-function restartLibrarianNoteRotation() {
-  if (librarianNoteTimer) {
-    clearInterval(librarianNoteTimer);
-  }
+let dailyNoteTimer = null;
 
-  librarianNoteTimer = setInterval(
-    rotateLibrarianNote,
-    7000
+function restartPremiumDailyNoteTimer() {
+  clearInterval(dailyNoteTimer);
+
+  dailyNoteTimer = setInterval(() => {
+    rotatePremiumDailyNote();
+  }, 10000); // Rotate every 10 seconds
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyDailyNoteContent(
+    premiumDailyNotes[dailyNoteIndex],
+    dailyNoteIndex
   );
-}
 
-function startLibrarianNoteRotation() {
-  renderLibrarianNote(librarianNoteIndex);
-  restartLibrarianNoteRotation();
-}
-
-startLibrarianNoteRotation();
+  restartPremiumDailyNoteTimer();
+});
