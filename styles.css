@@ -5052,3 +5052,307 @@ font-size:1.15rem;
     font-size:1.12rem !important;
   }
 }
+
+/* ==========================================
+   PREMIUM PINNED NOTE SWAP ANIMATION
+========================================== */
+
+.daily-note-card{
+  position:relative;
+  perspective:1100px;
+  transform-style:preserve-3d;
+}
+
+/* The paper itself moves */
+.daily-note-paper{
+  position:relative;
+  z-index:2;
+
+  transform-origin:50% 8%;
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+
+  will-change:
+    transform,
+    opacity,
+    filter;
+
+  transition:
+    transform .72s cubic-bezier(.22, 1, .36, 1),
+    opacity .42s ease,
+    filter .42s ease;
+}
+
+/* Soft curl and lift as the old note leaves */
+.daily-note-paper.note-paper-leave{
+  animation:
+    dailyNoteLiftAway
+    .52s
+    cubic-bezier(.55, .02, .72, .45)
+    both;
+}
+
+/* Fresh note rises from underneath and settles */
+.daily-note-paper.note-paper-enter{
+  animation:
+    dailyNoteSettleIn
+    .72s
+    cubic-bezier(.18, .89, .32, 1.18)
+    both;
+}
+
+/* Keeps the pin visually above the moving paper */
+.daily-note-pin{
+  position:absolute;
+  top:-12px;
+  left:50%;
+  z-index:20;
+
+  width:34px;
+  height:34px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 28%,
+      rgba(255,247,211,.95) 0 5%,
+      rgba(224,188,105,.95) 18%,
+      rgba(155,106,40,.98) 58%,
+      rgba(82,48,18,.98) 100%
+    );
+
+  border:1px solid rgba(74,42,14,.72);
+
+  box-shadow:
+    0 3px 5px rgba(0,0,0,.38),
+    0 10px 18px rgba(0,0,0,.18),
+    inset 0 1px 2px rgba(255,255,255,.58);
+
+  pointer-events:none;
+}
+
+/* Tiny central dimple for a real pushpin look */
+.daily-note-pin::before{
+  content:"";
+  position:absolute;
+  inset:9px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle at 38% 30%,
+      rgba(255,245,205,.72),
+      rgba(105,63,22,.86) 72%
+    );
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,.42),
+    0 1px 2px rgba(0,0,0,.35);
+}
+
+/* Small shadow where the pin presses into the paper */
+.daily-note-pin::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-7px;
+
+  width:46px;
+  height:12px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:rgba(55,31,13,.22);
+  filter:blur(5px);
+
+  z-index:-1;
+}
+
+/* Old paper lifts, curls, and leaves */
+@keyframes dailyNoteLiftAway{
+  0%{
+    opacity:1;
+    transform:
+      translate3d(0, 0, 0)
+      rotateX(0deg)
+      rotateZ(0deg)
+      scale(1);
+
+    filter:
+      brightness(1)
+      drop-shadow(0 12px 18px rgba(0,0,0,.22));
+  }
+
+  30%{
+    opacity:1;
+    transform:
+      translate3d(0, -7px, 18px)
+      rotateX(8deg)
+      rotateZ(-1.8deg)
+      scale(.995);
+
+    filter:
+      brightness(1.03)
+      drop-shadow(0 18px 24px rgba(0,0,0,.28));
+  }
+
+  68%{
+    opacity:.72;
+    transform:
+      translate3d(-8px, -28px, 42px)
+      rotateX(20deg)
+      rotateZ(-6deg)
+      scale(.97);
+
+    filter:
+      brightness(1.06)
+      blur(.15px)
+      drop-shadow(10px 24px 28px rgba(0,0,0,.32));
+  }
+
+  100%{
+    opacity:0;
+    transform:
+      translate3d(-22px, -54px, 72px)
+      rotateX(32deg)
+      rotateZ(-10deg)
+      scale(.92);
+
+    filter:
+      brightness(1.08)
+      blur(.7px)
+      drop-shadow(16px 30px 34px rgba(0,0,0,.20));
+  }
+}
+
+/* New paper starts beneath the pin and settles naturally */
+@keyframes dailyNoteSettleIn{
+  0%{
+    opacity:0;
+    transform:
+      translate3d(16px, -34px, 54px)
+      rotateX(-24deg)
+      rotateZ(7deg)
+      scale(.94);
+
+    filter:
+      brightness(1.08)
+      blur(.65px)
+      drop-shadow(-10px 25px 28px rgba(0,0,0,.20));
+  }
+
+  44%{
+    opacity:1;
+    transform:
+      translate3d(-3px, 5px, 8px)
+      rotateX(5deg)
+      rotateZ(-2deg)
+      scale(1.015);
+
+    filter:
+      brightness(1.02)
+      blur(0)
+      drop-shadow(0 18px 24px rgba(0,0,0,.28));
+  }
+
+  68%{
+    transform:
+      translate3d(2px, -2px, 3px)
+      rotateX(-2deg)
+      rotateZ(.8deg)
+      scale(.996);
+  }
+
+  84%{
+    transform:
+      translate3d(-1px, 1px, 1px)
+      rotateX(1deg)
+      rotateZ(-.35deg)
+      scale(1.002);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translate3d(0, 0, 0)
+      rotateX(0deg)
+      rotateZ(0deg)
+      scale(1);
+
+    filter:
+      brightness(1)
+      blur(0)
+      drop-shadow(0 12px 18px rgba(0,0,0,.22));
+  }
+}
+
+/* Makes the paper corners feel slightly curled during movement */
+.daily-note-paper::after{
+  content:"";
+  position:absolute;
+  inset:auto 8px -7px;
+
+  height:18px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(62,35,15,.24),
+      transparent 68%
+    );
+
+  filter:blur(7px);
+  opacity:.58;
+
+  pointer-events:none;
+
+  transition:
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+.daily-note-paper.note-paper-leave::after{
+  opacity:.9;
+  transform:translateY(8px) scaleX(.88);
+}
+
+.daily-note-paper.note-paper-enter::after{
+  animation:dailyNoteCornerShadow .72s ease both;
+}
+
+@keyframes dailyNoteCornerShadow{
+  0%{
+    opacity:.18;
+    transform:translateY(12px) scaleX(.72);
+  }
+
+  55%{
+    opacity:.82;
+    transform:translateY(4px) scaleX(1.04);
+  }
+
+  100%{
+    opacity:.58;
+    transform:translateY(0) scaleX(1);
+  }
+}
+
+/* Respect accessibility settings */
+@media (prefers-reduced-motion: reduce){
+  .daily-note-paper,
+  .daily-note-paper.note-paper-leave,
+  .daily-note-paper.note-paper-enter{
+    animation:none !important;
+    transition:opacity .2s ease !important;
+    transform:none !important;
+    filter:none !important;
+  }
+}
