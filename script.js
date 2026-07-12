@@ -3845,6 +3845,7 @@ function startFloatingPages() {
 }
 
 startFloatingPages();
+
 /* ==========================================
    ROTATING LIBRARIAN'S NOTE
 ========================================== */
@@ -3857,4 +3858,98 @@ const librarianNotes = [
   },
   {
     category: "Coffee Break Question",
-    prompt: "Which
+    prompt: "Which fictional world would you visit for one afternoon?",
+    action: "Share your answer with your reading circle."
+  },
+  {
+    category: "Reader Reflection",
+    prompt: "Which book has stayed with you long after the final chapter?",
+    action: "Tell your circle why it mattered to you."
+  },
+  {
+    category: "Between the Pages",
+    prompt: "Which character deserved a completely different ending?",
+    action: "Add your opinion to today’s discussion."
+  },
+  {
+    category: "Weekend Reading Prompt",
+    prompt: "What book would you happily read again for the first time?",
+    action: "Leave your pick for the other readers."
+  }
+];
+
+let librarianNoteIndex = 0;
+let librarianNoteTimer = null;
+
+function renderLibrarianNote(index) {
+  const category = document.getElementById("librarianNoteCategory");
+  const prompt = document.getElementById("librarianNotePrompt");
+  const action = document.getElementById("librarianNoteAction");
+  const content = document.getElementById("librarianNoteContent");
+  const dots = document.getElementById("librarianNoteDots");
+
+  if (!category || !prompt || !action || !content) {
+    return;
+  }
+
+  const note = librarianNotes[index];
+
+  content.classList.add("is-changing");
+
+  setTimeout(() => {
+    category.textContent = note.category;
+    prompt.textContent = note.prompt;
+    action.textContent = note.action;
+
+    content.classList.remove("is-changing");
+  }, 250);
+
+  if (dots) {
+    dots.innerHTML = librarianNotes
+      .map((_, dotIndex) => {
+        const activeClass =
+          dotIndex === index ? " librarian-note-dot-active" : "";
+
+        return `
+          <button
+            type="button"
+            class="librarian-note-dot${activeClass}"
+            aria-label="Show Librarian's Note ${dotIndex + 1}"
+            onclick="showLibrarianNote(${dotIndex})"
+          ></button>
+        `;
+      })
+      .join("");
+  }
+}
+
+window.showLibrarianNote = function (index) {
+  librarianNoteIndex = index;
+  renderLibrarianNote(librarianNoteIndex);
+  restartLibrarianNoteRotation();
+};
+
+function rotateLibrarianNote() {
+  librarianNoteIndex =
+    (librarianNoteIndex + 1) % librarianNotes.length;
+
+  renderLibrarianNote(librarianNoteIndex);
+}
+
+function restartLibrarianNoteRotation() {
+  if (librarianNoteTimer) {
+    clearInterval(librarianNoteTimer);
+  }
+
+  librarianNoteTimer = setInterval(
+    rotateLibrarianNote,
+    7000
+  );
+}
+
+function startLibrarianNoteRotation() {
+  renderLibrarianNote(librarianNoteIndex);
+  restartLibrarianNoteRotation();
+}
+
+startLibrarianNoteRotation();
