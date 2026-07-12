@@ -1093,17 +1093,7 @@ function renderPersonalBookCard(book) {
     </div>
   `;
 }
-window.updateBookStatus = async function (bookId, status) {
-  await update(
-    ref(database, "users/" + currentUser.uid + "/library/" + bookId),
-    {
-      status,
-      updatedAt: Date.now()
-    }
-  );
 
-  showToast("Book status updated.");
-};
 window.openBookModal = function (bookId) {
   const modal = document.getElementById("bookModal");
   const body = document.getElementById("bookModalBody");
@@ -1476,19 +1466,59 @@ window.saveEditedBook = async function () {
   showToast("Book updated.");
 };
 
-window.updateBookStatus = async function (bookId, type, status) {
+window.updateBookStatus = async function (
+  bookId,
+  typeOrStatus,
+  optionalStatus
+) {
+  if (!currentUser) {
+    showToast("Please sign in first.", "error");
+    return;
+  }
+
+  const isThreeArgumentCall =
+    typeof optionalStatus !== "undefined";
+
+  const type = isThreeArgumentCall
+    ? typeOrStatus
+    : "library";
+
+  const status = isThreeArgumentCall
+    ? optionalStatus
+    : typeOrStatus;
+
+  if (!bookId || !status) {
+    showToast("Could not update the book status.", "error");
+    return;
+  }
+
+  if (type === "collection" && !window.currentClubId) {
+    showToast("Open a reading circle first.", "error");
+    return;
+  }
+
   const path =
     type === "collection"
-      ? "clubs/" + window.currentClubId + "/collection/" + bookId
-      : "users/" + currentUser.uid + "/library/" + bookId;
+      ? `clubs/${window.currentClubId}/collection/${bookId}`
+      : `users/${currentUser.uid}/library/${bookId}`;
 
-  await update(ref(database, path), {
-    status,
-    updatedAt: Date.now()
-  });
+  try {
+    await update(ref(database, path), {
+      status,
+      updatedAt: Date.now()
+    });
 
-  closeBookModal();
-  showToast("Book moved to " + status + ".");
+    const modal = document.getElementById("bookModal");
+
+    if (modal && modal.style.display === "flex") {
+      closeBookModal();
+    }
+
+    showToast(`Book moved to ${status}.`);
+  } catch (error) {
+    console.error("Book status update failed:", error);
+    showToast("The book status could not be updated.", "error");
+  }
 };
 function listenToNextRead(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
