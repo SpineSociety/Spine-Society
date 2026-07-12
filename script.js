@@ -2216,28 +2216,59 @@ window.updateClubProgress = async function () {
   alert("Club progress updated.");
 };
 window.postDiscussionComment = async function () {
-  if (!window.currentClubId) return alert("Open a circle first.");
+  if (!window.currentClubId) {
+    return alert("Open a circle first.");
+  }
+
+  if (!currentUser) {
+    return alert("Please log in first.");
+  }
 
   const input = document.getElementById("discussionInput");
+
+  if (!input) {
+    return alert("Discussion input could not be found.");
+  }
+
   const message = input.value.trim();
 
-  if (!message) return alert("Write a note first.");
-
-  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
-  const userData = userSnapshot.val();
-
-  await set(
-  ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
-  {
-    name,
-    avatar,
-    amount,
-    bookTitle,
-    checkedInAt: Date.now()
+  if (!message) {
+    return alert("Write a note first.");
   }
-);
 
-  input.value = "";
+  try {
+    const userSnapshot = await get(
+      ref(database, "users/" + currentUser.uid)
+    );
+
+    const userData = userSnapshot.val() || {};
+
+    const commentRef = push(
+      ref(
+        database,
+        "clubs/" + window.currentClubId + "/discussion"
+      )
+    );
+
+    await set(commentRef, {
+      message,
+      authorId: currentUser.uid,
+      authorAlias:
+        userData.username ||
+        currentUser.displayName ||
+        currentUser.email ||
+        "Reader",
+      authorAvatar: userData.avatar || "📚",
+      authorAvatarPhoto: userData.avatarPhoto || "",
+      createdAt: Date.now()
+    });
+
+    input.value = "";
+    showToast("Note posted.");
+  } catch (error) {
+    console.error("Discussion post error:", error);
+    showToast("Your note could not be posted.", "error");
+  }
 };
 window.sendReadingCheckIn = async function () {
   if (!window.currentClubId) {
