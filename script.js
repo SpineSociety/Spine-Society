@@ -3845,3 +3845,16 @@ function startFloatingPages() {
 }
 
 startFloatingPages();
+/* ==========================================
+   ROTATING LIBRARIAN'S NOTE
+========================================== */
+
+const librarianNotes = [
+  {
+    category: "Today’s Bookish Thought",
+    prompt: "Which character would you invite to your reading circle?",
+    action: "Leave your answer in today’s discussion."
+  },
+  {
+    category: "Coffee Break Question",
+    prompt: "Which
