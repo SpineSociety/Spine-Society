@@ -2331,7 +2331,6 @@ window.postDiscussionCommentFromClub = async function () {
   authorAlias: userData?.username || currentUser.email || "Reader",
   authorAvatar: userData?.avatar || "📚",
 authorAvatarPhoto: userData?.avatarPhoto || "",
-authorAvatarPhoto: userData?.avatarPhoto || "",
 createdAt: Date.now()
 });
   input.value = "";
