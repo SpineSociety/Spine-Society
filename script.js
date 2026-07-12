@@ -281,7 +281,7 @@ window.loginWithEmail = async function () {
   }
 };
 
-onclick="loginWithGoogle()"
+window.loginWithGoogle = async function () {
   showLibraryLoader();
 
   try {
@@ -4038,7 +4038,6 @@ function rotatePremiumDailyNote() {
   animateDailyNoteChange(dailyNoteIndex + 1);
 }
 
-let dailyNoteTimer = null;
 
 function restartPremiumDailyNoteTimer() {
   clearInterval(dailyNoteTimer);
@@ -4048,11 +4047,21 @@ function restartPremiumDailyNoteTimer() {
   }, 10000); // Rotate every 10 seconds
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function initializePremiumDailyNote() {
   applyDailyNoteContent(
     premiumDailyNotes[dailyNoteIndex],
     dailyNoteIndex
   );
 
   restartPremiumDailyNoteTimer();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializePremiumDailyNote,
+    { once: true }
+  );
+} else {
+  initializePremiumDailyNote();
+}
