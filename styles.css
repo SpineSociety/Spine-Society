@@ -90,13 +90,16 @@ body::after {
 }
 
 .phone-frame {
+  width: 100%;
+  min-height: 100vh;
+
   border: none;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  overflow: visible;
+
+  overflow: hidden;
   isolation: isolate;
-  min-height: 100vh;
 }
 @media (min-width: 768px) {
 
