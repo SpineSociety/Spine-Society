@@ -3940,7 +3940,7 @@ body{
   min-height:100% !important;
   height:auto !important;
   overflow-x:hidden !important;
-  overflow-y:auto !important;
+  overflow-y: visible !important;
   position:static !important;
   background:#080604 !important;
   overscroll-behavior:auto !important;
