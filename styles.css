@@ -3756,7 +3756,7 @@ textarea{
 }
 @media (min-width: 768px){
   .login-bg{
-    background-size: auto 100%;
+    background-size: cover;
     background-position: center top;
     background-color: #080604;
   }
