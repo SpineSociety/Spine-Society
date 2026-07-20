@@ -3723,16 +3723,6 @@ textarea{
   touch-action:manipulation;
 }
 
-.login-scene.reading-room-login{
-  position:fixed !important;
-  inset:0 !important;
-  width:100vw !important;
-  height:100dvh !important;
-  overflow:hidden !important;
-  background:#080604 !important;
-  margin:0 !important;
-  padding:0 !important;
-}
 #authScreen {
   width: 100%;
   max-width: 430px;
