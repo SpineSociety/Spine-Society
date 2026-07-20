@@ -82,3 +82,17 @@ body::-webkit-scrollbar,
 .login-scene::-webkit-scrollbar {
   display: none;
 }
+/* Hide every scrollbar inside the login screen,
+   while keeping mouse, trackpad, and touch scrolling */
+#authScreen,
+#authScreen * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+#authScreen::-webkit-scrollbar,
+#authScreen *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
