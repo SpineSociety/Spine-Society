@@ -5356,3 +5356,40 @@ font-size:1.15rem;
     filter:none !important;
   }
 }
+/* ==========================================
+   BACKGROUND LAMP TAP AREA
+========================================== */
+
+.lamp-toggle{
+  position:absolute;
+
+  /* Temporary placement — we will adjust this next */
+  top:18%;
+  right:16%;
+
+  width:80px !important;
+  height:120px !important;
+  min-height:0 !important;
+
+  padding:0 !important;
+  margin:0 !important;
+
+  background:transparent !important;
+  border:none !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+
+  cursor:pointer;
+  z-index:20;
+
+  -webkit-tap-highlight-color:transparent;
+}
+
+.lamp-toggle:hover{
+  transform:none;
+  box-shadow:none !important;
+}
+
+.lamp-toggle:active{
+  transform:scale(.96);
+}
