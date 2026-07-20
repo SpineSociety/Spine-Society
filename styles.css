@@ -5374,8 +5374,8 @@ font-size:1.15rem;
   padding:0 !important;
   margin:0 !important;
 
-  background:transparent !important;
-  border:none !important;
+  background:rgba(255,0,0,.35) !important;
+border:2px solid red !important;
   border-radius:0 !important;
   box-shadow:none !important;
 
