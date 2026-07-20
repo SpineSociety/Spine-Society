@@ -3963,15 +3963,6 @@ body{
   background-attachment:scroll !important;
 }
 
-/* Keep login full-frame ONLY when auth screen is showing */
-#authScreen.login-scene.reading-room-login{
-  position:fixed !important;
-  inset:0 !important;
-  width:100vw !important;
-  height:100dvh !important;
-  overflow:hidden !important;
-  z-index:999 !important;
-}
 
 /* If auth screen is hidden, make sure it cannot block the app */
 #authScreen[style*="display: none"]{
