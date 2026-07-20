@@ -3740,9 +3740,19 @@ textarea{
   max-width: 430px;
   min-height: 100vh;
 
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+
   position: relative;
   overflow: hidden;
+}
+@media (min-width: 768px) {
+  #authScreen {
+    min-height: calc(100vh - 40px);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 28px;
+  }
 }
 .login-bg{
   position:absolute;
