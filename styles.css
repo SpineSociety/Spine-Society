@@ -3735,7 +3735,15 @@ textarea{
   margin:0 !important;
   padding:0 !important;
 }
+#authScreen {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
 
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
 .login-bg{
   position:absolute;
   inset:0;
@@ -3758,7 +3766,6 @@ textarea{
   .login-bg{
     background-size: cover;
     background-position: center top;
-    background-color: #080604;
   }
 }
 .bookshelf-shadow{
