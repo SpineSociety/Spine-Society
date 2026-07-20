@@ -93,7 +93,27 @@ body::after {
   isolation: isolate;
   min-height: 100vh;
 }
+@media (min-width: 768px) {
 
+  .phone-frame{
+    min-height: calc(100vh - 40px);
+
+    margin: 20px 0;
+
+    border-radius: 28px;
+
+    background: rgba(11, 8, 6, .70);
+
+    border: 1px solid rgba(200,163,106,.16);
+
+    box-shadow:
+      0 30px 80px rgba(0,0,0,.45),
+      0 0 0 1px rgba(255,255,255,.03) inset;
+
+    backdrop-filter: blur(18px);
+  }
+
+}
 .app-content {
   padding: 0 18px 92px;
 }
