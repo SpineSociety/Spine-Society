@@ -96,3 +96,9 @@ body::-webkit-scrollbar,
   height: 0 !important;
   display: none !important;
 }
+/* Final login background override */
+#authScreen.login-scene.reading-room-login {
+  background-size: 100% auto !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+}
