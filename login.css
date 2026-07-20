@@ -1,0 +1,69 @@
+/* =========================================
+   SPINE SOCIETY — CLEAN LOGIN FOUNDATION
+   ========================================= */
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #080604;
+}
+
+/* Centered mobile app container */
+#authScreen {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+
+  background: #080604;
+}
+
+/* Main login scene */
+.login-scene.reading-room-login {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.08),
+      rgba(0, 0, 0, 0.38) 55%,
+      rgba(0, 0, 0, 0.78) 100%
+    ),
+    url("cozy-library-bg.PNG");
+
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Desktop keeps the mobile app centered */
+@media (min-width: 768px) {
+  body {
+    padding: 20px 0;
+  }
+
+  #authScreen {
+    min-height: calc(100vh - 40px);
+    border-radius: 28px;
+
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+
+    overflow: hidden;
+  }
+
+  .login-scene.reading-room-login {
+    min-height: calc(100vh - 40px);
+  }
+}
