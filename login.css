@@ -102,3 +102,9 @@ body::-webkit-scrollbar,
   background-position: center top !important;
   background-repeat: no-repeat !important;
 }
+/* Prevent iPhone Safari from zooming when login fields are tapped */
+#authScreen input,
+#authScreen select,
+#authScreen textarea {
+  font-size: 16px !important;
+}
