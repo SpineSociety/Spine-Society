@@ -5363,26 +5363,36 @@ font-size:1.15rem;
 .lamp-toggle{
   position:absolute;
 
-  /* Temporary placement — we will adjust this next */
-  top:18%;
-  right:16%;
+  top:70px;
+  left:8px;
 
-  width:80px !important;
-  height:120px !important;
+  width:170px;
+  height:220px;
   min-height:0 !important;
 
-  padding:0 !important;
-  margin:0 !important;
+  padding:0;
+  margin:0;
 
   background:rgba(255,0,0,.35) !important;
-border:2px solid red !important;
-  border-radius:0 !important;
-  box-shadow:none !important;
+  border:2px solid red !important;
+  border-radius:0;
+
+  box-shadow:none;
 
   cursor:pointer;
-  z-index:20;
+
+  z-index:9999 !important;
 
   -webkit-tap-highlight-color:transparent;
+}
+
+.lamp-toggle:hover{
+  transform:none;
+  box-shadow:none;
+}
+
+.lamp-toggle:active{
+  transform:scale(.96);
 }
 
 .lamp-toggle:hover{
