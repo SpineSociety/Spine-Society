@@ -67,3 +67,18 @@ body {
     min-height: calc(100vh - 40px);
   }
 }
+/* Hide visible scrollbars while keeping scrolling enabled */
+html,
+body,
+#authScreen,
+.login-scene {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#authScreen::-webkit-scrollbar,
+.login-scene::-webkit-scrollbar {
+  display: none;
+}
