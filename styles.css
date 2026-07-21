@@ -5362,74 +5362,7 @@ font-size:1.15rem;
     filter:none !important;
   }
 }
-/* ==========================================
-   BACKGROUND LAMP TAP AREA
-========================================== */
 
-.lamp-toggle{
-  position:absolute;
-
-  top:70px;
-  left:8px;
-
-  width:170px;
-  height:220px;
-  min-height:0 !important;
-
-  padding:0;
-  margin:0;
-
-  background:rgba(255,0,0,.35) !important;
-  border:2px solid red !important;
-  border-radius:0;
-
-  box-shadow:none;
-
-  cursor:pointer;
-
-  z-index:9999 !important;
-
-  -webkit-tap-highlight-color:transparent;
-}
-
-.lamp-toggle:hover{
-  transform:none;
-  box-shadow:none;
-}
-
-.lamp-toggle:active{
-  transform:scale(.96);
-}
-
-.lamp-toggle:hover{
-  transform:none;
-  box-shadow:none !important;
-}
-
-.lamp-toggle:active{
-  transform:scale(.96);
-}
-/* TEMPORARY LAMP BUTTON TEST */
-
-#lampToggle{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-
-  position:fixed !important;
-  top:110px !important;
-  left:15px !important;
-
-  width:170px !important;
-  height:220px !important;
-  min-height:0 !important;
-
-  background:rgba(255,0,0,.55) !important;
-  border:4px solid red !important;
-
-  z-index:999999 !important;
-  pointer-events:auto !important;
-}
 /* ==========================================
    DESKTOP — FIXED MOBILE FRAME
    Background stays still; content scrolls
@@ -5558,6 +5491,112 @@ font-size:1.15rem;
 }
 
 /* Keep the form above the lamp toggle */
+#authScreen .login-content {
+  position: relative !important;
+  z-index: 5 !important;
+}
+/* ==========================================
+   FINAL INTERACTIVE LIBRARY LAMP
+   ========================================== */
+
+/* Invisible clickable area positioned over the lamp */
+#lampToggle {
+  position: absolute !important;
+
+  top: 66px !important;
+  left: 16px !important;
+  right: auto !important;
+
+  width: 118px !important;
+  height: 118px !important;
+  min-height: 118px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  cursor: pointer;
+  pointer-events: auto !important;
+
+  z-index: 3 !important;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Warm light surrounding the lamp */
+#lampToggle::before {
+  content: "";
+
+  position: absolute;
+  inset: -38px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 196, 94, 0.34) 0%,
+      rgba(226, 143, 45, 0.20) 34%,
+      rgba(173, 91, 22, 0.08) 55%,
+      transparent 72%
+    );
+
+  opacity: 1;
+  transform: scale(1);
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+/* Subtle press effect */
+#lampToggle:active {
+  transform: scale(0.96) !important;
+}
+
+/* Dark overlay when the lamp is off */
+#authScreen::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 2, 3, 0.16),
+      rgba(0, 0, 0, 0.56)
+    );
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.5s ease;
+
+  z-index: 2;
+}
+
+/* Lamp-off room effect */
+#authScreen.lamp-is-off::after {
+  opacity: 1;
+}
+
+#authScreen.lamp-is-off #lampToggle::before {
+  opacity: 0;
+  transform: scale(0.82);
+}
+
+/* Keep the form readable above the darkened room */
 #authScreen .login-content {
   position: relative !important;
   z-index: 5 !important;
