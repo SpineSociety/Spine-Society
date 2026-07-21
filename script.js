@@ -3829,6 +3829,24 @@ window.closeFinishedBookModal = function () {
     modal.style.display = "none";
   }
 };
+const lampToggle = document.getElementById("lampToggle");
+const authScreen = document.getElementById("authScreen");
+
+if (lampToggle && authScreen && !lampToggle.dataset.listenerAdded) {
+  lampToggle.dataset.listenerAdded = "true";
+
+  lampToggle.addEventListener("click", () => {
+    const lampIsOff = authScreen.classList.toggle("lamp-is-off");
+
+    lampToggle.setAttribute("aria-pressed", String(!lampIsOff));
+    lampToggle.setAttribute(
+      "aria-label",
+      lampIsOff
+        ? "Turn library lamp on"
+        : "Turn library lamp off"
+    );
+  });
+}
 const pageLayer = document.getElementById("floatingPages");
 
 const MAX_ACTIVE_PAGES = 5;
