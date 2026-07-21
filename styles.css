@@ -3728,6 +3728,14 @@ textarea{
   background-position:center center;
   background-repeat:no-repeat;
 }
+#authScreen.lamp-is-off .login-bg{
+  filter: brightness(.35) saturate(.75);
+  transition: filter .8s ease;
+}
+
+#authScreen .login-bg{
+  transition: filter .8s ease;
+}
 @media (min-width: 768px){
   .login-bg{
     background-size: auto 100%;
