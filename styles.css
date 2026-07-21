@@ -5536,3 +5536,24 @@ font-size:1.15rem;
     display: none !important;
   }
 }
+/* Move lamp toggle behind login card and onto the lamp */
+#lampToggle {
+  position: absolute !important;
+
+  top: 145px !important;
+  left: 52px !important;
+  right: auto !important;
+
+  z-index: 3 !important;
+
+  width: 48px !important;
+  height: 48px !important;
+
+  opacity: 0.9;
+}
+
+/* Keep the login card above the lamp button */
+#authScreen .login-content {
+  position: relative !important;
+  z-index: 5 !important;
+}
