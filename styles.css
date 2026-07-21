@@ -25,25 +25,27 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-height: 100vh;
-
-  display: block;
-
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 
   background:
-  radial-gradient(
-    circle at center,
-    rgba(0,0,0,.05),
-    rgba(0,0,0,.50) 55%,
-    rgba(0,0,0,.88) 100%
-  ),
-  linear-gradient(
-    180deg,
-    rgba(10,5,2,.15),
-    rgba(8,4,2,.72)
-  ),
-  #080604;
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.50) 55%,
+      rgba(0,0,0,.88) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10,5,2,.15),
+      rgba(8,4,2,.72)
+    ),
+    url("assets/cozy-library-bg.PNG");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 
   padding: 0;
 }
@@ -74,47 +76,21 @@ body::after {
 
 .app-shell {
   width: 100%;
-  max-width: 430px;
-  min-height: 100vh;
-
-  margin: 0 auto;
+  margin: 0;
   position: relative;
   z-index: 1;
 }
 
 .phone-frame {
-  width: 100%;
-  min-height: 100vh;
-
   border: none;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
+  min-height: 100vh;
 }
-@media (min-width: 768px) {
 
-  .phone-frame{
-    min-height: calc(100vh - 40px);
-
-    margin: 20px 0;
-
-    border-radius: 28px;
-
-    background: rgba(11, 8, 6, .70);
-
-    border: 1px solid rgba(200,163,106,.16);
-
-    box-shadow:
-      0 30px 80px rgba(0,0,0,.45),
-      0 0 0 1px rgba(255,255,255,.03) inset;
-
-    backdrop-filter: blur(18px);
-  }
-
-}
 .app-content {
   padding: 0 18px 92px;
 }
@@ -3700,7 +3676,228 @@ button{
     max-width:500px !important;
   }
 }
+/* ==========================================
+   FULL-FRAME LOGIN REBUILD
+   ========================================== */
 
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden !important;
+  position:fixed;
+  inset:0;
+  overscroll-behavior:none;
+}
+
+button,
+input,
+select,
+textarea{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.login-scene.reading-room-login{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  overflow:hidden !important;
+  background:#080604 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+.login-bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,.06),
+      rgba(0,0,0,.42) 55%,
+      rgba(0,0,0,.82) 100%
+    ),
+    url("cozy-library-bg.PNG");
+
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+}
+@media (min-width: 768px){
+  .login-bg{
+    background-size: auto 100%;
+    background-position: center top;
+    background-color: #080604;
+  }
+}
+.bookshelf-shadow{
+  z-index:1 !important;
+}
+
+.floating-pages{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:2 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+}
+
+.login-content{
+  position:relative;
+  z-index:5;
+
+  width:100%;
+  height:100%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  padding:24px;
+  box-sizing:border-box;
+}
+
+.reading-journal-card{
+  width:min(74vw, 300px) !important;
+  max-width:300px !important;
+
+  padding:14px !important;
+  margin:0 !important;
+
+  transform:scale(.82) !important;
+  transform-origin:center center !important;
+
+  border-radius:24px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,22,16,.42),
+      rgba(12,8,5,.34)
+    ) !important;
+
+  backdrop-filter:blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter:blur(6px) saturate(120%) !important;
+
+  border:1px solid rgba(228,201,139,.18) !important;
+
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+
+  color:#f3e6cf !important;
+}
+
+.reading-room-logo{
+  text-align:center !important;
+  margin-bottom:24px !important;
+}
+
+.reading-room-logo::before,
+.logo-book,
+.journal-flourish{
+  display:none !important;
+}
+
+.reading-room-logo .login-title{
+  color:rgba(255,245,225,.92) !important;
+  font-size:clamp(1.6rem, 5vw, 2.15rem) !important;
+  letter-spacing:5px !important;
+  line-height:.92 !important;
+  margin:0 0 10px !important;
+
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.75),
+    0 0 18px rgba(228,201,139,.18) !important;
+}
+
+.bookclub-tagline{
+  color:rgba(228,201,139,.88) !important;
+  text-align:center !important;
+  font-size:.72rem !important;
+  letter-spacing:2px !important;
+  text-transform:uppercase !important;
+  margin:0 0 8px !important;
+}
+
+.established{
+  color:rgba(228,201,139,.72) !important;
+  text-align:center !important;
+  font-size:.65rem !important;
+  letter-spacing:3px !important;
+  margin:0 !important;
+}
+
+.reading-journal-card input,
+.reading-journal-card button{
+  min-height:42px !important;
+  font-size:.95rem !important;
+}
+
+.reading-journal-card .login-small{
+  color:rgba(255,245,225,.72) !important;
+  text-align:center !important;
+  font-size:.78rem !important;
+  line-height:1.35 !important;
+}
+
+.bookish-thought-card{
+  width:min(76vw, 300px) !important;
+  max-width:300px !important;
+
+  padding:14px 18px !important;
+  margin:-30px 0 0 !important;
+
+  position:relative !important;
+  z-index:4 !important;
+
+  transform:rotate(-1deg) !important;
+}
+
+.bookish-thought-card p{
+  font-size:1rem !important;
+}
+
+.bookish-thought-card .thought-label{
+  font-size:.72rem !important;
+  letter-spacing:3px !important;
+}
+
+/* SMALL PHONES */
+
+@media (max-width:480px){
+  .login-content{
+    padding:18px;
+  }
+
+  .reading-journal-card{
+    width:74vw !important;
+    max-width:290px !important;
+  }
+
+  .bookish-thought-card{
+    width:76vw !important;
+    max-width:300px !important;
+  }
+}
+
+/* TABLET / DESKTOP */
+
+@media (min-width:768px){
+  .reading-journal-card{
+    max-width:340px !important;
+  }
+
+  .bookish-thought-card{
+    max-width:340px !important;
+  }
+}
 /* ==========================================
    FIX: APP SCROLL + REMOVE LOGIN BLOCKING
    ========================================== */
@@ -3712,7 +3909,7 @@ body{
   min-height:100% !important;
   height:auto !important;
   overflow-x:hidden !important;
-  overflow-y: auto !important;
+  overflow-y:auto !important;
   position:static !important;
   background:#080604 !important;
   overscroll-behavior:auto !important;
@@ -3725,6 +3922,15 @@ body{
   background-attachment:scroll !important;
 }
 
+/* Keep login full-frame ONLY when auth screen is showing */
+#authScreen.login-scene.reading-room-login{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  overflow:hidden !important;
+  z-index:999 !important;
+}
 
 /* If auth screen is hidden, make sure it cannot block the app */
 #authScreen[style*="display: none"]{
@@ -4814,9 +5020,8 @@ font-size:1.15rem;
 .login-content{
   justify-content:flex-start !important;
 
-  min-height:100dvh !important;
-  height:auto !important;
-  overflow-y:visible !important;
+  height:100dvh !important;
+  overflow-y:auto !important;
 
   padding:
     max(20px, env(safe-area-inset-top))
@@ -5203,4 +5408,25 @@ font-size:1.15rem;
 
 .lamp-toggle:active{
   transform:scale(.96);
+}
+/* TEMPORARY LAMP BUTTON TEST */
+
+#lampToggle{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+
+  position:fixed !important;
+  top:110px !important;
+  left:15px !important;
+
+  width:170px !important;
+  height:220px !important;
+  min-height:0 !important;
+
+  background:rgba(255,0,0,.55) !important;
+  border:4px solid red !important;
+
+  z-index:999999 !important;
+  pointer-events:auto !important;
 }
