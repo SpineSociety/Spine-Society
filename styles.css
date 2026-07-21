@@ -5431,7 +5431,7 @@ font-size:1.15rem;
   pointer-events:auto !important;
 }
 /* ==========================================
-   DESKTOP — DISPLAY THE MOBILE LOGIN
+   DESKTOP — TRUE MOBILE MIRROR
    ========================================== */
 
 @media (min-width: 768px) {
@@ -5439,12 +5439,16 @@ font-size:1.15rem;
   html,
   body {
     width: 100% !important;
-    min-height: 100% !important;
     height: auto !important;
+    min-height: 100% !important;
 
     position: static !important;
+
     overflow-x: hidden !important;
     overflow-y: auto !important;
+
+    overscroll-behavior-y: auto !important;
+    scroll-behavior: smooth !important;
 
     background: #080604 !important;
   }
@@ -5453,22 +5457,24 @@ font-size:1.15rem;
     position: relative !important;
     inset: auto !important;
 
-    width: 430px !important;
+    width: 100% !important;
     max-width: 430px !important;
 
     height: auto !important;
-    min-height: 932px !important;
+    min-height: 100vh !important;
 
     margin: 0 auto !important;
     padding: 0 !important;
 
-    overflow: hidden !important;
-    border-radius: 0 !important;
+    overflow: visible !important;
   }
 
   #authScreen .login-bg {
     position: absolute !important;
     inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
 
     background-size: cover !important;
     background-position: center top !important;
@@ -5476,27 +5482,27 @@ font-size:1.15rem;
   }
 
   #authScreen .login-content {
+    position: relative !important;
+
     width: 100% !important;
-
     height: auto !important;
-    min-height: 932px !important;
-
-    padding:
-      max(20px, env(safe-area-inset-top))
-      18px
-      110px !important;
+    min-height: 100vh !important;
 
     overflow: visible !important;
   }
 
   #authScreen .reading-journal-card {
-    width: 74% !important;
+    width: 74vw !important;
     max-width: 290px !important;
   }
 
-  #authScreen .bookish-thought-card,
-  #authScreen .librarian-note-card {
-    width: 76% !important;
+  #authScreen .bookish-thought-card {
+    width: 76vw !important;
     max-width: 300px !important;
+  }
+
+  #authScreen .librarian-note-card {
+    width: min(86vw, 360px) !important;
+    max-width: 360px !important;
   }
 }
