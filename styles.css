@@ -5430,3 +5430,73 @@ font-size:1.15rem;
   z-index:999999 !important;
   pointer-events:auto !important;
 }
+/* ==========================================
+   DESKTOP — DISPLAY THE MOBILE LOGIN
+   ========================================== */
+
+@media (min-width: 768px) {
+
+  html,
+  body {
+    width: 100% !important;
+    min-height: 100% !important;
+    height: auto !important;
+
+    position: static !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    background: #080604 !important;
+  }
+
+  #authScreen.login-scene.reading-room-login {
+    position: relative !important;
+    inset: auto !important;
+
+    width: 430px !important;
+    max-width: 430px !important;
+
+    height: auto !important;
+    min-height: 932px !important;
+
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+    border-radius: 0 !important;
+  }
+
+  #authScreen .login-bg {
+    position: absolute !important;
+    inset: 0 !important;
+
+    background-size: cover !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+  }
+
+  #authScreen .login-content {
+    width: 100% !important;
+
+    height: auto !important;
+    min-height: 932px !important;
+
+    padding:
+      max(20px, env(safe-area-inset-top))
+      18px
+      110px !important;
+
+    overflow: visible !important;
+  }
+
+  #authScreen .reading-journal-card {
+    width: 74% !important;
+    max-width: 290px !important;
+  }
+
+  #authScreen .bookish-thought-card,
+  #authScreen .librarian-note-card {
+    width: 76% !important;
+    max-width: 300px !important;
+  }
+}
