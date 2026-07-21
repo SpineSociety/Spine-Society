@@ -5536,23 +5536,28 @@ font-size:1.15rem;
     display: none !important;
   }
 }
-/* Move lamp toggle behind login card and onto the lamp */
+/* Lamp toggle — behind the login card, over the lamp */
 #lampToggle {
   position: absolute !important;
 
-  top: 145px !important;
-  left: 52px !important;
+  top: 138px !important;
+  left: 36px !important;
   right: auto !important;
 
+  width: 118px !important;
+  height: 118px !important;
+  min-height: 118px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
   z-index: 3 !important;
+  opacity: 0.9 !important;
 
-  width: 48px !important;
-  height: 48px !important;
-
-  opacity: 0.9;
+  border-radius: 50% !important;
 }
 
-/* Keep the login card above the lamp button */
+/* Keep the form above the lamp toggle */
 #authScreen .login-content {
   position: relative !important;
   z-index: 5 !important;
