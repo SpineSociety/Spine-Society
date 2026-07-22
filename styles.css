@@ -3736,6 +3736,40 @@ textarea{
 #authScreen .login-bg{
   transition: filter .8s ease;
 }
+/* Intentional vintage lamp flicker */
+#authScreen.lamp-flicker .login-bg{
+  animation:libraryLampFlicker .7s ease;
+}
+
+@keyframes libraryLampFlicker{
+  0%{
+    filter:brightness(1) saturate(1);
+  }
+
+  12%{
+    filter:brightness(.42) saturate(.72);
+  }
+
+  24%{
+    filter:brightness(.95) saturate(1.08);
+  }
+
+  38%{
+    filter:brightness(.52) saturate(.78);
+  }
+
+  55%{
+    filter:brightness(1.08) saturate(1.12);
+  }
+
+  72%{
+    filter:brightness(.72) saturate(.88);
+  }
+
+  100%{
+    filter:brightness(1) saturate(1);
+  }
+}
 @media (min-width: 768px){
   .login-bg{
     background-size: auto 100%;
