@@ -5905,27 +5905,29 @@ font-size:1.15rem;
   }
 }
 @keyframes dustParticleGlint {
-
   0%,
   96%,
   100% {
     filter: brightness(1);
-    transform: scale(1);
+    box-shadow:
+      0 0 4px rgba(255, 220, 160, calc(var(--dust-opacity) * .55));
   }
 
-  97% {
-    filter: brightness(2.6);
-    transform: scale(1.45);
+  97.5% {
+    filter: brightness(2.4);
+    box-shadow:
+      0 0 7px rgba(255, 235, 190, .65),
+      0 0 13px rgba(255, 205, 125, .28);
   }
 
-  98% {
-    filter: brightness(3.3);
-    transform: scale(1.8);
+  98.5% {
+    filter: brightness(3.1);
+    box-shadow:
+      0 0 9px rgba(255, 245, 215, .8),
+      0 0 17px rgba(255, 205, 125, .35);
   }
 
   99% {
-    filter: brightness(2);
-    transform: scale(1.25);
+    filter: brightness(1.7);
   }
-
 }
