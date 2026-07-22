@@ -5848,7 +5848,12 @@ font-size:1.15rem;
 
   will-change: transform, opacity;
 }
-
+.dust-particle.dust-glint {
+  animation:
+    dustParticleFloat var(--dust-duration) linear infinite,
+    dustParticleFade var(--dust-fade-duration) ease-in-out infinite alternate,
+    dustParticleGlint 55s ease-in-out infinite;
+}
 @keyframes dustParticleFloat {
 
   0%{
@@ -5898,4 +5903,29 @@ font-size:1.15rem;
   100% {
     opacity: 0;
   }
+}
+@keyframes dustParticleGlint {
+
+  0%,
+  96%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  97% {
+    filter: brightness(2.6);
+    transform: scale(1.45);
+  }
+
+  98% {
+    filter: brightness(3.3);
+    transform: scale(1.8);
+  }
+
+  99% {
+    filter: brightness(2);
+    transform: scale(1.25);
+  }
+
 }
