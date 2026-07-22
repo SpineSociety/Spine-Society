@@ -1393,6 +1393,58 @@ overflow-y: auto;
 
   <p id="loaderText" class="library-loader-text">Opening Library...</p>
 </div>
+<script>
+  const libraryLampButton = document.getElementById("lampToggle");
+  const libraryLoginScreen = document.getElementById("authScreen");
+
+  if (libraryLampButton && libraryLoginScreen) {
+    let libraryLampBusy = false;
+
+    libraryLampButton.addEventListener(
+      "click",
+      function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        if (libraryLampBusy) return;
+
+        libraryLampBusy = true;
+
+        const turningLampOff =
+          !libraryLoginScreen.classList.contains("lamp-is-off");
+
+        libraryLoginScreen.classList.add("lamp-flicker");
+
+        window.setTimeout(function () {
+          libraryLoginScreen.classList.toggle(
+            "lamp-is-off",
+            turningLampOff
+          );
+
+          libraryLampButton.setAttribute(
+            "aria-pressed",
+            String(!turningLampOff)
+          );
+
+          libraryLampButton.setAttribute(
+            "aria-label",
+            turningLampOff
+              ? "Turn library lamp on"
+              : "Turn library lamp off"
+          );
+        }, 260);
+
+        window.setTimeout(function () {
+          libraryLoginScreen.classList.remove("lamp-flicker");
+          libraryLampBusy = false;
+        }, 700);
+      },
+      true
+    );
+  }
+</script>
+
+<script type="module" src="script.js"></script>
 <script type="module" src="script.js"></script>
 </body>
 </html>
