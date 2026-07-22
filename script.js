@@ -4184,8 +4184,15 @@ function createLibraryDust() {
     const dust = document.createElement("span");
     dust.className = "dust-particle";
 
-    dust.style.left = `${Math.random() * 100}%`;
-    dust.style.top = `${Math.random() * 100}%`;
+    // Keep most particles inside the lamp beam
+const beamCenter = 18;
+const beamWidth = 22;
+
+dust.style.left = `${
+  beamCenter + (Math.random() - 0.5) * beamWidth
+}%`;
+
+dust.style.top = `${5 + Math.random() * 85}%`;
 
     dust.style.setProperty(
       "--dust-size",
