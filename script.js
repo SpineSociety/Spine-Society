@@ -3829,23 +3829,45 @@ window.closeFinishedBookModal = function () {
     modal.style.display = "none";
   }
 };
-const lampToggle = document.getElementById("lampToggle");
-const authScreen = document.getElementById("authScreen");
+/* ==========================================
+   INTERACTIVE LIBRARY LAMP
+========================================== */
 
-if (lampToggle && authScreen && !lampToggle.dataset.listenerAdded) {
-  lampToggle.dataset.listenerAdded = "true";
+function initializeLibraryLamp() {
+  const lampToggle = document.getElementById("lampToggle");
+  const authScreen = document.getElementById("authScreen");
 
-  lampToggle.addEventListener("click", () => {
-    const lampIsOff = authScreen.classList.toggle("lamp-is-off");
+  if (!lampToggle || !authScreen) return;
 
-    lampToggle.setAttribute("aria-pressed", String(!lampIsOff));
+  lampToggle.onclick = function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const lampIsOff =
+      authScreen.classList.toggle("lamp-is-off");
+
+    lampToggle.setAttribute(
+      "aria-pressed",
+      String(!lampIsOff)
+    );
+
     lampToggle.setAttribute(
       "aria-label",
       lampIsOff
         ? "Turn library lamp on"
         : "Turn library lamp off"
     );
-  });
+  };
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeLibraryLamp,
+    { once: true }
+  );
+} else {
+  initializeLibraryLamp();
 }
 const pageLayer = document.getElementById("floatingPages");
 
