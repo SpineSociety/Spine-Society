@@ -5850,17 +5850,32 @@ font-size:1.15rem;
 }
 
 @keyframes dustParticleFloat {
-  from {
+
+  0%{
     transform:
-      translate3d(0, 35px, 0)
-      rotate(.001deg);
+      translate3d(0,35px,0);
   }
 
-  to {
+  25%{
     transform:
-      translate3d(var(--dust-drift), -140px, 0)
-      rotate(.001deg);
+      translate3d(calc(var(--dust-drift) * .35),-15px,0);
   }
+
+  50%{
+    transform:
+      translate3d(calc(var(--dust-drift) * -.25),-55px,0);
+  }
+
+  75%{
+    transform:
+      translate3d(calc(var(--dust-drift) * .55),-95px,0);
+  }
+
+  100%{
+    transform:
+      translate3d(var(--dust-drift),-140px,0);
+  }
+
 }
 
 @keyframes dustParticleFade {
