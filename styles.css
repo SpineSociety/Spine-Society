@@ -6019,8 +6019,7 @@ font-size:1.15rem;
   width: 120px !important;
   height: 180px !important;
 
-  background: rgba(255, 0, 0, 0.65) !important;
-  outline: 3px solid lime !important;
+  
 
   z-index: 3 !important;
   pointer-events: none !important;
