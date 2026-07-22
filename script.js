@@ -4213,11 +4213,11 @@ steam.style.left = `${mugCenter + (-5 + Math.random() * 10)}%`;
     );
 
     steam.style.setProperty(
-      "--steam-opacity",
-      nightMode
-        ? `${0.12 + Math.random() * 0.08}`
-        : `${0.06 + Math.random() * 0.05}`
-    );
+  "--steam-opacity",
+  nightMode
+    ? `${0.30 + Math.random() * 0.12}`
+    : `${0.22 + Math.random() * 0.10}`
+);
 
     container.appendChild(steam);
   }
