@@ -6005,3 +6005,20 @@ font-size:1.15rem;
     filter: brightness(1.7);
   }
 }
+#librarySteam {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+
+  width: 120px !important;
+  height: 180px !important;
+
+  background: rgba(255, 0, 0, 0.65) !important;
+  outline: 3px solid lime !important;
+
+  z-index: 9999 !important;
+  pointer-events: none !important;
+}
