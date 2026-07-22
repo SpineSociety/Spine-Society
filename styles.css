@@ -6022,6 +6022,6 @@ font-size:1.15rem;
   background: rgba(255, 0, 0, 0.65) !important;
   outline: 3px solid lime !important;
 
-  z-index: 4 !important;
+  z-index: 3 !important;
   pointer-events: none !important;
 }
