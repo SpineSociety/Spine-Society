@@ -4188,12 +4188,14 @@ function createLibrarySteam() {
     const steam = document.createElement("span");
     steam.className = "steam";
 
-    steam.style.left = `${8 + Math.random() * 84}%`;
+    const mugCenter = 84; // percentage across the login scene
+
+steam.style.left = `${mugCenter + (-5 + Math.random() * 10)}%`;
 
     steam.style.setProperty(
-      "--steam-duration",
-      `${18 + Math.random() * 12}s`
-    );
+  "--steam-duration",
+  `${20 + Math.random() * 8}s`
+);
 
     steam.style.setProperty(
       "--steam-delay",
