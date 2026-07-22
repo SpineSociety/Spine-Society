@@ -5823,26 +5823,46 @@ font-size:1.15rem;
 
 .library-steam {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
+
+  right: 150px;
+  bottom: 255px;
+
+  width: 120px;
+  height: 180px;
+
+  overflow: visible;
   pointer-events: none;
-  z-index: 3;
+
+  z-index: 4;
 }
 
 .library-steam .steam {
   position: absolute;
   bottom: 0;
-
-  width: 250px;
-  height: 250px;
-
-  background: red;
-
-  opacity: .5;
-
   left: 50%;
 
-  animation: none;
+  width: 80px;
+  height: 120px;
+
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(255,255,255,.14),
+      rgba(255,255,255,.05) 55%,
+      transparent 80%
+    );
+
+  filter: blur(20px);
+
+  animation:
+    librarySteamRise var(--steam-duration)
+    linear
+    var(--steam-delay)
+    infinite;
 }
 
 @keyframes librarySteamRise {
