@@ -5822,70 +5822,67 @@ font-size:1.15rem;
 ========================================== */
 
 .library-steam {
-
   position: absolute;
-
   inset: 0;
-
   overflow: hidden;
-
   pointer-events: none;
-
   z-index: 3;
-
 }
+
 .library-steam .steam {
   position: absolute;
-  bottom: -80px;
+  bottom: -180px;
 
   width: 180px;
-  height: 180px;
+  height: 220px;
 
   border-radius: 50%;
 
   background:
     radial-gradient(
       ellipse at center,
-      rgba(255,255,255,.12) 0%,
-      rgba(255,255,255,.06) 38%,
-      rgba(255,255,255,0) 72%
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.07) 38%,
+      rgba(255, 255, 255, 0) 72%
     );
 
   filter: blur(32px);
-
   opacity: 0;
 
-  animation: librarySteamRise linear infinite;
+  animation:
+    librarySteamRise
+    var(--steam-duration)
+    linear
+    var(--steam-delay)
+    infinite;
+
   will-change: transform, opacity;
 }
-@keyframes librarySteamRise {
 
+@keyframes librarySteamRise {
   0% {
     transform:
-      translateY(0)
-      translateX(0)
-      scale(.65);
+      translate3d(0, 0, 0)
+      scale(calc(var(--steam-scale) * 0.7));
 
     opacity: 0;
   }
 
-  12% {
-    opacity: .18;
+  18% {
+    opacity: var(--steam-opacity);
   }
 
-  55% {
-    opacity: .10;
+  62% {
+    opacity: calc(var(--steam-opacity) * 0.65);
   }
 
   100% {
     transform:
-      translateY(-900px)
-      translateX(70px)
-      scale(1.6);
+      translate3d(var(--steam-drift), -900px, 0)
+      scale(calc(var(--steam-scale) * 1.65));
 
     opacity: 0;
   }
-
 }
 /* ==========================================
    Individual Floating Dust Particles
