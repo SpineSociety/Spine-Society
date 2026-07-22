@@ -3831,9 +3831,15 @@ window.closeFinishedBookModal = function () {
 };
 
 const pageLayer = document.getElementById("floatingPages");
+const authScreen = document.getElementById("authScreen");
 
-const MAX_ACTIVE_PAGES = 5;
-const SPAWN_DELAY = 3600;
+const DAY_MAX_ACTIVE_PAGES = 5;
+const NIGHT_MAX_ACTIVE_PAGES = 3;
+
+const DAY_SPAWN_DELAY = 3600;
+const NIGHT_SPAWN_DELAY = 5600;
+
+let floatingPageTimer = null;
 
 const bookTextSnippets = [
   "The lamp burned low beside the shelves as the readers gathered quietly between chapters. Some stories felt like secrets, others like doors waiting to be opened.",
@@ -3847,12 +3853,23 @@ function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+function libraryIsInNightMode() {
+  return authScreen?.classList.contains("lamp-is-off") ?? false;
+}
+
 function createFloatingPage() {
   if (!pageLayer) return;
 
-  const activePages = pageLayer.querySelectorAll(".floating-page").length;
+  const nightMode = libraryIsInNightMode();
 
-  if (activePages >= MAX_ACTIVE_PAGES) {
+  const maxActivePages = nightMode
+    ? NIGHT_MAX_ACTIVE_PAGES
+    : DAY_MAX_ACTIVE_PAGES;
+
+  const activePages =
+    pageLayer.querySelectorAll(".floating-page").length;
+
+  if (activePages >= maxActivePages) {
     return;
   }
 
@@ -3870,16 +3887,30 @@ function createFloatingPage() {
   text.textContent = randomText;
   page.appendChild(text);
 
-  const size = randomBetween(52, 104);
+  const size = nightMode
+    ? randomBetween(58, 96)
+    : randomBetween(52, 104);
+
   const startX = randomBetween(-6, 96);
-  const opacity = randomBetween(0.24, 0.52);
 
-  // Smaller/background pages drift slower. Larger/foreground pages fall slightly faster.
+  const opacity = nightMode
+    ? randomBetween(0.16, 0.32)
+    : randomBetween(0.24, 0.52);
+
   const sizeRatio = (size - 52) / (104 - 52);
-  const duration = 18 - sizeRatio * 6;
 
-  const sway = randomBetween(-70, 70);
-  const rotate = randomBetween(-18, 18);
+  const duration = nightMode
+    ? 25 - sizeRatio * 5
+    : 18 - sizeRatio * 6;
+
+  const sway = nightMode
+    ? randomBetween(-42, 42)
+    : randomBetween(-70, 70);
+
+  const rotate = nightMode
+    ? randomBetween(-9, 9)
+    : randomBetween(-18, 18);
+
   const shadowX = randomBetween(-12, 12);
 
   page.style.left = `${startX}vw`;
@@ -3892,17 +3923,27 @@ function createFloatingPage() {
 
   pageLayer.appendChild(page);
 
-  setTimeout(() => {
+  window.setTimeout(() => {
     page.remove();
   }, duration * 1000);
 }
 
-function startFloatingPages() {
-  createFloatingPage();
+function scheduleNextFloatingPage() {
+  const delay = libraryIsInNightMode()
+    ? NIGHT_SPAWN_DELAY
+    : DAY_SPAWN_DELAY;
 
-  setInterval(() => {
+  floatingPageTimer = window.setTimeout(() => {
     createFloatingPage();
-  }, SPAWN_DELAY);
+    scheduleNextFloatingPage();
+  }, delay);
+}
+
+function startFloatingPages() {
+  if (!pageLayer) return;
+
+  createFloatingPage();
+  scheduleNextFloatingPage();
 }
 
 startFloatingPages();
