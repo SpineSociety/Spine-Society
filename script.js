@@ -4195,16 +4195,22 @@ dust.style.left = `${
 }%`;
 
 dust.style.top = `${top}%`;
+// Fade particles as they move farther from the lamp
+const visibility = Math.max(
+  0.05,
+  0.28 - (top * 0.0024)
+);
 
+dust.style.setProperty(
+  "--dust-opacity",
+  visibility.toFixed(2)
+);
     dust.style.setProperty(
       "--dust-size",
       `${1 + Math.random() * 2}px`
     );
 
-    dust.style.setProperty(
-      "--dust-opacity",
-      (0.08 + Math.random() * 0.18).toFixed(2)
-    );
+
 
     dust.style.setProperty(
       "--dust-duration",
