@@ -4212,10 +4212,41 @@ dust.style.setProperty(
 
 
 
-    dust.style.setProperty(
-      "--dust-duration",
-      `${18 + Math.random() * 22}s`
-    );
+    // Give each particle its own personality
+const personality = Math.random();
+
+let duration;
+let drift;
+
+if (personality < 0.70) {
+
+  // Gentle drift
+  duration = 28 + Math.random() * 18;
+  drift = -18 + Math.random() * 36;
+
+} else if (personality < 0.90) {
+
+  // Almost hovering
+  duration = 48 + Math.random() * 22;
+  drift = -8 + Math.random() * 16;
+
+} else {
+
+  // Light breeze
+  duration = 18 + Math.random() * 10;
+  drift = -45 + Math.random() * 90;
+
+}
+
+dust.style.setProperty(
+  "--dust-duration",
+  `${duration}s`
+);
+
+dust.style.setProperty(
+  "--dust-drift",
+  `${drift}px`
+);
 
     dust.style.setProperty(
       "--dust-delay",
@@ -4232,10 +4263,6 @@ dust.style.setProperty(
       `${Math.random() * -8}s`
     );
 
-    dust.style.setProperty(
-      "--dust-drift",
-      `${-30 + Math.random() * 60}px`
-    );
 
     container.appendChild(dust);
   }
