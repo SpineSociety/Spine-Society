@@ -4167,7 +4167,97 @@ if (document.readyState === "loading") {
 } else {
   initializePremiumDailyNote();
 }
+/* ==========================================
+   Ambient Library Steam
+========================================== */
 
+function createLibrarySteam() {
+  const container = document.getElementById("librarySteam");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const nightMode = document
+    .getElementById("authScreen")
+    ?.classList.contains("lamp-is-off");
+
+  const steamCount = nightMode ? 5 : 3;
+
+  for (let i = 0; i < steamCount; i++) {
+    const steam = document.createElement("span");
+    steam.className = "steam";
+
+    steam.style.left = `${8 + Math.random() * 84}%`;
+
+    steam.style.setProperty(
+      "--steam-duration",
+      `${18 + Math.random() * 12}s`
+    );
+
+    steam.style.setProperty(
+      "--steam-delay",
+      `${Math.random() * -24}s`
+    );
+
+    steam.style.setProperty(
+      "--steam-drift",
+      `${-45 + Math.random() * 90}px`
+    );
+
+    steam.style.setProperty(
+      "--steam-scale",
+      `${0.7 + Math.random() * 0.45}`
+    );
+
+    steam.style.setProperty(
+      "--steam-opacity",
+      nightMode
+        ? `${0.12 + Math.random() * 0.08}`
+        : `${0.06 + Math.random() * 0.05}`
+    );
+
+    container.appendChild(steam);
+  }
+}
+
+function watchLibraryLampForSteam() {
+  const authScreen = document.getElementById("authScreen");
+
+  if (!authScreen) return;
+
+  const lampObserver = new MutationObserver((mutations) => {
+    const lampModeChanged = mutations.some(
+      mutation =>
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+    );
+
+    if (lampModeChanged) {
+      createLibrarySteam();
+    }
+  });
+
+  lampObserver.observe(authScreen, {
+    attributes: true,
+    attributeFilter: ["class"]
+  });
+}
+
+function initializeLibrarySteam() {
+  createLibrarySteam();
+  watchLibraryLampForSteam();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeLibrarySteam,
+    { once: true }
+  );
+} else {
+  initializeLibrarySteam();
+}
 /* ==========================================
    Floating Library Dust
 ========================================== */
