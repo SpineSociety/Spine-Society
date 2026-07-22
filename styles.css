@@ -5816,6 +5816,25 @@ font-size:1.15rem;
     border-color 1s ease;
 }
 /* ==========================================
+
+   Ambient Library Steam Layer
+
+========================================== */
+
+.library-steam {
+
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 3;
+
+}
+/* ==========================================
    Individual Floating Dust Particles
 ========================================== */
 
