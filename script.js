@@ -4283,3 +4283,38 @@ if (document.readyState === "loading") {
 } else {
   createLibraryDust();
 }
+
+/* Rebuild dust whenever the lamp mode changes */
+
+function watchLibraryLampForDust() {
+  const authScreen = document.getElementById("authScreen");
+
+  if (!authScreen) return;
+
+  const lampObserver = new MutationObserver((mutations) => {
+    const lampModeChanged = mutations.some(
+      mutation =>
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+    );
+
+    if (lampModeChanged) {
+      createLibraryDust();
+    }
+  });
+
+  lampObserver.observe(authScreen, {
+    attributes: true,
+    attributeFilter: ["class"]
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    watchLibraryLampForDust,
+    { once: true }
+  );
+} else {
+  watchLibraryLampForDust();
+}
