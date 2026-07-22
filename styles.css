@@ -3180,29 +3180,69 @@ body {
 .reading-room-overlay {
   padding-top: clamp(12px, 3vw, 24px);
 }
-.reading-room-login .reading-room-overlay::before {
-  content: "";
-  position: absolute;
-  inset: -40px;
-  pointer-events: none;
-  background:
-    radial-gradient(circle, rgba(228,201,139,.22) 1px, transparent 2px),
-    radial-gradient(circle, rgba(255,255,255,.10) 1px, transparent 2px);
-  background-size: 58px 58px, 92px 92px;
-  opacity: .18;
-  animation: readingDust 16s ease-in-out infinite alternate;
+/* ------------------------------ */
+/* Floating Library Dust */
+/* ------------------------------ */
+
+.reading-room-login .reading-room-overlay::before{
+    content:"";
+    position:absolute;
+    inset:-20%;
+    pointer-events:none;
+    z-index:2;
+
+    background-image:
+
+        radial-gradient(circle, rgba(255,234,190,.55) 0 1px, transparent 1.8px),
+        radial-gradient(circle, rgba(255,235,200,.35) 0 .8px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,245,225,.22) 0 1.3px, transparent 2px),
+        radial-gradient(circle, rgba(228,201,139,.28) 0 .9px, transparent 1.6px);
+
+    background-size:
+        230px 230px,
+        320px 320px,
+        170px 170px,
+        430px 430px;
+
+    background-position:
+        20px 80px,
+        120px 200px,
+        260px 60px,
+        40px 260px;
+
+    opacity:.28;
+
+    animation:
+        dustDriftOne 55s linear infinite,
+        dustGlow 9s ease-in-out infinite alternate;
 }
 
-@keyframes readingDust {
-  from {
-    transform: translateY(0);
-    opacity: .12;
-  }
+@keyframes dustDriftOne{
 
-  to {
-    transform: translateY(-18px);
-    opacity: .24;
-  }
+    from{
+        transform:
+            translateY(0)
+            translateX(0)
+            rotate(.001deg);
+    }
+
+    to{
+        transform:
+            translateY(-90px)
+            translateX(24px)
+            rotate(.001deg);
+    }
+}
+
+@keyframes dustGlow{
+
+    from{
+        opacity:.08;
+    }
+
+    to{
+        opacity:.24;
+    }
 }
 
 .reading-room-login::after {
