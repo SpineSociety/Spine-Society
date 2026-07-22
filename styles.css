@@ -2877,9 +2877,19 @@ body {
 }
 #authScreen.lamp-is-off .floating-page {
   animation-name: pageFallNight;
-  animation-duration: calc(var(--fall-duration) * 1.7);
-  animation-timing-function: cubic-bezier(.42, 0, .35, 1);
-  filter: sepia(.22) brightness(.72);
+
+  /* Almost 3x slower */
+  animation-duration: calc(var(--fall-duration) * 3);
+
+  /* Gentle floating instead of falling */
+  animation-timing-function: cubic-bezier(.25, .65, .18, 1);
+
+  filter:
+    sepia(.24)
+    brightness(.68)
+    saturate(.85);
+
+  opacity: .82;
 }
 /* Actual tiny printed text */
 .page-text {
@@ -2993,62 +3003,85 @@ body {
 }
 
 @keyframes pageFallNight {
-  0% {
+
+  0%{
     transform:
-      translate3d(0, -18vh, 15px)
+      translate3d(0,-18vh,18px)
       rotateX(4deg)
-      rotateY(-6deg)
+      rotateY(-3deg)
       rotateZ(var(--start-rotate));
 
-    opacity: 0;
+    opacity:0;
   }
 
-  8% {
-    opacity: calc(var(--page-opacity) * .72);
-  }
+  12%{
+    opacity:var(--page-opacity);
 
-  22% {
     transform:
-      translate3d(calc(var(--sway) * .10), 8vh, 35px)
+      translate3d(
+        calc(var(--sway)*.03),
+        6vh,
+        28px)
+      rotateX(7deg)
+      rotateY(4deg)
+      rotateZ(calc(var(--start-rotate)+2deg));
+  }
+
+  28%{
+    transform:
+      translate3d(
+        calc(var(--sway)*-.02),
+        24vh,
+        34px)
       rotateX(10deg)
-      rotateY(7deg)
-      rotateZ(calc(var(--start-rotate) + 3deg));
-  }
-
-  45% {
-    transform:
-      translate3d(calc(var(--sway) * -.08), 38vh, 55px)
-      rotateX(18deg)
-      rotateY(-9deg)
-      rotateZ(calc(var(--start-rotate) - 4deg));
-  }
-
-  68% {
-    transform:
-      translate3d(calc(var(--sway) * .13), 70vh, 30px)
-      rotateX(25deg)
-      rotateY(8deg)
-      rotateZ(calc(var(--start-rotate) + 3deg));
-  }
-
-  88% {
-    transform:
-      translate3d(calc(var(--sway) * -.04), 101vh, 18px)
-      rotateX(31deg)
       rotateY(-5deg)
-      rotateZ(calc(var(--start-rotate) - 2deg));
-
-    opacity: calc(var(--page-opacity) * .54);
+      rotateZ(calc(var(--start-rotate)-2deg));
   }
 
-  100% {
+  46%{
     transform:
-      translate3d(calc(var(--sway) * .08), 123vh, 0)
-      rotateX(36deg)
+      translate3d(
+        calc(var(--sway)*.04),
+        46vh,
+        26px)
+      rotateX(13deg)
+      rotateY(5deg)
+      rotateZ(calc(var(--start-rotate)+3deg));
+  }
+
+  64%{
+    transform:
+      translate3d(
+        calc(var(--sway)*-.02),
+        69vh,
+        30px)
+      rotateX(16deg)
+      rotateY(-4deg)
+      rotateZ(calc(var(--start-rotate)-1deg));
+  }
+
+  82%{
+    transform:
+      translate3d(
+        calc(var(--sway)*.03),
+        95vh,
+        20px)
+      rotateX(20deg)
       rotateY(3deg)
+      rotateZ(calc(var(--start-rotate)+1deg));
+  }
+
+  100%{
+    transform:
+      translate3d(
+        calc(var(--sway)*.02),
+        123vh,
+        0)
+      rotateX(24deg)
+      rotateY(2deg)
       rotateZ(var(--start-rotate));
 
-    opacity: 0;
+    opacity:0;
   }
 }
 
