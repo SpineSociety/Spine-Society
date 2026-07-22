@@ -4184,7 +4184,7 @@ function createLibraryDust() {
   ?.classList.contains("lamp-is-off");
 
 const particleCount = nightMode ? 16 : 35;
-
+const glintIndex = Math.floor(Math.random() * particleCount);
 for (let i = 0; i < particleCount; i++) {
 
     const dust = document.createElement("span");
@@ -4269,12 +4269,11 @@ dust.style.setProperty(
       `${Math.random() * -8}s`
     );
 
-
-    container.appendChild(dust);
-    // Occasionally one particle catches the lamp light
-if (Math.random() < 0.025) {
+if (i === glintIndex) {
   dust.classList.add("dust-glint");
 }
+    container.appendChild(dust);
+    
   }
 }
 
