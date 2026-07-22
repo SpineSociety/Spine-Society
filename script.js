@@ -4167,3 +4167,71 @@ if (document.readyState === "loading") {
 } else {
   initializePremiumDailyNote();
 }
+
+/* ==========================================
+   Floating Library Dust
+========================================== */
+
+function createLibraryDust() {
+  const container = document.getElementById("dustParticles");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (let i = 0; i < 35; i++) {
+
+    const dust = document.createElement("span");
+    dust.className = "dust-particle";
+
+    dust.style.left = `${Math.random() * 100}%`;
+    dust.style.top = `${Math.random() * 100}%`;
+
+    dust.style.setProperty(
+      "--dust-size",
+      `${1 + Math.random() * 2}px`
+    );
+
+    dust.style.setProperty(
+      "--dust-opacity",
+      (0.08 + Math.random() * 0.18).toFixed(2)
+    );
+
+    dust.style.setProperty(
+      "--dust-duration",
+      `${18 + Math.random() * 22}s`
+    );
+
+    dust.style.setProperty(
+      "--dust-delay",
+      `${Math.random() * -30}s`
+    );
+
+    dust.style.setProperty(
+      "--dust-fade-duration",
+      `${6 + Math.random() * 6}s`
+    );
+
+    dust.style.setProperty(
+      "--dust-fade-delay",
+      `${Math.random() * -8}s`
+    );
+
+    dust.style.setProperty(
+      "--dust-drift",
+      `${-30 + Math.random() * 60}px`
+    );
+
+    container.appendChild(dust);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    createLibraryDust,
+    { once: true }
+  );
+} else {
+  createLibraryDust();
+}
