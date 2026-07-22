@@ -5815,3 +5815,42 @@ font-size:1.15rem;
     box-shadow 1s ease,
     border-color 1s ease;
 }
+/* ==========================================
+   Floating Library Dust
+========================================== */
+
+.library-dust{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:2;
+}
+
+.library-dust::before{
+    content:"";
+    position:absolute;
+    inset:-25%;
+
+    background-image:
+        radial-gradient(circle, rgba(255,238,205,.9) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,255,255,.6) .8px, transparent 1.8px);
+
+    background-size:
+        120px 120px,
+        220px 220px;
+
+    opacity:.35;
+
+    animation: dustFloat 35s linear infinite;
+}
+
+@keyframes dustFloat{
+    from{
+        transform:translateY(60px);
+    }
+
+    to{
+        transform:translateY(-120px);
+    }
+}
