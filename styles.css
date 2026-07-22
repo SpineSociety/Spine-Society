@@ -5834,6 +5834,59 @@ font-size:1.15rem;
   z-index: 3;
 
 }
+.library-steam .steam {
+  position: absolute;
+  bottom: -80px;
+
+  width: 180px;
+  height: 180px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,255,255,.12) 0%,
+      rgba(255,255,255,.06) 38%,
+      rgba(255,255,255,0) 72%
+    );
+
+  filter: blur(32px);
+
+  opacity: 0;
+
+  animation: librarySteamRise linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes librarySteamRise {
+
+  0% {
+    transform:
+      translateY(0)
+      translateX(0)
+      scale(.65);
+
+    opacity: 0;
+  }
+
+  12% {
+    opacity: .18;
+  }
+
+  55% {
+    opacity: .10;
+  }
+
+  100% {
+    transform:
+      translateY(-900px)
+      translateX(70px)
+      scale(1.6);
+
+    opacity: 0;
+  }
+
+}
 /* ==========================================
    Individual Floating Dust Particles
 ========================================== */
