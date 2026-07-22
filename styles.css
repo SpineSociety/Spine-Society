@@ -5879,11 +5879,23 @@ font-size:1.15rem;
 }
 
 @keyframes dustParticleFade {
-  from {
-    opacity: .08;
+  0% {
+    opacity: 0;
   }
 
-  to {
-    opacity: .65;
+  15% {
+    opacity: calc(var(--dust-opacity) * .55);
+  }
+
+  45% {
+    opacity: var(--dust-opacity);
+  }
+
+  75% {
+    opacity: calc(var(--dust-opacity) * .7);
+  }
+
+  100% {
+    opacity: 0;
   }
 }
