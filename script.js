@@ -4179,7 +4179,13 @@ function createLibraryDust() {
 
   container.innerHTML = "";
 
-  for (let i = 0; i < 35; i++) {
+  const nightMode = document
+  .getElementById("authScreen")
+  ?.classList.contains("lamp-is-off");
+
+const particleCount = nightMode ? 16 : 35;
+
+for (let i = 0; i < particleCount; i++) {
 
     const dust = document.createElement("span");
     dust.className = "dust-particle";
