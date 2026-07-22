@@ -5705,7 +5705,7 @@ font-size:1.15rem;
   cursor: pointer;
   pointer-events: auto !important;
 
-  z-index: 9999 !important;
+  z-index: 4 !important;
 
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -6007,10 +6007,13 @@ font-size:1.15rem;
 }
 #librarySteam {
   position: absolute !important;
-  left: 70% !important;
-  top: 42% !important;
+
+  left: 75% !important;
+  top: 52% !important;
+
   right: auto !important;
   bottom: auto !important;
+
   transform: translate(-50%, -50%) !important;
 
   width: 120px !important;
@@ -6019,6 +6022,6 @@ font-size:1.15rem;
   background: rgba(255, 0, 0, 0.65) !important;
   outline: 3px solid lime !important;
 
-  z-index: 9999 !important;
+  z-index: 4 !important;
   pointer-events: none !important;
 }
