@@ -5822,23 +5822,17 @@ font-size:1.15rem;
 ========================================== */
 
 .library-steam {
-  position: fixed;
+  position: absolute;
 
-  left: 50%;
-  top: 50%;
+  right: 95px;
+  top: 560px;
 
-  transform: translate(-50%, -50%);
-
-  width: 250px;
-  height: 250px;
+  width: 120px;
+  height: 180px;
 
   overflow: visible;
-
   pointer-events: none;
-
   z-index: 9999;
-
-  outline: 3px solid lime;
 }
 
 .library-steam .steam {
