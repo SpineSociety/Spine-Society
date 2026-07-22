@@ -5634,20 +5634,24 @@ font-size:1.15rem;
 
   background:
     radial-gradient(
-      circle at 16% 18%,
-      rgba(255, 193, 92, 0.22) 0%,
-      rgba(255, 170, 52, 0.12) 18%,
-      rgba(56, 37, 18, 0.18) 40%,
-      rgba(16, 12, 9, 0.58) 70%,
-      rgba(6, 5, 5, 0.82) 100%
+      circle at 15% 18%,
+      rgba(255, 204, 120, .42) 0%,
+      rgba(255, 185, 90, .26) 18%,
+      rgba(150, 88, 36, .12) 34%,
+      rgba(32, 22, 16, .22) 55%,
+      rgba(10, 8, 8, .58) 78%,
+      rgba(4, 4, 4, .74) 100%
     ),
-    linear-gradient(
-      180deg,
-      rgba(18, 14, 10, 0.18),
-      rgba(5, 4, 4, 0.72)
+    radial-gradient(
+      circle at center,
+      rgba(255,255,255,.03),
+      transparent 70%
     );
 
-  backdrop-filter: brightness(.82) saturate(.88);
+  backdrop-filter:
+      brightness(.88)
+      saturate(.92)
+      contrast(.96);
 }
 
 #authScreen.lamp-is-off #lampToggle::before {
