@@ -4185,14 +4185,16 @@ function createLibraryDust() {
     dust.className = "dust-particle";
 
     // Keep most particles inside the lamp beam
-const beamCenter = 18;
-const beamWidth = 22;
+const top = 5 + Math.random() * 85;
+
+// As the particle gets lower, allow the beam to widen.
+const spread = 8 + (top * 0.22);
 
 dust.style.left = `${
-  beamCenter + (Math.random() - 0.5) * beamWidth
+  18 + (Math.random() - 0.5) * spread
 }%`;
 
-dust.style.top = `${5 + Math.random() * 85}%`;
+dust.style.top = `${top}%`;
 
     dust.style.setProperty(
       "--dust-size",
