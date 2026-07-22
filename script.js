@@ -4188,7 +4188,7 @@ function createLibrarySteam() {
     const steam = document.createElement("span");
     steam.className = "steam";
 
-    const mugCenter = 70; // percentage across the login scene
+    const mugCenter = 64; // percentage across the login scene
 
 steam.style.left = `${mugCenter + (-5 + Math.random() * 10)}%`;
 
