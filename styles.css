@@ -5815,3 +5815,60 @@ font-size:1.15rem;
     box-shadow 1s ease,
     border-color 1s ease;
 }
+/* ==========================================
+   Individual Floating Dust Particles
+========================================== */
+
+.dust-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dust-particle {
+  position: absolute;
+  width: var(--dust-size);
+  height: var(--dust-size);
+  border-radius: 50%;
+
+  background: rgba(255, 235, 195, var(--dust-opacity));
+
+  box-shadow:
+    0 0 4px rgba(255, 220, 160, calc(var(--dust-opacity) * .55));
+
+  animation:
+    dustParticleFloat var(--dust-duration) linear infinite,
+    dustParticleFade var(--dust-fade-duration) ease-in-out infinite alternate;
+
+  animation-delay:
+    var(--dust-delay),
+    var(--dust-fade-delay);
+
+  will-change: transform, opacity;
+}
+
+@keyframes dustParticleFloat {
+  from {
+    transform:
+      translate3d(0, 35px, 0)
+      rotate(.001deg);
+  }
+
+  to {
+    transform:
+      translate3d(var(--dust-drift), -140px, 0)
+      rotate(.001deg);
+  }
+}
+
+@keyframes dustParticleFade {
+  from {
+    opacity: .08;
+  }
+
+  to {
+    opacity: .65;
+  }
+}
