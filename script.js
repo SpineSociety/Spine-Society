@@ -3829,63 +3829,7 @@ window.closeFinishedBookModal = function () {
     modal.style.display = "none";
   }
 };
-/* ==========================================
-   INTERACTIVE LIBRARY LAMP
-========================================== */
 
-function initializeLibraryLamp() {
-  const lampToggle = document.getElementById("lampToggle");
-  const authScreen = document.getElementById("authScreen");
-
-  if (!lampToggle || !authScreen) return;
-
-  let lampIsAnimating = false;
-
-  lampToggle.onclick = function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (lampIsAnimating) return;
-
-    lampIsAnimating = true;
-
-    const turningOff =
-      !authScreen.classList.contains("lamp-is-off");
-
-    authScreen.classList.add("lamp-flicker");
-
-    window.setTimeout(() => {
-      authScreen.classList.toggle("lamp-is-off", turningOff);
-
-      lampToggle.setAttribute(
-        "aria-pressed",
-        String(!turningOff)
-      );
-
-      lampToggle.setAttribute(
-        "aria-label",
-        turningOff
-          ? "Turn library lamp on"
-          : "Turn library lamp off"
-      );
-    }, 260);
-
-    window.setTimeout(() => {
-      authScreen.classList.remove("lamp-flicker");
-      lampIsAnimating = false;
-    }, 700);
-  };
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeLibraryLamp,
-    { once: true }
-  );
-} else {
-  initializeLibraryLamp();
-}
 const pageLayer = document.getElementById("floatingPages");
 
 const MAX_ACTIVE_PAGES = 5;
