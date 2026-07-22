@@ -5643,3 +5643,20 @@ font-size:1.15rem;
   position: relative !important;
   z-index: 5 !important;
 }
+/* TEMPORARY LAMP TEST */
+#lampToggle{
+  position:fixed !important;
+  top:20px !important;
+  left:20px !important;
+  width:80px !important;
+  height:80px !important;
+  display:block !important;
+  background:red !important;
+  border:4px solid white !important;
+  border-radius:50% !important;
+  z-index:999999 !important;
+  pointer-events:auto !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  touch-action:manipulation !important;
+}
