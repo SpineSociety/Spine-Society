@@ -5863,23 +5863,23 @@ font-size:1.15rem;
   0% {
     transform:
       translate3d(0, 0, 0)
-      scale(calc(var(--steam-scale) * 0.7));
+      scale(0.7);
 
     opacity: 0;
   }
 
-  18% {
+  15% {
     opacity: var(--steam-opacity);
   }
 
-  62% {
-    opacity: calc(var(--steam-opacity) * 0.65);
+  60% {
+    opacity: var(--steam-opacity);
   }
 
   100% {
     transform:
       translate3d(var(--steam-drift), -900px, 0)
-      scale(calc(var(--steam-scale) * 1.65));
+      scale(1.6);
 
     opacity: 0;
   }
