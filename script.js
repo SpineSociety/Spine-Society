@@ -4214,9 +4214,7 @@ steam.style.left = `${mugCenter + (-5 + Math.random() * 10)}%`;
 
     steam.style.setProperty(
   "--steam-opacity",
-  nightMode
-    ? `${0.30 + Math.random() * 0.12}`
-    : `${0.22 + Math.random() * 0.10}`
+  "0.85"
 );
 
     container.appendChild(steam);
