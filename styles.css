@@ -5664,3 +5664,16 @@ font-size:1.15rem;
   position: relative !important;
   z-index: 5 !important;
 }
+/* Warm lamp reflection on the login card */
+#authScreen.lamp-is-off .login-content {
+  box-shadow:
+    -18px -10px 42px rgba(255, 177, 74, 0.12),
+    -4px 0 18px rgba(255, 205, 130, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.42) !important;
+
+  border-color: rgba(214, 165, 96, 0.34) !important;
+
+  transition:
+    box-shadow 1s ease,
+    border-color 1s ease;
+}
