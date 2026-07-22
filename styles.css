@@ -5831,32 +5831,18 @@ font-size:1.15rem;
 
 .library-steam .steam {
   position: absolute;
-  bottom: -180px;
+  bottom: 0;
 
-  width: 180px;
-  height: 220px;
+  width: 250px;
+  height: 250px;
 
-  border-radius: 50%;
+  background: red;
 
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.07) 38%,
-      rgba(255, 255, 255, 0) 72%
-    );
+  opacity: .5;
 
-  filter: blur(32px);
-  opacity: 0;
+  left: 50%;
 
-  animation:
-    librarySteamRise
-    var(--steam-duration)
-    linear
-    var(--steam-delay)
-    infinite;
-
-  will-change: transform, opacity;
+  animation: none;
 }
 
 @keyframes librarySteamRise {
