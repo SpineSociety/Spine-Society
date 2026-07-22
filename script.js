@@ -4271,6 +4271,10 @@ dust.style.setProperty(
 
 
     container.appendChild(dust);
+    // Occasionally one particle catches the lamp light
+if (Math.random() < 0.025) {
+  dust.classList.add("dust-glint");
+}
   }
 }
 
