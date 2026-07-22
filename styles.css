@@ -5852,7 +5852,7 @@ font-size:1.15rem;
   animation:
     dustParticleFloat var(--dust-duration) linear infinite,
     dustParticleFade var(--dust-fade-duration) ease-in-out infinite alternate,
-    dustParticleGlint 55s ease-in-out infinite;
+    dustParticleGlint 55s ease-in-out -50s infinite;
 }
 @keyframes dustParticleFloat {
 
