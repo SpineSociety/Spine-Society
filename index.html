@@ -1394,54 +1394,75 @@ overflow-y: auto;
   <p id="loaderText" class="library-loader-text">Opening Library...</p>
 </div>
 <script>
-  const libraryLampButton = document.getElementById("lampToggle");
-  const libraryLoginScreen = document.getElementById("authScreen");
+  (() => {
+    const button = document.getElementById("lampToggle");
+    const background = document.querySelector("#authScreen .login-bg");
 
-  if (libraryLampButton && libraryLoginScreen) {
-    let libraryLampBusy = false;
+    if (!button || !background) return;
 
-    libraryLampButton.addEventListener(
-      "click",
-      function (event) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
+    let lampIsOn = true;
+    let lampIsBusy = false;
 
-        if (libraryLampBusy) return;
+    button.style.pointerEvents = "auto";
+    button.style.zIndex = "1000";
 
-        libraryLampBusy = true;
+    button.addEventListener("pointerup", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-        const turningLampOff =
-          !libraryLoginScreen.classList.contains("lamp-is-off");
+      if (lampIsBusy) return;
 
-        libraryLoginScreen.classList.add("lamp-flicker");
+      lampIsBusy = true;
+      lampIsOn = !lampIsOn;
 
-        window.setTimeout(function () {
-          libraryLoginScreen.classList.toggle(
-            "lamp-is-off",
-            turningLampOff
-          );
+      background.animate(
+        lampIsOn
+          ? [
+              { filter: "brightness(.35) saturate(.75)" },
+              { filter: "brightness(.8) saturate(.9)" },
+              { filter: "brightness(.42) saturate(.75)" },
+              { filter: "brightness(1.08) saturate(1.1)" },
+              { filter: "brightness(.72) saturate(.9)" },
+              { filter: "brightness(1) saturate(1)" }
+            ]
+          : [
+              { filter: "brightness(1) saturate(1)" },
+              { filter: "brightness(.45) saturate(.75)" },
+              { filter: "brightness(.9) saturate(1)" },
+              { filter: "brightness(.3) saturate(.7)" },
+              { filter: "brightness(.55) saturate(.8)" },
+              { filter: "brightness(.35) saturate(.75)" }
+            ],
+        {
+          duration: 700,
+          easing: "ease-in-out"
+        }
+      );
 
-          libraryLampButton.setAttribute(
-            "aria-pressed",
-            String(!turningLampOff)
-          );
+      window.setTimeout(() => {
+        background.style.filter = lampIsOn
+          ? "brightness(1) saturate(1)"
+          : "brightness(.35) saturate(.75)";
 
-          libraryLampButton.setAttribute(
-            "aria-label",
-            turningLampOff
-              ? "Turn library lamp on"
-              : "Turn library lamp off"
-          );
-        }, 260);
+        button.setAttribute(
+          "aria-pressed",
+          String(lampIsOn)
+        );
 
-        window.setTimeout(function () {
-          libraryLoginScreen.classList.remove("lamp-flicker");
-          libraryLampBusy = false;
-        }, 700);
-      },
-      true
-    );
-  }
+        button.setAttribute(
+          "aria-label",
+          lampIsOn
+            ? "Turn library lamp off"
+            : "Turn library lamp on"
+        );
+
+        lampIsBusy = false;
+      }, 700);
+    });
+  })();
+</script>
+
+<script type="module" src="script.js"></script>
 </script>
 
 <script type="module" src="script.js"></script>
