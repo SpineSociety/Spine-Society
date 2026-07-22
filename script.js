@@ -3839,24 +3839,41 @@ function initializeLibraryLamp() {
 
   if (!lampToggle || !authScreen) return;
 
+  let lampIsAnimating = false;
+
   lampToggle.onclick = function (event) {
     event.preventDefault();
     event.stopPropagation();
 
-    const lampIsOff =
-      authScreen.classList.toggle("lamp-is-off");
+    if (lampIsAnimating) return;
 
-    lampToggle.setAttribute(
-      "aria-pressed",
-      String(!lampIsOff)
-    );
+    lampIsAnimating = true;
 
-    lampToggle.setAttribute(
-      "aria-label",
-      lampIsOff
-        ? "Turn library lamp on"
-        : "Turn library lamp off"
-    );
+    const turningOff =
+      !authScreen.classList.contains("lamp-is-off");
+
+    authScreen.classList.add("lamp-flicker");
+
+    window.setTimeout(() => {
+      authScreen.classList.toggle("lamp-is-off", turningOff);
+
+      lampToggle.setAttribute(
+        "aria-pressed",
+        String(!turningOff)
+      );
+
+      lampToggle.setAttribute(
+        "aria-label",
+        turningOff
+          ? "Turn library lamp on"
+          : "Turn library lamp off"
+      );
+    }, 260);
+
+    window.setTimeout(() => {
+      authScreen.classList.remove("lamp-flicker");
+      lampIsAnimating = false;
+    }, 700);
   };
 }
 
