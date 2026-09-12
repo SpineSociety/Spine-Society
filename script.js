@@ -4182,7 +4182,7 @@ function createLibrarySteam() {
     .getElementById("authScreen")
     ?.classList.contains("lamp-is-off");
 
-  const steamCount = nightMode ? 5 : 3;
+  const steamCount = nightMode ? 9 : 7;
 
   for (let i = 0; i < steamCount; i++) {
     const steam = document.createElement("span");
