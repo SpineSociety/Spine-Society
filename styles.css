@@ -5816,88 +5816,95 @@ font-size:1.15rem;
     border-color 1s ease;
 }
 /* ==========================================
-
-   Ambient Library Steam Layer
-
-========================================== */
+   COFFEE STEAM — 3 WAVY RISING RIBBONS
+   ========================================== */
 
 .library-steam .steam {
   position: absolute;
   bottom: 0;
   left: 50%;
 
-  width: 38px;
-  height: 38px;
+  width: 24px;
+  height: 110px;
 
+  background: transparent;
+
+  /* Creates the actual thin steam ribbon */
+  border-left: 3px solid rgba(235, 225, 210, 0.48);
+
+  /* Bends the line so it doesn't look straight */
   border-radius: 50%;
 
-  background:
-    radial-gradient(
-      circle at 45% 55%,
-      rgba(245, 232, 210, 0.42) 0%,
-      rgba(230, 216, 195, 0.24) 32%,
-      rgba(215, 205, 190, 0.10) 58%,
-      transparent 76%
-    );
+  filter: blur(2px);
 
-  filter: blur(6px);
-
-  transform-origin: center;
+  transform-origin: bottom center;
 
   opacity: 0;
 
   animation:
-    librarySteamRoll var(--steam-duration)
-    ease-out
+    librarySteamWave var(--steam-duration)
+    ease-in-out
     var(--steam-delay)
     infinite;
 
   will-change: transform, opacity;
 }
 
-@keyframes librarySteamRoll {
+
+/*
+  The steam moves left/right while traveling upward.
+  Opacity increases near the mug, then gradually fades
+  as the steam reaches the top.
+*/
+@keyframes librarySteamWave {
+
   0% {
     transform:
       translate3d(-50%, 0, 0)
-      scale(0.35);
+      rotate(-8deg)
+      scaleY(0.65);
 
     opacity: 0;
   }
 
-  8% {
+  12% {
     opacity: var(--steam-opacity);
   }
 
-  22% {
+  28% {
     transform:
-      translate3d(calc(-50% - 8px), -55px, 0)
-      scale(0.75);
+      translate3d(calc(-50% - 9px), -65px, 0)
+      rotate(10deg)
+      scaleY(0.85);
 
     opacity: var(--steam-opacity);
   }
 
-  42% {
+  48% {
     transform:
-      translate3d(calc(-50% + 13px), -120px, 0)
-      scale(1.15);
+      translate3d(calc(-50% + 11px), -135px, 0)
+      rotate(-10deg)
+      scaleY(1);
 
-    opacity: calc(var(--steam-opacity) * 0.9);
+    opacity: var(--steam-opacity);
   }
 
-  62% {
+  68% {
     transform:
-      translate3d(calc(-50% - 15px), -190px, 0)
-      scale(1.55);
+      translate3d(calc(-50% - 8px), -205px, 0)
+      rotate(8deg)
+      scaleY(1.08);
 
     opacity: calc(var(--steam-opacity) * 0.7);
   }
 
-  80% {
+  84% {
     transform:
-      translate3d(calc(-50% + 18px), -265px, 0)
-      scale(2);
+      translate3d(calc(-50% + 10px), -275px, 0)
+      rotate(-6deg)
+      scaleY(1.15);
 
-    opacity: calc(var(--steam-opacity) * 0.4);
+    opacity: calc(var(--steam-opacity) * 0.35);
   }
 
   100% {
@@ -5907,7 +5914,8 @@ font-size:1.15rem;
         -340px,
         0
       )
-      scale(2.5);
+      rotate(5deg)
+      scaleY(1.22);
 
     opacity: 0;
   }
