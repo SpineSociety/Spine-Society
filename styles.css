@@ -5821,70 +5821,106 @@ font-size:1.15rem;
 
 ========================================== */
 
-.library-steam {
-  position: absolute;
-
-  right: 95px;
-  top: 560px;
-
-  width: 120px;
-  height: 180px;
-
-  overflow: visible;
-  pointer-events: none;
-  z-index: 9999;
-}
-
 .library-steam .steam {
   position: absolute;
   bottom: 0;
   left: 50%;
 
-  width: 80px;
-  height: 120px;
+  width: 18px;
+  height: 105px;
 
   transform: translateX(-50%);
 
   border-radius: 50%;
 
   background:
-    radial-gradient(
-      ellipse,
-      rgba(255,255,255,.14),
-      rgba(255,255,255,.05) 55%,
-      transparent 80%
+    linear-gradient(
+      to top,
+      transparent 0%,
+      rgba(255, 255, 255, 0.10) 15%,
+      rgba(255, 255, 255, 0.20) 38%,
+      rgba(255, 255, 255, 0.12) 62%,
+      rgba(255, 255, 255, 0.05) 78%,
+      transparent 100%
     );
 
-  filter: blur(20px);
+  filter: blur(7px);
+
+  transform-origin: center bottom;
 
   animation:
     librarySteamRise var(--steam-duration)
-    linear
+    ease-in-out
     var(--steam-delay)
     infinite;
+
+  will-change: transform, opacity;
 }
 
 @keyframes librarySteamRise {
   0% {
     transform:
-      translate3d(0, 0, 0)
-      scale(0.7);
+      translate3d(-50%, 0, 0)
+      scaleX(0.65)
+      scaleY(0.75);
 
     opacity: 0;
   }
 
-  15% {
+  12% {
     opacity: var(--steam-opacity);
   }
 
-  60% {
+  30% {
+    transform:
+      translate3d(
+        calc(-50% + 10px),
+        -85px,
+        0
+      )
+      rotate(4deg)
+      scaleX(0.85)
+      scaleY(1);
+  }
+
+  52% {
+    transform:
+      translate3d(
+        calc(-50% - 12px),
+        -175px,
+        0
+      )
+      rotate(-5deg)
+      scaleX(1)
+      scaleY(1.08);
+
     opacity: var(--steam-opacity);
+  }
+
+  74% {
+    transform:
+      translate3d(
+        calc(-50% + 15px),
+        -265px,
+        0
+      )
+      rotate(5deg)
+      scaleX(1.15)
+      scaleY(1.12);
+
+    opacity: calc(var(--steam-opacity) * 0.65);
   }
 
   100% {
     transform:
-      translate3d(var(--steam-drift), -900px, 0)
-      scale(1.6);
+      translate3d(
+        calc(-50% + var(--steam-drift)),
+        -360px,
+        0
+      )
+      rotate(-3deg)
+      scaleX(1.35)
+      scaleY(1.18);
 
     opacity: 0;
   }
