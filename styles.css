@@ -5855,13 +5855,12 @@ font-size:1.15rem;
   as the steam reaches the top.
 */
 @keyframes librarySteamWave {
-
   0% {
     transform:
       translate3d(-50%, 0, 0)
-      rotate(-8deg)
+      rotate(-5deg)
+      scaleX(0.7)
       scaleY(0.65);
-
     opacity: 0;
   }
 
@@ -5869,52 +5868,48 @@ font-size:1.15rem;
     opacity: var(--steam-opacity);
   }
 
-  28% {
+  30% {
     transform:
-      translate3d(calc(-50% - 9px), -65px, 0)
-      rotate(10deg)
-      scaleY(0.85);
-
+      translate3d(calc(-50% - 5px), -28px, 0)
+      rotate(7deg)
+      scaleX(0.85)
+      scaleY(0.8);
     opacity: var(--steam-opacity);
   }
 
-  48% {
+  50% {
     transform:
-      translate3d(calc(-50% + 11px), -135px, 0)
-      rotate(-10deg)
-      scaleY(1);
-
-    opacity: var(--steam-opacity);
+      translate3d(calc(-50% + 6px), -58px, 0)
+      rotate(-7deg)
+      scaleX(1)
+      scaleY(0.95);
+    opacity: calc(var(--steam-opacity) * 0.85);
   }
 
-  68% {
+  70% {
     transform:
-      translate3d(calc(-50% - 8px), -205px, 0)
-      rotate(8deg)
-      scaleY(1.08);
-
-    opacity: calc(var(--steam-opacity) * 0.7);
+      translate3d(calc(-50% - 4px), -88px, 0)
+      rotate(6deg)
+      scaleX(1.08)
+      scaleY(1.05);
+    opacity: calc(var(--steam-opacity) * 0.55);
   }
 
-  84% {
+  85% {
     transform:
-      translate3d(calc(-50% + 10px), -275px, 0)
-      rotate(-6deg)
-      scaleY(1.15);
-
-    opacity: calc(var(--steam-opacity) * 0.35);
+      translate3d(calc(-50% + 5px), -112px, 0)
+      rotate(-4deg)
+      scaleX(1.15)
+      scaleY(1.1);
+    opacity: calc(var(--steam-opacity) * 0.25);
   }
 
   100% {
     transform:
-      translate3d(
-        calc(-50% + var(--steam-drift)),
-        -340px,
-        0
-      )
-      rotate(5deg)
-      scaleY(1.22);
-
+      translate3d(-50%, -135px, 0)
+      rotate(3deg)
+      scaleX(1.2)
+      scaleY(1.15);
     opacity: 0;
   }
 }
