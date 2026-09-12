@@ -5826,91 +5826,89 @@ font-size:1.15rem;
   bottom: 0;
   left: 50%;
 
-  width: 34px;
-  height: 115px;
+  width: 38px;
+  height: 38px;
 
-  transform: translateX(-50%);
-  transform-origin: center bottom;
+  border-radius: 50%;
 
-  background: transparent;
+  background:
+    radial-gradient(
+      circle at 45% 55%,
+      rgba(245, 232, 210, 0.42) 0%,
+      rgba(230, 216, 195, 0.24) 32%,
+      rgba(215, 205, 190, 0.10) 58%,
+      transparent 76%
+    );
 
-  border-left: 5px solid rgba(255, 244, 225, 0.32);
+  filter: blur(6px);
 
-  border-radius:
-    55% 0 0 45% /
-    30% 0 0 70%;
-
-  filter: blur(5px);
+  transform-origin: center;
 
   opacity: 0;
 
   animation:
-    librarySteamRise var(--steam-duration)
-    ease-in-out
+    librarySteamRoll var(--steam-duration)
+    ease-out
     var(--steam-delay)
     infinite;
 
   will-change: transform, opacity;
 }
 
-@keyframes librarySteamRise {
+@keyframes librarySteamRoll {
   0% {
     transform:
       translate3d(-50%, 0, 0)
-      rotate(-3deg)
-      scaleX(0.55)
-      scaleY(0.7);
+      scale(0.35);
+
     opacity: 0;
   }
 
-  12% {
+  8% {
     opacity: var(--steam-opacity);
   }
 
-  25% {
+  22% {
     transform:
-      translate3d(calc(-50% - 8px), -70px, 0)
-      rotate(-8deg)
-      scaleX(0.75)
-      scaleY(0.9);
-  }
+      translate3d(calc(-50% - 8px), -55px, 0)
+      scale(0.75);
 
-  45% {
-    transform:
-      translate3d(calc(-50% + 12px), -145px, 0)
-      rotate(9deg)
-      scaleX(0.9)
-      scaleY(1);
     opacity: var(--steam-opacity);
   }
 
-  65% {
+  42% {
     transform:
-      translate3d(calc(-50% - 14px), -220px, 0)
-      rotate(-10deg)
-      scaleX(1.05)
-      scaleY(1.08);
+      translate3d(calc(-50% + 13px), -120px, 0)
+      scale(1.15);
+
+    opacity: calc(var(--steam-opacity) * 0.9);
   }
 
-  82% {
+  62% {
     transform:
-      translate3d(calc(-50% + 10px), -290px, 0)
-      rotate(7deg)
-      scaleX(1.2)
-      scaleY(1.12);
-    opacity: calc(var(--steam-opacity) * 0.55);
+      translate3d(calc(-50% - 15px), -190px, 0)
+      scale(1.55);
+
+    opacity: calc(var(--steam-opacity) * 0.7);
+  }
+
+  80% {
+    transform:
+      translate3d(calc(-50% + 18px), -265px, 0)
+      scale(2);
+
+    opacity: calc(var(--steam-opacity) * 0.4);
   }
 
   100% {
     transform:
       translate3d(
         calc(-50% + var(--steam-drift)),
-        -360px,
+        -340px,
         0
       )
-      rotate(-5deg)
-      scaleX(1.4)
-      scaleY(1.18);
+      scale(2.5);
+
     opacity: 0;
   }
 }
