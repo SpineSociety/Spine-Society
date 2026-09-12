@@ -5824,18 +5824,16 @@ font-size:1.15rem;
   bottom: 0;
   left: 50%;
 
-  width: 24px;
-  height: 110px;
+  width: 30px;
+  height: 72px;
 
   background: transparent;
 
-  /* Creates the actual thin steam ribbon */
-  border-left: 3px solid rgba(235, 225, 210, 0.48);
+  border-left: 2px solid rgba(235, 225, 210, 0.38);
 
-  /* Bends the line so it doesn't look straight */
-  border-radius: 50%;
+  border-radius: 50% 20% 55% 25%;
 
-  filter: blur(2px);
+  filter: blur(3px);
 
   transform-origin: bottom center;
 
