@@ -84,394 +84,394 @@
   aria-label="Show password"
   aria-pressed="false"
 >
-  <!-- CLOSED BOOK — LUXURY LEATHER -->
+  <!-- CLOSED BOOK — SPINE SOCIETY -->
 <svg
   class="password-book password-book-closed"
-  viewBox="0 0 64 64"
+  viewBox="0 0 48 48"
   aria-hidden="true"
 >
   <defs>
 
-    <!-- Deep red leather -->
-    <radialGradient id="luxLeather" cx="38%" cy="28%" r="85%">
-      <stop offset="0%" stop-color="#b94335"/>
-      <stop offset="28%" stop-color="#8d261f"/>
-      <stop offset="65%" stop-color="#641713"/>
-      <stop offset="100%" stop-color="#350907"/>
-    </radialGradient>
-
-    <!-- Spine leather -->
-    <linearGradient id="luxSpine" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#3a0908"/>
-      <stop offset="32%" stop-color="#741914"/>
-      <stop offset="62%" stop-color="#a8382c"/>
-      <stop offset="100%" stop-color="#48100d"/>
+    <!-- Rich burgundy leather -->
+    <linearGradient id="ssLeather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a83e35"/>
+      <stop offset="18%" stop-color="#8d2928"/>
+      <stop offset="52%" stop-color="#681b20"/>
+      <stop offset="82%" stop-color="#4a1218"/>
+      <stop offset="100%" stop-color="#2b090e"/>
     </linearGradient>
 
-    <!-- Antique page block -->
-    <linearGradient id="luxPages" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f5df9d"/>
-      <stop offset="30%" stop-color="#d8b86f"/>
-      <stop offset="70%" stop-color="#b88c4d"/>
-      <stop offset="100%" stop-color="#7e552c"/>
+    <!-- Raised leather edge -->
+    <linearGradient id="ssLeatherEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d25c48"/>
+      <stop offset="25%" stop-color="#8d2828"/>
+      <stop offset="75%" stop-color="#4b1016"/>
+      <stop offset="100%" stop-color="#26070b"/>
     </linearGradient>
 
-    <!-- Metallic gold -->
-    <linearGradient id="luxGold" x1="0" y1="0" x2="1" y2="1">
+    <!-- Aged cream pages -->
+    <linearGradient id="ssPages" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5dfa4"/>
+      <stop offset="38%" stop-color="#dcc084"/>
+      <stop offset="75%" stop-color="#b89358"/>
+      <stop offset="100%" stop-color="#806039"/>
+    </linearGradient>
+
+    <!-- Metallic antique gold -->
+    <linearGradient id="ssGold" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#fff0a8"/>
-      <stop offset="18%" stop-color="#e8bf58"/>
-      <stop offset="42%" stop-color="#a76b1d"/>
-      <stop offset="66%" stop-color="#f2ce68"/>
-      <stop offset="100%" stop-color="#805019"/>
+      <stop offset="22%" stop-color="#e3bb59"/>
+      <stop offset="52%" stop-color="#a86c24"/>
+      <stop offset="76%" stop-color="#f0c969"/>
+      <stop offset="100%" stop-color="#80501c"/>
     </linearGradient>
 
-    <!-- Leather texture -->
-    <filter id="luxTexture" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency=".45"
-        numOctaves="3"
-        seed="12"
-        result="noise"
-      />
-
-      <feColorMatrix
-        in="noise"
-        type="matrix"
-        values="
-          .3 0 0 0 0
-          0 .18 0 0 0
-          0 0 .12 0 0
-          0 0 0 .18 0
-        "
-        result="texture"
-      />
-
-      <feBlend
-        in="SourceGraphic"
-        in2="texture"
-        mode="soft-light"
-      />
-    </filter>
-
-    <!-- Realistic shadow -->
-    <filter id="luxShadow" x="-50%" y="-50%" width="200%" height="200%">
+    <!-- Small natural book shadow -->
+    <filter id="ssBookShadow" x="-30%" y="-30%" width="160%" height="170%">
       <feDropShadow
-        dx="1.7"
-        dy="2.6"
-        stdDeviation="2"
+        dx="0"
+        dy="1.3"
+        stdDeviation="1"
         flood-color="#000000"
-        flood-opacity=".72"
+        flood-opacity=".48"
       />
     </filter>
 
   </defs>
 
-  <g filter="url(#luxShadow)">
+  <g filter="url(#ssBookShadow)">
 
-    <!-- TOP PAGE BLOCK -->
+    <!-- =========================
+         PAGE BLOCK AT TOP
+         ========================= -->
+
     <path
       d="
-        M17 9
-        Q18 6 22 6
-        H50
-        Q54 6 55 10
-        L54 15
-        H18
-        Q15 14 17 9
+        M14.5 7.5
+        Q15 5.8 17.5 5.4
+        H35
+        Q37.2 5.7 37.5 8.4
+        L36 11
+        H14
         Z
       "
-      fill="url(#luxPages)"
-      stroke="#71441e"
-      stroke-width=".8"
+      fill="url(#ssPages)"
+      stroke="#79542b"
+      stroke-width=".65"
     />
 
-    <!-- PAGE LAYERS -->
+    <!-- Individual page lines -->
     <path
-      d="M19 9.2 Q34 7.8 52 9.3"
+      d="M17 7.1 H35.5"
       fill="none"
-      stroke="#fff0bd"
-      stroke-width=".6"
-      opacity=".65"
-    />
-
-    <path
-      d="M18 11 Q34 9.6 53 11"
-      fill="none"
-      stroke="#9a6a35"
-      stroke-width=".45"
-      opacity=".7"
-    />
-
-    <path
-      d="M18 12.7 Q34 11.2 53 12.7"
-      fill="none"
-      stroke="#f2d693"
-      stroke-width=".4"
-      opacity=".55"
-    />
-
-    <!-- MAIN COVER -->
-    <rect
-      x="15"
-      y="11"
-      width="42"
-      height="46"
-      rx="5"
-      fill="url(#luxLeather)"
-      stroke="#3a0807"
-      stroke-width="1.5"
-      filter="url(#luxTexture)"
-    />
-
-    <!-- RAISED COVER EDGE -->
-    <rect
-      x="16.5"
-      y="12.5"
-      width="39"
-      height="43"
-      rx="4"
-      fill="none"
-      stroke="#c6573e"
-      stroke-width="1"
-      opacity=".55"
-    />
-
-    <!-- LEATHER HIGHLIGHT -->
-    <path
-      d="
-        M21 14
-        Q35 11.8 50 14
-      "
-      fill="none"
-      stroke="#ffd0a3"
-      stroke-width=".7"
-      opacity=".24"
-      stroke-linecap="round"
-    />
-
-    <!-- THICK SPINE -->
-    <path
-      d="
-        M15.5 14
-        Q11.5 17 12 23
-        V49
-        Q12 55 17 57
-        L21 55
-        V13
-        Z
-      "
-      fill="url(#luxSpine)"
-      stroke="#350807"
-      stroke-width="1.2"
-    />
-
-    <!-- SPINE HIGHLIGHT -->
-    <path
-      d="
-        M17.5 15
-        Q15.5 31 17.5 54
-      "
-      fill="none"
-      stroke="#e16a4c"
-      stroke-width=".8"
-      opacity=".45"
-    />
-
-    <!-- SPINE RAISED BANDS -->
-    <path d="M13.2 21 Q17 23 20.5 21"
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.3"/>
-
-    <path d="M13 31 Q17 33 20.5 31"
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.3"/>
-
-    <path d="M13 42 Q17 44 20.5 42"
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.3"/>
-
-    <path d="M13.2 52 Q17 54 20.5 52"
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.3"/>
-
-    <!-- OUTER GOLD FRAME -->
-    <rect
-      x="24"
-      y="16"
-      width="28"
-      height="36"
-      rx="2.5"
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.25"
-    />
-
-    <!-- INNER GOLD FRAME -->
-    <rect
-      x="26"
-      y="18"
-      width="24"
-      height="32"
-      rx="1.5"
-      fill="none"
-      stroke="#d9a743"
+      stroke="#fff0c3"
       stroke-width=".45"
       opacity=".75"
     />
 
-    <!-- CORNER ORNAMENTS -->
     <path
-      d="M24 22
-         Q28 21 29 17
-         M25 20
-         Q27 20 28 22"
+      d="M16.3 8.3 H36"
       fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1"
+      stroke="#a77c43"
+      stroke-width=".35"
+      opacity=".65"
+    />
+
+    <path
+      d="M15.7 9.4 H36"
+      fill="none"
+      stroke="#f1d79d"
+      stroke-width=".35"
+      opacity=".55"
+    />
+
+
+    <!-- =========================
+         MAIN LEATHER BOOK
+         ========================= -->
+
+    <rect
+      x="9"
+      y="9"
+      width="29"
+      height="33"
+      rx="4"
+      fill="url(#ssLeather)"
+      stroke="#26070b"
+      stroke-width="1.1"
+    />
+
+
+    <!-- =========================
+         RAISED OUTER LEATHER EDGE
+         ========================= -->
+
+    <rect
+      x="10"
+      y="10"
+      width="27"
+      height="31"
+      rx="3.2"
+      fill="none"
+      stroke="url(#ssLeatherEdge)"
+      stroke-width="1.5"
+      opacity=".9"
+    />
+
+    <!-- Top leather highlight -->
+    <path
+      d="
+        M13 11
+        Q14 10 16 10
+        H33
+        Q35 10 36 12
+      "
+      fill="none"
+      stroke="#e5765b"
+      stroke-width=".65"
+      opacity=".65"
+      stroke-linecap="round"
+    />
+
+
+    <!-- =========================
+         THICK ROUNDED SPINE
+         ========================= -->
+
+    <path
+      d="
+        M13.8 10
+        Q10 11 10 15
+        V36
+        Q10 40 14 41
+        Z
+      "
+      fill="#58151a"
+      opacity=".95"
+    />
+
+    <!-- Spine highlight -->
+    <path
+      d="
+        M13.2 11
+        Q11.3 13 11.3 16
+        V35.5
+        Q11.4 38 13.2 39.5
+      "
+      fill="none"
+      stroke="#b94b3d"
+      stroke-width=".85"
+      opacity=".72"
+    />
+
+
+    <!-- =========================
+         THREE GOLD SPINE BANDS
+         ========================= -->
+
+    <path
+      d="M10.7 17.2 Q12.2 18 14.2 17.3"
+      fill="none"
+      stroke="url(#ssGold)"
+      stroke-width="1.15"
       stroke-linecap="round"
     />
 
     <path
-      d="M52 22
-         Q48 21 47 17
-         M51 20
-         Q49 20 48 22"
+      d="M10.7 25.2 Q12.2 26 14.2 25.3"
       fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1"
+      stroke="url(#ssGold)"
+      stroke-width="1.15"
       stroke-linecap="round"
     />
 
     <path
-      d="M24 46
-         Q28 47 29 52
-         M25 48
-         Q27 48 28 46"
+      d="M10.7 33.2 Q12.2 34 14.2 33.3"
       fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1"
+      stroke="url(#ssGold)"
+      stroke-width="1.15"
       stroke-linecap="round"
     />
 
-    <path
-      d="M52 46
-         Q48 47 47 52
-         M51 48
-         Q49 48 48 46"
+
+    <!-- =========================
+         FRONT COVER PANEL
+         ========================= -->
+
+    <rect
+      x="15.5"
+      y="12"
+      width="18.8"
+      height="27"
+      rx="1.8"
+      fill="#681a1d"
+      opacity=".48"
+    />
+
+    <!-- Thin inset gold border -->
+    <rect
+      x="17"
+      y="13.3"
+      width="16"
+      height="24.4"
+      rx="1.3"
       fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1"
-      stroke-linecap="round"
-    />
-
-    <!-- CENTRAL GOLD BOTANICAL STEM -->
-    <path
-      d="
-        M37.5 45
-        C37.5 39 38 32 38 24
-
-        M38 37
-        C34 35 32 32 31 29
-
-        M38 33
-        C42 31 44 28 45 25
-
-        M38 29
-        C35 28 34 26 33 23
-      "
-      fill="none"
-      stroke="url(#luxGold)"
-      stroke-width="1.35"
-      stroke-linecap="round"
-    />
-
-    <!-- BOTANICAL LEAVES -->
-    <path
-      d="
-        M31 29
-        Q27 27 27 23
-        Q31 24 32.5 28
-        Z
-      "
-      fill="url(#luxGold)"
-    />
-
-    <path
-      d="
-        M44 27
-        Q48 24 48 20
-        Q43 22 42 26
-        Z
-      "
-      fill="url(#luxGold)"
-    />
-
-    <path
-      d="
-        M34 24
-        Q31 21 32 18
-        Q36 20 36 23
-        Z
-      "
-      fill="url(#luxGold)"
-    />
-
-    <path
-      d="
-        M37 39
-        Q33 36 30 37
-        Q32 41 36 41
-        Z
-      "
-      fill="url(#luxGold)"
-    />
-
-    <path
-      d="
-        M39 36
-        Q43 33 46 34
-        Q44 38 40 39
-        Z
-      "
-      fill="url(#luxGold)"
-    />
-
-    <!-- SMALL GOLD BERRIES -->
-    <circle cx="32" cy="32" r="1" fill="#edc55f"/>
-    <circle cx="44" cy="30" r="1" fill="#edc55f"/>
-    <circle cx="42" cy="40" r=".9" fill="#edc55f"/>
-
-    <!-- SPINE ORNAMENT -->
-    <path
-      d="
-        M16.7 26
-        V29
-        M16.7 27
-        L14.8 25.5
-        M16.7 27
-        L18.5 25.5
-      "
-      fill="none"
-      stroke="url(#luxGold)"
+      stroke="url(#ssGold)"
       stroke-width=".8"
+    />
+
+    <!-- Inner shadow beside frame -->
+    <rect
+      x="18"
+      y="14.3"
+      width="14"
+      height="22.4"
+      rx=".8"
+      fill="none"
+      stroke="#3b0d11"
+      stroke-width=".45"
+      opacity=".7"
+    />
+
+
+    <!-- =========================
+         SIMPLE BOTANICAL EMBLEM
+         ========================= -->
+
+    <!-- Main stem -->
+    <path
+      d="
+        M24.8 33
+        C24.7 29
+         24.8 25
+         24.7 19
+      "
+      fill="none"
+      stroke="url(#ssGold)"
+      stroke-width="1.15"
       stroke-linecap="round"
     />
 
-    <!-- SUBTLE COVER SHINE -->
+    <!-- Left branches -->
     <path
       d="
-        M28 20
-        Q39 16 49 20
+        M24.7 28
+        C22.8 27
+         21.6 25.5
+         20.8 23.7
+
+        M24.7 24.2
+        C22.9 23.4
+         22 21.8
+         21.5 20.5
+      "
+      fill="none"
+      stroke="url(#ssGold)"
+      stroke-width=".85"
+      stroke-linecap="round"
+    />
+
+    <!-- Right branches -->
+    <path
+      d="
+        M24.8 30
+        C26.6 28.8
+         27.6 27.2
+         28.2 25.6
+
+        M24.7 25.8
+        C26.5 24.7
+         27.4 23
+         27.9 21.4
+      "
+      fill="none"
+      stroke="url(#ssGold)"
+      stroke-width=".85"
+      stroke-linecap="round"
+    />
+
+
+    <!-- Leaves -->
+    <ellipse
+      cx="20.8"
+      cy="23.2"
+      rx="1.15"
+      ry="2"
+      transform="rotate(-42 20.8 23.2)"
+      fill="url(#ssGold)"
+    />
+
+    <ellipse
+      cx="21.5"
+      cy="20.2"
+      rx="1"
+      ry="1.75"
+      transform="rotate(-36 21.5 20.2)"
+      fill="url(#ssGold)"
+    />
+
+    <ellipse
+      cx="28.3"
+      cy="25.3"
+      rx="1.15"
+      ry="2"
+      transform="rotate(40 28.3 25.3)"
+      fill="url(#ssGold)"
+    />
+
+    <ellipse
+      cx="28"
+      cy="21.2"
+      rx="1"
+      ry="1.8"
+      transform="rotate(38 28 21.2)"
+      fill="url(#ssGold)"
+    />
+
+
+    <!-- Tiny berry accents -->
+    <circle
+      cx="27.7"
+      cy="28.8"
+      r=".75"
+      fill="#e8bd61"
+    />
+
+    <circle
+      cx="22.2"
+      cy="27"
+      r=".65"
+      fill="#c88b36"
+    />
+
+
+    <!-- =========================
+         LEATHER LIGHTING
+         ========================= -->
+
+    <path
+      d="
+        M17 11.4
+        C22 10.5 29 10.7 33.5 12
       "
       fill="none"
       stroke="#ffffff"
-      stroke-width=".6"
-      opacity=".12"
+      stroke-width=".45"
+      opacity=".16"
+      stroke-linecap="round"
+    />
+
+    <!-- Lower edge depth -->
+    <path
+      d="
+        M15 40
+        H33
+        Q35.5 40 36.5 37.5
+      "
+      fill="none"
+      stroke="#210609"
+      stroke-width=".8"
+      opacity=".75"
       stroke-linecap="round"
     />
 
