@@ -84,283 +84,395 @@
   aria-label="Show password"
   aria-pressed="false"
 >
-  <!-- CLOSED BOOK — MORE REALISTIC -->
+  <!-- CLOSED BOOK — LUXURY LEATHER -->
 <svg
   class="password-book password-book-closed"
-  viewBox="0 0 48 48"
+  viewBox="0 0 64 64"
   aria-hidden="true"
 >
   <defs>
 
-    <linearGradient id="closedLeather" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#a44743"/>
-      <stop offset="28%" stop-color="#76262c"/>
-      <stop offset="68%" stop-color="#4f171d"/>
-      <stop offset="100%" stop-color="#2d0c11"/>
+    <!-- Deep red leather -->
+    <radialGradient id="luxLeather" cx="38%" cy="28%" r="85%">
+      <stop offset="0%" stop-color="#b94335"/>
+      <stop offset="28%" stop-color="#8d261f"/>
+      <stop offset="65%" stop-color="#641713"/>
+      <stop offset="100%" stop-color="#350907"/>
+    </radialGradient>
+
+    <!-- Spine leather -->
+    <linearGradient id="luxSpine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3a0908"/>
+      <stop offset="32%" stop-color="#741914"/>
+      <stop offset="62%" stop-color="#a8382c"/>
+      <stop offset="100%" stop-color="#48100d"/>
     </linearGradient>
 
-    <linearGradient id="closedLeatherHighlight" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity=".18"/>
-      <stop offset="48%" stop-color="#ffffff" stop-opacity=".035"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity=".22"/>
+    <!-- Antique page block -->
+    <linearGradient id="luxPages" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5df9d"/>
+      <stop offset="30%" stop-color="#d8b86f"/>
+      <stop offset="70%" stop-color="#b88c4d"/>
+      <stop offset="100%" stop-color="#7e552c"/>
     </linearGradient>
 
-    <linearGradient id="closedPages" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#8d7044"/>
-      <stop offset="15%" stop-color="#c9ae76"/>
-      <stop offset="55%" stop-color="#eadab2"/>
-      <stop offset="86%" stop-color="#c4a870"/>
-      <stop offset="100%" stop-color="#896b40"/>
+    <!-- Metallic gold -->
+    <linearGradient id="luxGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0a8"/>
+      <stop offset="18%" stop-color="#e8bf58"/>
+      <stop offset="42%" stop-color="#a76b1d"/>
+      <stop offset="66%" stop-color="#f2ce68"/>
+      <stop offset="100%" stop-color="#805019"/>
     </linearGradient>
 
-    <linearGradient id="closedGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f0d79b"/>
-      <stop offset="30%" stop-color="#cfaa61"/>
-      <stop offset="58%" stop-color="#89602f"/>
-      <stop offset="82%" stop-color="#c89d53"/>
-      <stop offset="100%" stop-color="#765126"/>
-    </linearGradient>
-
-    <filter id="closedShadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow
-        dx="1.2"
-        dy="2"
-        stdDeviation="1.5"
-        flood-color="#000"
-        flood-opacity=".6"
-      />
-    </filter>
-
-    <filter id="closedLeatherTexture">
+    <!-- Leather texture -->
+    <filter id="luxTexture" x="-20%" y="-20%" width="140%" height="140%">
       <feTurbulence
         type="fractalNoise"
-        baseFrequency=".55"
-        numOctaves="2"
-        seed="5"
-        result="texture"
+        baseFrequency=".45"
+        numOctaves="3"
+        seed="12"
+        result="noise"
       />
 
       <feColorMatrix
-        in="texture"
+        in="noise"
+        type="matrix"
         values="
-          .25 0 0 0 0
-          0 .25 0 0 0
-          0 0 .25 0 0
-          0 0 0 .12 0"
-        result="softTexture"
+          .3 0 0 0 0
+          0 .18 0 0 0
+          0 0 .12 0 0
+          0 0 0 .18 0
+        "
+        result="texture"
       />
 
       <feBlend
         in="SourceGraphic"
-        in2="softTexture"
+        in2="texture"
         mode="soft-light"
+      />
+    </filter>
+
+    <!-- Realistic shadow -->
+    <filter id="luxShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow
+        dx="1.7"
+        dy="2.6"
+        stdDeviation="2"
+        flood-color="#000000"
+        flood-opacity=".72"
       />
     </filter>
 
   </defs>
 
-  <g filter="url(#closedShadow)">
+  <g filter="url(#luxShadow)">
 
-    <!-- page block -->
+    <!-- TOP PAGE BLOCK -->
     <path
       d="
-        M13.5 9.2
-        L35.3 10.1
-        L35.1 37.1
-        L13.5 36.2
+        M17 9
+        Q18 6 22 6
+        H50
+        Q54 6 55 10
+        L54 15
+        H18
+        Q15 14 17 9
         Z
       "
-      fill="url(#closedPages)"
+      fill="url(#luxPages)"
+      stroke="#71441e"
+      stroke-width=".8"
     />
 
-    <!-- irregular page-edge lines -->
+    <!-- PAGE LAYERS -->
     <path
-      d="M15 11.5 C21 11.2 29 11.8 34 11.4"
+      d="M19 9.2 Q34 7.8 52 9.3"
       fill="none"
-      stroke="#755b39"
-      stroke-width=".35"
-      opacity=".5"
-    />
-
-    <path
-      d="M15 13.2 C22 13.6 28 12.9 34 13.4"
-      fill="none"
-      stroke="#f6e6bd"
-      stroke-width=".3"
-      opacity=".45"
-    />
-
-    <path
-      d="M15 33.7 C21 33.3 28 34.1 34 33.5"
-      fill="none"
-      stroke="#705533"
-      stroke-width=".35"
-      opacity=".48"
-    />
-
-    <path
-      d="M15 35.4 C21 35.8 29 35.1 34 35.6"
-      fill="none"
-      stroke="#efdca9"
-      stroke-width=".3"
-      opacity=".42"
-    />
-
-    <!-- leather cover -->
-    <rect
-      x="9"
-      y="6"
-      width="27"
-      height="33"
-      rx="3.4"
-      fill="url(#closedLeather)"
-      stroke="#24080c"
-      stroke-width="1.1"
-      filter="url(#closedLeatherTexture)"
-    />
-
-    <!-- lighting across leather -->
-    <rect
-      x="10"
-      y="7"
-      width="25"
-      height="31"
-      rx="2.8"
-      fill="url(#closedLeatherHighlight)"
-      opacity=".62"
-    />
-
-    <!-- dimensional spine -->
-    <path
-      d="
-        M14 7
-        C12.6 15 12.6 30.5 14 38
-      "
-      fill="none"
-      stroke="#26090e"
-      stroke-width="3.5"
-      opacity=".88"
-    />
-
-    <path
-      d="
-        M15 7.5
-        C14.3 15 14.3 30 15 37.6
-      "
-      fill="none"
-      stroke="#a34b46"
-      stroke-width=".65"
-      opacity=".48"
-    />
-
-    <!-- raised spine bands -->
-    <path d="M12.2 12.3H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
-    <path d="M12.2 18.9H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
-    <path d="M12.2 26.2H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
-    <path d="M12.2 33.1H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
-
-    <!-- worn corners -->
-    <path
-      d="M10 8.7 Q11.1 6.8 13 6.5"
-      fill="none"
-      stroke="#bf6e5d"
-      stroke-width=".55"
-      opacity=".42"
-    />
-
-    <path
-      d="M32.3 38.1 Q34.6 38 35.2 35.6"
-      fill="none"
-      stroke="#1c070a"
+      stroke="#fff0bd"
       stroke-width=".6"
       opacity=".65"
     />
 
-    <!-- inset gilded frame -->
-    <rect
-      x="17"
-      y="10"
-      width="15"
-      height="25"
-      rx="1.1"
+    <path
+      d="M18 11 Q34 9.6 53 11"
       fill="none"
-      stroke="url(#closedGold)"
-      stroke-width=".82"
-      opacity=".9"
+      stroke="#9a6a35"
+      stroke-width=".45"
+      opacity=".7"
     />
 
-    <rect
-      x="18.3"
-      y="11.3"
-      width="12.4"
-      height="22.4"
-      rx=".7"
+    <path
+      d="M18 12.7 Q34 11.2 53 12.7"
       fill="none"
-      stroke="#6e4b27"
-      stroke-width=".38"
-      opacity=".72"
+      stroke="#f2d693"
+      stroke-width=".4"
+      opacity=".55"
     />
 
-    <!-- antique botanical emboss -->
+    <!-- MAIN COVER -->
+    <rect
+      x="15"
+      y="11"
+      width="42"
+      height="46"
+      rx="5"
+      fill="url(#luxLeather)"
+      stroke="#3a0807"
+      stroke-width="1.5"
+      filter="url(#luxTexture)"
+    />
+
+    <!-- RAISED COVER EDGE -->
+    <rect
+      x="16.5"
+      y="12.5"
+      width="39"
+      height="43"
+      rx="4"
+      fill="none"
+      stroke="#c6573e"
+      stroke-width="1"
+      opacity=".55"
+    />
+
+    <!-- LEATHER HIGHLIGHT -->
     <path
       d="
-        M24 30.5
-        C23.9 26.6 24.1 22.5 24 17.1
-
-        M23.9 25.5
-        C21.2 24.5 20 22.4 19.4 20.2
-
-        M24 23.1
-        C26.6 22.4 27.8 20.7 28.5 18.4
-
-        M24 20.5
-        C22.3 19.7 21.4 18.2 20.9 16.8
+        M21 14
+        Q35 11.8 50 14
       "
       fill="none"
-      stroke="url(#closedGold)"
+      stroke="#ffd0a3"
+      stroke-width=".7"
+      opacity=".24"
+      stroke-linecap="round"
+    />
+
+    <!-- THICK SPINE -->
+    <path
+      d="
+        M15.5 14
+        Q11.5 17 12 23
+        V49
+        Q12 55 17 57
+        L21 55
+        V13
+        Z
+      "
+      fill="url(#luxSpine)"
+      stroke="#350807"
+      stroke-width="1.2"
+    />
+
+    <!-- SPINE HIGHLIGHT -->
+    <path
+      d="
+        M17.5 15
+        Q15.5 31 17.5 54
+      "
+      fill="none"
+      stroke="#e16a4c"
+      stroke-width=".8"
+      opacity=".45"
+    />
+
+    <!-- SPINE RAISED BANDS -->
+    <path d="M13.2 21 Q17 23 20.5 21"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.3"/>
+
+    <path d="M13 31 Q17 33 20.5 31"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.3"/>
+
+    <path d="M13 42 Q17 44 20.5 42"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.3"/>
+
+    <path d="M13.2 52 Q17 54 20.5 52"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.3"/>
+
+    <!-- OUTER GOLD FRAME -->
+    <rect
+      x="24"
+      y="16"
+      width="28"
+      height="36"
+      rx="2.5"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.25"
+    />
+
+    <!-- INNER GOLD FRAME -->
+    <rect
+      x="26"
+      y="18"
+      width="24"
+      height="32"
+      rx="1.5"
+      fill="none"
+      stroke="#d9a743"
+      stroke-width=".45"
+      opacity=".75"
+    />
+
+    <!-- CORNER ORNAMENTS -->
+    <path
+      d="M24 22
+         Q28 21 29 17
+         M25 20
+         Q27 20 28 22"
+      fill="none"
+      stroke="url(#luxGold)"
       stroke-width="1"
       stroke-linecap="round"
     />
 
-    <!-- leaves -->
-    <ellipse
-      cx="19.5"
-      cy="20.1"
-      rx="1.15"
-      ry="1.9"
-      transform="rotate(-42 19.5 20.1)"
-      fill="#b88c4b"
+    <path
+      d="M52 22
+         Q48 21 47 17
+         M51 20
+         Q49 20 48 22"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1"
+      stroke-linecap="round"
     />
 
-    <ellipse
-      cx="28.4"
-      cy="18.3"
-      rx="1.15"
-      ry="1.9"
-      transform="rotate(40 28.4 18.3)"
-      fill="#cca860"
+    <path
+      d="M24 46
+         Q28 47 29 52
+         M25 48
+         Q27 48 28 46"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1"
+      stroke-linecap="round"
     />
 
-    <ellipse
-      cx="20.9"
-      cy="16.7"
-      rx=".95"
-      ry="1.6"
-      transform="rotate(-34 20.9 16.7)"
-      fill="#9d733b"
+    <path
+      d="M52 46
+         Q48 47 47 52
+         M51 48
+         Q49 48 48 46"
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1"
+      stroke-linecap="round"
     />
 
-    <!-- tiny natural highlight -->
+    <!-- CENTRAL GOLD BOTANICAL STEM -->
     <path
       d="
-        M18.7 8.6
-        C23.8 7.7 28.4 8 31.4 9.2
+        M37.5 45
+        C37.5 39 38 32 38 24
+
+        M38 37
+        C34 35 32 32 31 29
+
+        M38 33
+        C42 31 44 28 45 25
+
+        M38 29
+        C35 28 34 26 33 23
+      "
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width="1.35"
+      stroke-linecap="round"
+    />
+
+    <!-- BOTANICAL LEAVES -->
+    <path
+      d="
+        M31 29
+        Q27 27 27 23
+        Q31 24 32.5 28
+        Z
+      "
+      fill="url(#luxGold)"
+    />
+
+    <path
+      d="
+        M44 27
+        Q48 24 48 20
+        Q43 22 42 26
+        Z
+      "
+      fill="url(#luxGold)"
+    />
+
+    <path
+      d="
+        M34 24
+        Q31 21 32 18
+        Q36 20 36 23
+        Z
+      "
+      fill="url(#luxGold)"
+    />
+
+    <path
+      d="
+        M37 39
+        Q33 36 30 37
+        Q32 41 36 41
+        Z
+      "
+      fill="url(#luxGold)"
+    />
+
+    <path
+      d="
+        M39 36
+        Q43 33 46 34
+        Q44 38 40 39
+        Z
+      "
+      fill="url(#luxGold)"
+    />
+
+    <!-- SMALL GOLD BERRIES -->
+    <circle cx="32" cy="32" r="1" fill="#edc55f"/>
+    <circle cx="44" cy="30" r="1" fill="#edc55f"/>
+    <circle cx="42" cy="40" r=".9" fill="#edc55f"/>
+
+    <!-- SPINE ORNAMENT -->
+    <path
+      d="
+        M16.7 26
+        V29
+        M16.7 27
+        L14.8 25.5
+        M16.7 27
+        L18.5 25.5
+      "
+      fill="none"
+      stroke="url(#luxGold)"
+      stroke-width=".8"
+      stroke-linecap="round"
+    />
+
+    <!-- SUBTLE COVER SHINE -->
+    <path
+      d="
+        M28 20
+        Q39 16 49 20
       "
       fill="none"
       stroke="#ffffff"
-      stroke-width=".48"
+      stroke-width=".6"
+      opacity=".12"
       stroke-linecap="round"
-      opacity=".22"
     />
 
   </g>
