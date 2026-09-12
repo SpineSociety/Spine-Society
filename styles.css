@@ -2871,7 +2871,7 @@ body {
   filter: sepia(.12);
 
   animation-name: pageFallDay;
-  animation-duration: calc(var(--fall-duration) * 2.5);
+  animation-duration: calc(var(--fall-duration) * 3.5);
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
