@@ -84,87 +84,287 @@
   aria-label="Show password"
   aria-pressed="false"
 >
-  <!-- CLOSED BOOK -->
-  <svg
-    class="password-book password-book-closed"
-    viewBox="0 0 48 48"
-    aria-hidden="true"
-  >
-    <defs>
-      <linearGradient id="bookLeatherClosed" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#8f3130"/>
-        <stop offset="55%" stop-color="#681f24"/>
-        <stop offset="100%" stop-color="#3e1217"/>
-      </linearGradient>
+  <!-- CLOSED BOOK — MORE REALISTIC -->
+<svg
+  class="password-book password-book-closed"
+  viewBox="0 0 48 48"
+  aria-hidden="true"
+>
+  <defs>
 
-      <linearGradient id="bookPagesClosed" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#d9c18f"/>
-        <stop offset="100%" stop-color="#f0dfb6"/>
-      </linearGradient>
-    </defs>
+    <linearGradient id="closedLeather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a44743"/>
+      <stop offset="28%" stop-color="#76262c"/>
+      <stop offset="68%" stop-color="#4f171d"/>
+      <stop offset="100%" stop-color="#2d0c11"/>
+    </linearGradient>
 
-    <!-- page edges -->
+    <linearGradient id="closedLeatherHighlight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".18"/>
+      <stop offset="48%" stop-color="#ffffff" stop-opacity=".035"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity=".22"/>
+    </linearGradient>
+
+    <linearGradient id="closedPages" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8d7044"/>
+      <stop offset="15%" stop-color="#c9ae76"/>
+      <stop offset="55%" stop-color="#eadab2"/>
+      <stop offset="86%" stop-color="#c4a870"/>
+      <stop offset="100%" stop-color="#896b40"/>
+    </linearGradient>
+
+    <linearGradient id="closedGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0d79b"/>
+      <stop offset="30%" stop-color="#cfaa61"/>
+      <stop offset="58%" stop-color="#89602f"/>
+      <stop offset="82%" stop-color="#c89d53"/>
+      <stop offset="100%" stop-color="#765126"/>
+    </linearGradient>
+
+    <filter id="closedShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow
+        dx="1.2"
+        dy="2"
+        stdDeviation="1.5"
+        flood-color="#000"
+        flood-opacity=".6"
+      />
+    </filter>
+
+    <filter id="closedLeatherTexture">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency=".55"
+        numOctaves="2"
+        seed="5"
+        result="texture"
+      />
+
+      <feColorMatrix
+        in="texture"
+        values="
+          .25 0 0 0 0
+          0 .25 0 0 0
+          0 0 .25 0 0
+          0 0 0 .12 0"
+        result="softTexture"
+      />
+
+      <feBlend
+        in="SourceGraphic"
+        in2="softTexture"
+        mode="soft-light"
+      />
+    </filter>
+
+  </defs>
+
+  <g filter="url(#closedShadow)">
+
+    <!-- page block -->
     <path
-      d="M14 9h22v29H14z"
-      fill="url(#bookPagesClosed)"
+      d="
+        M13.5 9.2
+        L35.3 10.1
+        L35.1 37.1
+        L13.5 36.2
+        Z
+      "
+      fill="url(#closedPages)"
+    />
+
+    <!-- irregular page-edge lines -->
+    <path
+      d="M15 11.5 C21 11.2 29 11.8 34 11.4"
+      fill="none"
+      stroke="#755b39"
+      stroke-width=".35"
+      opacity=".5"
+    />
+
+    <path
+      d="M15 13.2 C22 13.6 28 12.9 34 13.4"
+      fill="none"
+      stroke="#f6e6bd"
+      stroke-width=".3"
+      opacity=".45"
+    />
+
+    <path
+      d="M15 33.7 C21 33.3 28 34.1 34 33.5"
+      fill="none"
+      stroke="#705533"
+      stroke-width=".35"
+      opacity=".48"
+    />
+
+    <path
+      d="M15 35.4 C21 35.8 29 35.1 34 35.6"
+      fill="none"
+      stroke="#efdca9"
+      stroke-width=".3"
+      opacity=".42"
     />
 
     <!-- leather cover -->
     <rect
+      x="9"
+      y="6"
+      width="27"
+      height="33"
+      rx="3.4"
+      fill="url(#closedLeather)"
+      stroke="#24080c"
+      stroke-width="1.1"
+      filter="url(#closedLeatherTexture)"
+    />
+
+    <!-- lighting across leather -->
+    <rect
       x="10"
       y="7"
       width="25"
-      height="32"
-      rx="3"
-      fill="url(#bookLeatherClosed)"
-      stroke="#bd934d"
-      stroke-width="1"
+      height="31"
+      rx="2.8"
+      fill="url(#closedLeatherHighlight)"
+      opacity=".62"
     />
 
-    <!-- spine -->
+    <!-- dimensional spine -->
     <path
-      d="M14 7v32"
-      stroke="#3a1115"
-      stroke-width="3"
+      d="
+        M14 7
+        C12.6 15 12.6 30.5 14 38
+      "
+      fill="none"
+      stroke="#26090e"
+      stroke-width="3.5"
+      opacity=".88"
     />
 
-    <!-- gold frame -->
-    <rect
-      x="16"
-      y="11"
-      width="15"
-      height="24"
-      rx="1"
+    <path
+      d="
+        M15 7.5
+        C14.3 15 14.3 30 15 37.6
+      "
       fill="none"
-      stroke="#c9a35e"
-      stroke-width=".8"
+      stroke="#a34b46"
+      stroke-width=".65"
+      opacity=".48"
+    />
+
+    <!-- raised spine bands -->
+    <path d="M12.2 12.3H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
+    <path d="M12.2 18.9H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
+    <path d="M12.2 26.2H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
+    <path d="M12.2 33.1H15.2" stroke="#6f3d28" stroke-width=".9" opacity=".82"/>
+
+    <!-- worn corners -->
+    <path
+      d="M10 8.7 Q11.1 6.8 13 6.5"
+      fill="none"
+      stroke="#bf6e5d"
+      stroke-width=".55"
+      opacity=".42"
+    />
+
+    <path
+      d="M32.3 38.1 Q34.6 38 35.2 35.6"
+      fill="none"
+      stroke="#1c070a"
+      stroke-width=".6"
+      opacity=".65"
+    />
+
+    <!-- inset gilded frame -->
+    <rect
+      x="17"
+      y="10"
+      width="15"
+      height="25"
+      rx="1.1"
+      fill="none"
+      stroke="url(#closedGold)"
+      stroke-width=".82"
       opacity=".9"
     />
 
-    <!-- botanical detail -->
-    <path
-      d="M23.5 30V18
-         M23.5 23c-3-1-4-3-4-5
-         M23.5 26c3-1 4-3 4-5
-         M23.5 21c2-.7 3-2 3-3.5"
+    <rect
+      x="18.3"
+      y="11.3"
+      width="12.4"
+      height="22.4"
+      rx=".7"
       fill="none"
-      stroke="#d8b56f"
-      stroke-width="1.2"
+      stroke="#6e4b27"
+      stroke-width=".38"
+      opacity=".72"
+    />
+
+    <!-- antique botanical emboss -->
+    <path
+      d="
+        M24 30.5
+        C23.9 26.6 24.1 22.5 24 17.1
+
+        M23.9 25.5
+        C21.2 24.5 20 22.4 19.4 20.2
+
+        M24 23.1
+        C26.6 22.4 27.8 20.7 28.5 18.4
+
+        M24 20.5
+        C22.3 19.7 21.4 18.2 20.9 16.8
+      "
+      fill="none"
+      stroke="url(#closedGold)"
+      stroke-width="1"
       stroke-linecap="round"
     />
 
-    <ellipse cx="19.8" cy="17.8" rx="1.4" ry="2.2"
-      transform="rotate(-35 19.8 17.8)"
-      fill="#d8b56f"/>
+    <!-- leaves -->
+    <ellipse
+      cx="19.5"
+      cy="20.1"
+      rx="1.15"
+      ry="1.9"
+      transform="rotate(-42 19.5 20.1)"
+      fill="#b88c4b"
+    />
 
-    <ellipse cx="27.4" cy="20.7" rx="1.4" ry="2.2"
-      transform="rotate(35 27.4 20.7)"
-      fill="#d8b56f"/>
+    <ellipse
+      cx="28.4"
+      cy="18.3"
+      rx="1.15"
+      ry="1.9"
+      transform="rotate(40 28.4 18.3)"
+      fill="#cca860"
+    />
 
-    <ellipse cx="26.2" cy="17.2" rx="1.2" ry="2"
-      transform="rotate(35 26.2 17.2)"
-      fill="#d8b56f"/>
-  </svg>
+    <ellipse
+      cx="20.9"
+      cy="16.7"
+      rx=".95"
+      ry="1.6"
+      transform="rotate(-34 20.9 16.7)"
+      fill="#9d733b"
+    />
+
+    <!-- tiny natural highlight -->
+    <path
+      d="
+        M18.7 8.6
+        C23.8 7.7 28.4 8 31.4 9.2
+      "
+      fill="none"
+      stroke="#ffffff"
+      stroke-width=".48"
+      stroke-linecap="round"
+      opacity=".22"
+    />
+
+  </g>
+</svg>
 
 
   <!-- OPEN BOOK -->
