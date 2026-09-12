@@ -5826,27 +5826,23 @@ font-size:1.15rem;
   bottom: 0;
   left: 50%;
 
-  width: 18px;
-  height: 105px;
+  width: 34px;
+  height: 115px;
 
   transform: translateX(-50%);
-
-  border-radius: 50%;
-
-  background:
-    linear-gradient(
-      to top,
-      transparent 0%,
-      rgba(255, 255, 255, 0.10) 15%,
-      rgba(255, 255, 255, 0.20) 38%,
-      rgba(255, 255, 255, 0.12) 62%,
-      rgba(255, 255, 255, 0.05) 78%,
-      transparent 100%
-    );
-
-  filter: blur(7px);
-
   transform-origin: center bottom;
+
+  background: transparent;
+
+  border-left: 5px solid rgba(255, 244, 225, 0.32);
+
+  border-radius:
+    55% 0 0 45% /
+    30% 0 0 70%;
+
+  filter: blur(5px);
+
+  opacity: 0;
 
   animation:
     librarySteamRise var(--steam-duration)
