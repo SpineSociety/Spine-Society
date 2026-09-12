@@ -241,57 +241,7 @@
     />
   </svg>
 </button>
-/* SPINE SOCIETY PASSWORD BOOK */
 
-.password-book {
-  width: 26px;
-  height: 26px;
-  display: block;
-
-  filter:
-    drop-shadow(0 2px 3px rgba(0,0,0,.38))
-    drop-shadow(0 0 4px rgba(200,163,106,.10));
-
-  transition:
-    opacity .22s ease,
-    transform .32s ease,
-    filter .32s ease;
-}
-
-.password-book-open {
-  display: none;
-}
-
-.password-toggle.open .password-book-closed {
-  display: none;
-}
-
-.password-toggle.open .password-book-open {
-  display: block;
-  animation: passwordBookOpen .38s ease both;
-}
-
-@keyframes passwordBookOpen {
-  0% {
-    opacity: 0;
-    transform: scale(.72) rotateY(-18deg);
-  }
-
-  65% {
-    transform: scale(1.08) rotateY(3deg);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1) rotateY(0);
-  }
-}
-
-.password-toggle.open .password-book-open {
-  filter:
-    drop-shadow(0 2px 3px rgba(0,0,0,.38))
-    drop-shadow(0 0 7px rgba(216,181,111,.22));
-}
 </div>
 
 <div id="passwordWarning" class="input-warning"></div>
