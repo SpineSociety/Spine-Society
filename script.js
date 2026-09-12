@@ -2499,12 +2499,16 @@ window.togglePasswordVisibility = function () {
 
   passwordInput.type = isHidden ? "text" : "password";
 
-  toggleButton.textContent = isHidden ? "📖" : "📕";
   toggleButton.classList.toggle("open", isHidden);
 
   toggleButton.setAttribute(
     "aria-label",
     isHidden ? "Hide password" : "Show password"
+  );
+
+  toggleButton.setAttribute(
+    "aria-pressed",
+    String(isHidden)
   );
 };
 window.openMembersModal = function () {
