@@ -4185,17 +4185,13 @@ function createLibrarySteam() {
   const steamCount = 3;
 
   for (let i = 0; i < steamCount; i++) {
-    const steam = document.createElement("span");
-    steam.className = "steam";
+  const steam = document.createElement("span");
+  steam.className = "steam";
 
-    const mugCenter = 32; // percentage across the login scene
-
-steam.style.left = `${mugCenter + (-5 + Math.random() * 10)}%`;
-
-    steam.style.setProperty(
-  "--steam-duration",
-  `${20 + Math.random() * 8}s`
-);
+  steam.style.setProperty(
+    "--steam-duration",
+    `${20 + Math.random() * 8}s`
+  );
 
     steam.style.setProperty(
       "--steam-delay",
