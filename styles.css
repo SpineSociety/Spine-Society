@@ -4201,10 +4201,10 @@ body{
   padding:0 !important;
   margin:0 !important;
 
-  border-radius:50% !important;
-
-  background:rgba(20,15,12,.55) !important;
-  border:1px solid rgba(228,201,139,.18) !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
 
   font-size:.72rem !important;
 
@@ -4212,16 +4212,19 @@ body{
   align-items:center;
   justify-content:center;
 
-  box-shadow:none !important;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
 }
 
-.password-toggle:hover{
-  transform:translateY(-50%) scale(1.05);
-  border-color:rgba(228,201,139,.42) !important;
-}
-
+.password-toggle:hover,
+.password-toggle:focus,
+.password-toggle:active,
 .password-toggle.open{
-  background:rgba(228,201,139,.16) !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  transform:translateY(-50%) !important;
+  outline:none !important;
 }
 /* ELEGANT TOAST NOTIFICATIONS */
 
