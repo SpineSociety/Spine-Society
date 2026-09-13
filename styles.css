@@ -7171,3 +7171,165 @@ font-size:1.15rem;
 
   color:rgba(225,207,167,.76) !important;
 }
+/* =========================================================
+   SPINE SOCIETY — ENTRANCE COVER
+   ========================================================= */
+
+.society-entrance{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:
+    calc(env(safe-area-inset-top) + 24px)
+    22px
+    calc(env(safe-area-inset-bottom) + 24px);
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(92,57,34,.82) 0%,
+      rgba(58,35,22,.94) 26%,
+      rgba(36,21,14,.98) 52%,
+      rgba(20,12,8,1) 78%,
+      rgba(11,7,5,1) 100%
+    );
+
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+/* subtle leather grain */
+.society-entrance::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+
+  background:
+    repeating-radial-gradient(
+      ellipse at 30% 20%,
+      rgba(255,255,255,.018) 0 1px,
+      rgba(0,0,0,.025) 1px 3px,
+      transparent 3px 7px
+    ),
+    repeating-linear-gradient(
+      115deg,
+      rgba(255,255,255,.012) 0 1px,
+      transparent 1px 5px
+    );
+
+  mix-blend-mode:soft-light;
+  opacity:.7;
+}
+
+/* warm center glow */
+.society-entrance::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:46%;
+  width:min(86vw, 520px);
+  aspect-ratio:1 / 1;
+  transform:translate(-50%, -50%);
+  border-radius:50%;
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(184,122,55,.16) 0%,
+      rgba(130,79,36,.08) 34%,
+      transparent 72%
+    );
+
+  filter:blur(18px);
+}
+
+.society-entrance-button{
+  position:relative;
+  z-index:2;
+
+  width:min(88vw, 430px);
+  min-height:0;
+  padding:0;
+  margin:0;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  background:transparent;
+  border:0;
+  box-shadow:none;
+
+  color:#d6b26f;
+  cursor:pointer;
+
+  -webkit-tap-highlight-color:transparent;
+}
+
+.society-entrance-logo{
+  display:block;
+  width:min(82vw, 390px);
+  height:auto;
+
+  object-fit:contain;
+
+  filter:
+    drop-shadow(0 12px 18px rgba(0,0,0,.48))
+    drop-shadow(0 0 16px rgba(185,125,54,.12));
+
+  transform:translateZ(0);
+}
+
+.society-entrance-hint{
+  margin-top:18px;
+
+  font-family:"Cormorant Garamond", serif;
+  font-size:1.05rem;
+  font-weight:600;
+  font-style:italic;
+  letter-spacing:.09em;
+
+  color:rgba(232,211,172,.72);
+
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.72);
+
+  animation:societyHintGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes societyHintGlow{
+  0%,100%{
+    opacity:.48;
+  }
+
+  50%{
+    opacity:.9;
+  }
+}
+
+/* gentle logo press feedback */
+.society-entrance-button:active .society-entrance-logo{
+  transform:scale(.985);
+}
+
+/* smaller iPhones */
+@media (max-width:390px){
+  .society-entrance-button{
+    width:min(90vw, 390px);
+  }
+
+  .society-entrance-logo{
+    width:min(84vw, 350px);
+  }
+
+  .society-entrance-hint{
+    margin-top:14px;
+    font-size:.98rem;
+  }
+}
