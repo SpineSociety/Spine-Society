@@ -479,131 +479,385 @@
 </svg>
 
 
-  <!-- OPEN BOOK -->
-  <svg
-    class="password-book password-book-open"
-    viewBox="0 0 48 48"
-    aria-hidden="true"
-  >
-    <defs>
-      <linearGradient id="openLeather" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#8f3130"/>
-        <stop offset="100%" stop-color="#48151a"/>
-      </linearGradient>
+  <!-- OPEN BOOK — SPINE SOCIETY -->
+<svg
+  class="password-book password-book-open"
+  viewBox="0 0 52 48"
+  aria-hidden="true"
+>
+  <defs>
 
-      <linearGradient id="openPages" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#f4e6c4"/>
-        <stop offset="100%" stop-color="#cdb47e"/>
-      </linearGradient>
-    </defs>
+    <!-- Matching burgundy leather -->
+    <linearGradient id="ssOpenLeather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a83e35"/>
+      <stop offset="22%" stop-color="#8d2928"/>
+      <stop offset="58%" stop-color="#681b20"/>
+      <stop offset="100%" stop-color="#2b090e"/>
+    </linearGradient>
 
-    <!-- burgundy covers -->
+    <!-- Warm dimensional pages -->
+    <linearGradient id="ssOpenPagesLeft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7e7b9"/>
+      <stop offset="48%" stop-color="#ecd49c"/>
+      <stop offset="82%" stop-color="#c5a36a"/>
+      <stop offset="100%" stop-color="#8c693d"/>
+    </linearGradient>
+
+    <linearGradient id="ssOpenPagesRight" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7e7b9"/>
+      <stop offset="48%" stop-color="#ecd49c"/>
+      <stop offset="82%" stop-color="#c5a36a"/>
+      <stop offset="100%" stop-color="#8c693d"/>
+    </linearGradient>
+
+    <!-- Antique gold -->
+    <linearGradient id="ssOpenGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0a8"/>
+      <stop offset="25%" stop-color="#e3bb59"/>
+      <stop offset="55%" stop-color="#a86c24"/>
+      <stop offset="78%" stop-color="#efca6b"/>
+      <stop offset="100%" stop-color="#80501c"/>
+    </linearGradient>
+
+    <!-- Small natural shadow only -->
+    <filter id="ssOpenShadow" x="-20%" y="-25%" width="140%" height="160%">
+      <feDropShadow
+        dx="0"
+        dy="1.2"
+        stdDeviation=".9"
+        flood-color="#000000"
+        flood-opacity=".42"
+      />
+    </filter>
+
+  </defs>
+
+  <g filter="url(#ssOpenShadow)">
+
+    <!-- =========================
+         BURGUNDY LEATHER COVER
+         ========================= -->
+
     <path
-      d="M4 15c7-3 13-2 20 3v23c-7-5-13-6-20-3z"
-      fill="url(#openLeather)"
-      stroke="#9c773d"
+      d="
+        M3.5 15
+        Q13 11.5 25.8 16
+        V42
+        Q14 37.8 3.5 40
+        Z
+      "
+      fill="url(#ssOpenLeather)"
+      stroke="#26070b"
       stroke-width="1"
     />
 
     <path
-      d="M44 15c-7-3-13-2-20 3v23c7-5 13-6 20-3z"
-      fill="url(#openLeather)"
-      stroke="#9c773d"
+      d="
+        M48.5 15
+        Q39 11.5 26.2 16
+        V42
+        Q38 37.8 48.5 40
+        Z
+      "
+      fill="url(#ssOpenLeather)"
+      stroke="#26070b"
       stroke-width="1"
     />
 
-    <!-- pages -->
+    <!-- Gold leather-cover edges -->
     <path
-      d="M6 12c7-2 12-1 18 4v21c-6-4-11-5-18-3z"
-      fill="url(#openPages)"
-      stroke="#d7be87"
-      stroke-width=".7"
+      d="M4.8 16 Q14 13 24.7 17"
+      fill="none"
+      stroke="url(#ssOpenGold)"
+      stroke-width=".75"
+      opacity=".85"
     />
 
     <path
-      d="M42 12c-7-2-12-1-18 4v21c6-4 11-5 18-3z"
-      fill="url(#openPages)"
-      stroke="#d7be87"
-      stroke-width=".7"
+      d="M47.2 16 Q38 13 27.3 17"
+      fill="none"
+      stroke="url(#ssOpenGold)"
+      stroke-width=".75"
+      opacity=".85"
     />
 
-    <!-- center binding -->
+
+    <!-- =========================
+         LAYERED PAGE EDGES
+         ========================= -->
+
+    <!-- Left lower page layers -->
     <path
-      d="M24 16v21"
-      stroke="#725124"
+      d="
+        M6 14
+        Q15 11.5 25.5 16.2
+        V39.5
+        Q15.5 35.5 6 38
+        Z
+      "
+      fill="#9d7948"
+    />
+
+    <path
+      d="
+        M7 12.8
+        Q16 10.7 25.6 15.5
+        V38
+        Q16 34.2 7 36.5
+        Z
+      "
+      fill="#b99459"
+    />
+
+    <!-- Right lower page layers -->
+    <path
+      d="
+        M46 14
+        Q37 11.5 26.5 16.2
+        V39.5
+        Q36.5 35.5 46 38
+        Z
+      "
+      fill="#9d7948"
+    />
+
+    <path
+      d="
+        M45 12.8
+        Q36 10.7 26.4 15.5
+        V38
+        Q36 34.2 45 36.5
+        Z
+      "
+      fill="#b99459"
+    />
+
+
+    <!-- =========================
+         MAIN CREAM PAGES
+         ========================= -->
+
+    <!-- Left page -->
+    <path
+      d="
+        M8 10.5
+        Q16.5 8.6 25.8 14
+        V36.2
+        Q17 32.4 8 34.8
+        Z
+      "
+      fill="url(#ssOpenPagesLeft)"
+      stroke="#aa8750"
+      stroke-width=".55"
+    />
+
+    <!-- Right page -->
+    <path
+      d="
+        M44 10.5
+        Q35.5 8.6 26.2 14
+        V36.2
+        Q35 32.4 44 34.8
+        Z
+      "
+      fill="url(#ssOpenPagesRight)"
+      stroke="#aa8750"
+      stroke-width=".55"
+    />
+
+
+    <!-- =========================
+         PAGE CURVATURE
+         ========================= -->
+
+    <path
+      d="
+        M9.5 12
+        Q17 10.3 24.5 14.6
+      "
+      fill="none"
+      stroke="#fff5d3"
+      stroke-width=".55"
+      opacity=".8"
+    />
+
+    <path
+      d="
+        M42.5 12
+        Q35 10.3 27.5 14.6
+      "
+      fill="none"
+      stroke="#fff5d3"
+      stroke-width=".55"
+      opacity=".8"
+    />
+
+    <!-- Lower page edge -->
+    <path
+      d="
+        M8.5 33.7
+        Q17 31.6 25.5 35.3
+      "
+      fill="none"
+      stroke="#7d5b35"
+      stroke-width=".55"
+      opacity=".65"
+    />
+
+    <path
+      d="
+        M43.5 33.7
+        Q35 31.6 26.5 35.3
+      "
+      fill="none"
+      stroke="#7d5b35"
+      stroke-width=".55"
+      opacity=".65"
+    />
+
+
+    <!-- =========================
+         CENTER BINDING
+         ========================= -->
+
+    <path
+      d="
+        M26 14
+        C25.4 20 25.4 29.5 26 36.5
+      "
+      fill="none"
+      stroke="#76512d"
       stroke-width="1.2"
     />
 
-    <!-- subtle page lines -->
     <path
-      d="M10 19c4-.5 7 .4 11 2
-         M10 23c4-.5 7 .4 11 2
-         M38 19c-4-.5-7 .4-11 2
-         M38 23c-4-.5-7 .4-11 2"
+      d="
+        M26 15
+        C26.5 21 26.5 29 26 35
+      "
       fill="none"
-      stroke="#92784c"
-      stroke-width=".7"
-      opacity=".55"
+      stroke="#f4dfac"
+      stroke-width=".4"
+      opacity=".65"
     />
 
-    <!-- tiny gold glow/star -->
+
+    <!-- =========================
+         SIMPLE BOTANICAL MARKS
+         ========================= -->
+
+    <!-- Left botanical -->
     <path
-      d="M24 8l1.2 3.1L28 12l-2.8 1-1.2 3-1.2-3-2.8-1 2.8-.9z"
-      fill="#d9b66f"
+      d="
+        M17.5 23
+        V16.5
+
+        M17.5 20.5
+        C15.8 20 15 19 14.4 17.9
+
+        M17.5 18.8
+        C19 18.3 19.8 17.3 20.2 16.3
+      "
+      fill="none"
+      stroke="#b18446"
+      stroke-width=".75"
+      stroke-linecap="round"
     />
-  </svg>
-</button>
 
-</div>
+    <ellipse
+      cx="14.4"
+      cy="17.8"
+      rx=".75"
+      ry="1.25"
+      transform="rotate(-40 14.4 17.8)"
+      fill="#b18446"
+    />
 
-<div id="passwordWarning" class="input-warning"></div>
+    <ellipse
+      cx="20.2"
+      cy="16.3"
+      rx=".75"
+      ry="1.25"
+      transform="rotate(40 20.2 16.3)"
+      fill="#b18446"
+    />
 
-      <button class="login-primary" onclick="loginWithEmail()">
-  Sign In
-</button>
-<button
-  type="button"
-  class="login-link"
-  onclick="openForgotPasswordModal()"
->
-  Forgot Password?
-</button>
-      <div class="or-divider">
-  <span></span>
-  <em>OR</em>
-  <span></span>
-</div>
 
-      <button class="login-secondary" onclick="signUpWithEmail()">
-        Join the Society
-      </button>
-<button
-  id="resendVerificationBtn"
-  class="login-link"
-  style="display:none;"
-  onclick="resendVerificationEmail()"
->
-  Resend Verification Email
-</button>
-      <p class="login-small">
-        Create your shelves, join reading circles,
-        and stay connected between chapters.
-      </p>
+    <!-- Right botanical -->
+    <path
+      d="
+        M34.5 23
+        V16.5
 
-      <a class="login-link google-login" onclick="googleLogin()">
+        M34.5 20.5
+        C32.8 20 32 19 31.4 17.9
 
-<svg class="google-icon"
-viewBox="0 0 48 48"
-aria-hidden="true">
+        M34.5 18.8
+        C36 18.3 36.8 17.3 37.2 16.3
+      "
+      fill="none"
+      stroke="#b18446"
+      stroke-width=".75"
+      stroke-linecap="round"
+    />
 
-<path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.22 3.6l6.9-6.9C35.95 2.38 30.41 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.03 6.24C12.47 13.6 17.77 9.5 24 9.5z"/>
+    <ellipse
+      cx="31.4"
+      cy="17.8"
+      rx=".75"
+      ry="1.25"
+      transform="rotate(-40 31.4 17.8)"
+      fill="#b18446"
+    />
 
-<path fill="#4285F4" d="M46.98 24.55c0-1.57-.14-3.08-.4-4.55H24v9.02h12.94c-.56 3.02-2.25 5.58-4.8 7.29l7.36 5.72c4.3-3.96 6.78-9.8 6.78-17.48z"/>
+    <ellipse
+      cx="37.2"
+      cy="16.3"
+      rx=".75"
+      ry="1.25"
+      transform="rotate(40 37.2 16.3)"
+      fill="#b18446"
+    />
 
-<path fill="#FBBC05" d="M10.59 28.54A14.5 14.5 0 019.5 24c0-1.58.38-3.08 1.09-4.54L2.56 13.22A23.95 23.95 0 000 24c0 3.87.93 7.53 2.56 10.78l8.03-6.24z"/>
 
-<path fill="#34A853" d="M24 48c6.48 0 11.91-2.14 15.88-5.82l-7.36-5.72c-2.05 1.38-4.67 2.2-8.52 2.2-6.23 0-11.53-4.1-13.41-9.96l-8.03 6.24C6.51 42.62 14.62 48 24 48z"/>
+    <!-- =========================
+         SIMPLE PAGE LINES
+         ========================= -->
 
+    <path
+      d="
+        M12 26 Q17 25.1 22 27
+        M12 28.5 Q17 27.6 22 29.4
+
+        M30 27 Q35 25.1 40 26
+        M30 29.4 Q35 27.6 40 28.5
+      "
+      fill="none"
+      stroke="#9d7948"
+      stroke-width=".55"
+      stroke-linecap="round"
+      opacity=".65"
+    />
+
+
+    <!-- =========================
+         BOTTOM LEATHER BINDING
+         ========================= -->
+
+    <path
+      d="
+        M23.2 40
+        Q26 37.7 28.8 40
+        Q27.5 43 26 43
+        Q24.5 43 23.2 40
+        Z
+      "
+      fill="#59151a"
+      stroke="#8e302b"
+      stroke-width=".6"
+    />
+
+  </g>
 </svg>
 
 <span>Continue with Google</span>
