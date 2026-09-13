@@ -296,9 +296,14 @@ function unlockSpineSocietyLogin() {
 if (societyEntranceButton && societyEntrance) {
   societyEntranceButton.addEventListener("click", () => {
 
-    unlockSpineSocietyLogin();
+    societyEntranceButton.disabled = true;
 
-    societyEntrance.style.display = "none";
+    societyEntrance.classList.add("is-opening");
+
+    window.setTimeout(() => {
+      unlockSpineSocietyLogin();
+      societyEntrance.style.display = "none";
+    }, 1150);
 
   });
 }
