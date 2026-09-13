@@ -7252,36 +7252,39 @@ font-size:1.15rem;
   transform-origin: left center;
   transform-style: preserve-3d;
 }
-/* Hardcover thickness — realistic leather edge */
+/* Hardcover thickness — layered realistic edge */
 .society-book-cover::after {
   content: "";
   position: absolute;
 
-  top: 2px;
-  right: 0;
+  top: 3px;
+  right: -2px;
 
-  width: 42px;
-  height: calc(100% - 4px);
+  width: 48px;
+  height: calc(100% - 6px);
 
-  background: linear-gradient(
-    to left,
-    #070403 0%,
-    #160d09 12%,
-    #3a2518 30%,
-    #765536 48%,
-    #3b2719 62%,
-    #160d09 82%,
-    #050302 100%
-  );
+  background:
+    linear-gradient(
+      to left,
+      rgba(255,255,255,.05) 0%,
+      rgba(0,0,0,.35) 7%,
+      rgba(117,82,52,.95) 14%,
+      rgba(45,28,18,.98) 24%,
+      rgba(126,93,60,.9) 34%,
+      rgba(35,21,14,.98) 46%,
+      rgba(93,64,41,.88) 58%,
+      rgba(29,17,11,.98) 72%,
+      rgba(8,5,3,1) 100%
+    );
 
   box-shadow:
-    -5px 0 10px rgba(0,0,0,.65),
-    inset 3px 0 3px rgba(255,220,160,.14),
-    inset -5px 0 7px rgba(0,0,0,.8),
-    3px 0 5px rgba(0,0,0,.9);
+    inset 4px 0 3px rgba(255,220,170,.10),
+    inset -9px 0 9px rgba(0,0,0,.78),
+    -4px 0 8px rgba(0,0,0,.52),
+    5px 0 8px rgba(0,0,0,.85);
 
-  border-left: 1px solid rgba(201,161,100,.25);
-  border-right: 1px solid rgba(0,0,0,.8);
+  border-left: 1px solid rgba(180,138,84,.22);
+  border-right: 1px solid rgba(0,0,0,.9);
 
   transform: rotateY(90deg);
   transform-origin: right center;
