@@ -6454,35 +6454,54 @@ font-size:1.15rem;
 .reader-note-paper {
   position: relative;
 
-  width: 138px;
-  min-height: 82px;
+  width: 260px;
+  min-height: 128px;
 
-  padding: 13px 11px 12px;
+  padding: 20px 20px 18px;
 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 
+  box-sizing: border-box;
+
+  color: #392719;
+
   background:
-    linear-gradient(
-      105deg,
-      rgba(126, 91, 49, .08),
-      transparent 35%
+    radial-gradient(
+      circle at 18% 22%,
+      rgba(255,255,255,.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 84% 82%,
+      rgba(92,61,31,.07),
+      transparent 34%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 23px,
+      rgba(93,67,39,.055) 24px
     ),
     linear-gradient(
       180deg,
-      #e5d0a0 0%,
-      #cfb27a 100%
+      #ead8ad 0%,
+      #dec594 56%,
+      #ceb07a 100%
     );
 
-  border: 1px solid rgba(77, 49, 25, .65);
-  border-radius: 2px;
+  border:
+    1px solid
+    rgba(82,54,29,.58);
 
-  color: #3c2617;
+  border-radius: 3px;
 
   box-shadow:
-    0 8px 18px rgba(0, 0, 0, .52),
-    inset 0 0 12px rgba(88, 54, 24, .14);
+    0 14px 28px rgba(0,0,0,.42),
+    0 3px 7px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,248,221,.55),
+    inset 0 0 18px rgba(93,57,26,.08);
 }
 
 
