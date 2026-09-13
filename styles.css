@@ -6114,7 +6114,5 @@ font-size:1.15rem;
 }
 
 .password-toggle.open .password-book-open {
-  filter:
-    drop-shadow(0 2px 3px rgba(0,0,0,.38))
-    drop-shadow(0 0 7px rgba(216,181,111,.22));
+  filter: none;
 }
