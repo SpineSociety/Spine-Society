@@ -7247,7 +7247,7 @@ font-size:1.15rem;
   margin: 0 !important;
   padding: 0 !important;
 
-  overflow: hidden !important;
+  overflow: visible !important;
 
   transform-origin: left center;
   transform-style: preserve-3d;
