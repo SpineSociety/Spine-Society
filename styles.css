@@ -7302,3 +7302,100 @@ font-size:1.15rem;
 
   pointer-events: none;
 }
+/* =========================================================
+   SPINE SOCIETY — EDGE-TO-EDGE MOBILE ENTRANCE
+   ========================================================= */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #160e0a;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+.society-entrance {
+  position: fixed !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+
+  height: 100vh !important;
+  height: 100dvh !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: #160e0a !important;
+  overflow: hidden !important;
+
+  z-index: 100000;
+}
+
+.society-entrance-button {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  background: transparent !important;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.society-book-cover {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: hidden !important;
+  background: #160e0a !important;
+}
+
+.society-cover-image {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+.society-entrance-hint {
+  position: absolute !important;
+
+  left: 50% !important;
+
+  bottom: calc(
+    28px + env(safe-area-inset-bottom, 0px)
+  ) !important;
+
+  transform: translateX(-50%) !important;
+
+  z-index: 10;
+}
