@@ -7188,15 +7188,16 @@ font-size:1.15rem;
   overflow: hidden !important;
 
   background: #160e0a !important;
-/* Reveal the login room behind the opening cover */
-.society-entrance.is-opening {
-  background: transparent !important;
-}
+
   z-index: 20000 !important;
 
   perspective: 1800px;
 }
 
+/* Reveal the login room behind the opening cover */
+.society-entrance.is-opening {
+  background: transparent !important;
+}
 
 /* Remove all old entrance artwork */
 .society-entrance::before,
