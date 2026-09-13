@@ -7590,3 +7590,22 @@ body{
 
   pointer-events: none;
 }
+/* Keep old entrance artwork from covering the new book cover */
+.society-entrance::before,
+.society-entrance::after{
+  display: none !important;
+}
+
+.society-entrance-button{
+  position: relative;
+  z-index: 2;
+}
+
+.society-book-cover{
+  position: relative;
+  z-index: 3;
+}
+
+.society-cover-image{
+  z-index: 1;
+}
