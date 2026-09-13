@@ -6419,183 +6419,536 @@ font-size:1.15rem;
 .librarian-note-dots {
   display: none !important;
 }
+/* =========================================================
+   SPINE SOCIETY — VINTAGE LIBRARY CHECKOUT CARD
+   ========================================================= */
 
+.reader-note-trigger{
+  position:relative;
 
-/* The clickable note itself */
-.reader-note-trigger {
-  position: relative;
+  width:calc(100% - 40px) !important;
+  max-width:430px !important;
 
-  width: calc(100% - 40px) !important;
-  max-width: 430px;
-  min-height: 0 !important;
-  height: auto !important;
+  min-height:0 !important;
+  height:auto !important;
 
-  margin: 28px auto 40px !important;
-  padding: 0 !important;
+  margin:28px auto 46px !important;
+  padding:0 !important;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
 
-  cursor: pointer;
+  cursor:pointer;
 
-  transform: none;
+  color:inherit;
 
-  z-index: 2;
+  transform:rotate(-0.7deg);
+
+  -webkit-tap-highlight-color:transparent;
 }
 
 
-/* Aged paper card */
-.reader-note-paper {
-  position: relative;
+/* ===============================
+   ACTUAL CHECKOUT PAPER
+   =============================== */
 
-  width: 260px;
-  min-height: 128px;
+.reader-note-paper{
+  position:relative;
 
-  padding: 20px 20px 18px;
+  width:100%;
+  max-width:390px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  min-height:250px;
 
-  box-sizing: border-box;
+  box-sizing:border-box;
 
-  color: #392719;
+  display:block;
+
+  padding:22px 24px 20px;
+
+  text-align:left;
+
+  color:#3d281b;
 
   background:
+
+    /* faint old-library stains */
     radial-gradient(
-      circle at 18% 22%,
-      rgba(255,255,255,.18),
-      transparent 34%
+      circle at 86% 18%,
+      rgba(101,64,31,.09) 0 3px,
+      transparent 18px
     ),
+
     radial-gradient(
-      circle at 84% 82%,
-      rgba(92,61,31,.07),
-      transparent 34%
+      circle at 14% 76%,
+      rgba(93,56,29,.08) 0 5px,
+      transparent 28px
     ),
+
+    /* paper fibers */
     repeating-linear-gradient(
       0deg,
-      transparent 0,
-      transparent 23px,
-      rgba(93,67,39,.055) 24px
+      rgba(85,55,31,.035) 0 1px,
+      transparent 1px 5px
     ),
+
+    /* aged cardstock */
     linear-gradient(
       180deg,
-      #ead8ad 0%,
-      #dec594 56%,
-      #ceb07a 100%
+      #ead8a8 0%,
+      #dfc58c 54%,
+      #d2b477 100%
     );
 
-  border:
-    1px solid
-    rgba(82,54,29,.58);
+  border:1px solid rgba(76,48,28,.65);
 
-  border-radius: 3px;
+  border-radius:3px;
 
   box-shadow:
-    0 14px 28px rgba(0,0,0,.42),
-    0 3px 7px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,248,221,.55),
-    inset 0 0 18px rgba(93,57,26,.08);
+    0 20px 34px rgba(0,0,0,.42),
+    0 4px 8px rgba(0,0,0,.24),
+    inset 0 0 0 3px rgba(255,244,207,.28),
+    inset 0 0 22px rgba(79,48,24,.09);
+
+  overflow:hidden;
 }
 
 
-/* tiny worn paper edge */
-.reader-note-paper::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
+/* inner printed border */
 
-  border: 1px solid rgba(87, 58, 29, .15);
+.reader-note-paper::before{
+  content:"";
 
-  pointer-events: none;
+  position:absolute;
+  inset:6px;
+
+  border:1px solid rgba(88,55,30,.18);
+
+  pointer-events:none;
 }
 
 
-/* READER'S NOTE */
-.reader-note-heading {
-  font-family: "Courier Prime", monospace;
+/* slight age around edges */
 
-  font-size: 10px;
-  font-weight: 700;
+.reader-note-paper::after{
+  content:"";
 
-  letter-spacing: .08em;
+  position:absolute;
+  inset:0;
 
-  color: #4a2d1d;
+  pointer-events:none;
+
+  box-shadow:
+    inset 8px 0 12px rgba(83,52,29,.05),
+    inset -8px 0 12px rgba(83,52,29,.05),
+    inset 0 -9px 12px rgba(83,52,29,.07);
+
+  opacity:.9;
 }
 
 
-/* little divider */
-.reader-note-rule {
-  width: 100%;
-  height: 1px;
+/* ===============================
+   TOP LIBRARY HEADER
+   =============================== */
 
-  margin: 7px 0 8px;
+.reader-note-topline{
+  position:relative;
+  z-index:2;
 
-  background: rgba(79, 49, 25, .38);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+
+  gap:16px;
+
+  padding-bottom:10px;
+
+  border-bottom:1px solid rgba(73,45,25,.42);
 }
 
 
-/* TODAY'S CHECKOUT */
-.reader-note-small {
-  font-family: "Courier Prime", monospace;
+.reader-note-heading{
+  max-width:62%;
 
-  font-size: 7px;
-  font-weight: 700;
+  font-family:"Courier Prime", monospace;
 
-  letter-spacing: .13em;
+  font-size:.73rem;
+  line-height:1.05;
 
-  color: rgba(65, 40, 23, .72);
+  font-weight:700;
+
+  letter-spacing:.16em;
+
+  color:#42291c;
 }
 
 
-/* little checkout/library mark */
-.reader-note-bookmark {
-  position: absolute;
+.reader-note-date{
+  flex-shrink:0;
 
-  right: 9px;
-  bottom: 7px;
+  padding-top:1px;
 
-  font-size: 10px;
+  font-family:"Courier Prime", monospace;
 
-  color: rgba(74, 44, 24, .72);
+  font-size:.62rem;
+  font-weight:700;
+
+  letter-spacing:.12em;
+
+  color:rgba(66,41,28,.75);
 }
 
 
-/* tiny text underneath */
-.reader-note-hint {
-  margin-top: 7px;
+/* ===============================
+   CHECKOUT NUMBER
+   =============================== */
 
-  font-family: "Cormorant Garamond", serif;
+.reader-note-checkout-row{
+  position:relative;
+  z-index:2;
 
-  font-size: 12px;
-  font-style: italic;
-  font-weight: 600;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 
-  letter-spacing: .03em;
+  padding:10px 0 8px;
 
-  color: rgba(225, 207, 167, .76);
+  font-family:"Courier Prime", monospace;
 
-  text-shadow: 0 2px 4px rgba(0,0,0,.7);
+  font-size:.56rem;
+  font-weight:700;
+
+  letter-spacing:.14em;
+
+  color:rgba(65,40,26,.72);
+
+  border-bottom:1px solid rgba(73,45,25,.26);
 }
 
 
-/* subtle physical interaction */
-.reader-note-trigger:active {
+/* ===============================
+   DATE / READER FORM ROW
+   =============================== */
+
+.reader-note-library-row{
+  position:relative;
+  z-index:2;
+
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+
+  border-bottom:1px solid rgba(73,45,25,.34);
+}
+
+
+.reader-note-field{
+  position:relative;
+
+  min-height:48px;
+
+  padding:7px 9px 6px 0;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
+
+
+.reader-note-reader-field{
+  padding-left:12px;
+
+  border-left:1px solid rgba(73,45,25,.32);
+}
+
+
+.reader-note-field-label{
+  font-family:"Courier Prime", monospace;
+
+  font-size:.52rem;
+  font-weight:700;
+
+  letter-spacing:.15em;
+
+  color:rgba(62,38,25,.68);
+}
+
+
+.reader-note-date-stamp{
+  margin-top:5px;
+
+  font-family:"Courier Prime", monospace;
+
+  font-size:.78rem;
+  font-weight:700;
+
+  letter-spacing:.08em;
+
+  color:#944d3c;
+
+  transform:rotate(-2deg);
+}
+
+
+/* blank signature line */
+
+.reader-note-field-line{
+  display:block;
+
+  width:82%;
+
+  margin-top:16px;
+
+  border-bottom:1px solid rgba(64,40,25,.35);
+}
+
+
+/* ===============================
+   QUESTION
+   =============================== */
+
+.reader-note-question-section{
+  position:relative;
+  z-index:2;
+
+  display:block;
+
+  padding:14px 0 15px;
+
+  border-bottom:1px solid rgba(73,45,25,.32);
+}
+
+
+.reader-note-section-label{
+  display:block;
+
+  margin-bottom:7px;
+
+  font-family:"Courier Prime", monospace;
+
+  font-size:.55rem;
+  font-weight:700;
+
+  letter-spacing:.14em;
+
+  color:rgba(62,38,25,.72);
+}
+
+
+.reader-note-prompt-text{
+  display:block;
+
+  max-width:86%;
+
+  font-family:"Courier Prime", monospace;
+
+  font-size:1rem;
+  line-height:1.32;
+
+  font-weight:400;
+
+  letter-spacing:.01em;
+
+  color:#352216;
+}
+
+
+/* ===============================
+   BOTTOM MESSAGE + STAMP
+   =============================== */
+
+.reader-note-footer{
+  position:relative;
+  z-index:2;
+
+  display:grid;
+  grid-template-columns:1fr 92px;
+
+  min-height:66px;
+}
+
+
+.reader-note-message{
+  padding:12px 10px 0 0;
+}
+
+
+.reader-note-message-text{
+  display:block;
+
+  font-family:"Courier Prime", monospace;
+
+  font-size:.72rem;
+  line-height:1.32;
+
+  color:#452d1f;
+}
+
+
+/* REALISTIC LIBRARY STAMP */
+
+.reader-note-stamp{
+  position:relative;
+
+  align-self:center;
+  justify-self:end;
+
+  width:76px;
+  min-height:58px;
+
+  margin-top:8px;
+
+  padding:6px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid rgba(135,55,45,.72);
+
+  border-radius:5px;
+
+  color:rgba(135,55,45,.76);
+
+  transform:rotate(-6deg);
+
+  font-family:"Courier Prime", monospace;
+
+  text-align:center;
+
+  box-sizing:border-box;
+
+  opacity:.88;
+}
+
+
+.reader-note-stamp-title{
+  font-size:.56rem;
+  line-height:.95;
+
+  font-weight:700;
+
+  letter-spacing:.05em;
+}
+
+
+.reader-note-stamp-book{
+  margin:2px 0 1px;
+
+  font-size:.72rem;
+}
+
+
+.reader-note-stamp-est{
+  font-size:.38rem;
+
+  font-weight:700;
+
+  letter-spacing:.08em;
+}
+
+
+/* ===============================
+   HANDWRITTEN MARGIN NOTE
+   =============================== */
+
+.reader-note-scribble{
+  position:absolute;
+
+  right:16px;
+  top:140px;
+
+  width:72px;
+
+  z-index:3;
+
+  font-family:"Cormorant Garamond", serif;
+
+  font-size:.72rem;
+  line-height:1.02;
+
+  font-style:italic;
+  font-weight:600;
+
+  text-align:center;
+
+  color:rgba(79,54,37,.62);
+
+  transform:rotate(-8deg);
+}
+
+
+/* ===============================
+   OPEN NOTE LABEL
+   =============================== */
+
+.reader-note-hint{
+  margin-top:10px;
+
+  font-family:"Cormorant Garamond", serif;
+
+  font-size:.95rem;
+  font-style:italic;
+  font-weight:600;
+
+  letter-spacing:.02em;
+
+  color:rgba(225,207,167,.72);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.72);
+}
+
+
+/* ===============================
+   TAP FEEL
+   =============================== */
+
+.reader-note-trigger{
+  transition:
+    transform .18s ease,
+    filter .18s ease;
+}
+
+
+.reader-note-trigger:active{
   transform:
-    rotate(-3deg)
+    rotate(-0.7deg)
     translateY(2px)
-    scale(.97);
+    scale(.985);
+
+  filter:brightness(.97);
 }
 
-.login-content {
-  position: relative;
-  z-index: 10;
+
+/* ===============================
+   SMALLER PHONES
+   =============================== */
+
+@media (max-width:390px){
+
+  .reader-note-trigger{
+    width:calc(100% - 30px) !important;
+  }
+
+  .reader-note-paper{
+    padding:20px 20px 18px;
+  }
+
+  .reader-note-prompt-text{
+    font-size:.94rem;
+  }
+
+  .reader-note-scribble{
+    right:12px;
+    font-size:.67rem;
+  }
 }
 /* ==========================================
    READER'S NOTE — FINAL LOGIN PLACEMENT
