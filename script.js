@@ -4449,3 +4449,28 @@ if (document.readyState === "loading") {
 } else {
   watchLibraryLampForDust();
 }
+/* ==========================================
+   iPHONE PWA FULL-SCREEN ENTRANCE HEIGHT
+========================================== */
+
+function fixEntranceViewportHeight() {
+  const entrance = document.getElementById("societyEntrance");
+
+  if (!entrance) return;
+
+  const fullHeight = window.screen.height;
+
+  entrance.style.height = `${fullHeight}px`;
+}
+
+fixEntranceViewportHeight();
+
+window.addEventListener("pageshow", fixEntranceViewportHeight);
+window.addEventListener("resize", fixEntranceViewportHeight);
+window.addEventListener("orientationchange", fixEntranceViewportHeight);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    fixEntranceViewportHeight();
+  }
+});
