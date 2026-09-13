@@ -6651,3 +6651,170 @@ font-size:1.15rem;
   visibility: visible !important;
   opacity: 1 !important;
 }
+/* ==========================================
+   READER'S NOTE — CHECKOUT CARD CONTENT
+   ========================================== */
+
+.reader-note-paper{
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+
+  padding:18px 20px 16px !important;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  text-align:left !important;
+}
+
+/* READER'S NOTE + DATE */
+
+.reader-note-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+
+  width:100%;
+}
+
+.reader-note-heading{
+  flex:1;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:11px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  letter-spacing:.12em !important;
+
+  color:#4a2d1d !important;
+}
+
+.reader-note-date{
+  flex-shrink:0;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:9px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  letter-spacing:.06em !important;
+
+  color:rgba(74,45,29,.72) !important;
+}
+
+/* DIVIDER */
+
+.reader-note-rule{
+  display:block !important;
+
+  width:100% !important;
+  height:1px !important;
+
+  margin:11px 0 10px !important;
+
+  background:rgba(79,49,25,.38) !important;
+}
+
+/* TODAY'S CHECKOUT / CARD NUMBER */
+
+.reader-note-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+
+  width:100%;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:7px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  letter-spacing:.11em !important;
+
+  color:rgba(65,40,23,.70) !important;
+}
+
+/* DAILY QUESTION */
+
+.reader-note-prompt-text{
+  display:block;
+
+  width:100%;
+
+  margin:15px 0 16px;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:12px !important;
+  font-weight:400 !important;
+  line-height:1.35 !important;
+  letter-spacing:0 !important;
+
+  text-align:left !important;
+
+  color:#3c2617 !important;
+
+  overflow-wrap:break-word;
+}
+
+/* BOTTOM ROW */
+
+.reader-note-bottom{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+
+  width:100%;
+
+  margin-top:auto;
+}
+
+/* LITTLE VINTAGE STAMP */
+
+.reader-note-stamp{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:4px 7px;
+
+  border:1px solid rgba(91,50,29,.42);
+  border-radius:2px;
+
+  font-family:"Courier Prime", "Courier New", monospace !important;
+  font-size:6px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  letter-spacing:.12em !important;
+
+  color:rgba(91,50,29,.66) !important;
+
+  transform:rotate(-2deg);
+}
+
+/* LITTLE CHECKOUT MARK */
+
+.reader-note-bookmark{
+  position:static !important;
+
+  margin:0 !important;
+
+  font-size:11px !important;
+  line-height:1 !important;
+
+  color:rgba(74,44,24,.62) !important;
+}
+
+/* TEXT UNDER THE CARD */
+
+.reader-note-hint{
+  margin-top:10px !important;
+
+  font-family:"Cormorant Garamond", serif !important;
+  font-size:13px !important;
+  font-style:italic !important;
+
+  color:rgba(225,207,167,.76) !important;
+}
