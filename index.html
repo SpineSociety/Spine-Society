@@ -869,10 +869,6 @@
   Sign In
 </button>
 
-<button class="secondary" onclick="signupUser()">
-  Create Account
-</button>
-
 <button
   type="button"
   class="login-link"
@@ -882,14 +878,30 @@
 </button>
 
 <div class="login-divider">
-  <span>or</span>
+  <span>OR</span>
 </div>
+
+<button
+  class="secondary"
+  onclick="signupUser()"
+>
+  Join the Society
+</button>
+
+<p class="login-signup-copy">
+  Create your shelves, join reading circles, and stay
+  connected between chapters.
+</p>
 
 <a
   class="google-login-button"
   href="#"
   onclick="loginWithGoogle(); return false;"
 >
+  <span class="google-icon" aria-hidden="true">
+    <span class="google-g">G</span>
+  </span>
+
   <span>Continue with Google</span>
 </a>
 
