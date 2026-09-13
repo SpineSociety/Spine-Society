@@ -908,12 +908,19 @@
         </div>
 
     <!-- Reader's Note -->
-    <button
-        <span class="reader-note-paper">
+<button
+  id="readerNoteTrigger"
+  class="reader-note-trigger"
+  type="button"
+  aria-label="Open today's Reader's Note"
+>
 
+  <span class="reader-note-paper">
+
+    <!-- TOP -->
     <span class="reader-note-topline">
       <span class="reader-note-heading">
-        READER'S NOTE
+        SPINE SOCIETY LIBRARY
       </span>
 
       <span
@@ -924,28 +931,89 @@
       </span>
     </span>
 
-    <span class="reader-note-rule"></span>
-
-    <span class="reader-note-meta">
-      <span>TODAY'S CHECKOUT</span>
-      <span>CARD NO. 026</span>
-    </span>
-
-    <span
-      id="readerNotePrompt"
-      class="reader-note-prompt-text"
-    >
-      What book would you erase from your memory just to read for the first time again?
-    </span>
-
-    <span class="reader-note-bottom">
-      <span class="reader-note-stamp">
-        SPINE SOCIETY
+    <!-- CHECKOUT DETAILS -->
+    <span class="reader-note-checkout-row">
+      <span class="reader-note-checkout">
+        DAILY CHECKOUT
       </span>
 
-      <span class="reader-note-bookmark" aria-hidden="true">
-        ▤
+      <span class="reader-note-card-number">
+        NO. 026
       </span>
+    </span>
+
+    <!-- LIBRARY FORM ROW -->
+    <span class="reader-note-library-row">
+
+      <span class="reader-note-field">
+        <span class="reader-note-field-label">
+          DATE
+        </span>
+
+        <span class="reader-note-date-stamp">
+          SEP 12 2026
+        </span>
+      </span>
+
+      <span class="reader-note-field reader-note-reader-field">
+        <span class="reader-note-field-label">
+          READER
+        </span>
+
+        <span class="reader-note-field-line"></span>
+      </span>
+
+    </span>
+
+    <!-- QUESTION -->
+    <span class="reader-note-question-section">
+
+      <span class="reader-note-section-label">
+        TODAY'S QUESTION:
+      </span>
+
+      <span
+        id="readerNotePrompt"
+        class="reader-note-prompt-text"
+      >
+        What book would you erase from your memory just to read for the first time again?
+      </span>
+
+    </span>
+
+    <!-- BOTTOM -->
+    <span class="reader-note-footer">
+
+      <span class="reader-note-message">
+        <span class="reader-note-section-label">
+          READER'S NOTE:
+        </span>
+
+        <span class="reader-note-message-text">
+          Bring your answer to today's discussion.
+        </span>
+      </span>
+
+      <span class="reader-note-stamp" aria-hidden="true">
+        <span class="reader-note-stamp-title">
+          SPINE<br>SOCIETY
+        </span>
+
+        <span class="reader-note-stamp-book">
+          ▤
+        </span>
+
+        <span class="reader-note-stamp-est">
+          EST. 2026
+        </span>
+      </span>
+
+    </span>
+
+    <!-- LITTLE HANDWRITTEN DETAIL -->
+    <span class="reader-note-scribble" aria-hidden="true">
+      some books<br>
+      feel like home.
     </span>
 
   </span>
@@ -953,7 +1021,8 @@
   <span class="reader-note-hint">
     Open today's note
   </span>
-    </button>
+
+</button>
 
 </div>
 
