@@ -6578,3 +6578,57 @@ font-size:1.15rem;
   position: relative;
   z-index: 10;
 }
+/* ==========================================
+   READER'S NOTE — FINAL LOGIN PLACEMENT
+   ========================================== */
+
+#authScreen .reader-note-trigger {
+  position: relative !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+
+  width: 150px !important;
+  max-width: 150px !important;
+
+  min-height: 0 !important;
+  height: auto !important;
+
+  margin: 24px auto 55px !important;
+  padding: 0 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+
+  transform: none !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  z-index: 10 !important;
+
+  pointer-events: auto !important;
+}
+
+#authScreen .reader-note-paper {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#authScreen .reader-note-hint {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
