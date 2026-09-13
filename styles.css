@@ -7399,21 +7399,4 @@ body {
 
   z-index: 10;
 }
-/* iPhone Safari — prevent page background showing below entrance */
-html,
-body {
-  margin: 0 !important;
-  padding: 0 !important;
-  background: #160e0a !important;
-}
 
-html {
-  min-height: 100%;
-  background: #160e0a !important;
-}
-
-body {
-  min-height: 100vh;
-  min-height: 100dvh;
-  background: #160e0a !important;
-}
