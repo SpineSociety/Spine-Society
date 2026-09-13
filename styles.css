@@ -7399,4 +7399,31 @@ body {
 
   z-index: 10;
 }
+/* ==========================================
+   SPINE SOCIETY BOOK OPENING ANIMATION
+========================================== */
 
+.society-entrance {
+  perspective: 1800px;
+}
+
+.society-book-cover {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  transition:
+    transform 1.15s cubic-bezier(.62,.05,.25,1),
+    opacity .35s ease .85s;
+}
+
+.society-entrance.is-opening .society-book-cover {
+  transform: rotateY(-105deg);
+  opacity: 0;
+}
+
+.society-entrance.is-opening .society-entrance-hint {
+  opacity: 0;
+  transition: opacity .2s ease;
+}
