@@ -6406,3 +6406,170 @@ font-size:1.15rem;
 
   color: transparent;
 }
+/* =========================================================
+   READER'S NOTE — LOGIN ROOM OBJECT
+   ========================================================= */
+
+/* Hide any leftover pieces from the old Librarian's Note */
+.librarian-note-card,
+.librarian-note-content,
+.librarian-note-prompt,
+.librarian-note-action,
+.librarian-note-heart,
+.librarian-note-dots {
+  display: none !important;
+}
+
+
+/* The clickable note itself */
+.reader-note-trigger {
+  position: relative;
+
+  width: 150px !important;
+  min-height: 0 !important;
+  height: auto !important;
+
+  margin: 34px auto 55px !important;
+  padding: 0 !important;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
+
+  cursor: pointer;
+
+  transform: rotate(-3deg);
+
+  z-index: 5;
+}
+
+
+/* Aged paper card */
+.reader-note-paper {
+  position: relative;
+
+  width: 138px;
+  min-height: 82px;
+
+  padding: 13px 11px 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  background:
+    linear-gradient(
+      105deg,
+      rgba(126, 91, 49, .08),
+      transparent 35%
+    ),
+    linear-gradient(
+      180deg,
+      #e5d0a0 0%,
+      #cfb27a 100%
+    );
+
+  border: 1px solid rgba(77, 49, 25, .65);
+  border-radius: 2px;
+
+  color: #3c2617;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, .52),
+    inset 0 0 12px rgba(88, 54, 24, .14);
+}
+
+
+/* tiny worn paper edge */
+.reader-note-paper::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+
+  border: 1px solid rgba(87, 58, 29, .15);
+
+  pointer-events: none;
+}
+
+
+/* READER'S NOTE */
+.reader-note-heading {
+  font-family: "Courier Prime", monospace;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .08em;
+
+  color: #4a2d1d;
+}
+
+
+/* little divider */
+.reader-note-rule {
+  width: 100%;
+  height: 1px;
+
+  margin: 7px 0 8px;
+
+  background: rgba(79, 49, 25, .38);
+}
+
+
+/* TODAY'S CHECKOUT */
+.reader-note-small {
+  font-family: "Courier Prime", monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: .13em;
+
+  color: rgba(65, 40, 23, .72);
+}
+
+
+/* little checkout/library mark */
+.reader-note-bookmark {
+  position: absolute;
+
+  right: 9px;
+  bottom: 7px;
+
+  font-size: 10px;
+
+  color: rgba(74, 44, 24, .72);
+}
+
+
+/* tiny text underneath */
+.reader-note-hint {
+  margin-top: 7px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 600;
+
+  letter-spacing: .03em;
+
+  color: rgba(225, 207, 167, .76);
+
+  text-shadow: 0 2px 4px rgba(0,0,0,.7);
+}
+
+
+/* subtle physical interaction */
+.reader-note-trigger:active {
+  transform:
+    rotate(-3deg)
+    translateY(2px)
+    scale(.97);
+}
