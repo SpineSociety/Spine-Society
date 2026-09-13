@@ -6587,12 +6587,3 @@ font-size:1.15rem;
 .room-interactives .reader-note-trigger {
   pointer-events: auto;
 }
-/* =========================================
-   LOGIN ROOM — SCROLLABLE SCENE HEIGHT
-   ========================================= */
-
-#authScreen.reading-room-login {
-  position: relative;
-  min-height: 155svh;
-  overflow: visible;
-}
