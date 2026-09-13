@@ -7252,29 +7252,36 @@ font-size:1.15rem;
   transform-origin: left center;
   transform-style: preserve-3d;
 }
-/* Hardcover thickness */
+/* Hardcover thickness — realistic leather edge */
 .society-book-cover::after {
   content: "";
   position: absolute;
 
-  top: 3px;
+  top: 2px;
   right: 0;
 
-  width: 22px;
-  height: calc(100% - 6px);
+  width: 42px;
+  height: calc(100% - 4px);
 
   background: linear-gradient(
     to left,
-    #090604 0%,
-    #2b1a11 35%,
-    #6b4a2d 55%,
-    #24150e 75%,
-    #080504 100%
+    #070403 0%,
+    #160d09 12%,
+    #3a2518 30%,
+    #765536 48%,
+    #3b2719 62%,
+    #160d09 82%,
+    #050302 100%
   );
 
   box-shadow:
-    -2px 0 4px rgba(0,0,0,.65),
-    2px 0 3px rgba(0,0,0,.8);
+    -5px 0 10px rgba(0,0,0,.65),
+    inset 3px 0 3px rgba(255,220,160,.14),
+    inset -5px 0 7px rgba(0,0,0,.8),
+    3px 0 5px rgba(0,0,0,.9);
+
+  border-left: 1px solid rgba(201,161,100,.25);
+  border-right: 1px solid rgba(0,0,0,.8);
 
   transform: rotateY(90deg);
   transform-origin: right center;
