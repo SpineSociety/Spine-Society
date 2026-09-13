@@ -6425,11 +6425,12 @@ font-size:1.15rem;
 .reader-note-trigger {
   position: relative;
 
-  width: 150px !important;
+  width: calc(100% - 40px) !important;
+  max-width: 430px;
   min-height: 0 !important;
   height: auto !important;
 
-  margin: 34px auto 55px !important;
+  margin: 28px auto 40px !important;
   padding: 0 !important;
 
   display: flex;
@@ -6439,14 +6440,13 @@ font-size:1.15rem;
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
-
   box-shadow: none !important;
 
   cursor: pointer;
 
-  transform: rotate(-3deg);
+  transform: none;
 
-  z-index: 5;
+  z-index: 2;
 }
 
 
