@@ -7494,14 +7494,27 @@ font-size:1.15rem;
    SPINE SOCIETY ENTRANCE COVER
    ========================================= */
 
+html,
+body{
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #160e0a;
+}
+
 .society-entrance{
   position: fixed;
   inset: 0;
+
+  width: 100vw;
+  height: 100dvh;
+  min-height: -webkit-fill-available;
+
   z-index: 9999;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
 
   background: #160e0a;
 
@@ -7512,6 +7525,8 @@ font-size:1.15rem;
 
 .society-entrance-button{
   appearance: none;
+  -webkit-appearance: none;
+
   border: 0;
   padding: 0;
   margin: 0;
@@ -7521,9 +7536,7 @@ font-size:1.15rem;
 
   background: transparent;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 
   cursor: pointer;
 }
@@ -7541,15 +7554,19 @@ font-size:1.15rem;
 }
 
 .society-cover-image{
+  position: absolute;
+  inset: 0;
+
   display: block;
 
   width: 100%;
   height: 100%;
 
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
 
   user-select: none;
+  -webkit-user-select: none;
   -webkit-user-drag: none;
 }
 
@@ -7557,7 +7574,7 @@ font-size:1.15rem;
   position: absolute;
 
   left: 50%;
-  bottom: calc(34px + env(safe-area-inset-bottom));
+  bottom: calc(28px + env(safe-area-inset-bottom));
 
   transform: translateX(-50%);
 
