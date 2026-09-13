@@ -298,8 +298,6 @@ if (societyEntranceButton && societyEntrance) {
 
     unlockSpineSocietyLogin();
 
-    document.body.classList.remove("entrance-open");
-
     societyEntrance.style.display = "none";
 
   });
