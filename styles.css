@@ -6573,3 +6573,17 @@ font-size:1.15rem;
     translateY(2px)
     scale(.97);
 }
+/* ROOM OBJECT LAYER */
+
+.room-interactives {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 4;
+}
+
+.room-interactives .reader-note-trigger {
+  pointer-events: auto;
+}
