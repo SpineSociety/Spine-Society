@@ -7399,4 +7399,8 @@ body {
 
   z-index: 10;
 }
-
+body.entrance-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none;
+}
