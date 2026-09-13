@@ -264,6 +264,44 @@ function setupLiveLoginValidation() {
 }
 
 setupLiveLoginValidation();
+/* ==========================================
+   SPINE SOCIETY ENTRANCE
+   Keep login inactive until cover is opened
+========================================== */
+
+const societyEntrance =
+  document.getElementById("societyEntrance");
+
+const societyEntranceButton =
+  document.getElementById("societyEntranceButton");
+
+const loginEmail =
+  document.getElementById("loginEmail");
+
+const loginPassword =
+  document.getElementById("loginPassword");
+
+
+function unlockSpineSocietyLogin() {
+  if (loginEmail) {
+    loginEmail.disabled = false;
+  }
+
+  if (loginPassword) {
+    loginPassword.disabled = false;
+  }
+}
+
+
+if (societyEntranceButton && societyEntrance) {
+  societyEntranceButton.addEventListener("click", () => {
+
+    unlockSpineSocietyLogin();
+
+    societyEntrance.style.display = "none";
+
+  });
+}
 window.loginWithEmail = async function () {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
