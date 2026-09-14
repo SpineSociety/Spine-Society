@@ -7579,9 +7579,9 @@ body {
     28px + env(safe-area-inset-bottom, 0px)
   ) !important;
 
-  transform: translateX(-50%) !important;
+  transform: translateX(-50%) translateZ(24px) !important;
 
-  z-index: 10;
+z-index: 20 !important;
 }
 /* ==========================================
    SPINE SOCIETY BOOK OPENING ANIMATION
