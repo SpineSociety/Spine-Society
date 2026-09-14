@@ -7291,32 +7291,7 @@ font-size:1.15rem;
 
   pointer-events: none;
 }
-/* Hardcover hinge shadow */
-.society-book-cover::before {
-  content: "";
-  position: absolute;
 
-  top: 0;
-  left: 0;
-
-  width: 34px;
-  height: 100%;
-
-  background: linear-gradient(
-    to right,
-    rgba(0,0,0,.75) 0%,
-    rgba(0,0,0,.38) 35%,
-    rgba(255,220,170,.08) 55%,
-    rgba(0,0,0,0) 100%
-  );
-
-  box-shadow:
-    inset -3px 0 5px rgba(0,0,0,.45);
-
-  pointer-events: none;
-
-  z-index: 4;
-}
 /* Actual Spine Society cover artwork */
 .society-cover-image{
   position: absolute !important;
