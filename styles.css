@@ -7289,27 +7289,106 @@ font-size:1.15rem;
    REAL 3D HARDCOVER EDGES
 ========================================== */
 
+.society-book-cover {
+  transform-style: preserve-3d !important;
+  overflow: visible !important;
+}
+
+
+/* Push the actual cover artwork forward */
+.society-cover-image {
+  transform: translateZ(12px);
+}
+
+
+/* Shared hardcover edge */
 .society-cover-edge {
   position: absolute;
   display: block;
   pointer-events: none;
 
-  background:
-    linear-gradient(
-      90deg,
-      #120a06 0%,
-      #4b2d19 18%,
-      #9a7043 45%,
-      #4b2d19 72%,
-      #120a06 100%
-    );
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+
+/* TOP THICKNESS */
+.society-cover-edge-top {
+  top: -12px;
+  left: 0;
+
+  width: 100%;
+  height: 24px;
+
+  background: linear-gradient(
+    to bottom,
+    #120a06 0%,
+    #624124 35%,
+    #a77945 50%,
+    #4a2d19 70%,
+    #0c0604 100%
+  );
+
+  transform: rotateX(90deg);
+  transform-origin: center center;
 
   box-shadow:
-    inset 0 1px 2px rgba(255,220,160,.22),
-    inset 0 -2px 3px rgba(0,0,0,.75);
+    inset 0 3px 4px rgba(255,220,170,.16),
+    inset 0 -5px 6px rgba(0,0,0,.75);
+}
 
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+
+/* BOTTOM THICKNESS */
+.society-cover-edge-bottom {
+  bottom: -12px;
+  left: 0;
+
+  width: 100%;
+  height: 24px;
+
+  background: linear-gradient(
+    to top,
+    #0b0503 0%,
+    #4a2d19 30%,
+    #95693d 50%,
+    #3b2415 72%,
+    #090403 100%
+  );
+
+  transform: rotateX(90deg);
+  transform-origin: center center;
+
+  box-shadow:
+    inset 0 4px 5px rgba(255,220,170,.10),
+    inset 0 -5px 6px rgba(0,0,0,.8);
+}
+
+
+/* OUTER HARDCOVER EDGE */
+.society-cover-edge-side {
+  top: 0;
+  right: -12px;
+
+  width: 24px;
+  height: 100%;
+
+  background: linear-gradient(
+    to right,
+    #090403 0%,
+    #392114 18%,
+    #93663a 42%,
+    #c29156 50%,
+    #654123 65%,
+    #28160c 82%,
+    #070302 100%
+  );
+
+  transform: rotateY(90deg);
+  transform-origin: center center;
+
+  box-shadow:
+    inset 4px 0 4px rgba(255,220,170,.16),
+    inset -6px 0 7px rgba(0,0,0,.8);
 }
 
 
