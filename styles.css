@@ -3862,7 +3862,7 @@ textarea{
     ),
     url("cozy-library-bg.PNG");
 
-  background-size:100% auto;
+  background-size:cover;
   background-position:center center;
   background-repeat:no-repeat;
 }
