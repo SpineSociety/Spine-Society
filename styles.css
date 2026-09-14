@@ -7252,39 +7252,7 @@ font-size:1.15rem;
   transform-origin: left center;
   transform-style: preserve-3d;
 }
-/* Real hardcover board thickness during opening */
-.society-book-cover::after {
-  content: "";
-  position: absolute;
 
-  top: 0;
-  right: -14px;
-
-  width: 28px;
-  height: 100%;
-
-  background: linear-gradient(
-    to right,
-    #120a06 0%,
-    #3b2415 18%,
-    #8a6138 45%,
-    #4a2d19 68%,
-    #100906 100%
-  );
-
-  border-top: 2px solid rgba(196, 145, 79, .45);
-  border-bottom: 2px solid rgba(0, 0, 0, .8);
-
-  box-shadow:
-    inset 4px 0 5px rgba(255, 220, 160, .12),
-    inset -6px 0 7px rgba(0, 0, 0, .75),
-    5px 0 10px rgba(0, 0, 0, .7);
-
-  transform: rotateY(90deg);
-  transform-origin: left center;
-
-  pointer-events: none;
-}
 /* ==========================================
    REAL 3D HARDCOVER EDGES
 ========================================== */
