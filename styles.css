@@ -7351,11 +7351,7 @@ font-size:1.15rem;
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
 }
-/* Hide the top/bottom faces — they distort during the full-screen rotation */
-.society-cover-edge-top,
-.society-cover-edge-bottom {
-  display: none !important;
-}
+
 /* TOP HARDCOVER THICKNESS */
 .society-cover-edge-top {
   top: 0;
