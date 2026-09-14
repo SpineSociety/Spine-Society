@@ -7252,42 +7252,36 @@ font-size:1.15rem;
   transform-origin: left center;
   transform-style: preserve-3d;
 }
-/* Hardcover thickness — layered realistic edge */
+/* Real hardcover board thickness during opening */
 .society-book-cover::after {
   content: "";
   position: absolute;
 
-  top: 3px;
-  right: -2px;
+  top: 0;
+  right: -14px;
 
-  width: 48px;
-  height: calc(100% - 6px);
+  width: 28px;
+  height: 100%;
 
-  background:
-    linear-gradient(
-      to left,
-      rgba(255,255,255,.05) 0%,
-      rgba(0,0,0,.35) 7%,
-      rgba(117,82,52,.95) 14%,
-      rgba(45,28,18,.98) 24%,
-      rgba(126,93,60,.9) 34%,
-      rgba(35,21,14,.98) 46%,
-      rgba(93,64,41,.88) 58%,
-      rgba(29,17,11,.98) 72%,
-      rgba(8,5,3,1) 100%
-    );
+  background: linear-gradient(
+    to right,
+    #120a06 0%,
+    #3b2415 18%,
+    #8a6138 45%,
+    #4a2d19 68%,
+    #100906 100%
+  );
+
+  border-top: 2px solid rgba(196, 145, 79, .45);
+  border-bottom: 2px solid rgba(0, 0, 0, .8);
 
   box-shadow:
-    inset 4px 0 3px rgba(255,220,170,.10),
-    inset -9px 0 9px rgba(0,0,0,.78),
-    -4px 0 8px rgba(0,0,0,.52),
-    5px 0 8px rgba(0,0,0,.85);
-
-  border-left: 1px solid rgba(180,138,84,.22);
-  border-right: 1px solid rgba(0,0,0,.9);
+    inset 4px 0 5px rgba(255, 220, 160, .12),
+    inset -6px 0 7px rgba(0, 0, 0, .75),
+    5px 0 10px rgba(0, 0, 0, .7);
 
   transform: rotateY(90deg);
-  transform-origin: right center;
+  transform-origin: left center;
 
   pointer-events: none;
 }
