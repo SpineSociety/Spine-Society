@@ -4106,8 +4106,11 @@ body{
 #authScreen.login-scene.reading-room-login{
   position:fixed !important;
   inset:0 !important;
-  width:100vw !important;
+
+  width:100% !important;
+  height:100vh !important;
   height:100dvh !important;
+
   overflow:hidden !important;
   z-index:999 !important;
 }
