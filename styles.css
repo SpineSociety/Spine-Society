@@ -5226,7 +5226,12 @@ font-size:1.15rem;
 .librarian-note-card{
   flex-shrink:0 !important;
 }
-
+/* Short mobile browser viewports */
+@media (max-width: 767px) and (max-height: 850px){
+  .reading-journal-card{
+    margin-top:55px !important;
+  }
+}
 /* Extra-small phones */
 @media (max-height:760px){
   .reading-journal-card{
