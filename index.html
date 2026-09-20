@@ -2366,7 +2366,15 @@ overflow-y: auto;
     });
   })();
 </script>
+<script>
+  const isHomeScreen =
+    window.navigator.standalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches;
 
+  if (isHomeScreen) {
+    document.documentElement.classList.add("home-screen-app");
+  }
+</script>
 <script type="module" src="script.js"></script>
 </body>
 </html>
