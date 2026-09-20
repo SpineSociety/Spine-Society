@@ -2375,32 +2375,6 @@ overflow-y: auto;
     document.documentElement.classList.add("home-screen-app");
   }
 </script>
-<script>
-  if (
-    window.navigator.standalone === true ||
-    window.matchMedia("(display-mode: standalone)").matches
-  ) {
-    const debug = document.createElement("div");
-
-    debug.style.cssText = `
-      position:fixed;
-      left:5px;
-      bottom:5px;
-      z-index:2147483647;
-      background:red;
-      color:white;
-      padding:5px;
-      font:12px monospace;
-    `;
-
-    debug.textContent =
-      "innerH:" + window.innerHeight +
-      " | vvH:" + Math.round(window.visualViewport?.height || 0) +
-      " | screenH:" + window.screen.height;
-
-    document.body.appendChild(debug);
-  }
-</script>
 <script type="module" src="script.js"></script>
 </body>
 </html>
