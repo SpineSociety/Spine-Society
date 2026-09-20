@@ -264,10 +264,24 @@ function setupLiveLoginValidation() {
 }
 
 setupLiveLoginValidation();
+
 /* ==========================================
    SPINE SOCIETY ENTRANCE
    Keep login inactive until cover is opened
 ========================================== */
+
+const societyCoverImage =
+  document.querySelector(".society-cover-image");
+
+if (societyCoverImage) {
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  societyCoverImage.src = isStandalone
+    ? "Spine-Society-Cover.png"
+    : "spine-society-cover-safari.jpg";
+}
 
 const societyEntrance =
   document.getElementById("societyEntrance");
