@@ -4057,9 +4057,9 @@ textarea{
   }
 
   .reading-journal-card{
-    width:74vw !important;
-    max-width:290px !important;
-  }
+  width:min(82vw, 300px) !important;
+  max-width:300px !important;
+}
 
   .bookish-thought-card{
     width:76vw !important;
