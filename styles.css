@@ -7589,6 +7589,6 @@ body {
   .society-cover-image {
   object-fit: cover !important;
   object-position: center center !important;
-  transform: translateZ(12px) translateY(12px) !important;
+  transform: translateZ(12px) !important;
 }
 }
