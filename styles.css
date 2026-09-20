@@ -7602,3 +7602,10 @@ body {
     transform: translateZ(12px) !important;
   }
 }
+/* ==========================================
+   HOME SCREEN — FULL BOOK TEST
+========================================== */
+.home-screen-app .society-cover-image {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
