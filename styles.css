@@ -7602,3 +7602,8 @@ body {
     transform: translateZ(12px) !important;
   }
 }
+@media (display-mode: standalone) {
+  .society-cover-image {
+    opacity: 0.35 !important;
+  }
+}
