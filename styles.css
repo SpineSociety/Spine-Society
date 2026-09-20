@@ -7606,6 +7606,6 @@ body {
    HOME SCREEN — FULL BOOK TEST
 ========================================== */
 .home-screen-app .society-cover-image {
-  object-fit: contain !important;
+  object-fit: fill !important;
   object-position: center center !important;
 }
