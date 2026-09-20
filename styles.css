@@ -7592,3 +7592,13 @@ body {
   transform: translateZ(12px) !important;
 }
 }
+/* ==========================================
+   HOME SCREEN — SHOW FULL BOOK HEIGHT
+========================================== */
+@media (display-mode: standalone) {
+  .society-cover-image {
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: translateZ(12px) !important;
+  }
+}
