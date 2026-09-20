@@ -7526,7 +7526,7 @@ body {
   left: 50% !important;
 
   bottom: calc(
-    28px + env(safe-area-inset-bottom, 0px)
+    58px + env(safe-area-inset-bottom, 0px)
   ) !important;
 
   transform: translateX(-50%) translateZ(24px) !important;
