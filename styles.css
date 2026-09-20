@@ -7561,3 +7561,16 @@ z-index: 20 !important;
   opacity: 0;
   transition: opacity .2s ease;
 }
+/* ==========================================
+   HOME SCREEN COVER FIT
+   Standalone app only
+========================================== */
+
+@media (display-mode: standalone) {
+  .society-cover-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+}
