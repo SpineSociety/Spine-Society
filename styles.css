@@ -7567,9 +7567,21 @@ z-index: 20 !important;
 ========================================== */
 
 @media (display-mode: standalone) {
+  .society-entrance {
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    bottom: 0 !important;
+  }
+
+  .society-entrance-button,
+  .society-book-cover,
   .society-cover-image {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  .society-cover-image {
     object-fit: cover !important;
     object-position: center center !important;
   }
