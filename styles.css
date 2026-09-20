@@ -7564,8 +7564,43 @@ z-index: 20 !important;
 
 /* ==========================================
    HOME SCREEN COVER — FINAL
+   Fill entire iPhone screen
 ========================================== */
+
+html.home-screen-app,
+html.home-screen-app body {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+.home-screen-app .society-entrance {
+  position: fixed !important;
+
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  width: 100vw !important;
+
+  /* iPhone Home Screen viewport is 62px shorter
+     than the physical screen on this device */
+  height: calc(100dvh + 62px) !important;
+
+  overflow: hidden !important;
+}
+
+.home-screen-app .society-entrance-button,
+.home-screen-app .society-book-cover {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .home-screen-app .society-cover-image {
+  width: 100% !important;
+  height: 100% !important;
+
   object-fit: fill !important;
   object-position: center center !important;
 }
