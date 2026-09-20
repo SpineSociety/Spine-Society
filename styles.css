@@ -7609,8 +7609,3 @@ body {
   object-fit: fill !important;
   object-position: center center !important;
 }
-/* HOME SCREEN — remove bottom gap */
-.home-screen-app .society-entrance {
-  height: 100svh !important;
-  min-height: 100svh !important;
-}
