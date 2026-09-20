@@ -7585,10 +7585,7 @@ body {
     width: 100% !important;
     height: 100% !important;
   }
-.society-book-cover {
-  top: 12px !important;
-  bottom: -12px !important;
-}
+
   .society-cover-image {
   object-fit: cover !important;
   object-position: center center !important;
