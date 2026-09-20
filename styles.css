@@ -4079,6 +4079,7 @@ body{
   width:100% !important;
   max-width:720px !important;
   margin:0 auto !important;
+  padding-top:max(24px, env(safe-area-inset-top)) !important;
   padding-left:clamp(14px, 4vw, 28px) !important;
   padding-right:clamp(14px, 4vw, 28px) !important;
 }
