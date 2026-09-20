@@ -7609,9 +7609,3 @@ body {
   object-fit: fill !important;
   object-position: center center !important;
 }
-/* HOME SCREEN — cover bottom edge */
-.home-screen-app .society-entrance {
-  bottom: -40px !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
