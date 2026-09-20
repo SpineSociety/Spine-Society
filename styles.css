@@ -2614,7 +2614,7 @@ body::before {
   -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.18) inset !important;
   -webkit-text-fill-color: #f3e6cf !important;
   border: 1px solid rgba(54,34,18,.34) !important;
-  color: #1a1008;
+  color: #f3e6cf !important;
 }
 
 .reading-journal-card input::placeholder {
