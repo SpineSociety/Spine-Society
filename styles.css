@@ -7561,49 +7561,9 @@ z-index: 20 !important;
   opacity: 0;
   transition: opacity .2s ease;
 }
-/* ==========================================
-   HOME SCREEN COVER FIT
-   Standalone app only
-========================================== */
-html,
-body {
-  height: 100% !important;
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
-}
-@media (display-mode: standalone) {
-  .society-entrance {
-    height: 100vh !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    bottom: 0 !important;
-  }
 
-  .society-entrance-button,
-  .society-book-cover,
-  .society-cover-image {
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  .society-cover-image {
-  object-fit: cover !important;
-  object-position: center center !important;
-  transform: translateZ(12px) !important;
-}
-}
 /* ==========================================
-   HOME SCREEN — SHOW FULL BOOK HEIGHT
-========================================== */
-@media (display-mode: standalone) {
-  .society-cover-image {
-    object-fit: contain !important;
-    object-position: center center !important;
-    transform: translateZ(12px) !important;
-  }
-}
-/* ==========================================
-   HOME SCREEN — FULL BOOK TEST
+   HOME SCREEN COVER — FINAL
 ========================================== */
 .home-screen-app .society-cover-image {
   object-fit: fill !important;
