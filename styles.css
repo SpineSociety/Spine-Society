@@ -7569,8 +7569,8 @@ z-index: 20 !important;
 @media (display-mode: standalone) {
   .society-entrance {
     height: 100vh !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
+    height: calc(100dvh + 60px) !important;
+    min-height: calc(100dvh + 60px) !important;
     bottom: 0 !important;
   }
 
