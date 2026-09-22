@@ -7580,14 +7580,3 @@ z-index: 20 !important;
   object-fit: fill !important;
   object-position: center center !important;
 }
-/* ==========================================
-   NOOK — CREATE / JOIN DRAWER
-========================================== */
-
-.nook-circle-form{
-  display:none;
-}
-
-.nook-circle-form.show{
-  display:block;
-}
