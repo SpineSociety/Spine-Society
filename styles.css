@@ -7580,3 +7580,67 @@ z-index: 20 !important;
   object-fit: fill !important;
   object-position: center center !important;
 }
+/* ==========================================
+   NOOK — COMPACT CIRCLE CARDS
+========================================== */
+
+.nook-circle-card{
+  width:100%;
+  margin:0 0 12px;
+  padding:16px 18px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+
+  color:#f3e6cf;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(35,29,25,.92),
+      rgba(20,17,15,.96)
+    );
+
+  border:1px solid rgba(176,139,79,.28);
+  border-radius:18px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 8px 22px rgba(0,0,0,.18);
+
+  cursor:pointer;
+}
+
+.nook-circle-card-copy{
+  min-width:0;
+}
+
+.nook-circle-card h3{
+  margin:0 0 5px;
+  color:#f3e6cf;
+  font-size:1.2rem;
+  line-height:1.15;
+}
+
+.nook-circle-card-meta{
+  color:#a98a58;
+  font-size:.88rem;
+}
+
+.nook-circle-card-arrow{
+  flex:0 0 auto;
+  color:#b6945e;
+  font-size:1.3rem;
+  line-height:1;
+}
+
+.nook-circle-card:active{
+  transform:scale(.985);
+}
+
+.nook-circle-card:focus-visible{
+  outline:1px solid rgba(200,163,106,.7);
+  outline-offset:3px;
+}
