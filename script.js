@@ -119,7 +119,20 @@ function showScreen(screenName) {
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+window.toggleNookCircleForm = function () {
+  const form = document.getElementById("nookCircleForm");
+  const button = document.getElementById("nookCircleToggle");
 
+  if (!form || !button) return;
+
+  const isOpen = form.classList.toggle("show");
+
+  button.setAttribute("aria-expanded", String(isOpen));
+
+  button.innerHTML = isOpen
+    ? "× Close"
+    : "＋ Create / Join";
+};
 window.showClubRoomTab = function (tabName) {
   document.querySelectorAll(".club-room-panel").forEach(panel => {
     panel.classList.remove("active");
