@@ -7805,3 +7805,7 @@ z-index: 20 !important;
 .nook-book-spines .library-book-spine{
   transform:translateY(7px) !important;
 }
+/* NOOK — DOG-EARED SECTION SPACING */
+.nook-dogear-section{
+  margin-top:30px;
+}
