@@ -866,6 +866,29 @@ function renderClubCollection() {
   </div>
 `;
 }
+function renderNookCollection() {
+  const shelf = document.getElementById("nookCollectionShelf");
+
+  if (!shelf) return;
+
+  const books = Object.values(currentLibraryBooks || {});
+
+  if (books.length === 0) {
+    shelf.innerHTML = `
+      <p class="status">
+        Your shelf is waiting for its books.
+      </p>
+    `;
+    return;
+  }
+
+  // Keep the Nook preview intentionally small.
+  const previewBooks = books.slice(0, 6);
+
+  shelf.innerHTML = previewBooks
+    .map(book => renderLibrarySpine(book))
+    .join("");
+}
  function listenToPersonalLibrary() {
   if (!currentUser) return;
 
