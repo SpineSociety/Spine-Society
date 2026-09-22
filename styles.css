@@ -875,6 +875,17 @@ button:hover {
   color: var(--gold-pale);
   margin-top: 6px;
 }
+/* ==========================================
+   NOOK — CREATE / JOIN DRAWER
+========================================== */
+
+.nook-circle-form {
+  display: none;
+}
+
+.nook-circle-form.show {
+  display: block;
+}
 /* === FULL MOODBOARD ADD-ON: Login, Nook, Club Tabs, Marginalia, Library, Reflection === */
 
 .nook-header{display:flex;justify-content:space-between;align-items:center;margin:6px 0 22px}.nook-greeting{color:var(--gold-pale);font-size:.95rem;margin:0 0 2px}.nook-header h2{font-size:2.2rem;color:var(--ink)}.current-club-panel{display:flex;gap:14px;align-items:center;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02)),rgba(18,14,11,.78);border:1px solid rgba(200,163,106,.18);border-radius:24px;padding:16px;margin-bottom:18px;box-shadow:0 16px 38px rgba(0,0,0,.34)}.club-emblem{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,rgba(228,201,139,.25),transparent 32%),rgba(94,107,74,.20);border:1px solid rgba(200,163,106,.26);font-size:1.8rem;flex-shrink:0}.panel-kicker{color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;font-size:.72rem;font-weight:700}.current-club-panel h3{margin:2px 0 4px;font-size:1.55rem}.today-pick-panel,.continue-panel,.mood-panel{background:linear-gradient(180deg,rgba(255,255,255,.052),rgba(255,255,255,.018)),rgba(17,13,10,.78);border:1px solid rgba(200,163,106,.16);border-radius:24px;padding:16px;margin:16px 0;box-shadow:0 14px 34px rgba(0,0,0,.32)}.section-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}.tiny-link{width:auto;min-height:auto;padding:0;margin:0;background:transparent;border:none;box-shadow:none;color:var(--gold-soft);font-size:.82rem}.nook-pick-card{display:flex;gap:16px;align-items:center}.nook-pick-cover,.nook-pick-placeholder{width:88px;height:132px;border-radius:10px;flex-shrink:0}.nook-pick-cover{object-fit:cover;border:1px solid rgba(200,163,106,.24);box-shadow:0 18px 32px rgba(0,0,0,.42)}.nook-pick-placeholder{display:grid;place-items:center;background:linear-gradient(90deg,rgba(255,255,255,.10),transparent 12%),linear-gradient(180deg,#6a3627,#281410);border:1px solid rgba(200,163,106,.24);color:var(--gold-pale);font-family:"Cormorant Garamond",serif;font-size:2rem}.nook-pick-info h3{font-size:1.7rem;margin:0 0 6px}.nook-circle-spine{min-height:76px;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,rgba(255,255,255,.10),transparent 12%),linear-gradient(180deg,#253f3d,#111b1a);border:1px solid rgba(200,163,106,.18);box-shadow:0 12px 28px rgba(0,0,0,.36)}.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.mood-grid button{min-height:72px;padding:8px 5px;font-size:.7rem;border-radius:14px}
