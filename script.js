@@ -3631,12 +3631,17 @@ window.saveToBookmarks = async function (book) {
   const bookmarkRef = push(bookmarksRef);
 
   await set(bookmarkRef, {
-    title: book.title || "",
-    author: book.author || "",
-    image: book.image || "",
-    category: book.category || "",
-    savedAt: Date.now()
-  });
+  title: book.title || "",
+  author: book.author || "",
+  image: book.image || "",
+  category: book.category || "",
+
+  // Preserve the original length choice
+  lengthType: book.lengthType || "",
+  lengthCount: book.lengthCount || "",
+
+  savedAt: Date.now()
+});
 
   showToast("Saved to Dog-Eared Pages 🔖");
 };
@@ -3702,26 +3707,15 @@ if (!container && !nookContainer) return;
   const previewBookmarks = bookmarkIds.slice(0, 6);
 
   nookContainer.innerHTML = previewBookmarks
-    .map(id => {
-      const book = bookmarks[id];
+  .map(id => {
+    const book = {
+      id,
+      ...bookmarks[id]
+    };
 
-      return `
-        <div class="library-book-spine">
-          <div class="library-spine-title">
-            ${escapeHTML(book.title || "Untitled")}
-          </div>
-
-          <div class="library-spine-author">
-            ${escapeHTML(book.author || "Unknown")}
-          </div>
-
-          <div class="library-spine-status">
-            ${escapeHTML(book.category || "Dog-Eared")}
-          </div>
-        </div>
-      `;
-    })
-    .join("");
+    return renderLibrarySpine(book);
+  })
+  .join("");
 }
     }
   );
