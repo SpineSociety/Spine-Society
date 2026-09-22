@@ -1103,13 +1103,92 @@
 
 <div id="mainApp" style="display:none;">
         <section id="nookScreen" class="screen active">
+
   <div class="nook-header">
-    <div><p class="nook-greeting">Good evening,</p><h2 id="nookReaderName">Reader</h2></div>
+    <div>
+      <p class="nook-greeting">Good evening,</p>
+      <h2 id="nookReaderName">Reader</h2>
+    </div>
+
     <button class="icon-button secondary">♡</button>
   </div>
-  
-  <section class="card"><div class="card-header"><h2>Create or Join a Society</h2></div><input id="newClubName" placeholder="New circle name" /><button onclick="createClub()">Create Circle</button><input id="joinClubId" placeholder="Paste invite code or link" /><button class="secondary" onclick="joinClubFromInput()">Join Circle</button></section>
-  <section class="card"><div class="card-header"><h2>Reading Circles</h2><span id="clubCount" class="small"></span></div><div id="clubList"><p class="status">Loading circles...</p></div></section>
+
+
+  <!-- YOUR CIRCLES -->
+  <section class="nook-circles-section">
+
+    <div class="nook-section-heading">
+      <div>
+        <h2>Your Circles</h2>
+        <p class="nook-section-subtitle">
+          Stories are better shared.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="nook-create-join-btn"
+        onclick="toggleNookCircleForm()"
+        aria-expanded="false"
+        id="nookCircleToggle"
+      >
+        ＋ Create / Join
+      </button>
+    </div>
+
+
+    <!-- CREATE / JOIN DRAWER -->
+    <div id="nookCircleForm" class="nook-circle-form">
+
+      <div class="nook-circle-form-section">
+        <label for="newClubName">Create a Circle</label>
+
+        <input
+          id="newClubName"
+          placeholder="New circle name"
+        />
+
+        <button onclick="createClub()">
+          Create Circle
+        </button>
+      </div>
+
+
+      <div class="nook-circle-form-divider">
+        <span>or</span>
+      </div>
+
+
+      <div class="nook-circle-form-section">
+        <label for="joinClubId">Join a Circle</label>
+
+        <input
+          id="joinClubId"
+          placeholder="Paste invite code or link"
+        />
+
+        <button
+          class="secondary"
+          onclick="joinClubFromInput()"
+        >
+          Join Circle
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- EXISTING FIREBASE CIRCLES -->
+    <div class="nook-circle-count">
+      <span id="clubCount" class="small"></span>
+    </div>
+
+    <div id="clubList">
+      <p class="status">Loading circles...</p>
+    </div>
+
+  </section>
+
 </section>
 
 <section id="libraryScreen" class="screen">
