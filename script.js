@@ -3720,6 +3720,9 @@ if (!container && !nookContainer) return;
     }
   );
 };
+window.openBookmarksPage = function () {
+  showScreen("bookmarks");
+};
 window.loadReaderFriendStatus = function (uid) {
   const user = auth.currentUser;
   const statusBox = document.getElementById("readerFriendStatus");
