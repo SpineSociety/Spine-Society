@@ -1022,14 +1022,84 @@ function renderSpineCard(book) {
     </div>
   `;
 }
+function getBookSpineDimensions(book) {
+  const count = Number(book.lengthCount);
+  const type = book.lengthType || "pages";
 
+  // Default size for books that don't have length information yet.
+  if (!count || count <= 0) {
+    return {
+      width: 78,
+      height: 196
+    };
+  }
+
+  /*
+    Convert chapters to an approximate page count ONLY for visual sizing.
+
+    We're not changing the actual stored book information.
+    This just gives chapter-based books reasonable dimensions.
+  */
+  const estimatedPages =
+    type === "chapters"
+      ? count * 12
+      : count;
+
+  /*
+    THICKNESS
+    Short books = thinner spine
+    Long books = thicker spine
+
+    Clamp prevents extremely thin or enormous books.
+  */
+  const width = Math.round(
+    Math.max(
+      58,
+      Math.min(
+        102,
+        55 + estimatedPages * 0.075
+      )
+    )
+  );
+
+  /*
+    HEIGHT
+    Real books aren't taller simply because they have more pages,
+    so page count does NOT directly determine height.
+
+    Instead, each title gets a small, consistent variation.
+  */
+  const seed = String(book.id || book.title || "book")
+    .split("")
+    .reduce(
+      (total, character) =>
+        total + character.charCodeAt(0),
+      0
+    );
+
+  const heightVariation = (seed % 27) - 13;
+
+  const height = 196 + heightVariation;
+
+  return {
+    width,
+    height
+  };
+}
 function renderLibrarySpine(book) {
+  const dimensions = getBookSpineDimensions(book);
+
   return `
     <div
       class="library-book-spine"
       title="${escapeAttr(book.title)}"
       onclick="openBookModal('${book.id}')"
-      style="cursor:pointer;"
+      style="
+        cursor:pointer;
+        width:${dimensions.width}px;
+        height:${dimensions.height}px;
+        flex:0 0 ${dimensions.width}px;
+      "
     >
       <div class="library-spine-title">
         ${escapeHTML(book.title)}
