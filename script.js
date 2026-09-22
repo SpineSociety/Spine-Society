@@ -534,42 +534,25 @@ const memberCount = club.members
   ? Object.keys(club.members).length
   : 0;
       html += `
-  <section class="current-club-panel">
+  <section
+    class="nook-circle-card"
+    onclick="openClubRoom('${clubId}')"
+    onkeydown="if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openClubRoom('${clubId}'); }"
+    role="button"
+    tabindex="0"
+  >
 
-    <div class="club-emblem">
-      📚
-    </div>
+    <div class="nook-circle-card-copy">
+      <h3>${escapeHTML(club.name)}</h3>
 
-    <div style="flex:1;">
-
-      
-
-      <h3>
-        ${escapeHTML(club.name)}
-      </h3>
-<div class="small">
-  👥 ${memberCount} reader${memberCount === 1 ? "" : "s"}
-</div>
-
-      <div style="
-        display:flex;
-        gap:10px;
-        margin-top:14px;
-      ">
-
-
-        <button
-  class="secondary"
-  onclick="openClubRoom('${clubId}')"
-  style="flex:1;"
->
-  View Club Room
-</button>
-
-
+      <div class="nook-circle-card-meta">
+        👥 ${memberCount} reader${memberCount === 1 ? "" : "s"}
       </div>
-
     </div>
+
+    <span class="nook-circle-card-arrow" aria-hidden="true">
+      →
+    </span>
 
   </section>
 `;
