@@ -901,6 +901,7 @@ function renderNookCollection() {
     }));
 
     renderMyLibrary();
+    renderNookCollection();
     renderBookRandomizerShelf();
   });
 } 
