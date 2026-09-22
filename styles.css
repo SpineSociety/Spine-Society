@@ -7777,7 +7777,7 @@ z-index: 20 !important;
 
   overflow:hidden;
 
-  padding:0 2px 7px;
+  padding:0 2px 0;
 }
 
 /* Only resize book spines INSIDE the Nook */
