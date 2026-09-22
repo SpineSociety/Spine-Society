@@ -7801,3 +7801,7 @@ z-index: 20 !important;
     inset -2px 0 4px rgba(0,0,0,.28),
     2px 2px 5px rgba(0,0,0,.30) !important;
 }
+/* NOOK — SEAT BOOKS ON WOODEN SHELF */
+.nook-book-spines .library-book-spine{
+  transform:translateY(7px) !important;
+}
