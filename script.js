@@ -3576,9 +3576,12 @@ window.listenForBookmarks = function () {
   if (!user) return;
 
   const container =
-    document.getElementById("bookmarksList");
+  document.getElementById("bookmarksList");
 
-  if (!container) return;
+const nookContainer =
+  document.getElementById("nookDogEaredShelf");
+
+if (!container && !nookContainer) return;
 
   onValue(
     ref(database, `users/${user.uid}/bookmarks`),
@@ -3587,10 +3590,18 @@ window.listenForBookmarks = function () {
       const bookmarkIds = Object.keys(bookmarks);
 
       if (!bookmarkIds.length) {
-        container.innerHTML =
-          `<p class="status">No dog-eared pages yet.</p>`;
-        return;
-      }
+  if (container) {
+    container.innerHTML =
+      `<p class="status">No dog-eared pages yet.</p>`;
+  }
+
+  if (nookContainer) {
+    nookContainer.innerHTML =
+      `<p class="status">No dog-eared pages yet.</p>`;
+  }
+
+  return;
+}
 
       container.innerHTML = `
         <div class="dog-eared-shelf">
@@ -3617,6 +3628,31 @@ window.listenForBookmarks = function () {
           }
         </div>
       `;
+      if (nookContainer) {
+  const previewBookmarks = bookmarkIds.slice(0, 6);
+
+  nookContainer.innerHTML = previewBookmarks
+    .map(id => {
+      const book = bookmarks[id];
+
+      return `
+        <div class="library-book-spine">
+          <div class="library-spine-title">
+            ${escapeHTML(book.title || "Untitled")}
+          </div>
+
+          <div class="library-spine-author">
+            ${escapeHTML(book.author || "Unknown")}
+          </div>
+
+          <div class="library-spine-status">
+            ${escapeHTML(book.category || "Dog-Eared")}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
     }
   );
 };
