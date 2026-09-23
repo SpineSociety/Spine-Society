@@ -896,6 +896,43 @@ function renderNookCollection() {
     `;
   })
   .join("");
+  enableNookBookReordering();
+}
+function enableNookBookReordering() {
+  const shelf = document.getElementById("nookCollectionShelf");
+  if (!shelf) return;
+
+  const books = shelf.querySelectorAll(".nook-sortable-book");
+
+  books.forEach(book => {
+    let holdTimer = null;
+
+    book.addEventListener("pointerdown", (event) => {
+      holdTimer = setTimeout(() => {
+        book.classList.add("nook-book-held");
+
+        if (navigator.vibrate) {
+          navigator.vibrate(30);
+        }
+      }, 450);
+    });
+
+    book.addEventListener("pointerup", () => {
+      clearTimeout(holdTimer);
+      book.classList.remove("nook-book-held");
+    });
+
+    book.addEventListener("pointercancel", () => {
+      clearTimeout(holdTimer);
+      book.classList.remove("nook-book-held");
+    });
+
+    book.addEventListener("pointermove", () => {
+      if (holdTimer && !book.classList.contains("nook-book-held")) {
+        clearTimeout(holdTimer);
+      }
+    });
+  });
 }
  function listenToPersonalLibrary() {
   if (!currentUser) return;
