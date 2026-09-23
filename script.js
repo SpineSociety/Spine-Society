@@ -898,33 +898,7 @@ function renderNookCollection() {
   .join("");
   enableNookBookReordering();
 }
-function getNookBookAfterPointer(shelf, x) {
-  const books = [
-    ...shelf.querySelectorAll(
-      ".nook-sortable-book:not(.nook-book-held)"
-    )
-  ];
 
-  return books.reduce(
-    (closest, book) => {
-      const box = book.getBoundingClientRect();
-      const offset = x - box.left - box.width / 2;
-
-      if (offset < 0 && offset > closest.offset) {
-        return {
-          offset,
-          element: book
-        };
-      }
-
-      return closest;
-    },
-    {
-      offset: Number.NEGATIVE_INFINITY,
-      element: null
-    }
-  ).element;
-}
 function enableNookBookReordering() {
   const shelf = document.getElementById("nookCollectionShelf");
   if (!shelf) return;
@@ -967,24 +941,6 @@ function enableNookBookReordering() {
       const moveX = currentX - startX;
 
 book.style.transform = `translateX(${moveX}px)`;
-
-const afterBook = getNookBookAfterPointer(
-  shelf,
-  event.clientX
-);
-
-if (afterBook == null) {
-  shelf.appendChild(book);
-} else if (afterBook !== book.nextElementSibling) {
-  shelf.insertBefore(book, afterBook);
-}
-
-/*
-  The book has moved to a new position in the shelf,
-  so reset our drag starting point to its new location.
-*/
-startX = event.clientX;
-book.style.transform = "";
     });
 
     book.addEventListener("pointerup", () => {
