@@ -1006,8 +1006,8 @@ function renderMyLibrary() {
 window.setLibraryFilter = function (filter, button) {
   currentLibraryFilter = filter;
 
-  document.querySelectorAll("#libraryScreen .library-tabs button")
-    .forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll("#collectionScreen .library-tabs button")
+  .forEach(tab => tab.classList.remove("active"));
 
   button.classList.add("active");
 
