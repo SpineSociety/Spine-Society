@@ -7780,16 +7780,9 @@ z-index: 20 !important;
   padding:0 2px 7px;
 }
 
-/* Only resize book spines INSIDE the Nook */
+/* Book spines inside the Nook */
 .nook-book-spines .library-book-spine{
-  flex:1 1 0 !important;
-
-  width:auto !important;
-  min-width:0 !important;
-  max-width:54px !important;
-
-  height:104px !important;
-  min-height:104px !important;
+  flex-shrink:0 !important;
 
   margin:0 !important;
   padding:7px 4px !important;
