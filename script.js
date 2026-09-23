@@ -145,11 +145,6 @@ window.showClubRoomTab = function (tabName) {
   }
 };
 document.getElementById("nookTab").addEventListener("click", () => showScreen("nook"));
-const libraryTab = document.getElementById("libraryTab");
-
-if (libraryTab) {
-  libraryTab.addEventListener("click", () => showScreen("collection"));
-}
 document.getElementById("randomizerTab").addEventListener("click", () => showScreen("randomizer"));
 document.getElementById("stacksTab").addEventListener("click", () => showScreen("stacks"));
 document.getElementById("reflectionTab").addEventListener("click", () => showScreen("reflection"));
