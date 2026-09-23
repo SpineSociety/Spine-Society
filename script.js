@@ -1027,11 +1027,19 @@ function getBookSpineDimensions(book) {
 
   // Default size for books that don't have length information yet.
   if (!count || count <= 0) {
-    return {
-      width: 78,
-      height: 196
-    };
-  }
+  const seed = String(book.id || book.title || "book")
+    .split("")
+    .reduce(
+      (total, character) =>
+        total + character.charCodeAt(0),
+      0
+    );
+
+  return {
+    width: 64 + (seed % 25),
+    height: 184 + (seed % 27)
+  };
+}
 
   /*
     Convert chapters to an approximate page count ONLY for visual sizing.
