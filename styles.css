@@ -7769,7 +7769,7 @@ z-index: 20 !important;
 }
 
 .nook-book-spines{
-  min-height:104px;
+  height:210px;
 
   display:flex;
   align-items:flex-end;
@@ -7778,6 +7778,11 @@ z-index: 20 !important;
   overflow:hidden;
 
   padding:0 2px 7px;
+}
+
+/* Scale full-size book dimensions down for the Nook preview */
+.nook-book-spines .library-book-spine{
+  zoom:0.68;
 }
 
 /* Book spines inside the Nook */
