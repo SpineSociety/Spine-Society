@@ -3679,30 +3679,19 @@ if (!container && !nookContainer) return;
 }
 
       container.innerHTML = `
-        <div class="dog-eared-shelf">
-          ${
-            bookmarkIds.map(id => {
-              const book = bookmarks[id];
+  <div class="bookshelf-row">
+    ${bookmarkIds.map(id => {
+      const savedBook = bookmarks[id];
 
-              return `
-                <div class="dog-eared-book">
-                  ${
-                    book.image
-                      ? `<img src="${escapeAttr(book.image)}" alt="Book cover">`
-                      : `<div class="dog-eared-placeholder">
-                          ${escapeHTML((book.title || "B").charAt(0))}
-                        </div>`
-                  }
+      const book = {
+        ...savedBook,
+        id: savedBook.sourceBookId || id
+      };
 
-                  <div class="dog-eared-title">
-                    ${escapeHTML(book.title || "Untitled")}
-                  </div>
-                </div>
-              `;
-            }).join("")
-          }
-        </div>
-      `;
+      return renderLibrarySpine(book);
+    }).join("")}
+  </div>
+`;
       if (nookContainer) {
   const previewBookmarks = bookmarkIds.slice(0, 6);
 
