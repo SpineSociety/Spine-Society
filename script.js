@@ -966,7 +966,25 @@ function enableNookBookReordering() {
 
       const moveX = currentX - startX;
 
-      book.style.transform = `translateX(${moveX}px)`;
+book.style.transform = `translateX(${moveX}px)`;
+
+const afterBook = getNookBookAfterPointer(
+  shelf,
+  event.clientX
+);
+
+if (afterBook == null) {
+  shelf.appendChild(book);
+} else if (afterBook !== book.nextElementSibling) {
+  shelf.insertBefore(book, afterBook);
+}
+
+/*
+  The book has moved to a new position in the shelf,
+  so reset our drag starting point to its new location.
+*/
+startX = event.clientX;
+book.style.transform = "";
     });
 
     book.addEventListener("pointerup", () => {
