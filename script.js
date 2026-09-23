@@ -885,8 +885,17 @@ function renderNookCollection() {
   const previewBooks = books.slice(0, 6);
 
   shelf.innerHTML = previewBooks
-    .map(book => renderLibrarySpine(book))
-    .join("");
+  .map(book => {
+    return `
+      <div
+        class="nook-sortable-book"
+        data-book-id="${book.id}"
+      >
+        ${renderLibrarySpine(book)}
+      </div>
+    `;
+  })
+  .join("");
 }
  function listenToPersonalLibrary() {
   if (!currentUser) return;
