@@ -1035,9 +1035,15 @@ function getBookSpineDimensions(book) {
       0
     );
 
+  const widthSeed = seed % 5;
+  const heightSeed = Math.floor(seed / 5) % 5;
+
+  const widths = [58, 66, 76, 88, 98];
+  const heights = [172, 184, 196, 208, 220];
+
   return {
-    width: 64 + (seed % 25),
-    height: 184 + (seed % 27)
+    width: widths[widthSeed],
+    height: heights[heightSeed]
   };
 }
 
