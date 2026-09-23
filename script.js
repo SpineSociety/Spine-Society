@@ -898,7 +898,26 @@ function renderNookCollection() {
   .join("");
   enableNookBookReordering();
 }
+async function saveNookBookPosition(bookId, offsetX) {
+  if (!currentUser || !bookId) return;
 
+  try {
+    await update(
+      ref(
+        database,
+        `users/${currentUser.uid}/library/${bookId}`
+      ),
+      {
+        nookOffsetX: offsetX
+      }
+    );
+  } catch (error) {
+    console.error(
+      "Could not save Nook book position:",
+      error
+    );
+  }
+}
 function enableNookBookReordering() {
   const shelf = document.getElementById("nookCollectionShelf");
   if (!shelf) return;
