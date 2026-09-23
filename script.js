@@ -981,6 +981,10 @@ book.style.transform =
 
     book.style.transform =
       `translateX(${newOffset}px)`;
+      saveNookBookPosition(
+  book.dataset.bookId,
+  newOffset
+);
   }
 
   isDragging = false;
