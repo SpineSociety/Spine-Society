@@ -940,19 +940,33 @@ function enableNookBookReordering() {
 
       const moveX = currentX - startX;
 
-book.style.transform = `translateX(${moveX}px)`;
+const currentOffset =
+  parseFloat(book.dataset.nookOffsetX || "0");
+
+book.style.transform =
+  `translateX(${currentOffset + moveX}px)`;
     });
 
     book.addEventListener("pointerup", () => {
-      clearTimeout(holdTimer);
+  clearTimeout(holdTimer);
 
-      if (isDragging) {
-        book.style.transform = "";
-      }
+  if (isDragging) {
+    const moveX = currentX - startX;
 
-      isDragging = false;
-      book.classList.remove("nook-book-held");
-    });
+    const currentOffset =
+      parseFloat(book.dataset.nookOffsetX || "0");
+
+    const newOffset = currentOffset + moveX;
+
+    book.dataset.nookOffsetX = newOffset;
+
+    book.style.transform =
+      `translateX(${newOffset}px)`;
+  }
+
+  isDragging = false;
+  book.classList.remove("nook-book-held");
+});
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
