@@ -3708,12 +3708,14 @@ if (!container && !nookContainer) return;
 
   nookContainer.innerHTML = previewBookmarks
   .map(id => {
-    const book = {
-      id,
-      ...bookmarks[id]
-    };
+    const savedBook = bookmarks[id];
 
-    return renderLibrarySpine(book);
+const book = {
+  ...savedBook,
+  id: savedBook.sourceBookId || id
+};
+
+return renderLibrarySpine(book);
   })
   .join("");
 }
