@@ -898,6 +898,33 @@ function renderNookCollection() {
   .join("");
   enableNookBookReordering();
 }
+function getNookBookAfterPointer(shelf, x) {
+  const books = [
+    ...shelf.querySelectorAll(
+      ".nook-sortable-book:not(.nook-book-held)"
+    )
+  ];
+
+  return books.reduce(
+    (closest, book) => {
+      const box = book.getBoundingClientRect();
+      const offset = x - box.left - box.width / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return {
+          offset,
+          element: book
+        };
+      }
+
+      return closest;
+    },
+    {
+      offset: Number.NEGATIVE_INFINITY,
+      element: null
+    }
+  ).element;
+}
 function enableNookBookReordering() {
   const shelf = document.getElementById("nookCollectionShelf");
   if (!shelf) return;
