@@ -3630,6 +3630,7 @@ window.saveToBookmarks = async function (book) {
   const bookmarkRef = push(bookmarksRef);
 
   await set(bookmarkRef, {
+  sourceBookId: book.id || "",
   title: book.title || "",
   author: book.author || "",
   image: book.image || "",
