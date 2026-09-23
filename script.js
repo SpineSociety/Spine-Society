@@ -906,10 +906,19 @@ function enableNookBookReordering() {
 
   books.forEach(book => {
     let holdTimer = null;
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
 
     book.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+      currentX = startX;
+
       holdTimer = setTimeout(() => {
+        isDragging = true;
         book.classList.add("nook-book-held");
+
+        book.setPointerCapture(event.pointerId);
 
         if (navigator.vibrate) {
           navigator.vibrate(30);
@@ -917,20 +926,40 @@ function enableNookBookReordering() {
       }, 450);
     });
 
+    book.addEventListener("pointermove", (event) => {
+      currentX = event.clientX;
+
+      if (!isDragging) {
+        if (Math.abs(currentX - startX) > 8) {
+          clearTimeout(holdTimer);
+        }
+
+        return;
+      }
+
+      const moveX = currentX - startX;
+
+      book.style.transform = `translateX(${moveX}px)`;
+    });
+
     book.addEventListener("pointerup", () => {
       clearTimeout(holdTimer);
+
+      if (isDragging) {
+        book.style.transform = "";
+      }
+
+      isDragging = false;
       book.classList.remove("nook-book-held");
     });
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
-      book.classList.remove("nook-book-held");
-    });
 
-    book.addEventListener("pointermove", () => {
-      if (holdTimer && !book.classList.contains("nook-book-held")) {
-        clearTimeout(holdTimer);
-      }
+      book.style.transform = "";
+
+      isDragging = false;
+      book.classList.remove("nook-book-held");
     });
   });
 }
