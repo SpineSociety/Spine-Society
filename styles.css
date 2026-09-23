@@ -7803,6 +7803,31 @@ z-index: 20 !important;
 .nook-book-spines .library-book-spine{
   transform:translateY(7px) !important;
 }
+/* NOOK — PRESS + HOLD BOOK */
+.nook-sortable-book{
+  display:flex;
+  align-items:flex-end;
+  flex-shrink:0;
+  touch-action:pan-y;
+}
+
+.nook-sortable-book.nook-book-held{
+  position:relative;
+  z-index:20;
+}
+
+.nook-sortable-book.nook-book-held .library-book-spine{
+  transform:translateY(-5px) rotate(-2deg) !important;
+
+  box-shadow:
+    inset 2px 0 3px rgba(255,255,255,.06),
+    inset -2px 0 4px rgba(0,0,0,.28),
+    4px 9px 12px rgba(0,0,0,.48) !important;
+
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease;
+}
 /* NOOK — DOG-EARED SECTION SPACING */
 .nook-dogear-section{
   margin-top:30px;
