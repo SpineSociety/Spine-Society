@@ -1061,38 +1061,13 @@ function enableCollectionBookReordering() {
 
       const moveX = currentX - startX;
 
+const moveX = currentX - startX;
+
 const currentOffset =
   parseFloat(book.dataset.collectionOffsetX || "0");
 
-let proposedOffset = currentOffset + moveX;
-
-/* Prevent this spine from overlapping another spine */
-const bookRect = book.getBoundingClientRect();
-const proposedLeft =
-  bookRect.left + (proposedOffset - currentOffset);
-const proposedRight =
-  proposedLeft + bookRect.width;
-
-books.forEach(otherBook => {
-  if (otherBook === book) return;
-
-  const otherRect = otherBook.getBoundingClientRect();
-
-  const overlaps =
-    proposedRight > otherRect.left &&
-    proposedLeft < otherRect.right;
-
-  if (overlaps) {
-    if (moveX > 0) {
-      proposedOffset -= proposedRight - otherRect.left;
-    } else if (moveX < 0) {
-      proposedOffset += otherRect.right - proposedLeft;
-    }
-  }
-});
-
 book.style.transform =
-  `translateX(${proposedOffset}px)`;
+  `translateX(${currentOffset + moveX}px)`;
 
     book.addEventListener("pointerup", () => {
   clearTimeout(holdTimer);
