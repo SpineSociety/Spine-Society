@@ -1109,9 +1109,16 @@ function renderMyLibrary() {
   library.innerHTML = `
     <div class="bookshelf-row">
 
-      ${filteredBooks.map(book =>
-        renderLibrarySpine(book)
-      ).join("")}
+      ${filteredBooks.map(book => {
+  return `
+    <div
+      class="collection-sortable-book"
+      data-book-id="${book.id}"
+    >
+      ${renderLibrarySpine(book)}
+    </div>
+  `;
+}).join("")}
 
       <button
         class="library-book-spine add-book-spine"
