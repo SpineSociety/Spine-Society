@@ -1059,36 +1059,35 @@ function enableCollectionBookReordering() {
         return;
       }
 
-      
+      const moveX = currentX - startX;
 
-const moveX = currentX - startX;
+      const currentOffset =
+        parseFloat(book.dataset.collectionOffsetX || "0");
 
-const currentOffset =
-  parseFloat(book.dataset.collectionOffsetX || "0");
-
-book.style.transform =
-  `translateX(${currentOffset + moveX}px)`;
+      book.style.transform =
+        `translateX(${currentOffset + moveX}px)`;
+    });
 
     book.addEventListener("pointerup", () => {
-  clearTimeout(holdTimer);
+      clearTimeout(holdTimer);
 
-  if (isDragging) {
-    const moveX = currentX - startX;
+      if (isDragging) {
+        const moveX = currentX - startX;
 
-    const currentOffset =
-      parseFloat(book.dataset.collectionOffsetX || "0");
+        const currentOffset =
+          parseFloat(book.dataset.collectionOffsetX || "0");
 
-    const newOffset = currentOffset + moveX;
+        const newOffset = currentOffset + moveX;
 
-    book.dataset.collectionOffsetX = newOffset;
+        book.dataset.collectionOffsetX = newOffset;
 
-    book.style.transform =
-      `translateX(${newOffset}px)`;
-  }
+        book.style.transform =
+          `translateX(${newOffset}px)`;
+      }
 
-  isDragging = false;
-  book.classList.remove("collection-book-held");
-});
+      isDragging = false;
+      book.classList.remove("collection-book-held");
+    });
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
