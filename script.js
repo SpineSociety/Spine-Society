@@ -1174,6 +1174,7 @@ function renderMyLibrary() {
 
     </div>
   `;
+  enableCollectionBookReordering();
 }
 window.setLibraryFilter = function (filter, button) {
   currentLibraryFilter = filter;
