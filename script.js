@@ -828,12 +828,18 @@ function renderClubCollection() {
   collection.innerHTML = `
     <div class="bookshelf-row">
       <button
-        class="library-book-spine add-book-spine"
-        onclick="openAddCollectionBookModal()"
-      >
-        <div>＋</div>
-        <div>Add<br>Book</div>
-      </button>
+        <div
+  class="collection-sortable-book collection-add-book"
+  data-book-id="add-book"
+>
+  <button
+    class="library-book-spine add-book-spine"
+    onclick="openAddLibraryBookModal()"
+  >
+    <div>＋</div>
+    <div>Add<br>Book</div>
+  </button>
+</div>
     </div>
   `;
   return;
