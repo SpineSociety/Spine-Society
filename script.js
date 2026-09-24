@@ -1059,7 +1059,7 @@ function enableCollectionBookReordering() {
         return;
       }
 
-      const moveX = currentX - startX;
+      
 
 const moveX = currentX - startX;
 
