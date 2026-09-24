@@ -1055,20 +1055,33 @@ function enableCollectionBookReordering() {
 
       const moveX = currentX - startX;
 
-      book.style.transform =
-        `translateX(${moveX}px)`;
+const currentOffset =
+  parseFloat(book.dataset.collectionOffsetX || "0");
+
+book.style.transform =
+  `translateX(${currentOffset + moveX}px)`;
     });
 
     book.addEventListener("pointerup", () => {
-      clearTimeout(holdTimer);
+  clearTimeout(holdTimer);
 
-      if (isDragging) {
-        book.style.transform = "";
-      }
+  if (isDragging) {
+    const moveX = currentX - startX;
 
-      isDragging = false;
-      book.classList.remove("collection-book-held");
-    });
+    const currentOffset =
+      parseFloat(book.dataset.collectionOffsetX || "0");
+
+    const newOffset = currentOffset + moveX;
+
+    book.dataset.collectionOffsetX = newOffset;
+
+    book.style.transform =
+      `translateX(${newOffset}px)`;
+  }
+
+  isDragging = false;
+  book.classList.remove("collection-book-held");
+});
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
