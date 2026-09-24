@@ -1009,6 +1009,50 @@ book.style.transform =
     });
   });
 }
+function enableCollectionBookReordering() {
+  const shelf = document.querySelector(
+    "#collectionScreen .bookshelf-row"
+  );
+
+  if (!shelf) return;
+
+  const books = shelf.querySelectorAll(
+    ".collection-sortable-book"
+  );
+
+  books.forEach(book => {
+    let holdTimer = null;
+
+    book.addEventListener("pointerdown", (event) => {
+      holdTimer = setTimeout(() => {
+        book.classList.add("collection-book-held");
+
+        if (navigator.vibrate) {
+          navigator.vibrate(30);
+        }
+      }, 450);
+    });
+
+    book.addEventListener("pointerup", () => {
+      clearTimeout(holdTimer);
+      book.classList.remove("collection-book-held");
+    });
+
+    book.addEventListener("pointercancel", () => {
+      clearTimeout(holdTimer);
+      book.classList.remove("collection-book-held");
+    });
+
+    book.addEventListener("pointermove", () => {
+      if (
+        holdTimer &&
+        !book.classList.contains("collection-book-held")
+      ) {
+        clearTimeout(holdTimer);
+      }
+    });
+  });
+}
  function listenToPersonalLibrary() {
   if (!currentUser) return;
 
