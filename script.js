@@ -1045,46 +1045,33 @@ function enableCollectionBookReordering() {
     });
 
     book.addEventListener("pointermove", event => {
-      if (!isDragging) return;
+  if (!isDragging) return;
 
-      const otherBooks = Array.from(
-        shelf.querySelectorAll(
-          ".collection-sortable-book:not(.collection-book-held)"
-        )
+  const otherBooks = Array.from(
+    shelf.querySelectorAll(
+      ".collection-sortable-book:not(.collection-book-held)"
+    )
+  );
+
+  for (const otherBook of otherBooks) {
+    const rect =
+      otherBook.getBoundingClientRect();
+
+    const midpoint =
+      rect.left + rect.width / 2;
+
+    if (event.clientX < midpoint) {
+      shelf.insertBefore(
+        book,
+        otherBook
       );
 
-      const bookUnderPointer = otherBooks.find(
-        otherBook => {
-          const rect =
-            otherBook.getBoundingClientRect();
+      return;
+    }
+  }
 
-          return (
-            event.clientX >= rect.left &&
-            event.clientX <= rect.right
-          );
-        }
-      );
-
-      if (!bookUnderPointer) return;
-
-      const rect =
-        bookUnderPointer.getBoundingClientRect();
-
-      const midpoint =
-        rect.left + rect.width / 2;
-
-      if (event.clientX < midpoint) {
-        shelf.insertBefore(
-          book,
-          bookUnderPointer
-        );
-      } else {
-        shelf.insertBefore(
-          book,
-          bookUnderPointer.nextSibling
-        );
-      }
-    });
+  shelf.appendChild(book);
+});
 
     book.addEventListener("pointerup", () => {
       clearTimeout(holdTimer);
