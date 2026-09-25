@@ -7864,3 +7864,19 @@ z-index: 20 !important;
 .nook-dogear-section{
   margin-top:30px;
 }
+/* MY COLLECTION — KEEP BOOKS SIDE BY SIDE */
+#collectionScreen .bookshelf-row{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:flex-end !important;
+  justify-content:flex-start !important;
+  flex-wrap:nowrap !important;
+  gap:0 !important;
+}
+
+#collectionScreen .collection-sortable-book{
+  display:flex !important;
+  align-items:flex-end !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+}
