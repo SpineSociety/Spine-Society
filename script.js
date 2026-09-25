@@ -1182,21 +1182,7 @@ function renderMyLibrary() {
   if (!filteredBooks || filteredBooks.length === 0) {
   library.innerHTML = `
     <div class="bookshelf-row">
-
-      <div
-  class="collection-sortable-book collection-add-book"
-  data-book-id="add-book"
->
-  <button
-    type="button"
-    class="library-book-spine add-book-spine"
-    onclick="openAddLibraryBookModal()"
-  >
-    <div>＋</div>
-    <div>Add<br>Book</div>
-  </button>
-</div>
-
+      <p class="status">No books on this shelf yet.</p>
     </div>
   `;
   return;
