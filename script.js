@@ -1047,7 +1047,10 @@ function enableCollectionBookReordering() {
 
     book.addEventListener("pointermove", event => {
   if (!isDragging) return;
+const moveX = event.clientX - startX;
 
+book.querySelector(".library-book-spine").style.transform =
+  `translateX(${moveX}px) translateY(-5px)`;
   const otherBooks = Array.from(
     shelf.querySelectorAll(
       ".collection-sortable-book:not(.collection-book-held)"
