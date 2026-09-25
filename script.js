@@ -1036,7 +1036,6 @@ function enableCollectionBookReordering() {
 
         book.classList.add("collection-book-held");
 
-        book.setPointerCapture(event.pointerId);
 
         if (navigator.vibrate) {
           navigator.vibrate(30);
