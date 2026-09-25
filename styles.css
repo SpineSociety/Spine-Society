@@ -7833,7 +7833,7 @@ z-index: 20 !important;
   display:flex;
   align-items:flex-end;
   flex-shrink:0;
-  touch-action:pan-y;
+  touch-action:none;
 }
 
 .collection-sortable-book.collection-book-held{
