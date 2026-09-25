@@ -7845,7 +7845,7 @@ z-index: 20 !important;
 }
 
 .collection-sortable-book.collection-book-held .library-book-spine{
-  transform:translateY(-5px) rotate(-2deg) !important;
+  transform:translateY(-5px) !important;
 
   box-shadow:
     inset 2px 0 3px rgba(255,255,255,.06),
