@@ -1029,8 +1029,10 @@ function enableCollectionBookReordering() {
   books.forEach(book => {
     let holdTimer = null;
     let isDragging = false;
+    let startX = 0;
 
     book.addEventListener("pointerdown", event => {
+      startX = event.clientX;
       holdTimer = setTimeout(() => {
         isDragging = true;
 
