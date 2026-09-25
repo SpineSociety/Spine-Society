@@ -1022,27 +1022,15 @@ function enableCollectionBookReordering() {
 
   if (!shelf) return;
 
-  const books = Array.from(
-    shelf.querySelectorAll(".collection-sortable-book")
+  const books = shelf.querySelectorAll(
+    ".collection-sortable-book"
   );
 
   books.forEach(book => {
     let holdTimer = null;
     let isDragging = false;
-    let startX = 0;
-    let currentX = 0;
-    let startOffset = 0;
-    let lastValidOffset = 0;
 
     book.addEventListener("pointerdown", event => {
-      startX = event.clientX;
-      currentX = startX;
-
-      startOffset =
-        parseFloat(book.dataset.collectionOffsetX || "0");
-
-      lastValidOffset = startOffset;
-
       holdTimer = setTimeout(() => {
         isDragging = true;
 
@@ -1057,56 +1045,49 @@ function enableCollectionBookReordering() {
     });
 
     book.addEventListener("pointermove", event => {
-      currentX = event.clientX;
+      if (!isDragging) return;
 
-      if (!isDragging) {
-        if (Math.abs(currentX - startX) > 8) {
-          clearTimeout(holdTimer);
-        }
+      const otherBooks = Array.from(
+        shelf.querySelectorAll(
+          ".collection-sortable-book:not(.collection-book-held)"
+        )
+      );
 
-        return;
-      }
-
-      const proposedOffset =
-        startOffset + (currentX - startX);
-
-      book.style.transform =
-        `translateX(${proposedOffset}px)`;
-
-      const movingRect =
-        book.getBoundingClientRect();
-
-      const overlapsAnotherBook =
-        books.some(otherBook => {
-          if (otherBook === book) return false;
-
-          const otherRect =
+      const bookUnderPointer = otherBooks.find(
+        otherBook => {
+          const rect =
             otherBook.getBoundingClientRect();
 
           return (
-            movingRect.left < otherRect.right &&
-            movingRect.right > otherRect.left
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right
           );
-        });
+        }
+      );
 
-      if (overlapsAnotherBook) {
-        book.style.transform =
-          `translateX(${lastValidOffset}px)`;
+      if (!bookUnderPointer) return;
+
+      const rect =
+        bookUnderPointer.getBoundingClientRect();
+
+      const midpoint =
+        rect.left + rect.width / 2;
+
+      if (event.clientX < midpoint) {
+        shelf.insertBefore(
+          book,
+          bookUnderPointer
+        );
       } else {
-        lastValidOffset = proposedOffset;
+        shelf.insertBefore(
+          book,
+          bookUnderPointer.nextSibling
+        );
       }
     });
 
     book.addEventListener("pointerup", () => {
       clearTimeout(holdTimer);
-
-      if (isDragging) {
-        book.dataset.collectionOffsetX =
-          String(lastValidOffset);
-
-        book.style.transform =
-          `translateX(${lastValidOffset}px)`;
-      }
 
       isDragging = false;
 
@@ -1117,9 +1098,6 @@ function enableCollectionBookReordering() {
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
-
-      book.style.transform =
-        `translateX(${startOffset}px)`;
 
       isDragging = false;
 
