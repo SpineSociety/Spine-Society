@@ -1022,8 +1022,8 @@ function enableCollectionBookReordering() {
 
   if (!shelf) return;
 
-  const books = shelf.querySelectorAll(
-    ".collection-sortable-book"
+  const books = Array.from(
+    shelf.querySelectorAll(".collection-sortable-book")
   );
 
   books.forEach(book => {
@@ -1031,13 +1031,21 @@ function enableCollectionBookReordering() {
     let isDragging = false;
     let startX = 0;
     let currentX = 0;
+    let startOffset = 0;
+    let lastValidOffset = 0;
 
-    book.addEventListener("pointerdown", (event) => {
+    book.addEventListener("pointerdown", event => {
       startX = event.clientX;
       currentX = startX;
 
+      startOffset =
+        parseFloat(book.dataset.collectionOffsetX || "0");
+
+      lastValidOffset = startOffset;
+
       holdTimer = setTimeout(() => {
         isDragging = true;
+
         book.classList.add("collection-book-held");
 
         book.setPointerCapture(event.pointerId);
@@ -1048,7 +1056,7 @@ function enableCollectionBookReordering() {
       }, 450);
     });
 
-    book.addEventListener("pointermove", (event) => {
+    book.addEventListener("pointermove", event => {
       currentX = event.clientX;
 
       if (!isDragging) {
@@ -1059,43 +1067,65 @@ function enableCollectionBookReordering() {
         return;
       }
 
-      const moveX = currentX - startX;
-
-      const currentOffset =
-        parseFloat(book.dataset.collectionOffsetX || "0");
+      const proposedOffset =
+        startOffset + (currentX - startX);
 
       book.style.transform =
-        `translateX(${currentOffset + moveX}px)`;
+        `translateX(${proposedOffset}px)`;
+
+      const movingRect =
+        book.getBoundingClientRect();
+
+      const overlapsAnotherBook =
+        books.some(otherBook => {
+          if (otherBook === book) return false;
+
+          const otherRect =
+            otherBook.getBoundingClientRect();
+
+          return (
+            movingRect.left < otherRect.right &&
+            movingRect.right > otherRect.left
+          );
+        });
+
+      if (overlapsAnotherBook) {
+        book.style.transform =
+          `translateX(${lastValidOffset}px)`;
+      } else {
+        lastValidOffset = proposedOffset;
+      }
     });
 
     book.addEventListener("pointerup", () => {
       clearTimeout(holdTimer);
 
       if (isDragging) {
-        const moveX = currentX - startX;
-
-        const currentOffset =
-          parseFloat(book.dataset.collectionOffsetX || "0");
-
-        const newOffset = currentOffset + moveX;
-
-        book.dataset.collectionOffsetX = newOffset;
+        book.dataset.collectionOffsetX =
+          String(lastValidOffset);
 
         book.style.transform =
-          `translateX(${newOffset}px)`;
+          `translateX(${lastValidOffset}px)`;
       }
 
       isDragging = false;
-      book.classList.remove("collection-book-held");
+
+      book.classList.remove(
+        "collection-book-held"
+      );
     });
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
 
-      book.style.transform = "";
+      book.style.transform =
+        `translateX(${startOffset}px)`;
 
       isDragging = false;
-      book.classList.remove("collection-book-held");
+
+      book.classList.remove(
+        "collection-book-held"
+      );
     });
   });
 }
