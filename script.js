@@ -1216,19 +1216,6 @@ function renderMyLibrary() {
   `;
 }).join("")}
 
-      <div
-  class="collection-sortable-book collection-add-book"
-  data-book-id="add-book"
->
-  <button
-    type="button"
-    class="library-book-spine add-book-spine"
-    onclick="openAddLibraryBookModal()"
-  >
-    <div>＋</div>
-    <div>Add<br>Book</div>
-  </button>
-</div>
 
     </div>
   `;
