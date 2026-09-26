@@ -1065,16 +1065,26 @@ book.querySelector(".library-book-spine").style.transform =
       rect.left + rect.width / 2;
 
     if (event.clientX < midpoint) {
-      shelf.insertBefore(
-        book,
-        otherBook
-      );
+  shelf.insertBefore(
+    book,
+    otherBook
+  );
 
-      return;
-    }
+  startX = event.clientX;
+
+  book.querySelector(".library-book-spine").style.transform =
+    "translateY(-5px)";
+
+  return;
+}
   }
 
   shelf.appendChild(book);
+
+startX = event.clientX;
+
+book.querySelector(".library-book-spine").style.transform =
+  "translateY(-5px)";
 });
 
     book.addEventListener("pointerup", () => {
