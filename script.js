@@ -1070,21 +1070,11 @@ book.querySelector(".library-book-spine").style.transform =
     otherBook
   );
 
-  startX = event.clientX;
-
-  book.querySelector(".library-book-spine").style.transform =
-    "translateY(-5px)";
-
   return;
 }
   }
 
   shelf.appendChild(book);
-
-startX = event.clientX;
-
-book.querySelector(".library-book-spine").style.transform =
-  "translateY(-5px)";
 });
 
     book.addEventListener("pointerup", () => {
