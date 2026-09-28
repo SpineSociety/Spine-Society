@@ -892,19 +892,14 @@ function renderNookCollection() {
 
   shelf.innerHTML = previewBooks
   .map(book => {
-    const nookOffsetX =
-      Number(book.nookOffsetX) || 0;
-
     return `
-      <div
-        class="nook-sortable-book"
-        data-book-id="${book.id}"
-        data-nook-offset-x="${nookOffsetX}"
-        style="transform:translateX(${nookOffsetX}px);"
-      >
-        ${renderLibrarySpine(book)}
-      </div>
-    `;
+  <div
+    class="nook-sortable-book"
+    data-book-id="${book.id}"
+  >
+    ${renderLibrarySpine(book)}
+  </div>
+`;
   })
   .join("");
 
