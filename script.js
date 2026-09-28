@@ -1182,10 +1182,24 @@ async function saveCollectionBookOrder() {
   onValue(ref(database, "users/" + currentUser.uid + "/library"), (snapshot) => {
     const books = snapshot.val() || {};
 
-    currentLibraryBooks = Object.entries(books).map(([id, value]) => ({
-      id,
-      ...value
-    }));
+    currentLibraryBooks = Object.entries(books)
+  .map(([id, value]) => ({
+    id,
+    ...value
+  }))
+  .sort((a, b) => {
+    const orderA =
+      Number.isFinite(Number(a.shelfOrder))
+        ? Number(a.shelfOrder)
+        : Number.MAX_SAFE_INTEGER;
+
+    const orderB =
+      Number.isFinite(Number(b.shelfOrder))
+        ? Number(b.shelfOrder)
+        : Number.MAX_SAFE_INTEGER;
+
+    return orderA - orderB;
+  });
 
     renderMyLibrary();
     renderNookCollection();
