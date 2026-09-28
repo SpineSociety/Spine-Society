@@ -1115,15 +1115,26 @@ function enableCollectionBookReordering() {
     book.addEventListener("pointerup", () => {
   clearTimeout(holdTimer);
 
-  if (isDragging) {
-    saveCollectionBookOrder();
-  }
+  const wasDragging = isDragging;
 
   isDragging = false;
 
   book.classList.remove(
     "collection-book-held"
   );
+
+  const spine =
+    book.querySelector(".library-book-spine");
+
+  if (spine) {
+    spine.style.transform = "";
+  }
+
+  if (wasDragging) {
+    requestAnimationFrame(() => {
+      saveCollectionBookOrder();
+    });
+  }
 });
 
     book.addEventListener("pointercancel", () => {
