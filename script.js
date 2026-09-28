@@ -1113,14 +1113,18 @@ function enableCollectionBookReordering() {
 });
 
     book.addEventListener("pointerup", () => {
-      clearTimeout(holdTimer);
+  clearTimeout(holdTimer);
 
-      isDragging = false;
+  if (isDragging) {
+    saveCollectionBookOrder();
+  }
 
-      book.classList.remove(
-        "collection-book-held"
-      );
-    });
+  isDragging = false;
+
+  book.classList.remove(
+    "collection-book-held"
+  );
+});
 
     book.addEventListener("pointercancel", () => {
       clearTimeout(holdTimer);
