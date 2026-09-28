@@ -1047,36 +1047,18 @@ function enableCollectionBookReordering() {
 
     book.addEventListener("pointermove", event => {
   if (!isDragging) return;
-const rawMoveX = event.clientX - startX;
 
-const spine =
-  book.querySelector(".library-book-spine");
+  const spine =
+    book.querySelector(".library-book-spine");
 
-const wrapperRect =
-  book.getBoundingClientRect();
-
-const screenLeft = 8;
-const screenRight =
-  window.innerWidth - 8;
-
-const minMoveX =
-  screenLeft - wrapperRect.left;
-
-const maxMoveX =
-  screenRight - wrapperRect.right;
-
-const moveX = Math.max(
-  minMoveX,
-  Math.min(rawMoveX, maxMoveX)
-);
-
-spine.style.transform =
-  `translateX(${moveX}px) translateY(-5px)`;
   const otherBooks = Array.from(
     shelf.querySelectorAll(
       ".collection-sortable-book:not(.collection-book-held)"
     )
   );
+
+  let targetBook = null;
+  let insertAfter = false;
 
   for (const otherBook of otherBooks) {
     const rect =
@@ -1086,16 +1068,53 @@ spine.style.transform =
       rect.left + rect.width / 2;
 
     if (event.clientX < midpoint) {
-  shelf.insertBefore(
-    book,
-    otherBook
-  );
-
-  return;
-}
+      targetBook = otherBook;
+      break;
+    }
   }
 
-  shelf.appendChild(book);
+  const oldLeft =
+    book.getBoundingClientRect().left;
+
+  if (targetBook) {
+    shelf.insertBefore(
+      book,
+      targetBook
+    );
+  } else {
+    shelf.appendChild(book);
+  }
+
+  const newLeft =
+    book.getBoundingClientRect().left;
+
+  if (Math.abs(newLeft - oldLeft) > 1) {
+    startX += newLeft - oldLeft;
+  }
+
+  const rawMoveX =
+    event.clientX - startX;
+
+  const wrapperRect =
+    book.getBoundingClientRect();
+
+  const screenLeft = 8;
+  const screenRight =
+    window.innerWidth - 8;
+
+  const minMoveX =
+    screenLeft - wrapperRect.left;
+
+  const maxMoveX =
+    screenRight - wrapperRect.right;
+
+  const moveX = Math.max(
+    minMoveX,
+    Math.min(rawMoveX, maxMoveX)
+  );
+
+  spine.style.transform =
+    `translateX(${moveX}px) translateY(-5px)`;
 });
 
     book.addEventListener("pointerup", () => {
