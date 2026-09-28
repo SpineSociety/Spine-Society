@@ -1047,9 +1047,33 @@ function enableCollectionBookReordering() {
 
     book.addEventListener("pointermove", event => {
   if (!isDragging) return;
-const moveX = event.clientX - startX;
+const rawMoveX = event.clientX - startX;
 
-book.querySelector(".library-book-spine").style.transform =
+const bookRect = book.getBoundingClientRect();
+const shelfRect = shelf.getBoundingClientRect();
+
+const currentTransform =
+  parseFloat(
+    book.querySelector(".library-book-spine").dataset.dragX || "0"
+  );
+
+const minMoveX =
+  shelfRect.left - (bookRect.left - currentTransform);
+
+const maxMoveX =
+  shelfRect.right - (bookRect.right - currentTransform);
+
+const moveX = Math.max(
+  minMoveX,
+  Math.min(rawMoveX, maxMoveX)
+);
+
+const spine =
+  book.querySelector(".library-book-spine");
+
+spine.dataset.dragX = moveX;
+
+spine.style.transform =
   `translateX(${moveX}px) translateY(-5px)`;
   const otherBooks = Array.from(
     shelf.querySelectorAll(
