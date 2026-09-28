@@ -1287,11 +1287,13 @@ function renderMyLibrary() {
       ${filteredBooks.map(book => {
   return `
     <div
-      class="collection-sortable-book"
-      data-book-id="${book.id}"
-    >
-      ${renderLibrarySpine(book)}
-    </div>
+  class="collection-sortable-book"
+  data-book-id="${book.id}"
+  data-shelf-gap="${Number(book.shelfGap) || 0}"
+  style="margin-left:${Number(book.shelfGap) || 0}px;"
+>
+  ${renderLibrarySpine(book)}
+</div>
   `;
 }).join("")}
 
