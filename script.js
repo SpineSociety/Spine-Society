@@ -1133,6 +1133,45 @@ function enableCollectionBookReordering() {
     });
   });
 }
+async function saveCollectionBookOrder() {
+  if (!currentUser) return;
+
+  const shelf = document.querySelector(
+    "#collectionScreen .bookshelf-row"
+  );
+
+  if (!shelf) return;
+
+  const books = Array.from(
+    shelf.querySelectorAll(
+      ".collection-sortable-book"
+    )
+  );
+
+  const updates = {};
+
+  books.forEach((book, index) => {
+    const bookId = book.dataset.bookId;
+
+    if (!bookId) return;
+
+    updates[
+      `users/${currentUser.uid}/library/${bookId}/shelfOrder`
+    ] = index;
+  });
+
+  try {
+    await update(
+      ref(database),
+      updates
+    );
+  } catch (error) {
+    console.error(
+      "Could not save collection order:",
+      error
+    );
+  }
+}
  function listenToPersonalLibrary() {
   if (!currentUser) return;
 
