@@ -1046,51 +1046,7 @@ function enableCollectionBookReordering() {
   const spine =
     book.querySelector(".library-book-spine");
 
-  const otherBooks = Array.from(
-    shelf.querySelectorAll(
-      ".collection-sortable-book:not(.collection-book-held)"
-    )
-  );
 
-  let targetBook = null;
-  let insertAfter = false;
-
-  for (const otherBook of otherBooks) {
-    const rect =
-      otherBook.getBoundingClientRect();
-
-    const midpoint =
-      rect.left + rect.width / 2;
-
-    const draggedCenter =
-  book.getBoundingClientRect().left +
-  book.getBoundingClientRect().width / 2 +
-  (event.clientX - startX);
-
-if (draggedCenter < midpoint) {
-  targetBook = otherBook;
-  break;
-}
-  }
-
-  const oldLeft =
-    book.getBoundingClientRect().left;
-
-  if (targetBook) {
-    shelf.insertBefore(
-      book,
-      targetBook
-    );
-  } else {
-    shelf.appendChild(book);
-  }
-
-  const newLeft =
-    book.getBoundingClientRect().left;
-
-  if (Math.abs(newLeft - oldLeft) > 1) {
-    startX += newLeft - oldLeft;
-  }
 
   const rawMoveX =
     event.clientX - startX;
