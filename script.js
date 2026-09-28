@@ -1073,10 +1073,42 @@ function enableCollectionBookReordering() {
     `translateX(${moveX}px) translateY(-5px)`;
 });
 
-    book.addEventListener("pointerup", () => {
+    book.addEventListener("pointerup", event => {
   clearTimeout(holdTimer);
 
   const wasDragging = isDragging;
+
+  if (wasDragging) {
+    const otherBooks = Array.from(
+      shelf.querySelectorAll(
+        ".collection-sortable-book:not(.collection-book-held)"
+      )
+    );
+
+    let targetBook = null;
+
+    for (const otherBook of otherBooks) {
+      const rect =
+        otherBook.getBoundingClientRect();
+
+      const midpoint =
+        rect.left + rect.width / 2;
+
+      if (event.clientX < midpoint) {
+        targetBook = otherBook;
+        break;
+      }
+    }
+
+    if (targetBook) {
+      shelf.insertBefore(
+        book,
+        targetBook
+      );
+    } else {
+      shelf.appendChild(book);
+    }
+  }
 
   isDragging = false;
 
@@ -1092,9 +1124,7 @@ function enableCollectionBookReordering() {
   }
 
   if (wasDragging) {
-    requestAnimationFrame(() => {
-      saveCollectionBookOrder();
-    });
+    saveCollectionBookOrder();
   }
 });
 
