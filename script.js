@@ -1062,10 +1062,15 @@ function enableCollectionBookReordering() {
     const midpoint =
       rect.left + rect.width / 2;
 
-    if (event.clientX < midpoint) {
-      targetBook = otherBook;
-      break;
-    }
+    const draggedCenter =
+  book.getBoundingClientRect().left +
+  book.getBoundingClientRect().width / 2 +
+  (event.clientX - startX);
+
+if (draggedCenter < midpoint) {
+  targetBook = otherBook;
+  break;
+}
   }
 
   const oldLeft =
