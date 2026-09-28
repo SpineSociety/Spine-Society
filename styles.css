@@ -7872,6 +7872,7 @@ z-index: 20 !important;
   justify-content:flex-start !important;
   flex-wrap:nowrap !important;
   gap:0 !important;
+  width:100% !important;
 }
 
 #collectionScreen .collection-sortable-book{
