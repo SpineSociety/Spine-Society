@@ -1120,8 +1120,13 @@ function enableCollectionBookReordering() {
     book.querySelector(".library-book-spine");
 
   if (spine) {
+  if (wasDragging) {
+    spine.style.transform =
+      `translateX(${event.clientX - startX}px) translateY(-5px)`;
+  } else {
     spine.style.transform = "";
   }
+}
 
   if (wasDragging) {
     saveCollectionBookOrder();
