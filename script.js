@@ -14,13 +14,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase,
-  ref,
+  ref as firebaseRef,
   set,
   get,
   push,
   update,
   remove,
-  onValue
+  onValue,
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import {
   getStorage,
@@ -28,6 +29,12 @@ import {
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { escapeHtml, safeImageUrl } from "./security-utils.mjs";
+import { createPersonalShelves } from "./personal-shelves.mjs";
+import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
+import { createFriendshipSession, isFriendshipPermissionDenied, friendshipDiagnostic } from "./friendship-session.mjs";
+import { createCircleSession, circleStep, CIRCLE_SESSION_ENDED } from "./circle-session.mjs";
+import { routeCircleDatabasePath } from "./circle-paths.mjs";
 const firebaseConfig = {
   apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
   authDomain: "spine-society-b2a3c.firebaseapp.com",
@@ -44,14 +51,26 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 const storage = getStorage(app);
+const ref = (databaseInstance, path) => firebaseRef(
+  databaseInstance,
+  databaseInstance === database ? routeCircleDatabasePath(path) : path
+);
 let currentUser = null;
 let currentLibraryBooks = [];
+let currentBookmarkBooks = [];
 let currentLibraryFilter = "All";
 let currentCollectionBooks = [];
 let currentClubBooks = [];
 let currentClubOwner = null;
 let currentClubId = null;
 let currentMemberAvatarsHTML = "";
+let pendingCircleAccessClubId = null;
+let circleRequestRows = new Map();
+let circleRequestListenerKeys = new Set();
+let circleRequestRenderGeneration = 0;
+let circleLeaveState = null;
+let bookmarksUnsubscribe = null;
+let bookmarksSessionToken = 0;
 let avatarCropper = null;
 let croppedAvatarDataUrl = "";
 const appCreatorEmail = "kokakisan@gmail.com";
@@ -89,18 +108,305 @@ function canManageBook(book, type = "library") {
     currentUser.email === appCreatorEmail
   );
 }
+function clearCircleLeaveStatus() {
+  circleLeaveState = null;
+  const status = document.getElementById("circleLeaveStatus");
+  status?.replaceChildren();
+  if (status) status.hidden = true;
+}
+
+function clearCircleList() {
+  clearCircleLeaveStatus();
+  const count = document.getElementById("clubCount");
+  const list = document.getElementById("clubList");
+  if (count) count.textContent = "";
+  if (list) list.replaceChildren();
+  pendingCircleAccessClubId = null;
+  const accessStatus = document.getElementById("circleAccessStatus");
+  if (accessStatus) {
+    accessStatus.replaceChildren();
+    accessStatus.hidden = true;
+  }
+  document.getElementById("circleInvitationInbox")?.replaceChildren();
+  circleRequestRows = new Map();
+  circleRequestListenerKeys = new Set();
+  circleRequestRenderGeneration++;
+}
+
+function clearCircleDisplays() {
+  // Only our own submitted leave may survive its expected access revocation.
+  // Every other circle/account reset invalidates both retries and late UI work.
+  if (!circleLeaveState?.closingOwnView) clearCircleLeaveStatus();
+  currentClubBooks = [];
+  currentCollectionBooks = [];
+  currentClubOwner = null;
+  currentMemberAvatarsHTML = "";
+  circleRequestRows = new Map();
+  circleRequestListenerKeys = new Set();
+  circleRequestRenderGeneration++;
+  window.currentClubId = null;
+  window.currentClubName = null;
+  window.currentNextRead = null;
+  window.currentClubMemberCount = 0;
+  window.lastPick = null;
+  // Clear every circle surface, including off-screen panels and modal copies.
+  for (const id of [
+    "clubHero", "clubCollectionGrid", "nextReadArea", "booksReadList", "booksReadCount",
+    "discussionList", "discussionListClub", "clubMemberPreview", "membersModalList",
+    "memberList", "memberCheckinsList", "modalCheckinsPreview", "featuredReaderRow",
+    "featuredReaderCount", "finishedBookModalContent", "finishedBookReviewsList",
+    "finishedBookRatingSummary", "nookNextRead", "nookCurrentShelf",
+    "randomizerBooksClub", "winnerClub", "marginaliaBookTitle", "marginaliaBookAuthor",
+    "readingGoalDisplay", "readingDueDisplay", "readingDueCountdown", "modalGoalDisplay",
+    "modalDueDisplay", "modalDueCountdown", "modalClubStatus", "modalClubStatusPercent",
+    "clubProgressPercentText", "chapterCountText", "goalProgressPercent", "goalProgressMessage",
+    "circleAccessManagement"
+  ]) {
+    document.getElementById(id)?.replaceChildren();
+  }
+  for (const id of ["discussionInput", "discussionInputClub", "checkInAmount",
+    "finishedBookReviewInput", "totalChaptersInput", "modalTotalChaptersInput",
+    "goalStartChapter", "goalEndChapter", "goalDueDateInput",
+    "bookTitleClub", "bookAuthorClub", "bookImageClub", "bookGenreClub",
+    "bookLengthCountClub", "bookSynopsisClub"]) {
+    const input = document.getElementById(id);
+    if (input) input.value = "";
+  }
+  let closedModal = false;
+  for (const id of ["membersModal", "circleSettingsModal", "readingGoalModal",
+    "finishedBookModal", "addCollectionBookModal"]) {
+    const modal = document.getElementById(id);
+    if (modal?.style.display === "flex") closedModal = true;
+    if (modal) modal.style.display = "none";
+  }
+  // A circle book may also be open in the shared book/edit modal.
+  if (typeof bookBeingEditedType !== "undefined" && bookBeingEditedType === "collection") {
+    const modal = document.getElementById("editBookModal");
+    if (modal) modal.style.display = "none";
+    bookBeingEditedId = null;
+    bookBeingEditedType = null;
+    for (const id of ["editBookTitle", "editBookAuthor", "editBookGenre",
+      "editBookLengthCount", "editBookSynopsis", "editBookImage"]) {
+      const input = document.getElementById(id);
+      if (input) input.value = "";
+    }
+    closedModal = true;
+  }
+  const bookModal = document.getElementById("bookModal");
+  if (bookModal?.dataset.circleView === "true") {
+    bookModal.style.display = "none";
+    document.getElementById("bookModalBody")?.replaceChildren();
+    delete bookModal.dataset.circleView;
+    closedModal = true;
+  }
+  if (closedModal) document.querySelector(".phone-frame")?.classList.remove("modal-open");
+  const spin = document.getElementById("spinButtonClub");
+  if (spin) spin.disabled = false;
+  const fill = document.getElementById("clubProgressFill");
+  if (fill) fill.style.width = "0%";
+  const screen = document.getElementById("clubScreen");
+  if (screen) screen.classList.remove("active");
+}
+
+function circleDiagnostic(operation, error) {
+  // Never log raw errors, paths, UIDs, contact details or database values.
+  console.error({
+    operation,
+    category:isFriendshipPermissionDenied(error) ? "permission-denied" : "unexpected"
+  });
+}
+
+function circleUnavailable(view, error) {
+  if (error && !isFriendshipPermissionDenied(error)) circleDiagnostic("circle-access", error);
+  if (!circleSession.isViewCurrent(view)) return;
+  if (circleLeaveState?.submitted && circleLeaveState.view === view &&
+      isCircleLeaveCurrent(circleLeaveState)) {
+    closeCircleForLeave(circleLeaveState);
+    return;
+  }
+  circleSession.closeCircle(view);
+  circleSession.stop("account-clubs");
+  clearCircleList();
+  showScreen("nook");
+  showToast("This circle is not available to this account.", "error");
+}
+
+const circleSession = createCircleSession({
+  getUser:() => auth.currentUser,
+  onReset:clearCircleDisplays,
+  onAccountReset:clearCircleList,
+  onUnexpected:operation => circleDiagnostic(operation),
+  onError:(error, {owner, valid}) => {
+    if (!valid()) {
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("obsolete-circle-listener", error);
+      return;
+    }
+    if (owner.session) circleUnavailable(owner, error);
+    else {
+      clearCircleList();
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-list", error);
+    }
+  }
+});
+
+function listenCircle(key, clubId, path, onSnapshot) {
+  const view = circleSession.view;
+  if (!circleSession.isActive(view) || view.clubId !== clubId) return;
+  circleSession.listen(key, view,
+    (next, fail) => onValue(ref(database, `clubs/${clubId}/${path}`), next, fail),
+    onSnapshot);
+}
+
+async function runCircleOperation(action, accountOnly = false) {
+  const operation = circleSession.capture({requireCircle:!accountOnly});
+  if (!operation || currentUser?.uid !== operation.uid) return;
+  try {
+    return await action(operation);
+  } catch (error) {
+    if (error === CIRCLE_SESSION_ENDED) return;
+    if (!operation.valid()) {
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("obsolete-circle-operation", error);
+      return;
+    }
+    if (operation.view && !accountOnly) circleUnavailable(operation.view, error);
+    else {
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-operation", error);
+      showToast("This circle operation could not be completed.", "error");
+    }
+  }
+}
+
+function showCircleAccessStatus(message, actionLabel = "", action = null) {
+  const container = document.getElementById("circleAccessStatus");
+  if (!container) return;
+  container.replaceChildren();
+  if (!message) {
+    container.hidden = true;
+    return;
+  }
+  const copy = document.createElement("p");
+  copy.textContent = message;
+  container.append(copy);
+  if (actionLabel && typeof action === "function") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = actionLabel;
+    button.addEventListener("click", action);
+    container.append(button);
+  }
+  container.hidden = false;
+}
+
+function invitationRecordMatches(actual, expected) {
+  return !!actual && actual.clubId === expected.clubId &&
+    actual.issuedBy === expected.issuedBy &&
+    actual.issuedAt === expected.issuedAt &&
+    actual.status === expected.status &&
+    Object.keys(actual).length === 4;
+}
+
+async function writeCircleStepOrConfirm(operation, path, value, isAcknowledged) {
+  try {
+    await circleStep(operation, () => set(ref(database, path), value));
+    return true;
+  } catch (error) {
+    if (error === CIRCLE_SESSION_ENDED || !operation.valid()) throw error;
+    const snapshot = await circleStep(operation, () => get(ref(database, path)));
+    if (isAcknowledged(snapshot.val())) return true;
+    throw error;
+  }
+}
+async function writeNewCircleOrConfirm(operation, circleId, value) {
+  const rootPath = `readerCirclesV2/${circleId}`;
+  try {
+    await circleStep(operation, () => set(ref(database, rootPath), value));
+    return true;
+  } catch (error) {
+    if (error === CIRCLE_SESSION_ENDED || !operation.valid()) throw error;
+    const [requestSnapshot, ownerSnapshot] = await Promise.all([
+      circleStep(operation, () => get(ref(database, `${rootPath}/creationRequestId`))),
+      circleStep(operation, () => get(ref(database, `${rootPath}/access/ownerUid`)))
+    ]);
+    if (requestSnapshot.val() === value.creationRequestId &&
+        ownerSnapshot.val() === operation.uid) return true;
+    throw error;
+  }
+}
 function escapeHTML(value) {
-  return String(value || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return escapeHtml(value);
 }
 
 function escapeAttr(value) {
   return escapeHTML(value).replaceAll("`", "&#096;");
 }
+
+function safeImageSource(value) {
+  return safeImageUrl(value, window.location.href);
+}
+
+function isEmailShapedUsername(value) {
+  return typeof value === "string" &&
+    /@.*[.]/u.test(value.trim());
+}
+
+function publicDisplayName(value) {
+  if (typeof value !== "string") return "Reader";
+  const name = value.trim();
+  return name && !isEmailShapedUsername(name) ? name : "Reader";
+}
+
+async function readPublicProfile(uid) {
+  const [usernameSnapshot, avatarSnapshot, photoSnapshot] = await Promise.all([
+    get(ref(database, `users/${uid}/username`)).catch(error => {
+      // The candidate withholds legacy email-shaped aliases from other readers.
+      // Do not treat unexpected failures as missing names.
+      if (!isFriendshipPermissionDenied(error)) throw error;
+      return { val: () => null };
+    }),
+    get(ref(database, `users/${uid}/avatar`)),
+    get(ref(database, `users/${uid}/avatarPhoto`))
+  ]);
+  const rawAvatar = avatarSnapshot.val();
+  return {
+    username: publicDisplayName(usernameSnapshot.val()),
+    avatar: typeof rawAvatar === "string" && rawAvatar ? rawAvatar : "",
+    avatarPhoto: safeImageSource(photoSnapshot.val()) || ""
+  };
+}
+
+function escapeInlineJson(value) {
+  return escapeHTML(JSON.stringify(value));
+}
+
+function reportFriendshipFailure(operation, error, acknowledgedSteps = 0) {
+  const diagnostic = friendshipDiagnostic(operation, error, acknowledgedSteps);
+  console[diagnostic.category === "unexpected" ? "error" : "warn"](
+    "Spine Society friendship", diagnostic
+  );
+}
+function friendshipMessage(container, text) {
+  const message = document.createElement("p");
+  message.className = "helper";
+  message.textContent = text;
+  container.replaceChildren(message);
+}
+function friendshipReadFailure(operation, error, valid, container, text) {
+  const current = valid();
+  if (current || !isFriendshipPermissionDenied(error)) reportFriendshipFailure(operation, error);
+  if (current && container.isConnected) friendshipMessage(container, text);
+}
+const friendshipSession = createFriendshipSession({
+  getUser: () => auth.currentUser,
+  onReset: () => {
+    for (const id of ["friendsList", "friendRequestsList", "readerProfileContent"]) {
+      document.getElementById(id)?.replaceChildren();
+    }
+    const modal = document.getElementById("readerProfileModal");
+    if (modal) modal.style.display = "none";
+  },
+  onUnexpected: operation => reportFriendshipFailure(operation, new Error("Internal friendship failure"))
+});
 
 window.showScreen = showScreen;
 function showScreen(screenName) {
@@ -170,7 +476,7 @@ window.signUpWithEmail = async function () {
       handleCodeInApp: false
     });
 
-    await signOut(auth);
+    await signOutWithLibraryCleanup();
 
     const authScreen = document.getElementById("authScreen");
     const mainApp = document.getElementById("mainApp");
@@ -418,7 +724,7 @@ window.resendVerificationEmail = async function () {
 
     if (userCredential.user.emailVerified) {
       showToast("Your email is already verified. You can sign in.", "success");
-      await signOut(auth);
+      await signOutWithLibraryCleanup();
       return;
     }
 
@@ -427,7 +733,7 @@ window.resendVerificationEmail = async function () {
       handleCodeInApp: false
     });
 
-    await signOut(auth);
+    await signOutWithLibraryCleanup();
 
     showToast("Verification email resent. Please check your inbox.", "success");
 
@@ -445,7 +751,7 @@ window.resendVerificationEmail = async function () {
   }
 };
 window.logoutUser = async function () {
-  await signOut(auth);
+  await signOutWithLibraryCleanup();
 };
 
 window.saveUsername = async function () {
@@ -453,6 +759,9 @@ window.saveUsername = async function () {
 
   const username = document.getElementById("usernameInput").value.trim();
   if (!username) return alert("Enter a Reader Alias.");
+  if (isEmailShapedUsername(username)) {
+    return alert("Choose a Reader Alias that is not an email address.");
+  }
 
   await update(ref(database, "users/" + currentUser.uid), {
     username,
@@ -484,20 +793,23 @@ window.saveAvatarPhotoUrl = async function () {
   if (!currentUser) return alert("Please log in first.");
 
   const photoURL = document.getElementById("avatarPhotoUrl").value.trim();
+  const safePhotoURL = safeImageSource(photoURL);
 
-  if (!photoURL) return alert("Paste a photo URL first.");
+  if (!safePhotoURL) return alert("Enter a valid HTTPS, HTTP, or supported image URL first.");
 
   await update(ref(database, "users/" + currentUser.uid), {
     avatar: "photo",
-    avatarPhoto: photoURL,
+    avatarPhoto: safePhotoURL,
     updatedAt: Date.now()
   });
 
   document.getElementById("currentAvatar").textContent =
     "Current Avatar: Photo";
 
-  document.getElementById("avatarPreview").innerHTML =
-    `<img src="${photoURL}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+  const previewImage = document.createElement("img");
+  previewImage.src = safePhotoURL;
+  previewImage.style.cssText = "width:70px;height:70px;border-radius:50%;object-fit:cover;";
+  document.getElementById("avatarPreview").replaceChildren(previewImage);
 
   alert("Profile photo saved.");
 };
@@ -509,85 +821,159 @@ async function ensureUserRecord(user) {
 }
 
 function listenToUserClubs() {
-  const userClubsRef = ref(database, "users/" + currentUser.uid + "/clubs");
-
-  onValue(userClubsRef, async (snapshot) => {
-    const clubs = snapshot.val() || {};
-    const clubIds = Object.keys(clubs);
-
-    document.getElementById("clubCount").textContent =
-      clubIds.length + " circle" + (clubIds.length === 1 ? "" : "s");
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid) return;
+  const uid = user.uid;
+  const account = circleSession.current;
+  if (!circleSession.isCurrent(account)) return;
+  circleSession.listen("account-clubs", account,
+    (next, fail) => onValue(ref(database, `users/${uid}/clubs`), next, fail),
+    async (snapshot, valid) => {
+    const isCurrent = () => valid() && currentUser?.uid === uid;
+    const clubIds = Object.keys(snapshot.val() || {});
+    const count = document.getElementById("clubCount");
+    const list = document.getElementById("clubList");
+    if (!count || !list || !isCurrent()) return;
 
     if (clubIds.length === 0) {
-      document.getElementById("clubList").innerHTML =
-        `<p class="status">Your shelves are waiting for their first reading circle.</p>`;
+      count.textContent = "0 circles";
+      list.innerHTML = `<p class="status">Your shelves are waiting for their first reading circle.</p>`;
       return;
     }
 
-    let html = "";
+    const cards = [];
     for (const clubId of clubIds) {
-      const clubSnapshot = await get(ref(database, "clubs/" + clubId));
-      const club = clubSnapshot.val();
-      if (!club) continue;
-const memberCount = club.members
-  ? Object.keys(club.members).length
-  : 0;
-      html += `
-  <section
-    class="nook-circle-card"
-    onclick="openClubRoom('${clubId}')"
-    onkeydown="if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openClubRoom('${clubId}'); }"
-    role="button"
-    tabindex="0"
-  >
+      // This per-user index is for discovery only. Confirm canonical membership
+      // before reading any circle metadata; a forged index grants no authority.
+      if (!/^[A-Za-z0-9_-]{1,128}$/.test(clubId)) continue;
+      try {
+        const membership = await get(ref(database, `clubs/${clubId}/access/members/${uid}`));
+        if (!isCurrent()) return;
+        const role = membership.val()?.role;
+        if (!membership.exists() || !["owner", "member"].includes(role)) continue;
 
-    <div class="nook-circle-card-copy">
-      <h3>${escapeHTML(club.name)}</h3>
-
-      <div class="nook-circle-card-meta">
-        👥 ${memberCount} reader${memberCount === 1 ? "" : "s"}
-      </div>
-    </div>
-
-    <span class="nook-circle-card-arrow" aria-hidden="true">
-      →
-    </span>
-
-  </section>
-`;
+        const [nameSnapshot, membersSnapshot] = await Promise.all([
+          get(ref(database, `clubs/${clubId}/name`)),
+          get(ref(database, `clubs/${clubId}/access/members`))
+        ]);
+        if (!isCurrent()) return;
+        if (!nameSnapshot.exists()) continue;
+        const memberCount = Object.keys(membersSnapshot.val() || {}).length;
+        cards.push(`
+          <section
+            class="nook-circle-card"
+            onclick="openClubRoom(${escapeInlineJson(clubId)})"
+            onkeydown="if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openClubRoom(${escapeInlineJson(clubId)}); }"
+            role="button"
+            tabindex="0"
+          >
+            <div class="nook-circle-card-copy">
+              <h3>${escapeHTML(nameSnapshot.val())}</h3>
+              <div class="nook-circle-card-meta">
+                👥 ${memberCount} reader${memberCount === 1 ? "" : "s"}
+              </div>
+            </div>
+            <span class="nook-circle-card-arrow" aria-hidden="true">→</span>
+          </section>
+        `);
+      } catch (error) {
+        if (!isFriendshipPermissionDenied(error)) {
+          console.error("Circle list read failed.");
+        }
+      }
+      if (!isCurrent()) return;
     }
 
-    document.getElementById("clubList").innerHTML = html;
+    if (!isCurrent()) return;
+    count.textContent = `${cards.length} circle${cards.length === 1 ? "" : "s"}`;
+    list.innerHTML = cards.length
+      ? cards.join("")
+      : `<p class="status">Your shelves are waiting for their first reading circle.</p>`;
   });
 }
 
 window.createClub = async function () {
-  if (!currentUser) return alert("Please log in first.");
-
-  const clubName = document.getElementById("newClubName").value.trim();
-  if (!clubName) return alert("Enter a circle name.");
-
-  const clubRef = push(ref(database, "clubs"));
-  const clubId = clubRef.key;
-
-  await set(clubRef, {
-    name: clubName,
-    owner: currentUser.uid,
-    createdBy: currentUser.email || "",
-    createdAt: Date.now(),
-    members: {
-  [currentUser.uid]: {
-    name: currentUser.displayName || currentUser.email || "Reader",
-    email: currentUser.email || ""
+  return runCircleOperation(async operation => {
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid) {
+    return alert("Please sign in with a verified account first.");
   }
-}
-  });
 
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
+  const nameInput = document.getElementById("newClubName");
+  const requestedName = nameInput.value.trim();
+  const clubsIndex = `users/${operation.uid}/clubs`;
+  const pendingSnapshot = await circleStep(operation, () => get(ref(database, clubsIndex)));
+  const pendingItems = Object.entries(pendingSnapshot.val() || {}).filter(([id, value]) =>
+    /^v2_[A-Za-z0-9_-]{1,124}$/.test(id) &&
+    value && typeof value === "object" && value.status === "creating" &&
+    typeof value.creationRequestId === "string" && typeof value.name === "string" &&
+    typeof value.createdAt === "number"
+  );
+  if (pendingItems.length > 1) {
+    return showToast("More than one circle setup needs recovery. No new circle was created.", "error");
+  }
 
-  document.getElementById("newClubName").value = "";
-  showToast("Circle created.");
-  openClub(clubId);
+  let clubId;
+  let clubName;
+  let creationRequestId;
+  let createdAt;
+  if (pendingItems.length === 1) {
+    [clubId] = pendingItems[0];
+    const pending = pendingItems[0][1];
+    if (requestedName && requestedName !== pending.name) {
+      return showToast("A circle setup is already pending. Retry that setup before starting another.", "error");
+    }
+    ({ creationRequestId, name: clubName, createdAt } = pending);
+  } else {
+    if (!requestedName) return alert("Enter a circle name.");
+    if (requestedName.length > 100) return alert("Circle names must be 100 characters or fewer.");
+    clubId = `v2_${push(ref(database, "readerCirclesV2")).key}`;
+    creationRequestId = push(ref(database, "readerCirclesV2")).key;
+    clubName = requestedName;
+    createdAt = Date.now();
+    // This is a user-owned navigation/recovery pointer only. It grants no
+    // circle access; ownership is established only by the create-only rule.
+    await circleStep(operation, () => set(ref(database, `${clubsIndex}/${clubId}`), {
+      status: "creating", creationRequestId, name: clubName, createdAt
+    }));
+  }
+
+  try {
+    const circlePath = `readerCirclesV2/${clubId}`;
+    const record = {
+      schemaVersion: 2,
+      name: clubName,
+      createdAt,
+      creationRequestId,
+      authority: { ownerUid: operation.uid, creationRequestId },
+      access: {
+        ownerUid: operation.uid,
+        members: {
+          [operation.uid]: { role: "owner", joinedAt: createdAt }
+        }
+      }
+    };
+    await writeNewCircleOrConfirm(operation, clubId, record);
+
+    // The index is user-owned navigation data, not the authorization source.
+    let indexSaved = true;
+    try {
+      await circleStep(operation, () => set(ref(database, `${clubsIndex}/${clubId}`), true));
+    } catch (error) {
+      if (error === CIRCLE_SESSION_ENDED || !operation.valid()) throw error;
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-index-save", error);
+      indexSaved = false;
+      showToast("Circle created. Its recovery entry is still available; retry to finish setup.", "error");
+    }
+
+    if (auth.currentUser?.uid !== user.uid || currentUser?.uid !== user.uid) return;
+    if (indexSaved) nameInput.value = "";
+    if (indexSaved) showToast("Circle created.");
+    await openClub(clubId);
+  } catch (error) {
+    throw error;
+  }
+  }, true);
 };
 let cropper;
 
@@ -599,7 +985,11 @@ window.openCropper = async function(event) {
   const reader = new FileReader();
 
   reader.onload = async function(e) {
-    const photoData = e.target.result;
+    const photoData = safeImageSource(e.target.result);
+    if (!photoData) {
+      alert("Choose a PNG, JPEG, GIF, or WebP image.");
+      return;
+    }
 
     await update(ref(database, "users/" + currentUser.uid), {
       avatar: "photo",
@@ -676,56 +1066,678 @@ function extractClubId(input) {
 }
 
 window.joinClubFromInput = async function () {
-  if (!currentUser) return alert("Please log in first.");
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid) {
+    return alert("Please sign in with a verified account first.");
+  }
 
   const input = document.getElementById("joinClubId").value.trim();
   if (!input) return alert("Paste a circle code or invite link.");
 
   const clubId = extractClubId(input);
+  if (typeof clubId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(clubId)) {
+    return showCircleAccessStatus("That circle code or link is not valid.");
+  }
+  pendingCircleAccessClubId = clubId;
+  const result = await runCircleOperation(async operation => {
+    if (operation.uid !== user.uid) return;
+    const memberPath = `clubs/${clubId}/access/members/${operation.uid}`;
+    const memberSnapshot = await circleStep(operation, () => get(ref(database, memberPath)));
+    if (memberSnapshot.exists() &&
+        ["owner", "member"].includes(memberSnapshot.val()?.role)) {
+      return { open: true };
+    }
 
-  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
-const userData = userSnapshot.val() || {};
+    const requestPath = `clubs/${clubId}/access/requests/${operation.uid}`;
+    const requestSnapshot = await circleStep(operation, () => get(ref(database, requestPath)));
+    const request = requestSnapshot.val();
+    if (request?.status === "pending") {
+      showCircleAccessStatus("Your access request is waiting for the circle owner.");
+      return;
+    }
+    if (request?.status === "approved" && typeof request.invitationId === "string") {
+      const invitationPath =
+        `circleInvitations/${operation.uid}/${clubId}/${request.invitationId}`;
+      const invitationSnapshot = await circleStep(operation, () => get(ref(database, invitationPath)));
+      const status = invitationSnapshot.val()?.status;
+      if (status === "offered") {
+        showCircleAccessStatus("Your request was approved. Accept the invitation in your inbox.");
+        return;
+      }
+      if (status === "accepted") {
+        showCircleAccessStatus("Your invitation was accepted. Finish joining from your inbox.");
+        return;
+      }
+      if (status === "consumed") {
+        showCircleAccessStatus(
+          "This invitation was already used. If you previously left the circle, request access again.",
+          "Request Access",
+          () => window.requestCircleAccess()
+        );
+        return;
+      }
+      if (!["declined", "revoked"].includes(status)) {
+        showCircleAccessStatus("The owner approved your request and is preparing the invitation.");
+        return;
+      }
+    } else if (request?.status && request.status !== "denied") {
+      showCircleAccessStatus("This circle’s access request is not available right now.");
+      return;
+    }
 
-await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
-  name: userData.username || currentUser.displayName || currentUser.email || "Reader",
-  email: currentUser.email || "",
-  avatar: userData.avatar || "📚",
-  avatarPhoto: userData.avatarPhoto || ""
-});
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), true);
+    showCircleAccessStatus(
+      request?.status === "denied"
+        ? "Your previous request was denied. You may submit a new request."
+        : "You are not a member of this private circle. You can request access from its owner.",
+      "Request Access",
+      () => window.requestCircleAccess()
+    );
+  }, true);
 
-  document.getElementById("joinClubId").value = "";
-  showToast("Joined circle.");
-  openClub(clubId);
+  if (result?.open && auth.currentUser?.uid === user.uid && currentUser?.uid === user.uid) {
+    document.getElementById("joinClubId").value = "";
+    showCircleAccessStatus("");
+    await openClub(clubId);
+  }
+};
+
+window.requestCircleAccess = async function () {
+  const user = auth.currentUser;
+  const clubId = pendingCircleAccessClubId;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid) {
+    return alert("Please sign in with a verified account first.");
+  }
+  if (typeof clubId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(clubId)) {
+    return showCircleAccessStatus("Check a circle code or link before requesting access.");
+  }
+  await runCircleOperation(async operation => {
+    const memberPath = `clubs/${clubId}/access/members/${operation.uid}`;
+    const memberSnapshot = await circleStep(operation, () => get(ref(database, memberPath)));
+    if (memberSnapshot.exists()) {
+      showCircleAccessStatus("You already have a circle membership. Use Check Circle to open it.");
+      return;
+    }
+
+    const requestPath = `clubs/${clubId}/access/requests/${operation.uid}`;
+    const requestSnapshot = await circleStep(operation, () => get(ref(database, requestPath)));
+    const previous = requestSnapshot.val();
+    if (previous?.status === "pending") {
+      showCircleAccessStatus("Your access request is already waiting for the circle owner.");
+      return;
+    }
+
+    let invitationId;
+    if (previous?.status === "approved" && typeof previous.invitationId === "string") {
+      invitationId = previous.invitationId;
+      const invitationSnapshot = await circleStep(operation, () =>
+        get(ref(database, `circleInvitations/${operation.uid}/${clubId}/${invitationId}`)));
+      const status = invitationSnapshot.val()?.status;
+      if (!["declined", "revoked", "consumed"].includes(status)) {
+        showCircleAccessStatus(
+          status === "offered"
+            ? "An invitation is waiting in your inbox."
+            : status === "accepted"
+              ? "Your accepted invitation is waiting to finish joining."
+              : "The owner approved your request and is preparing the invitation."
+        );
+        return;
+      }
+    } else if (previous?.status && previous.status !== "denied") {
+      showCircleAccessStatus("This circle’s access request is not available right now.");
+      return;
+    }
+
+    const requestedAt = Math.max(Date.now(), Number(previous?.requestedAt || 0) + 1);
+    const nextRequest = {
+      status: "pending",
+      requestedAt,
+      ...(typeof previous?.invitationId === "string"
+        ? { invitationId: previous.invitationId }
+        : {})
+    };
+    await writeCircleStepOrConfirm(
+      operation,
+      requestPath,
+      nextRequest,
+      value => value?.status === "pending" &&
+        value.requestedAt === requestedAt &&
+        value.invitationId === nextRequest.invitationId
+    );
+    showCircleAccessStatus("Access request sent. The circle owner can now review it.");
+  }, true);
+};
+
+function circleActionButton(label, handler, className = "secondary") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = label;
+  button.addEventListener("click", handler);
+  return button;
+}
+
+function renderCircleRequestPanel() {
+  const panel = document.getElementById("circleAccessManagement");
+  if (!panel) return;
+  panel.replaceChildren();
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true ||
+      currentUser?.uid !== user.uid || currentClubOwner !== user.uid) return;
+
+  const heading = document.createElement("h4");
+  heading.textContent = "Circle access requests";
+  panel.append(heading);
+  if (circleRequestRows.size === 0) {
+    const empty = document.createElement("p");
+    empty.className = "small";
+    empty.textContent = "No access requests yet.";
+    panel.append(empty);
+    return;
+  }
+
+  for (const [requesterUid, row] of circleRequestRows) {
+    const card = document.createElement("section");
+    card.className = "circle-access-card";
+    const title = document.createElement("strong");
+    title.textContent = row.username || "Reader";
+    const details = document.createElement("p");
+    details.className = "small";
+    card.append(title, details);
+
+    if (row.request.status === "pending") {
+      details.textContent = "Waiting for your decision.";
+      card.append(
+        circleActionButton("Approve & send invitation", () =>
+          window.approveCircleAccessRequest(requesterUid)),
+        circleActionButton("Deny request", () =>
+          window.denyCircleAccessRequest(requesterUid))
+      );
+    } else {
+      const status = row.invitation?.status;
+      if (!row.request.invitationId || !row.invitation) {
+        details.textContent = "Approved; invitation setup is incomplete.";
+        card.append(circleActionButton("Retry invitation", () =>
+          window.approveCircleAccessRequest(requesterUid)));
+      } else if (status === "offered") {
+        details.textContent = "Invitation sent; waiting for the reader to respond.";
+      } else if (status === "accepted") {
+        details.textContent = "Invitation accepted; membership is being completed.";
+      } else if (status === "consumed") {
+        details.textContent = row.member?.invitationId === row.request.invitationId &&
+          row.member?.role === "member"
+          ? "Joined"
+          : "This invitation was used. The reader may request access again.";
+      } else if (status === "declined") {
+        details.textContent = "Invitation declined. The reader may request access again.";
+      } else if (status === "revoked") {
+        details.textContent = "Invitation revoked. The reader may request access again.";
+      } else {
+        details.textContent = "Invitation state is unavailable.";
+      }
+    }
+    panel.append(card);
+  }
+}
+
+function listenToCircleRequests(clubId) {
+  const user = auth.currentUser;
+  const view = circleSession.view;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid ||
+      currentClubOwner !== user.uid || !circleSession.isActive(view) ||
+      view.clubId !== clubId) return;
+
+  circleRequestRows = new Map();
+  circleRequestListenerKeys = new Set();
+  circleSession.listen("access-requests", view,
+    (next, fail) => onValue(ref(database, `clubs/${clubId}/access/requests`), next, fail),
+    async (snapshot, valid) => {
+      const generation = ++circleRequestRenderGeneration;
+      const requests = snapshot.val() || {};
+      const entries = Object.entries(requests).filter(([uid, value]) =>
+        /^[A-Za-z0-9_-]{1,128}$/.test(uid) &&
+        value && ["pending", "approved"].includes(value.status)
+      );
+      const neededInvitationKeys = new Set(entries
+        .filter(([, request]) => request.status === "approved" &&
+          typeof request.invitationId === "string" &&
+          /^[A-Za-z0-9_-]{8,64}$/.test(request.invitationId))
+        .map(([uid, request]) =>
+          `access-invitation-${uid}-${request.invitationId}`));
+
+      for (const key of circleRequestListenerKeys) {
+        if (!neededInvitationKeys.has(key)) circleSession.stop(key);
+      }
+      circleRequestListenerKeys = new Set(
+        [...circleRequestListenerKeys].filter(key => neededInvitationKeys.has(key))
+      );
+      circleRequestRows = new Map(entries.map(([uid, request]) => [
+        uid,
+        { request, username: "Reader", invitation: null, member: null }
+      ]));
+
+      for (const [requesterUid, request] of entries) {
+        if (!valid() || generation !== circleRequestRenderGeneration) return;
+        const row = circleRequestRows.get(requesterUid);
+        if (request.status === "approved" &&
+            typeof request.invitationId === "string" &&
+            /^[A-Za-z0-9_-]{8,64}$/.test(request.invitationId)) {
+          const invitationKey =
+            `access-invitation-${requesterUid}-${request.invitationId}`;
+          if (!circleRequestListenerKeys.has(invitationKey)) {
+            circleRequestListenerKeys.add(invitationKey);
+            circleSession.listen(invitationKey, view,
+              (next, fail) => onValue(ref(database,
+                `circleInvitations/${requesterUid}/${clubId}/${request.invitationId}`), next, fail),
+              async (invitationSnapshot, invitationValid) => {
+                if (!invitationValid()) return;
+                const currentRow = circleRequestRows.get(requesterUid);
+                if (!currentRow ||
+                    currentRow.request.invitationId !== request.invitationId) return;
+                currentRow.invitation = invitationSnapshot.val();
+                if (currentRow.invitation?.status === "consumed") {
+                  try {
+                    const memberSnapshot = await get(ref(database,
+                      `clubs/${clubId}/access/members/${requesterUid}`));
+                  if (!invitationValid() || generation !== circleRequestRenderGeneration) return;
+                    const latestRow = circleRequestRows.get(requesterUid);
+                    if (latestRow?.request.invitationId === request.invitationId) {
+                      latestRow.member = memberSnapshot.val();
+                    }
+                  } catch (error) {
+                    if (!isFriendshipPermissionDenied(error)) {
+                      circleDiagnostic("circle-request-member-read", error);
+                    }
+                  }
+                }
+                if (invitationValid()) renderCircleRequestPanel();
+              }
+            );
+          }
+        }
+
+        try {
+          const nameSnapshot = await get(ref(database, `users/${requesterUid}/username`));
+          if (!valid() || generation !== circleRequestRenderGeneration) return;
+          const latestRow = circleRequestRows.get(requesterUid);
+          if (latestRow) latestRow.username = publicDisplayName(nameSnapshot.val());
+        } catch (error) {
+          if (!isFriendshipPermissionDenied(error)) {
+            circleDiagnostic("circle-request-profile-read", error);
+          }
+          if (!valid() || generation !== circleRequestRenderGeneration) return;
+          const latestRow = circleRequestRows.get(requesterUid);
+          if (latestRow) latestRow.username = "Reader";
+        }
+      }
+      if (valid() && generation === circleRequestRenderGeneration) {
+        renderCircleRequestPanel();
+      }
+    });
+}
+
+window.approveCircleAccessRequest = async function (requesterUid) {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(requesterUid || "")) return;
+  await runCircleOperation(async operation => {
+    const user = auth.currentUser;
+    const clubId = operation.clubId;
+    if (!user || user.uid !== operation.uid || currentClubOwner !== user.uid) return;
+    const requestPath = `clubs/${clubId}/access/requests/${requesterUid}`;
+    const requestSnapshot = await circleStep(operation, () => get(ref(database, requestPath)));
+    const request = requestSnapshot.val();
+    if (!request || !["pending", "approved"].includes(request.status)) {
+      showToast("This access request is no longer pending.", "error");
+      return;
+    }
+
+    try {
+    let invitationId = request.invitationId;
+    if (request.status === "pending") {
+      if (typeof invitationId !== "string" ||
+          !/^[A-Za-z0-9_-]{8,64}$/.test(invitationId)) {
+        invitationId = "";
+      } else {
+        const existing = await circleStep(operation, () => get(ref(database,
+          `circleInvitations/${requesterUid}/${clubId}/${invitationId}`)));
+        if (existing.exists()) invitationId = "";
+      }
+      if (!invitationId) {
+        invitationId = push(ref(database,
+          `circleInvitations/${requesterUid}/${clubId}`)).key;
+      }
+      if (!/^[A-Za-z0-9_-]{8,64}$/.test(invitationId || "")) {
+        throw new Error("Unable to create a safe invitation identifier.");
+      }
+      const idPath = `${requestPath}/invitationId`;
+      await writeCircleStepOrConfirm(operation, idPath, invitationId,
+        value => value === invitationId);
+      await writeCircleStepOrConfirm(operation, `${requestPath}/status`, "approved",
+        value => value === "approved");
+    } else if (!/^[A-Za-z0-9_-]{8,64}$/.test(invitationId || "")) {
+      showToast("The approved request is missing its invitation identifier.", "error");
+      return;
+    }
+
+    const invitationPath =
+      `circleInvitations/${requesterUid}/${clubId}/${invitationId}`;
+    const invitationSnapshot = await circleStep(operation, () => get(ref(database, invitationPath)));
+    if (invitationSnapshot.exists()) {
+      const status = invitationSnapshot.val()?.status;
+      if (["offered", "accepted", "consumed", "declined", "revoked"].includes(status)) {
+        showToast(status === "offered"
+          ? "Invitation sent; the reader can accept it from their inbox."
+          : status === "accepted"
+            ? "The reader accepted. Their membership is being completed."
+            : status === "consumed"
+              ? "This invitation has already been used."
+              : "This invitation is no longer active.", status === "offered" ? "success" : "error");
+        return;
+      }
+      showToast("An invitation record already exists and was not changed.", "error");
+      return;
+    }
+
+    const offer = {
+      clubId,
+      issuedBy: operation.uid,
+      issuedAt: Date.now(),
+      status: "offered"
+    };
+    await writeCircleStepOrConfirm(operation, invitationPath, offer,
+      value => invitationRecordMatches(value, offer));
+    showToast("Invitation sent. The reader must accept it to join.");
+    } catch (error) {
+      if (error === CIRCLE_SESSION_ENDED || !operation.valid()) return;
+      if (!isFriendshipPermissionDenied(error)) {
+        circleDiagnostic("circle-invitation-issue", error);
+      }
+      showToast(
+        "The request may be partly approved, but the invitation was not confirmed. Review its current state and retry.",
+        "error"
+      );
+    }
+  });
+};
+
+window.denyCircleAccessRequest = async function (requesterUid) {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(requesterUid || "")) return;
+  await runCircleOperation(async operation => {
+    const user = auth.currentUser;
+    if (!user || user.uid !== operation.uid || currentClubOwner !== user.uid) return;
+    const path = `clubs/${operation.clubId}/access/requests/${requesterUid}`;
+    const requestSnapshot = await circleStep(operation, () => get(ref(database, path)));
+    if (requestSnapshot.val()?.status === "denied") {
+      showToast("This request was already denied.");
+      return;
+    }
+    if (requestSnapshot.val()?.status !== "pending") {
+      showToast("Only a pending request can be denied.", "error");
+      return;
+    }
+    await writeCircleStepOrConfirm(operation, `${path}/status`, "denied",
+      value => value === "denied");
+    showToast("Access request denied.");
+  });
+};
+
+function listenForCircleInvitations(session = circleSession.current) {
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid ||
+      !circleSession.isCurrent(session)) return;
+  const uid = user.uid;
+  let renderGeneration = 0;
+  circleSession.listen("circle-invitations", session,
+    (next, fail) => onValue(ref(database, `circleInvitations/${uid}`), next, fail),
+    async (snapshot, valid) => {
+      const generation = ++renderGeneration;
+      const inbox = document.getElementById("circleInvitationInbox");
+      if (!inbox || !valid()) return;
+      inbox.replaceChildren();
+      const groups = snapshot.val() || {};
+      const invitations = [];
+      for (const [clubId, records] of Object.entries(groups)) {
+        if (!/^[A-Za-z0-9_-]{1,128}$/.test(clubId) || !records || typeof records !== "object") continue;
+        for (const [invitationId, invitation] of Object.entries(records)) {
+          if (!/^[A-Za-z0-9_-]{8,64}$/.test(invitationId) ||
+              invitation?.clubId !== clubId ||
+              !["offered", "accepted", "consumed", "declined", "revoked"].includes(invitation.status)) continue;
+          invitations.push({ clubId, invitationId, invitation });
+        }
+      }
+      if (invitations.length === 0) return;
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Circle invitations";
+      inbox.append(heading);
+      for (const entry of invitations) {
+        if (!valid() || generation !== renderGeneration) return;
+        const card = document.createElement("section");
+        card.className = "circle-access-card";
+        const title = document.createElement("strong");
+        title.textContent = "Private reading-circle invitation";
+        const details = document.createElement("p");
+        details.className = "small";
+        details.textContent = `Circle code: ${entry.clubId}`;
+        card.append(title, details);
+        const invitationPath =
+          `circleInvitations/${uid}/${entry.clubId}/${entry.invitationId}`;
+
+        let member = null;
+        if (["accepted", "consumed"].includes(entry.invitation.status)) {
+          try {
+            const memberSnapshot = await get(ref(database,
+              `clubs/${entry.clubId}/access/members/${uid}`));
+            if (!valid() || generation !== renderGeneration) return;
+            member = memberSnapshot.val();
+          } catch (error) {
+            if (!isFriendshipPermissionDenied(error)) {
+              circleDiagnostic("circle-invitation-member-read", error);
+            }
+          }
+        }
+
+        const matchingMember = member?.role === "member" &&
+          member?.invitationId === entry.invitationId;
+        if (entry.invitation.status === "offered") {
+          details.textContent = `Circle code: ${entry.clubId}. Accept to join, or decline this invitation.`;
+          card.append(
+            circleActionButton("Accept & join", () =>
+              window.acceptCircleInvitation(entry.clubId, entry.invitationId)),
+            circleActionButton("Decline", () =>
+              window.declineCircleInvitation(entry.clubId, entry.invitationId))
+          );
+        } else if (entry.invitation.status === "accepted" && !matchingMember) {
+          details.textContent = `Circle code: ${entry.clubId}. Your acceptance is saved; finish joining.`;
+          card.append(circleActionButton("Complete joining", () =>
+            window.acceptCircleInvitation(entry.clubId, entry.invitationId)));
+        } else if (matchingMember &&
+                   ["accepted", "consumed"].includes(entry.invitation.status)) {
+          details.textContent = "Joined";
+          card.append(circleActionButton("Open circle", () =>
+            window.openClubRoom(entry.clubId)));
+          if (entry.invitation.status === "accepted") {
+            card.append(circleActionButton("Finish invitation", () =>
+              window.acceptCircleInvitation(entry.clubId, entry.invitationId)));
+          }
+        } else if (entry.invitation.status === "consumed") {
+          details.textContent = "This invitation was already used and cannot be reused.";
+        } else if (entry.invitation.status === "declined") {
+          details.textContent = "You declined this invitation.";
+        } else {
+          details.textContent = "This invitation is no longer active.";
+        }
+        if (valid() && generation === renderGeneration) inbox.append(card);
+      }
+    });
+}
+
+window.acceptCircleInvitation = async function (clubId, invitationId) {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(clubId || "") ||
+      !/^[A-Za-z0-9_-]{8,64}$/.test(invitationId || "")) return;
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid) return;
+  await runCircleOperation(async operation => {
+    const invitationPath =
+      `circleInvitations/${operation.uid}/${clubId}/${invitationId}`;
+    const requestPath = `clubs/${clubId}/access/requests/${operation.uid}`;
+    const memberPath = `clubs/${clubId}/access/members/${operation.uid}`;
+    try {
+      const invitationSnapshot = await circleStep(operation, () => get(ref(database, invitationPath)));
+      let invitation = invitationSnapshot.val();
+      if (!invitationSnapshot.exists() || invitation.clubId !== clubId) {
+        showCircleAccessStatus("This invitation is not available to this account.");
+        return;
+      }
+
+      const memberSnapshot = await circleStep(operation, () => get(ref(database, memberPath)));
+      let member = memberSnapshot.val();
+      if (memberSnapshot.exists() &&
+          (member?.role !== "member" || member?.invitationId !== invitationId)) {
+        showCircleAccessStatus("An existing membership was not changed by this invitation.");
+        return;
+      }
+      if (!memberSnapshot.exists() &&
+          !["offered", "accepted"].includes(invitation.status)) {
+        showCircleAccessStatus("This invitation is no longer available to accept.");
+        return;
+      }
+
+      const requestSnapshot = await circleStep(operation, () => get(ref(database, requestPath)));
+      const request = requestSnapshot.val();
+      if (request?.status !== "approved" || request?.invitationId !== invitationId) {
+        showCircleAccessStatus("The owner’s approval is no longer active.");
+        return;
+      }
+
+      if (!memberSnapshot.exists() && invitation.status === "offered") {
+        await writeCircleStepOrConfirm(operation, `${invitationPath}/status`, "accepted",
+          value => value === "accepted");
+        invitation = { ...invitation, status: "accepted" };
+      }
+
+      if (!memberSnapshot.exists()) {
+        const membership = {
+          role: "member",
+          joinedAt: Date.now(),
+          invitationId
+        };
+        await writeCircleStepOrConfirm(operation, memberPath, membership,
+          value => value?.role === "member" && value.invitationId === invitationId);
+      }
+
+      const confirmedMember = await circleStep(operation, () => get(ref(database, memberPath)));
+      member = confirmedMember.val();
+      if (!confirmedMember.exists() || member?.role !== "member" ||
+          member?.invitationId !== invitationId) {
+        showCircleAccessStatus(
+          "Your invitation was accepted, but canonical membership is not confirmed yet. Retry from your inbox."
+        );
+        return;
+      }
+
+      try {
+        await writeCircleStepOrConfirm(operation,
+          `users/${operation.uid}/clubs/${clubId}`, true, value => value === true);
+      } catch (error) {
+        if (error === CIRCLE_SESSION_ENDED || !operation.valid()) return;
+        showCircleAccessStatus(
+          "Membership is confirmed. Adding the circle to your list is incomplete; retry from your inbox."
+        );
+        if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-index-save", error);
+        return;
+      }
+
+      if (invitation.status !== "consumed") {
+        try {
+          await writeCircleStepOrConfirm(operation, `${invitationPath}/status`, "consumed",
+            value => value === "consumed");
+        } catch (error) {
+          if (error === CIRCLE_SESSION_ENDED || !operation.valid()) return;
+          showCircleAccessStatus(
+            "Membership is confirmed. Invitation finalization is incomplete; retry from your inbox."
+          );
+          if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-invitation-consume", error);
+          return;
+        }
+      }
+      showCircleAccessStatus("You joined the circle. Open it from your circle list or invitation inbox.");
+    } catch (error) {
+      if (error === CIRCLE_SESSION_ENDED || !operation.valid()) return;
+      if (!isFriendshipPermissionDenied(error)) circleDiagnostic("circle-invitation-accept", error);
+      showCircleAccessStatus("The invitation could not be completed. Check its current state and retry.");
+    }
+  }, true);
+};
+
+window.declineCircleInvitation = async function (clubId, invitationId) {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(clubId || "") ||
+      !/^[A-Za-z0-9_-]{8,64}$/.test(invitationId || "")) return;
+  await runCircleOperation(async operation => {
+    const path = `circleInvitations/${operation.uid}/${clubId}/${invitationId}`;
+    const snapshot = await circleStep(operation, () => get(ref(database, path)));
+    if (snapshot.val()?.status === "declined") {
+      showCircleAccessStatus("This invitation was already declined.");
+      return;
+    }
+    if (snapshot.val()?.status !== "offered") {
+      showCircleAccessStatus("Only an offered invitation can be declined.");
+      return;
+    }
+    await writeCircleStepOrConfirm(operation, `${path}/status`, "declined",
+      value => value === "declined");
+    showCircleAccessStatus("Invitation declined.");
+  }, true);
 };
 
 window.openClub = async function (clubId) {
-  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
-  const club = clubSnapshot.val();
+  const user = auth.currentUser;
+  let clubName;
+  let ownerUid;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid ||
+      typeof clubId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(clubId)) {
+    showToast("This circle is not available to this account.", "error");
+    return false;
+  }
+  const view = circleSession.open(clubId);
+  if (!view) return false;
 
-  if (!club) return alert("circle not found.");
+  try {
+    // Opening is read-only. This self-membership check cannot create membership.
+    const membershipSnapshot = await get(
+      ref(database, `clubs/${clubId}/access/members/${user.uid}`)
+    );
+    const membership = membershipSnapshot.val();
+    if (!circleSession.isViewCurrent(view)) return false;
+    if (!membershipSnapshot.exists() || !["owner", "member"].includes(membership?.role)) {
+      circleUnavailable(view);
+      return false;
+    }
 
-  window.currentClubId = clubId;
-  
-  if (currentUser && currentUser.uid) {
-  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
-  const userData = userSnapshot.val() || {};
+    const [nameSnapshot, ownerSnapshot] = await Promise.all([
+      get(ref(database, `clubs/${clubId}/name`)),
+      get(ref(database, `clubs/${clubId}/access/ownerUid`))
+    ]);
+    if (!circleSession.isViewCurrent(view)) return false;
+    if (!nameSnapshot.exists() || !ownerSnapshot.exists()) {
+      circleUnavailable(view);
+      return false;
+    }
 
-  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), {
-    name: userData.username || currentUser.displayName || currentUser.email || "Reader",
-    email: currentUser.email || "",
-    avatar: userData.avatar || "📚",
-    avatarPhoto: userData.avatarPhoto || ""
-  });
-}
-  window.currentClubName = club.name;
-  currentClubOwner = club.owner || null;
+    clubName = nameSnapshot.val();
+    ownerUid = ownerSnapshot.val();
+    window.currentClubId = clubId;
+    window.currentClubName = clubName;
+    currentClubOwner = ownerUid;
+    if (!circleSession.authorize(view)) return false;
+  } catch (error) {
+    circleUnavailable(view, error);
+    return false;
+  }
 
   document.getElementById("clubHero").innerHTML = `
     <div class="club-emblem">📚</div>
     <div>
       <div class="panel-kicker">Current Club</div>
-      <h3>${escapeHTML(club.name)}</h3>
+      <h3>${escapeHTML(clubName)}</h3>
       <div class="small" id="clubHeroMemberCount">
   Loading readers...
 </div>
@@ -753,30 +1765,35 @@ window.openClub = async function (clubId) {
   `;
 
 
+   // Membership is monitored first; a synchronous revocation stops registration.
+   listenToMembers(clubId);
+    if (ownerUid === user.uid) listenToCircleRequests(clubId);
    listenToCollectionBooks(clubId);
    listenToNextRead(clubId);
    listenToBooksRead(clubId);
-   listenToMembers(clubId);
    listenToDiscussion(clubId);
    listenToFeaturedVolumeProgress(clubId);
+ if (!circleSession.isActive(view)) return false;
  showScreen("club");
+  return true;
 };
 
 window.openClubRoom = async function (clubId) {
-
-  await openClub(clubId);
-
+  const opening = openClub(clubId);
+  const view = circleSession.view;
+  const opened = await opening;
+  if (!opened || !circleSession.isActive(view)) return false;
   showScreen("club");
-
   showClubRoomTab("current");
-
+  return true;
 };
 
 function updateNookNextRead(nextRead) {
   const area = document.getElementById("nookNextRead");
   if (!area) return;
   if (!nextRead) { area.innerHTML = `<p class="status">Your next read will appear here.</p>`; return; }
-  area.innerHTML = `<div class="nook-pick-card">${nextRead.image ? `<img class="nook-pick-cover" src="${escapeAttr(nextRead.image)}" alt="Book cover">` : `<div class="nook-pick-placeholder">S</div>`}<div class="nook-pick-info"><h3>${escapeHTML(nextRead.title)}</h3>${nextRead.author ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>` : ""}<div class="book-category">${escapeHTML(nextRead.category || "Uncategorized")}</div></div></div>`;
+  const imageUrl = safeImageSource(nextRead.image);
+  area.innerHTML = `<div class="nook-pick-card">${imageUrl ? `<img class="nook-pick-cover" src="${escapeAttr(imageUrl)}" alt="Book cover">` : `<div class="nook-pick-placeholder">S</div>`}<div class="nook-pick-info"><h3>${escapeHTML(nextRead.title)}</h3>${nextRead.author ? `<div class="small">by ${escapeHTML(nextRead.author)}</div>` : ""}<div class="book-category">${escapeHTML(nextRead.category || "Uncategorized")}</div></div></div>`;
 }
 function updateNookShelfPreview() {
   const area = document.getElementById("nookCurrentShelf");
@@ -796,7 +1813,7 @@ function renderBookRandomizerShelf() {
   }
 
   shelf.innerHTML = currentLibraryBooks.slice(0, 6).map(book => `
-    <div class="randomizer-spine" id="libraryRandomizerBook-${book.id}">
+    <div class="randomizer-spine" id="libraryRandomizerBook-${escapeAttr(book.id)}">
       <div class="randomizer-spine-title">${escapeHTML(book.title)}</div>
       <div class="randomizer-spine-author">${escapeHTML(book.author || "Unknown")}</div>
     </div>
@@ -813,7 +1830,7 @@ function renderFateDecidesShelf() {
   }
 
   clubShelf.innerHTML = currentCollectionBooks.slice(0, 6).map(book => `
-    <div class="randomizer-spine" id="collectionRandomizerBook-${book.id}">
+    <div class="randomizer-spine" id="collectionRandomizerBook-${escapeAttr(book.id)}">
       <div class="randomizer-spine-title">${escapeHTML(book.title)}</div>
       <div class="randomizer-spine-author">${escapeHTML(book.author || "Unknown")}</div>
     </div>
@@ -825,25 +1842,19 @@ function renderClubCollection() {
   if (!collection) return;
 
   if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
-  collection.innerHTML = `
-    <div class="bookshelf-row">
-      <button
-        <div
-  class="collection-sortable-book collection-add-book"
-  data-book-id="add-book"
->
-  <button
-    class="library-book-spine add-book-spine"
-    onclick="openAddLibraryBookModal()"
-  >
-    <div>＋</div>
-    <div>Add<br>Book</div>
-  </button>
-</div>
-    </div>
-  `;
-  return;
-}
+    collection.innerHTML = `
+      <div class="bookshelf-row">
+        <button
+          class="library-book-spine add-book-spine"
+          onclick="openAddCollectionBookModal()"
+        >
+          <div>＋</div>
+          <div>Add<br>Book</div>
+        </button>
+      </div>
+    `;
+    return;
+  }
 
   const circleRows = [];
 
@@ -873,320 +1884,43 @@ function renderClubCollection() {
 }
 function renderNookCollection() {
   const shelf = document.getElementById("nookCollectionShelf");
-
-  if (!shelf) return;
-
-  const books = Object.values(currentLibraryBooks || {});
-
-  if (books.length === 0) {
-    shelf.innerHTML = `
-      <p class="status">
-        Your shelf is waiting for its books.
-      </p>
-    `;
-    return;
-  }
-
-  // Keep the Nook preview intentionally small.
-  const previewBooks = books.slice(0, 6);
-
-  shelf.innerHTML = previewBooks
-  .map(book => {
-    return `
-  <div
-    class="nook-sortable-book"
-    data-book-id="${book.id}"
-  >
-    ${renderLibrarySpine(book)}
-  </div>
-`;
-  })
-  .join("");
-
-enableNookBookReordering();
+  personalShelves.render(shelf, "nook", currentLibraryBooks.slice(0, 6));
 }
-async function saveNookBookPosition(bookId, offsetX) {
-  if (!currentUser || !bookId) return;
-
-  try {
-    await update(
-      ref(
-        database,
-        `users/${currentUser.uid}/library/${bookId}`
-      ),
-      {
-        nookOffsetX: offsetX
-      }
-    );
-  } catch (error) {
-    console.error(
-      "Could not save Nook book position:",
-      error
-    );
-  }
-}
-function enableNookBookReordering() {
-  const shelf = document.getElementById("nookCollectionShelf");
-  if (!shelf) return;
-
-  const books = shelf.querySelectorAll(".nook-sortable-book");
-
-  books.forEach(book => {
-    let holdTimer = null;
-    let isDragging = false;
-    let startX = 0;
-    let currentX = 0;
-
-    book.addEventListener("pointerdown", (event) => {
-      startX = event.clientX;
-      currentX = startX;
-
-      holdTimer = setTimeout(() => {
-        isDragging = true;
-        book.classList.add("nook-book-held");
-
-        book.setPointerCapture(event.pointerId);
-
-        if (navigator.vibrate) {
-          navigator.vibrate(30);
-        }
-      }, 450);
-    });
-
-    book.addEventListener("pointermove", (event) => {
-      currentX = event.clientX;
-
-      if (!isDragging) {
-        if (Math.abs(currentX - startX) > 8) {
-          clearTimeout(holdTimer);
-        }
-
-        return;
-      }
-
-      const moveX = currentX - startX;
-
-const currentOffset =
-  parseFloat(book.dataset.nookOffsetX || "0");
-
-book.style.transform =
-  `translateX(${currentOffset + moveX}px)`;
-    });
-
-    book.addEventListener("pointerup", () => {
-  clearTimeout(holdTimer);
-
-  if (isDragging) {
-    const moveX = currentX - startX;
-
-    const currentOffset =
-      parseFloat(book.dataset.nookOffsetX || "0");
-
-    const newOffset = currentOffset + moveX;
-
-    book.dataset.nookOffsetX = newOffset;
-
-    book.style.transform =
-      `translateX(${newOffset}px)`;
-      setTimeout(() => {
-  saveNookBookPosition(
-    book.dataset.bookId,
-    newOffset
-  );
-}, 200);
-  }
-
-  isDragging = false;
-  book.classList.remove("nook-book-held");
+let personalLibrarySession = null;
+const personalShelves = createPersonalShelves({
+  getBooks: () => currentLibraryBooks,
+  getUid: () => currentUser?.uid,
+  getSession: () => personalLibrarySession?.current ?? null,
+  dimensions: getBookSpineDimensions,
+  renderSpine: renderLibrarySpine,
+  savePosition: (uid, bookId, shelfX, session) =>
+    saveExistingPersonalBookPosition({
+      session, bookId, shelfX,
+      isCurrent: candidate => candidate?.uid === uid && personalLibrarySession.isCurrent(candidate),
+      hasBook: personalLibrarySession.hasBook,
+      transact: (owner, id, updater, options) =>
+        runTransaction(ref(database, `users/${owner}/library/${id}`), updater, options)
+    })
 });
-
-    book.addEventListener("pointercancel", () => {
-      clearTimeout(holdTimer);
-
-      book.style.transform = "";
-
-      isDragging = false;
-      book.classList.remove("nook-book-held");
-    });
-  });
-}
-function enableCollectionBookReordering() {
-  const shelf = document.querySelector(
-    "#collectionScreen .bookshelf-row"
-  );
-
-  if (!shelf) return;
-
-  const books = shelf.querySelectorAll(
-    ".collection-sortable-book"
-  );
-
-  books.forEach(book => {
-    let holdTimer = null;
-    let isDragging = false;
-    let startX = 0;
-
-    book.addEventListener("pointerdown", event => {
-      startX = event.clientX;
-      holdTimer = setTimeout(() => {
-        isDragging = true;
-
-        book.classList.add("collection-book-held");
-
-
-        if (navigator.vibrate) {
-          navigator.vibrate(30);
-        }
-      }, 450);
-    });
-
-    book.addEventListener("pointermove", event => {
-  if (!isDragging) return;
-
-  const spine =
-    book.querySelector(".library-book-spine");
-
-
-
-  const rawMoveX =
-    event.clientX - startX;
-
-  const wrapperRect =
-    book.getBoundingClientRect();
-
-  const screenLeft = 8;
-  const screenRight =
-    window.innerWidth - 8;
-
-  const minMoveX =
-    screenLeft - wrapperRect.left;
-
-  const maxMoveX =
-    screenRight - wrapperRect.right;
-
-  const moveX = Math.max(
-    minMoveX,
-    Math.min(rawMoveX, maxMoveX)
-  );
-
-  spine.style.transform =
-    `translateX(${moveX}px) translateY(-5px)`;
-});
-
-    book.addEventListener("pointerup", event => {
-  clearTimeout(holdTimer);
-
-  const wasDragging = isDragging;
-
-  if (wasDragging) {
-    const otherBooks = Array.from(
-      shelf.querySelectorAll(
-        ".collection-sortable-book:not(.collection-book-held)"
-      )
-    );
-
-    let targetBook = null;
-
-    for (const otherBook of otherBooks) {
-      const rect =
-        otherBook.getBoundingClientRect();
-
-      const midpoint =
-        rect.left + rect.width / 2;
-
-      if (event.clientX < midpoint) {
-        targetBook = otherBook;
-        break;
-      }
+personalLibrarySession = createPersonalLibrarySession({
+  getAuthUid: () => auth.currentUser?.uid,
+  subscribe: (uid, callback, onError) =>
+    onValue(ref(database, `users/${uid}/library`), callback, onError),
+  onReset: () => {
+    currentLibraryBooks = [];
+    const bookModal = document.getElementById("bookModal");
+    if (bookModal && bookModal.dataset.circleView !== "true") {
+      bookModal.style.display = "none";
+      document.getElementById("bookModalBody")?.replaceChildren();
+      delete bookModal.dataset.bookmarkView;
     }
-
-    if (targetBook) {
-      shelf.insertBefore(
-        book,
-        targetBook
-      );
-    } else {
-      shelf.appendChild(book);
-    }
-  }
-
-  isDragging = false;
-
-  book.classList.remove(
-    "collection-book-held"
-  );
-
-  const spine =
-    book.querySelector(".library-book-spine");
-
-  if (spine) {
-  if (wasDragging) {
-    spine.style.transform =
-      `translateX(${event.clientX - startX}px) translateY(-5px)`;
-  } else {
-    spine.style.transform = "";
-  }
-}
-
-  if (wasDragging) {
-    saveCollectionBookOrder();
-  }
-});
-
-    book.addEventListener("pointercancel", () => {
-      clearTimeout(holdTimer);
-
-      isDragging = false;
-
-      book.classList.remove(
-        "collection-book-held"
-      );
-    });
-  });
-}
-async function saveCollectionBookOrder() {
-  if (!currentUser) return;
-
-  const shelf = document.querySelector(
-    "#collectionScreen .bookshelf-row"
-  );
-
-  if (!shelf) return;
-
-  const books = Array.from(
-    shelf.querySelectorAll(
-      ".collection-sortable-book"
-    )
-  );
-
-  const updates = {};
-
-  books.forEach((book, index) => {
-    const bookId = book.dataset.bookId;
-
-    if (!bookId) return;
-
-    updates[
-      `users/${currentUser.uid}/library/${bookId}/shelfOrder`
-    ] = index;
-  });
-
-  try {
-    await update(
-      ref(database),
-      updates
-    );
-  } catch (error) {
-    console.error(
-      "Could not save collection order:",
-      error
-    );
-  }
-}
- function listenToPersonalLibrary() {
-  if (!currentUser) return;
-
-  onValue(ref(database, "users/" + currentUser.uid + "/library"), (snapshot) => {
+    if (bookBeingEditedType === "library") closeEditBookModal();
+    closeAddLibraryBookModal();
+    personalShelves.resetSession();
+    renderBookRandomizerShelf();
+  },
+  onError: () => showToast("Your library could not be loaded. Please sign in again.", "error"),
+  onSnapshot: snapshot => {
     const books = snapshot.val() || {};
 
     currentLibraryBooks = Object.entries(books)
@@ -1211,8 +1945,42 @@ async function saveCollectionBookOrder() {
     renderMyLibrary();
     renderNookCollection();
     renderBookRandomizerShelf();
-  });
-} 
+  }
+});
+function listenToPersonalLibrary(session = personalLibrarySession.current) {
+  personalLibrarySession.listen(session);
+}
+async function signOutWithLibraryCleanup() {
+  const circleUser = auth.currentUser;
+  const circleEnd = circleSession.end();
+  const friendshipUser = auth.currentUser;
+  const friendshipEnd = friendshipSession.end();
+  personalLibrarySession.end();
+  stopBookmarkListener();
+  clearBookmarkDisplays();
+  try {
+    await signOut(auth);
+  } catch (error) {
+    // An unsuccessful sign-out must not revive the invalidated session.
+    const user = auth.currentUser;
+    if (personalLibrarySession.current === null &&
+        user && user.emailVerified && currentUser?.uid === user.uid) {
+      listenToPersonalLibrary(personalLibrarySession.begin(user.uid));
+      listenForBookmarks(personalLibrarySession.current);
+    }
+    if (user?.uid === friendshipUser?.uid && friendshipSession.canRecover(friendshipEnd, user)) {
+      const recovered = friendshipSession.begin(user);
+      listenForFriendRequests(recovered);
+      listenForFriends(recovered);
+    }
+    if (user?.uid === circleUser?.uid && circleSession.canRecover(circleEnd, user)) {
+      circleSession.begin(user);
+      listenToUserClubs();
+      // Do not silently reopen a private circle after a failed sign-out.
+    }
+    throw error;
+  }
+}
 function listenToClubBooks(clubId) {
   onValue(ref(database, "clubs/" + clubId + "/books"), (snapshot) => {
     const books = snapshot.val() || {};
@@ -1245,9 +2013,7 @@ function listenToClubBooks(clubId) {
   });
 }
 function listenToCollectionBooks(clubId) {
-
-  onValue(
-    ref(database, "clubs/" + clubId + "/collection"),
+  listenCircle("collection", clubId, "collection",
     (snapshot) => {
 
       const books = snapshot.val() || {};
@@ -1265,47 +2031,13 @@ function listenToCollectionBooks(clubId) {
   );
 }
 function renderMyLibrary() {
-
   const library = document.getElementById("libraryGrid");
-
   if (!library) return;
-
-  const filteredBooks =
-  currentLibraryFilter === "All"
+  const filteredBooks = currentLibraryFilter === "All"
     ? currentLibraryBooks
     : currentLibraryBooks.filter(book =>
-        (book.status || "Want to Read") === currentLibraryFilter
-      );
-
-  if (!filteredBooks || filteredBooks.length === 0) {
-  library.innerHTML = `
-    <div class="bookshelf-row">
-      <p class="status">No books on this shelf yet.</p>
-    </div>
-  `;
-  return;
-}
-
-  library.innerHTML = `
-    <div class="bookshelf-row">
-
-      ${filteredBooks.map(book => {
-  return `
-    <div
-  class="collection-sortable-book"
-  data-book-id="${book.id}"
-  data-shelf-gap="${Number(book.shelfGap) || 0}"
-  style="margin-left:${Number(book.shelfGap) || 0}px;"
->
-  ${renderLibrarySpine(book)}
-</div>
-  `;
-}).join("")}
-
-
-    </div>
-  `;
-  enableCollectionBookReordering();
+      (book.status || "Want to Read") === currentLibraryFilter);
+  personalShelves.render(library, "collection", filteredBooks);
 }
 window.setLibraryFilter = function (filter, button) {
   currentLibraryFilter = filter;
@@ -1403,14 +2135,14 @@ function getBookSpineDimensions(book) {
     height
   };
 }
-function renderLibrarySpine(book) {
+function renderLibrarySpine(book, source = "library") {
   const dimensions = getBookSpineDimensions(book);
 
   return `
     <div
       class="library-book-spine"
       title="${escapeAttr(book.title)}"
-      onclick="openBookModal('${book.id}')"
+      onclick="openBookModal(${escapeInlineJson(book.id)}, ${escapeInlineJson(source)})"
       style="
         cursor:pointer;
         width:${dimensions.width}px;
@@ -1446,8 +2178,8 @@ function renderBookCard(book, finished) {
     <div class="book-item">
       <div class="book-card-polished">
         ${
-          book.image
-            ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+          safeImageSource(book.image)
+            ? `<img class="book-mini-cover" src="${escapeAttr(safeImageSource(book.image))}" alt="Book cover">`
             : `<div class="book-mini-placeholder">S</div>`
         }
 
@@ -1466,7 +2198,7 @@ function renderBookCard(book, finished) {
                 ? `
                   <button
                     class="danger"
-                    onclick="deleteFinishedBook('${book.id}')"
+                    onclick="deleteFinishedBook(${escapeInlineJson(book.id)})"
                   >
                     Remove
                   </button>
@@ -1475,14 +2207,14 @@ function renderBookCard(book, finished) {
                   ? `
                     <button
                       class="secondary"
-                      onclick="editBook('${book.id}')"
+                      onclick="editBook(${escapeInlineJson(book.id)})"
                     >
                       Edit Book
                     </button>
 
                     <button
                       class="danger"
-                      onclick="deleteCollectionBook('${book.id}')"
+                      onclick="deleteCollectionBook(${escapeInlineJson(book.id)})"
                     >
                       Delete Book
                     </button>
@@ -1500,8 +2232,8 @@ function renderPersonalBookCard(book) {
     <div class="book-item">
       <div class="book-card-polished">
         ${
-          book.image
-            ? `<img class="book-mini-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+          safeImageSource(book.image)
+            ? `<img class="book-mini-cover" src="${escapeAttr(safeImageSource(book.image))}" alt="Book cover">`
             : `<div class="book-mini-placeholder">S</div>`
         }
 
@@ -1520,7 +2252,7 @@ function renderPersonalBookCard(book) {
 
 <div style="margin-top:18px;">
   <select
-    onchange="updateBookStatus('${book.id}', this.value)"
+    onchange="updateBookStatus(${escapeInlineJson(book.id)}, this.value)"
     class="modal-select"
   >
     <option value="Want to Read"
@@ -1543,12 +2275,12 @@ function renderPersonalBookCard(book) {
           <div class="book-actions">
             <button
   class="secondary"
-  onclick="event.stopPropagation(); openEditBookModal('${book.id}', 'library')"
+  onclick="event.stopPropagation(); openEditBookModal(${escapeInlineJson(book.id)}, 'library')"
 >
   Edit Book
 </button>
 
-            <button class="danger" onclick="deletePersonalBook('${book.id}')">
+            <button class="danger" onclick="deletePersonalBook(${escapeInlineJson(book.id)})">
               Delete Book
             </button>
           </div>
@@ -1558,15 +2290,17 @@ function renderPersonalBookCard(book) {
   `;
 }
 
-window.openBookModal = function (bookId) {
+window.openBookModal = function (bookId, source = "library") {
   const modal = document.getElementById("bookModal");
   const body = document.getElementById("bookModalBody");
 
   if (!modal || !body) return;
 
-  const book =
-    currentLibraryBooks.find(b => b.id === bookId) ||
-    currentCollectionBooks.find(b => b.id === bookId);
+  const isBookmark = source === "bookmark";
+  const book = isBookmark
+    ? currentBookmarkBooks.find(b => b.id === bookId)
+    : currentLibraryBooks.find(b => b.id === bookId) ||
+      currentCollectionBooks.find(b => b.id === bookId);
 
   if (!book) {
     alert("Book not found.");
@@ -1574,7 +2308,9 @@ window.openBookModal = function (bookId) {
   }
 
   const isCollectionBook =
-    currentCollectionBooks.some(b => b.id === bookId);
+    !isBookmark && currentCollectionBooks.some(b => b.id === bookId);
+  modal.dataset.circleView = String(isCollectionBook);
+  modal.dataset.bookmarkView = String(isBookmark);
 
   body.innerHTML = `
     <div class="book-detail-page">
@@ -1584,7 +2320,7 @@ window.openBookModal = function (bookId) {
 
         <button
           class="book-bookmark-btn"
-          onclick='event.stopPropagation(); saveToBookmarks(${JSON.stringify(book)})'
+          onclick="event.stopPropagation(); saveToBookmarks(${escapeInlineJson(book)})"
           title="Save to Dog-Eared Pages"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1595,8 +2331,8 @@ window.openBookModal = function (bookId) {
 
       <div class="book-detail-hero">
         ${
-          book.image
-            ? `<img class="book-detail-cover" src="${escapeAttr(book.image)}" alt="Book cover">`
+          safeImageSource(book.image)
+            ? `<img class="book-detail-cover" src="${escapeAttr(safeImageSource(book.image))}" alt="Book cover">`
             : `<div class="book-detail-placeholder">${escapeHTML((book.title || "S").charAt(0))}</div>`
         }
 
@@ -1613,7 +2349,7 @@ window.openBookModal = function (bookId) {
   ${escapeHTML(book.genre || book.category || "Genre Unknown")}
   ${
   book.lengthCount
-    ? ` • ${book.lengthCount} ${book.lengthType === "chapters" ? "chapters" : "pages"}`
+    ? ` • ${escapeHTML(book.lengthCount)} ${book.lengthType === "chapters" ? "chapters" : "pages"}`
     : ""
 }
 </div>
@@ -1621,7 +2357,7 @@ window.openBookModal = function (bookId) {
 <div class="book-detail-rating">
   ${
     book.rating
-      ? `★★★★★ ${book.rating}`
+      ? `★★★★★ ${escapeHTML(book.rating)}`
       : ""
   }
 </div>
@@ -1644,19 +2380,19 @@ window.openBookModal = function (bookId) {
       </section>
 
       ${
-        canManageBook(book, isCollectionBook ? "collection" : "library")
+        !isBookmark && canManageBook(book, isCollectionBook ? "collection" : "library")
           ? `
             <div class="book-actions">
               <button
                 class="secondary"
-                onclick="event.stopPropagation(); openEditBookModal('${book.id}', '${isCollectionBook ? "collection" : "library"}')"
+                onclick="event.stopPropagation(); openEditBookModal(${escapeInlineJson(book.id)}, '${isCollectionBook ? "collection" : "library"}')"
               >
                 Edit Book
               </button>
 
               <button
                 class="danger"
-                onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook('${book.id}')` : `deletePersonalBook('${book.id}')`}"
+                onclick="event.stopPropagation(); closeBookModal(); ${isCollectionBook ? `deleteCollectionBook(${escapeInlineJson(book.id)})` : `deletePersonalBook(${escapeInlineJson(book.id)})`}"
               >
                 Delete Book
               </button>
@@ -1818,78 +2554,197 @@ window.closecircleSettingsModal = function () {
 };
 
 window.editCurrentcircleName = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
-  const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
-  const club = clubSnapshot.val();
-
-  if (!club) return alert("circle not found.");
-
-  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
+  const [ownerSnapshot, nameSnapshot] = await Promise.all([
+    circleStep(operation, () => get(ref(database, `clubs/${operation.clubId}/access/ownerUid`))),
+    circleStep(operation, () => get(ref(database, `clubs/${operation.clubId}/name`)))
+  ]);
+  if (!nameSnapshot.exists()) return alert("Circle not found.");
+  if (ownerSnapshot.val() !== operation.uid) {
     return alert("Only the circle creator can rename this circle.");
   }
 
-  const newName = prompt("Edit circle name:", club.name || "");
+  const newName = prompt("Edit circle name:", nameSnapshot.val() || "");
   if (newName === null) return;
   if (!newName.trim()) return alert("circle name cannot be blank.");
 
-  await update(ref(database, "clubs/" + window.currentClubId), {
-    name: newName.trim(),
-    updatedAt: Date.now()
-  });
+  await circleStep(operation, () => set(
+    ref(database, `clubs/${operation.clubId}/name`),
+    newName.trim()
+  ));
 
   closecircleSettingsModal();
   showToast("circle updated.");
+  });
 };
 
 window.copyCurrentcircleInvite = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
   const inviteLink =
     window.location.origin + window.location.pathname + "?club=" + window.currentClubId;
 
   try {
-    await navigator.clipboard.writeText(inviteLink);
+    await circleStep(operation, () => navigator.clipboard.writeText(inviteLink));
     showToast("Invite link copied.");
   } catch (error) {
+    if (!operation.valid()) return;
     prompt("Copy this invite link:", inviteLink);
   }
+  });
 };
 
-window.leaveCurrentcircle = async function () {
-  if (!window.currentClubId) return alert("Open a circle first.");
-  if (!confirm("Leave this circle?")) return;
+function isCircleLeaveCurrent(state) {
+  return circleLeaveState === state && circleSession.isCurrent(state.account) &&
+    auth.currentUser?.uid === state.uid && currentUser?.uid === state.uid;
+}
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/members/" + currentUser.uid), null);
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
-
-  closecircleSettingsModal();
-  showScreen("nook");
-  showToast("circle removed.");
-};
-
-window.deleteCurrentcircle = async function () {
-  if (!window.currentClubId) return alert("Open a circle first.");
-
-  const clubSnapshot = await get(ref(database, "clubs/" + window.currentClubId));
-  const club = clubSnapshot.val();
-
-  if (!club) return alert("circle not found.");
-
-  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
-    return alert("Only the circle creator can delete this circle.");
+function showCircleLeaveStatus(state, message, retry = false) {
+  if (!isCircleLeaveCurrent(state)) return;
+  const status = document.getElementById("circleLeaveStatus");
+  if (!status) return;
+  const copy = document.createElement("p");
+  copy.textContent = message;
+  status.replaceChildren(copy);
+  if (retry) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = "Retry leaving";
+    button.addEventListener("click", () => leaveCircleMembership(state.clubId, state));
+    status.append(button);
   }
+  status.hidden = false;
+  if (circleSession.isViewCurrent(state.view)) {
+    if (retry) {
+      closecircleSettingsModal();
+      showScreen("nook");
+    } else {
+      showToast(message);
+    }
+  }
+}
 
-  if (!confirm("Delete this circle for everyone?")) return;
-
-  await set(ref(database, "clubs/" + window.currentClubId), null);
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + window.currentClubId), null);
-
-  closecircleSettingsModal();
+function closeCircleForLeave(state) {
+  if (!isCircleLeaveCurrent(state) || !circleSession.isViewCurrent(state.view)) return;
+  state.closingOwnView = true;
+  try {
+    circleSession.closeCircle(state.view);
+  } finally {
+    state.closingOwnView = false;
+  }
   showScreen("nook");
-  showToast("circle deleted.");
+}
+
+// One canonical leave protocol. The two deletions commit atomically: there is
+// never a membership-deleted/index-not-deleted intermediate server state.
+async function leaveCircleMembership(clubId, retryState = null) {
+  const account = circleSession.current;
+  const view = circleSession.view;
+  const user = auth.currentUser;
+  if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid ||
+      !circleSession.isCurrent(account) || !/^[A-Za-z0-9_-]{1,128}$/.test(clubId || "")) return;
+  if (retryState) {
+    if (!isCircleLeaveCurrent(retryState) || retryState.busy) return;
+  } else {
+    if (!circleSession.isActive(view) || view.clubId !== clubId || circleLeaveState?.busy) return;
+    if (!confirm("Leave this circle?")) return;
+    if (!circleSession.isCurrent(account) || !circleSession.isActive(view)) return;
+  }
+  const state = retryState || {
+    uid: user.uid, clubId, account, view, busy: false, submitted: false, closingOwnView: false
+  };
+  circleLeaveState = state;
+  state.busy = true;
+  state.submitted = false;
+  const step = async action => {
+    if (!isCircleLeaveCurrent(state)) throw CIRCLE_SESSION_ENDED;
+    const result = await action();
+    if (!isCircleLeaveCurrent(state)) throw CIRCLE_SESSION_ENDED;
+    return result;
+  };
+  const memberPath = `clubs/${state.clubId}/access/members/${state.uid}`;
+  const navigationPath = `users/${state.uid}/clubs/${state.clubId}`;
+  showCircleLeaveStatus(state, "Checking whether this membership can safely leave.");
+  try {
+    const memberSnapshot = await step(() => get(ref(database, memberPath)));
+    const member = memberSnapshot.val();
+    if (!memberSnapshot.exists()) {
+      const navigation = await step(() => get(ref(database, navigationPath)));
+      closeCircleForLeave(state);
+      showCircleLeaveStatus(state, navigation.exists()
+        ? "No canonical membership was found. No records were changed; the remaining list entry was not removed without verification."
+        : "Your canonical membership and circle-list entry are already absent. No further records were changed.");
+      return;
+    }
+    if (member?.role === "owner") {
+      showCircleLeaveStatus(state, "The circle owner cannot leave. Ownership transfer is not available.");
+      return;
+    }
+    if (member?.role !== "member" ||
+        !/^[A-Za-z0-9_-]{8,64}$/.test(member.invitationId || "")) {
+      showCircleLeaveStatus(state, "This membership cannot be left under the current policy. No records were changed.");
+      return;
+    }
+    const ownerSnapshot = await step(() =>
+      get(ref(database, `clubs/${state.clubId}/access/ownerUid`)));
+    const ownerUid = ownerSnapshot.val();
+    if (typeof ownerUid !== "string" || !ownerUid || ownerUid === state.uid) {
+      showCircleLeaveStatus(state, "Leaving is unavailable because canonical ownership is not confirmed.");
+      return;
+    }
+    const ownerMember = await step(() =>
+      get(ref(database, `clubs/${state.clubId}/access/members/${ownerUid}`)));
+    const invitation = await step(() => get(ref(database,
+      `circleInvitations/${state.uid}/${state.clubId}/${member.invitationId}`)));
+    if (ownerMember.val()?.role !== "owner" || invitation.val()?.clubId !== state.clubId ||
+        invitation.val()?.issuedBy !== ownerUid || invitation.val()?.status !== "consumed") {
+      showCircleLeaveStatus(state,
+        "Leaving is unavailable until ownership and invitation finalization are confirmed. Complete joining from your invitation inbox first.");
+      return;
+    }
+    state.submitted = true;
+    showCircleLeaveStatus(state, "Leaving is pending. Waiting for server acknowledgement; no success is assumed.");
+    // Already-submitted SDK writes cannot be cancelled. Fixed original paths,
+    // rules and session guards prevent redirection or subsequent stale UI work.
+    await step(() => update(ref(database), {
+      [memberPath]: null,
+      [navigationPath]: null
+    }));
+    closeCircleForLeave(state);
+    showCircleLeaveStatus(state, "You left the circle. Its books and shared records were preserved.");
+    showToast("You left the circle.");
+  } catch (error) {
+    if (error === CIRCLE_SESSION_ENDED || !isCircleLeaveCurrent(state)) return;
+    const denied = isFriendshipPermissionDenied(error);
+    if (!denied) circleDiagnostic("circle-leave", error);
+    showCircleLeaveStatus(state, denied
+      ? "Leaving was denied. No successful leave acknowledgement was received. Recheck your membership and retry."
+      : "Leaving was not confirmed. Check your connection and retry; no success is assumed.", true);
+  } finally {
+    state.busy = false;
+  }
+}
+
+window.leaveCurrentcircle = function () {
+  return leaveCircleMembership(window.currentClubId);
 };
+
+function circleDeletionUnavailable() {
+  showToast("Circle deletion is temporarily unavailable. No records were changed.", "error");
+}
+
+window.deleteCurrentcircle = circleDeletionUnavailable;
 window.saveEditedBook = async function () {
+  if (bookBeingEditedType === "collection") {
+    return runCircleOperation(operation => saveEditedBookForSession(operation));
+  }
+  return saveEditedBookForSession(null);
+};
+async function saveEditedBookForSession(operation) {
   if (!bookBeingEditedId || !bookBeingEditedType) {
     alert("No book selected.");
     return;
@@ -1913,7 +2768,7 @@ window.saveEditedBook = async function () {
       ? "clubs/" + window.currentClubId + "/collection/" + bookBeingEditedId
       : "users/" + currentUser.uid + "/library/" + bookBeingEditedId;
 
-  await update(ref(database, path), {
+  const save = () => update(ref(database, path), {
     title,
     author,
     genre,
@@ -1923,12 +2778,14 @@ window.saveEditedBook = async function () {
     image,
     updatedAt: Date.now()
   });
+  if (operation) await circleStep(operation, save);
+  else await save();
 
   closeEditBookModal();
   closeBookModal();
 
   showToast("Book updated.");
-};
+}
 
 window.updateBookStatus = async function (
   bookId,
@@ -1965,12 +2822,16 @@ window.updateBookStatus = async function (
     type === "collection"
       ? `clubs/${window.currentClubId}/collection/${bookId}`
       : `users/${currentUser.uid}/library/${bookId}`;
+  const operation = type === "collection" ? circleSession.capture() : null;
+  if (type === "collection" && !operation) return;
 
   try {
-    await update(ref(database, path), {
+    const save = () => update(ref(database, path), {
       status,
       updatedAt: Date.now()
     });
+    if (operation) await circleStep(operation, save);
+    else await save();
 
     const modal = document.getElementById("bookModal");
 
@@ -1980,12 +2841,19 @@ window.updateBookStatus = async function (
 
     showToast(`Book moved to ${status}.`);
   } catch (error) {
+    if (operation) {
+      if (error !== CIRCLE_SESSION_ENDED) {
+        if (operation.valid()) circleUnavailable(operation.view, error);
+        else if (!isFriendshipPermissionDenied(error)) circleDiagnostic("obsolete-circle-status", error);
+      }
+      return;
+    }
     console.error("Book status update failed:", error);
     showToast("The book status could not be updated.", "error");
   }
 };
 function listenToNextRead(clubId) {
-  onValue(ref(database, "clubs/" + clubId + "/nextRead"), (snapshot) => {
+  listenCircle("next-read", clubId, "nextRead", (snapshot) => {
     const nextRead = snapshot.val();
 window.currentNextRead = nextRead;
     updateNookNextRead(nextRead);
@@ -2019,8 +2887,8 @@ window.currentNextRead = nextRead;
 
   <div class="club-current-cover">
     ${
-      nextRead.image
-        ? `<img src="${escapeAttr(nextRead.image)}" alt="Book cover">`
+      safeImageSource(nextRead.image)
+        ? `<img src="${escapeAttr(safeImageSource(nextRead.image))}" alt="Book cover">`
         : `<div class="cover-placeholder">S</div>`
     }
   </div>
@@ -2142,7 +3010,7 @@ window.currentNextRead = nextRead;
   });
 }
 function listenToBooksRead(clubId) {
-  onValue(ref(database, "clubs/" + clubId + "/booksRead"), (snapshot) => {
+  listenCircle("books-read", clubId, "booksRead", (snapshot) => {
     const booksRead = snapshot.val() || {};
     const finishedBooks = Object.entries(booksRead).map(([id, value]) => ({ id, ...value }));
 
@@ -2156,7 +3024,7 @@ function listenToBooksRead(clubId) {
 
     document.getElementById("booksReadList").innerHTML =
   finishedBooks.map(book => `
-    <div onclick='openFinishedBookDetails(${JSON.stringify(book)})'>
+    <div onclick="openFinishedBookDetails(${escapeInlineJson(book)})">
       ${renderBookCard(book, true)}
     </div>
   `).join("");
@@ -2168,8 +3036,13 @@ function listenToMembers(clubId) {
   const preview = document.getElementById("clubMemberPreview");
   const modalList = document.getElementById("membersModalList");
 
-  onValue(ref(database, "clubs/" + clubId + "/members"), async (snapshot) => {
+  const view = circleSession.view;
+  listenCircle("members", clubId, "access/members", async (snapshot, valid) => {
     const members = snapshot.val() || {};
+    if (!["owner", "member"].includes(members[view.session.uid]?.role)) {
+      circleUnavailable(view);
+      return;
+    }
     const memberIds = Object.keys(members);
 
     if (memberCount) {
@@ -2190,18 +3063,12 @@ function listenToMembers(clubId) {
 const hiddenMemberCount = memberIds.length - visibleMemberIds.length;
 
 for (const uid of visibleMemberIds) {
-      const userSnapshot = await get(ref(database, "users/" + uid));
-      const userData = userSnapshot.val() || {};
+      const userData = await readPublicProfile(uid);
+       if (!valid()) return;
+      const displayName = publicDisplayName(userData.username);
 
-      const displayName =
-        userData.username ||
-        userData.email ||
-        "Reader";
-
-      const memberData = members[uid] || {};
-
-const avatarPhoto = userData.avatarPhoto || memberData.avatarPhoto || "";
-const avatarValue = userData.avatar || memberData.avatar || "📚";
+const avatarPhoto = safeImageSource(userData.avatarPhoto || "");
+const avatarValue = userData.avatar || "📚";
 
 const avatarHTML =
   avatarValue === "photo" && avatarPhoto
@@ -2213,7 +3080,7 @@ const avatarHTML =
           object-fit:cover;
           display:block;
         ">`
-    : escapeHTML(avatarValue || displayName.charAt(0).toUpperCase());
+    : escapeHTML(avatarValue === "photo" ? displayName.charAt(0).toUpperCase() : avatarValue);
 
       previewHTML += `
         <div onclick="openMembersModal()" style="
@@ -2237,7 +3104,7 @@ const avatarHTML =
     <div class="item-title">${avatarHTML} ${escapeHTML(displayName)}</div>
     <div class="small">Reading circle member</div>
 
-    <button class="secondary" onclick="openReaderProfile('${uid}')">
+    <button class="secondary" onclick="openReaderProfile(${escapeInlineJson(uid)})">
       View Profile
     </button>
   </div>
@@ -2279,7 +3146,7 @@ if (featuredReaderCount) {
 }
 
 function listenToDiscussion(clubId) {
-  onValue(ref(database, "clubs/" + clubId + "/discussion"), (snapshot) => {
+  listenCircle("discussion", clubId, "discussion", (snapshot) => {
     const discussion = snapshot.val() || {};
 
     const comments = Object.entries(discussion)
@@ -2301,12 +3168,12 @@ function listenToDiscussion(clubId) {
     }
 
     const discussionHTML = comments.map(comment => `
-      <div class="note-card" onclick="toggleReactionPicker('${comment.id}')">
+      <div class="note-card" onclick="toggleReactionPicker(${escapeInlineJson(comment.id)})">
         <div class="comment-row">
           <div class="comment-avatar">
   ${
-    comment.authorAvatar === "photo" && comment.authorAvatarPhoto
-      ? `<img src="${escapeAttr(comment.authorAvatarPhoto)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+    comment.authorAvatar === "photo" && safeImageSource(comment.authorAvatarPhoto)
+      ? `<img src="${escapeAttr(safeImageSource(comment.authorAvatarPhoto))}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
       : escapeHTML(comment.authorAvatar || (comment.authorAlias || "R").charAt(0).toUpperCase())
   }
 </div>
@@ -2328,14 +3195,14 @@ function listenToDiscussion(clubId) {
               <div class="book-actions">
                 <button
                   class="secondary"
-                  onclick="event.stopPropagation(); window.editDiscussionComment('${comment.id}')"
+                  onclick="event.stopPropagation(); window.editDiscussionComment(${escapeInlineJson(comment.id)})"
                 >
                   Edit Note
                 </button>
 
                 <button
                   class="danger"
-                  onclick="event.stopPropagation(); window.deleteDiscussionComment('${comment.id}')"
+                  onclick="event.stopPropagation(); window.deleteDiscussionComment(${escapeInlineJson(comment.id)})"
                 >
                   Delete Note
                 </button>
@@ -2343,17 +3210,17 @@ function listenToDiscussion(clubId) {
             ` : ""}
 
             <div class="reaction-summary">
-              ❤️ ${comment.reactions?.heart || 0}
-              📚 ${comment.reactions?.book || 0}
-              👀 ${comment.reactions?.eyes || 0}
-              😭 ${comment.reactions?.cry || 0}
+              ❤️ ${escapeHTML(comment.reactions?.heart || 0)}
+              📚 ${escapeHTML(comment.reactions?.book || 0)}
+              👀 ${escapeHTML(comment.reactions?.eyes || 0)}
+              😭 ${escapeHTML(comment.reactions?.cry || 0)}
             </div>
 
-            <div id="reactionPicker-${comment.id}" class="reaction-picker">
-              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'heart')">❤️</button>
-              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'book')">📚</button>
-              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'eyes')">👀</button>
-              <button onclick="event.stopPropagation(); reactToComment('${comment.id}', 'cry')">😭</button>
+            <div id="reactionPicker-${escapeAttr(comment.id)}" class="reaction-picker">
+              <button onclick="event.stopPropagation(); reactToComment(${escapeInlineJson(comment.id)}, 'heart')">❤️</button>
+              <button onclick="event.stopPropagation(); reactToComment(${escapeInlineJson(comment.id)}, 'book')">📚</button>
+              <button onclick="event.stopPropagation(); reactToComment(${escapeInlineJson(comment.id)}, 'eyes')">👀</button>
+              <button onclick="event.stopPropagation(); reactToComment(${escapeInlineJson(comment.id)}, 'cry')">😭</button>
             </div>
           </div>
         </div>
@@ -2401,6 +3268,7 @@ window.addBookToClub = async function () {
   alert("Book added to My Library.");
 };
 window.addBookToClubCollection = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a society first.");
     return;
@@ -2427,10 +3295,10 @@ const synopsis =
   }
 
   const bookRef = push(
-    ref(database, "clubs/" + window.currentClubId + "/collection")
+    ref(database, "clubs/" + operation.clubId + "/collection")
   );
 
-  await set(bookRef, {
+  await circleStep(operation, () => set(bookRef, {
   title,
   author,
   
@@ -2443,7 +3311,7 @@ const synopsis =
 
   addedBy: currentUser.uid,
   createdAt: Date.now()
-});
+}));
 
   document.getElementById("bookTitleClub").value = "";
 document.getElementById("bookAuthorClub").value = "";
@@ -2455,6 +3323,7 @@ document.getElementById("bookLengthCountClub").value = "";
 document.getElementById("bookSynopsisClub").value = "";
 closeAddCollectionBookModal();
   showToast("Added to The Collection.");
+  });
 };
 
 window.spinBook = function () {
@@ -2527,6 +3396,8 @@ window.spinBook = function () {
 };
 
 window.spinBookFromClub = function () {
+  const operation = circleSession.capture();
+  if (!operation) return;
   if (!window.currentClubId) return alert("Open a society first.");
 
   if (!currentCollectionBooks || currentCollectionBooks.length === 0) {
@@ -2558,6 +3429,7 @@ window.spinBookFromClub = function () {
   const maxCount = 18;
 
   const interval = setInterval(() => {
+    if (!operation.valid()) { clearInterval(interval); return; }
     document.querySelectorAll("#randomizerBooksClub .randomizer-spine")
       .forEach(book => book.classList.remove("active"));
 
@@ -2617,21 +3489,24 @@ window.spinBookFromClub = function () {
 };
 
 window.setNextRead = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a society first.");
   if (!window.lastPick) return alert("Let Fate Decides choose a book first.");
+  const pick = window.lastPick;
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
-    title: window.lastPick.title || "",
-    author: window.lastPick.author || "",
-    category: window.lastPick.category || "",
-    image: window.lastPick.image || "",
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/nextRead"), {
+    title: pick.title || "",
+    author: pick.author || "",
+    category: pick.category || "",
+    image: pick.image || "",
+    sourceCollectionBookId: pick.id,
     setAt: Date.now()
-  });
+  }));
 
-  await set(
-    ref(database, "clubs/" + window.currentClubId + "/collection/" + window.lastPick.id),
+  await circleStep(operation, () => set(
+    ref(database, "clubs/" + operation.clubId + "/collection/" + pick.id),
     null
-  );
+  ));
 
   window.lastPick = null;
 
@@ -2639,30 +3514,35 @@ window.setNextRead = async function () {
     "Featured Volume has been set.";
 
   showToast("Featured Volume set!");
+  });
 }; 
 
 window.markNextReadFinished = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
-  const nextReadSnapshot = await get(ref(database, "clubs/" + window.currentClubId + "/nextRead"));
+  const nextReadSnapshot = await circleStep(operation, () => get(ref(database, "clubs/" + operation.clubId + "/nextRead")));
   const nextRead = nextReadSnapshot.val();
 
   if (!nextRead) return alert("No next read to finish.");
 
-  const finishedRef = push(ref(database, "clubs/" + window.currentClubId + "/booksRead"));
+  const finishedRef = push(ref(database, "clubs/" + operation.clubId + "/booksRead"));
 
-  await set(finishedRef, {
+  await circleStep(operation, () => set(finishedRef, {
     title: nextRead.title || "",
     author: nextRead.author || "",
     category: nextRead.category || "",
     image: nextRead.image || "",
-    finishedAt: Date.now()
-  });
+    finishedAt: Date.now(),
+    finishedBy: operation.uid
+  }));
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/nextRead"), null);
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/nextRead"), null));
   alert("Moved to Finished Reads!");
+  });
 };
 window.updateClubProgress = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a society first.");
     return;
@@ -2672,14 +3552,16 @@ window.updateClubProgress = async function () {
 
   if (!progress) return;
 
-  await update(ref(database, "clubs/" + window.currentClubId + "/nextRead"), {
+  await circleStep(operation, () => update(ref(database, "clubs/" + operation.clubId + "/nextRead"), {
     progress,
     updatedAt: Date.now()
-  });
+  }));
 
   alert("Club progress updated.");
+  });
 };
 window.postDiscussionComment = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     return alert("Open a circle first.");
   }
@@ -2700,41 +3582,30 @@ window.postDiscussionComment = async function () {
     return alert("Write a note first.");
   }
 
-  try {
-    const userSnapshot = await get(
-      ref(database, "users/" + currentUser.uid)
-    );
-
-    const userData = userSnapshot.val() || {};
+    const userData = await circleStep(operation, () => readPublicProfile(operation.uid));
 
     const commentRef = push(
       ref(
         database,
-        "clubs/" + window.currentClubId + "/discussion"
+        "clubs/" + operation.clubId + "/discussion"
       )
     );
 
-    await set(commentRef, {
+    await circleStep(operation, () => set(commentRef, {
       message,
-      authorId: currentUser.uid,
-      authorAlias:
-        userData.username ||
-        currentUser.displayName ||
-        currentUser.email ||
-        "Reader",
+      authorId: operation.uid,
+      authorAlias: userData.username,
       authorAvatar: userData.avatar || "📚",
       authorAvatarPhoto: userData.avatarPhoto || "",
       createdAt: Date.now()
-    });
+    }));
 
     input.value = "";
     showToast("Note posted.");
-  } catch (error) {
-    console.error("Discussion post error:", error);
-    showToast("Your note could not be posted.", "error");
-  }
+  });
 };
 window.sendReadingCheckIn = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a circle first.");
     return;
@@ -2748,9 +3619,9 @@ window.sendReadingCheckIn = async function () {
     return;
   }
 
-  const nextReadSnapshot = await get(
-    ref(database, "clubs/" + window.currentClubId + "/nextRead")
-  );
+  const nextReadSnapshot = await circleStep(operation, () => get(
+    ref(database, "clubs/" + operation.clubId + "/nextRead")
+  ));
 
   const nextRead = nextReadSnapshot.val();
 
@@ -2759,10 +3630,9 @@ window.sendReadingCheckIn = async function () {
     return;
   }
 
-  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
-  const userData = userSnapshot.val() || {};
+  const userData = await circleStep(operation, () => readPublicProfile(operation.uid));
 
-  const name = userData.username || currentUser.email || "A reader";
+  const name = userData.username;
   const avatar = userData.avatar || "📚";
   const bookTitle = nextRead.title || "the current read";
   const bookAuthor = nextRead.author ? " by " + nextRead.author : "";
@@ -2780,8 +3650,8 @@ window.sendReadingCheckIn = async function () {
 `;
 
   
-await set(
-  ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
+await circleStep(operation, () => set(
+  ref(database, "clubs/" + operation.clubId + "/checkIns/" + operation.uid),
   {
     name,
     avatar,
@@ -2789,11 +3659,13 @@ await set(
     bookTitle,
     checkedInAt: Date.now()
   }
-);
+));
   input.value = "";
   alert("Your reading circle has been notified!");
+  });
 };
 window.undoReadingCheckIn = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a circle first.");
     return;
@@ -2804,50 +3676,57 @@ window.undoReadingCheckIn = async function () {
     return;
   }
 
-  await set(
-    ref(database, "clubs/" + window.currentClubId + "/checkIns/" + currentUser.uid),
+  await circleStep(operation, () => set(
+    ref(database, "clubs/" + operation.clubId + "/checkIns/" + operation.uid),
     null
-  );
+  ));
 
   alert("Your check-in was removed.");
+  });
 };
 window.postDiscussionCommentFromClub = async function () {
+  return runCircleOperation(async operation => {
   const input = document.getElementById("discussionInputClub");
   if (!input) return;
   const message = input.value.trim();
   if (!window.currentClubId) return alert("Open a circle first.");
   if (!message) return alert("Write a note first.");
-  const userSnapshot = await get(ref(database, "users/" + currentUser.uid));
-  const userData = userSnapshot.val();
-  const commentRef = push(ref(database, "clubs/" + window.currentClubId + "/discussion"));
-  await set(commentRef, {
+  const userData = await circleStep(operation, () => readPublicProfile(operation.uid));
+  const commentRef = push(ref(database, "clubs/" + operation.clubId + "/discussion"));
+  await circleStep(operation, () => set(commentRef, {
   message,
-  authorId: currentUser.uid,
-  authorAlias: userData?.username || currentUser.email || "Reader",
-  authorAvatar: userData?.avatar || "📚",
-authorAvatarPhoto: userData?.avatarPhoto || "",
+  authorId: operation.uid,
+  authorAlias: userData.username,
+  authorAvatar: userData.avatar || "📚",
+  authorAvatarPhoto: userData.avatarPhoto,
 createdAt: Date.now()
-});
+}));
   input.value = "";
+  });
 };
 
 window.deleteFinishedBook = async function (bookId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
   if (!confirm("Remove this finished read?")) return;
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/booksRead/" + bookId), null);
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/booksRead/" + bookId), null));
   alert("Finished read removed.");
+  });
 };
 
 window.deleteBook = async function (bookId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
   if (!confirm("Delete this book from the circle?")) return;
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), null);
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/books/" + bookId), null));
   showToast("Book deleted.");
+  });
 };
 
 window.editBook = async function (bookId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
   const book = currentClubBooks.find(b => b.id === bookId);
@@ -2865,22 +3744,25 @@ window.editBook = async function (bookId) {
   const newImage = prompt("Edit cover image URL:", book.image || "");
   if (newImage === null) return;
 
-  await update(ref(database, "clubs/" + window.currentClubId + "/books/" + bookId), {
+  await circleStep(operation, () => update(ref(database, "clubs/" + operation.clubId + "/books/" + bookId), {
     title: newTitle.trim(),
     author: newAuthor.trim(),
     category: newCategory.trim(),
     image: newImage.trim(),
     updatedAt: Date.now()
-  });
+  }));
 
   showToast("Book updated.");
+  });
 };
 window.deleteCollectionBook = async function (bookId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a society first.");
   if (!confirm("Delete this book from The Collection?")) return;
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/collection/" + bookId), null);
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/collection/" + bookId), null));
   alert("Book deleted from The Collection.");
+  });
 };
 window.deletePersonalBook = async function (bookId) {
   if (!currentUser) {
@@ -2926,6 +3808,7 @@ window.editPersonalBook = async function (bookId) {
   alert("Book updated in My Library.");
 };
 window.editCollectionBook = async function (bookId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a society first.");
 
   const book = currentCollectionBooks.find(b => b.id === bookId);
@@ -2943,15 +3826,16 @@ window.editCollectionBook = async function (bookId) {
   const newImage = prompt("Edit cover image URL:", book.image || "");
   if (newImage === null) return;
 
-  await update(ref(database, "clubs/" + window.currentClubId + "/collection/" + bookId), {
+  await circleStep(operation, () => update(ref(database, "clubs/" + operation.clubId + "/collection/" + bookId), {
     title: newTitle.trim(),
     author: newAuthor.trim(),
     category: newCategory.trim(),
     image: newImage.trim(),
     updatedAt: Date.now()
-  });
+  }));
 
   alert("Collection book updated.");
+  });
 };
 window.togglePasswordVisibility = function () {
   const passwordInput = document.getElementById("loginPassword");
@@ -3003,62 +3887,44 @@ window.closeMembersModal = function () {
 };
 
 window.removeClub = async function (clubId) {
+  return runCircleOperation(async operation => {
   if (!currentUser) return alert("Please log in first.");
   if (!confirm("Remove this circle from your list?")) return;
 
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
+  await circleStep(operation, () => set(ref(database, "users/" + operation.uid + "/clubs/" + clubId), null));
+  if (circleSession.view?.clubId === clubId) circleSession.closeCircle();
   alert("Circle removed from your list.");
+  }, true);
 };
 window.editcircleName = async function (clubId) {
+  return runCircleOperation(async operation => {
   if (!currentUser) return alert("Please log in first.");
 
-  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
-  const club = clubSnapshot.val();
-
-  if (!club) return alert("Circle not found.");
-
-  if (club.owner !== currentUser.uid && currentUser.email !== appCreatorEmail) {
+  if (clubId !== operation.clubId) return;
+  const [ownerSnapshot, nameSnapshot] = await Promise.all([
+    circleStep(operation, () => get(ref(database, `clubs/${clubId}/access/ownerUid`))),
+    circleStep(operation, () => get(ref(database, `clubs/${clubId}/name`)))
+  ]);
+  if (!nameSnapshot.exists()) return alert("Circle not found.");
+  if (ownerSnapshot.val() !== operation.uid) {
     return alert("Only the circle creator can rename this circle.");
   }
 
-  const newName = prompt("Edit circle name:", club.name || "");
+  const newName = prompt("Edit circle name:", nameSnapshot.val() || "");
 
   if (newName === null) return;
   if (!newName.trim()) return alert("Circle name cannot be blank.");
 
-  await update(ref(database, "clubs/" + clubId), {
-    name: newName.trim(),
-    updatedAt: Date.now()
-  });
+  await circleStep(operation, () => set(
+    ref(database, `clubs/${clubId}/name`),
+    newName.trim()
+  ));
 
   showToast("Circle updated.");
+  }, true);
 };
 
-window.deleteCircle = async function (clubId) {
-  if (!currentUser) return alert("Please log in first.");
-
-  const clubSnapshot = await get(ref(database, "clubs/" + clubId));
-  const club = clubSnapshot.val();
-
-  if (!club) return alert("circle not found.");
-
-  if (club.owner === currentUser.uid || currentUser.email === appCreatorEmail) {
-    if (!confirm("Delete this circle for everyone?")) return;
-
-    await set(ref(database, "clubs/" + clubId), null);
-    await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
-
-    showToast("Circle deleted.");
-    return;
-  }
-
-  if (!confirm("Leave this circle?")) return;
-
-  await set(ref(database, "clubs/" + clubId + "/members/" + currentUser.uid), null);
-  await set(ref(database, "users/" + currentUser.uid + "/clubs/" + clubId), null);
-
-  showToast("Circle removed.");
-};
+window.deleteCircle = circleDeletionUnavailable;
 function formatTimeAgo(timestamp) {
   if (!timestamp) return "Just now";
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -3073,17 +3939,20 @@ function formatTimeAgo(timestamp) {
 }
 
 window.reactToComment = async function (commentId, reactionType) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
+  if (!/^[A-Za-z0-9_-]{1,32}$/.test(reactionType)) return;
 
-  const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
-  const snapshot = await get(commentRef);
+  const commentRef = ref(database, "clubs/" + operation.clubId + "/discussion/" + commentId);
+  const snapshot = await circleStep(operation, () => get(commentRef));
   const comment = snapshot.val();
   if (!comment) return;
 
-  const reactions = comment.reactions || {};
-  reactions[reactionType] = (reactions[reactionType] || 0) + 1;
-
-  await update(commentRef, { reactions });
+  await circleStep(operation, () => runTransaction(
+    ref(database, `clubs/${operation.clubId}/discussion/${commentId}/reactions/${reactionType}`),
+    count => (Number(count) || 0) + 1
+  ));
+  });
 };
 
 window.toggleReactionPicker = function (commentId) {
@@ -3093,10 +3962,11 @@ window.toggleReactionPicker = function (commentId) {
 };
 
 window.editDiscussionComment = async function (commentId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
-  const commentRef = ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId);
-  const snapshot = await get(commentRef);
+  const commentRef = ref(database, "clubs/" + operation.clubId + "/discussion/" + commentId);
+  const snapshot = await circleStep(operation, () => get(commentRef));
   const comment = snapshot.val();
 
   if (!comment) return alert("Note not found.");
@@ -3106,20 +3976,23 @@ window.editDiscussionComment = async function (commentId) {
 
   if (!updatedMessage.trim()) return alert("Note cannot be blank.");
 
-  await update(commentRef, {
+  await circleStep(operation, () => update(commentRef, {
     message: updatedMessage.trim(),
     editedAt: Date.now()
-  });
+  }));
 
   showToast("Note updated.");
+  });
 };
 
 window.deleteDiscussionComment = async function (commentId) {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
   if (!confirm("Delete this Marginalia note?")) return;
 
-  await set(ref(database, "clubs/" + window.currentClubId + "/discussion/" + commentId), null);
+  await circleStep(operation, () => set(ref(database, "clubs/" + operation.clubId + "/discussion/" + commentId), null));
   alert("Note deleted.");
+  });
 };
 
 function buildInviteText(clubId, clubName) {
@@ -3146,14 +4019,17 @@ window.emailCurrentClubInvite = function (clubId, clubName) {
 };
 
 window.copyCurrentClubInvite = async function (clubId, clubName) {
+  return runCircleOperation(async operation => {
   const invite = buildInviteText(clubId, clubName);
 
   try {
-    await navigator.clipboard.writeText(invite.inviteText);
+    await circleStep(operation, () => navigator.clipboard.writeText(invite.inviteText));
     alert("Invite copied.");
   } catch (error) {
+    if (!operation.valid()) return;
     prompt("Copy this invite:", invite.inviteText);
   }
+  }, true);
 };
 
 function handleInviteLink() {
@@ -3163,7 +4039,12 @@ function handleInviteLink() {
   if (clubId) {
     document.getElementById("joinClubId").value = clubId;
     showScreen("nook");
-    alert("Invite detected. Tap Join Circle.");
+    const form = document.getElementById("nookCircleForm");
+    if (form && !form.classList.contains("show")) window.toggleNookCircleForm();
+    pendingCircleAccessClubId = extractClubId(clubId);
+    showCircleAccessStatus(
+      "Circle link detected. Check access to open the circle or request access; nothing is submitted automatically."
+    );
   }
 }
 function getAuthErrorMessage(error) {
@@ -3235,6 +4116,11 @@ function showToast(message, type = "success") {
   }, 4000);
 }
 onAuthStateChanged(auth, async (user) => {
+  circleSession.begin(user);
+  const friendship = friendshipSession.begin(user);
+  const session = personalLibrarySession.begin(user?.uid ?? null);
+  stopBookmarkListener();
+  clearBookmarkDisplays();
   const authScreen = document.getElementById("authScreen");
   const mainApp = document.getElementById("mainApp");
   const mainNav = document.getElementById("mainNav");
@@ -3278,6 +4164,7 @@ hideLibraryLoader();
 return;
 }
   await wait(1500);
+if (!personalLibrarySession.isCurrent(session)) return;
 
 hideLibraryLoader();
 
@@ -3291,23 +4178,24 @@ mainNav.style.display = "grid";
       "Signed in as " + (user.email || "Google user");
 
     await ensureUserRecord(user);
+    if (!personalLibrarySession.isCurrent(session)) return;
 
-    const userSnapshot = await get(ref(database, "users/" + user.uid));
-    const userData = userSnapshot.val() || {};
+    const userData = await readPublicProfile(user.uid);
+    if (!personalLibrarySession.isCurrent(session)) return;
 
-    if (userData.username) {
-      document.getElementById("usernameInput").value = userData.username;
-      document.getElementById("currentUsername").textContent =
-        "Reader Alias: " + userData.username;
-      document.getElementById("nookReaderName").textContent = userData.username;
-    }
+    document.getElementById("usernameInput").value =
+      userData.username === "Reader" ? "" : userData.username;
+    document.getElementById("currentUsername").textContent =
+      "Reader Alias: " + userData.username;
+    document.getElementById("nookReaderName").textContent = userData.username;
 
-    if (userData.avatar === "photo" && userData.avatarPhoto) {
+    if (userData.avatar === "photo") {
       const avatar = document.getElementById("profileAvatar");
 
       if (avatar) {
-        avatar.src = userData.avatarPhoto;
-        avatar.style.display = "block";
+        if (userData.avatarPhoto) avatar.src = userData.avatarPhoto;
+        else avatar.removeAttribute("src");
+        avatar.style.display = userData.avatarPhoto ? "block" : "none";
       }
 
       document.getElementById("currentAvatar").textContent =
@@ -3322,22 +4210,25 @@ mainNav.style.display = "grid";
     }
 
 listenToUserClubs();
-listenToPersonalLibrary();
-listenForFriendRequests();
-listenForFriends();
-listenForBookmarks();
+listenForCircleInvitations(circleSession.current);
+listenToPersonalLibrary(session);
+listenForFriendRequests(friendship);
+listenForFriends(friendship);
+    listenForBookmarks(session);
 handleInviteLink();
 showScreen("nook");
 
   } catch (error) {
+    if (!personalLibrarySession.isCurrent(session)) return;
     console.error("Login load error:", error);
     alert("You signed in, but something failed while loading your profile: " + error.message);
   }
 });
 
 window.finishFeaturedBook = async function () {
+  return runCircleOperation(async operation => {
   const user = auth.currentUser;
-  const clubId = window.currentClubId;
+  const clubId = operation.clubId;
   const nextRead = window.currentNextRead;
 
   if (!user) return alert("Please log in first.");
@@ -3350,24 +4241,24 @@ window.finishFeaturedBook = async function () {
 
   if (!confirmFinish) return;
 
-  const finishedRef = push(ref(database, `clubs/${clubId}/booksRead`));
-
-  await set(finishedRef, {
-    ...nextRead,
-    finishedAt: Date.now(),
-    finishedBy: user.uid
-  });
-
-  await update(ref(database, `clubs/${clubId}`), {
-  checkIns: null,
-  featuredVolume: {
-      currentGoal: "Set your next reading goal",
-      dueDateLabel: "No due date",
-      dueDate: null,
-      totalChapters: null,
-      checkins: {}
-    }
-  });
+  const finishedAt = Date.now();
+  const finishedId = push(ref(database, `clubs/${clubId}/booksRead`)).key;
+  const changes = {
+    [`booksRead/${finishedId}`]: {
+      ...nextRead,
+      finishedAt,
+      finishedBy: user.uid
+    },
+    "featuredVolume/currentGoal": "Set your next reading goal",
+    "featuredVolume/dueDateLabel": "No due date",
+    "featuredVolume/dueDate": null,
+    "featuredVolume/totalChapters": null,
+    "featuredVolume/updatedAt": finishedAt,
+    // Check-ins belong to their reader. Finishing a shared volume must not
+    // erase another member's progress or historical root-level check-ins.
+    [`featuredVolume/checkins/${operation.uid}`]: null
+  };
+  await circleStep(operation, () => update(ref(database, `clubs/${clubId}`), changes));
 
   window.currentNextRead = null;
 
@@ -3378,32 +4269,38 @@ window.finishFeaturedBook = async function () {
 
   showToast("Book moved to Finished Reads.");
   showClubRoomTab("current");
+  });
 };
 window.saveTotalChapters = async function () {
+  return runCircleOperation(async operation => {
   const user = auth.currentUser;
-  const clubId = window.currentClubId;
+  const clubId = operation.clubId;
   const input = document.getElementById("totalChaptersInput");
 
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
   if (!input.value) return alert("Enter the total number of chapters.");
 
-  await set(ref(database, `clubs/${clubId}/featuredVolume/totalChapters`), Number(input.value));
+  await circleStep(operation, () => set(ref(database, `clubs/${clubId}/featuredVolume/totalChapters`), Number(input.value)));
 
   alert("Chapter count saved!");
+  });
 };
 
 window.checkInForBook = async function () {
+  return runCircleOperation(async operation => {
   const user = auth.currentUser;
-  const clubId = window.currentClubId;
+  const clubId = operation.clubId;
 
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
 
-  await set(ref(database, `clubs/${clubId}/featuredVolume/checkins/${user.uid}`), {
-    name: user.displayName || user.email || "Member",
+  const profile = await circleStep(operation, () => readPublicProfile(operation.uid));
+  await circleStep(operation, () => set(ref(database, `clubs/${clubId}/featuredVolume/checkins/${operation.uid}`), {
+    name: profile.username || "Reader",
     checkedIn: true,
     checkedInAt: Date.now()
+  }));
   });
 };
 function getDaysLeftText(dueDate) {
@@ -3426,16 +4323,13 @@ function getDaysLeftText(dueDate) {
   return "(Past due)";
 }
 function listenToFeaturedVolumeProgress(clubId) {
-  const progressRef = ref(database, `clubs/${clubId}`);
-
-  onValue(progressRef, (snapshot) => {
-    const clubData = snapshot.val() || {};
-const data = clubData.featuredVolume || {};
+  let data = {};
+  let members = {};
+  const renderProgress = () => {
 
 const totalChapters = data.totalChapters || null;
 const checkins = data.checkins || {};
 
-const members = clubData.members || {};
 const memberCount = Object.keys(members).length;
     const currentGoal = data.currentGoal || "Chapters 1–5";
     const dueDateLabel = data.dueDateLabel || "May 30";
@@ -3505,7 +4399,7 @@ if (chapterText) {
     if (checkinsList) {
   checkinsList.innerHTML = Object.values(checkins).map(member => `
     <div class="checkin-row">
-      <span>${member.name}</span>
+      <span>${escapeHTML(member.name)}</span>
       <span>✅ Goal complete</span>
     </div>
   `).join("");
@@ -3519,7 +4413,7 @@ if (modalCheckinsPreview) {
   modalCheckinsPreview.innerHTML = checkedMembers.length
   ? checkedMembers.map(member => `
       <div class="modal-checkin-row">
-        <span class="modal-checkin-name">${member.name}</span>
+        <span class="modal-checkin-name">${escapeHTML(member.name)}</span>
         <span class="modal-checkin-status">✅ Goal Complete</span>
       </div>
     `).join("")
@@ -3575,6 +4469,14 @@ if (lockText) {
       : `${checkedInCount}/${totalMembers} members checked in.`;
   }
 }
+  };
+  listenCircle("featured-progress", clubId, "featuredVolume", snapshot => {
+    data = snapshot.val() || {};
+    renderProgress();
+  });
+  listenCircle("progress-members", clubId, "access/members", snapshot => {
+    members = snapshot.val() || {};
+    renderProgress();
   });
 }
 function openReadingGoalModal() {
@@ -3606,53 +4508,46 @@ window.loadFinishedBookReviews = function (book) {
 
   if (!clubId || !book || !book.title || !reviewsList) return;
 
-  onValue(
-    ref(database,
-      `clubs/${clubId}/finishedBookReviews/${book.title}`
-    ),
+  listenCircle("finished-reviews", clubId, `finishedBookReviews/${book.title}`,
     (snapshot) => {
 
       const reviews = snapshot.val() || {};
 
-      reviewsList.innerHTML =
-        Object.values(reviews).length
-          ? Object.values(reviews).map(review => `
-             <div class="finished-review-card">
-
-  <div class="finished-review-name">
-    ${review.name || "Reader"}
-  </div>
-
-  <div class="finished-review-stars">
-  ${"★".repeat(review.rating || 0)}${"☆".repeat(5 - (review.rating || 0))}
-</div>
-
-  <p class="finished-review-text">
-    ${review.text || ""}
-  </p>
-
-  <div class="finished-review-date">
-    ${new Date(review.createdAt || Date.now()).toLocaleDateString(
-      "en-US",
-      {
-        month: "long",
-        day: "numeric",
-        year: "numeric"
+      const cards = Object.values(reviews).map(review => {
+        const card = document.createElement("div");
+        card.className = "finished-review-card";
+        const name = document.createElement("div");
+        name.className = "finished-review-name";
+        name.textContent = review.name || "Reader";
+        const stars = document.createElement("div");
+        stars.className = "finished-review-stars";
+        const rating = Math.min(5, Math.max(0, Math.trunc(Number(review.rating) || 0)));
+        stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+        const text = document.createElement("p");
+        text.className = "finished-review-text";
+        text.textContent = review.text || "";
+        const date = document.createElement("div");
+        date.className = "finished-review-date";
+        date.textContent = new Date(review.createdAt || Date.now()).toLocaleDateString(
+          "en-US", { month: "long", day: "numeric", year: "numeric" }
+        );
+        card.append(name, stars, text, date);
+        return card;
+      });
+      if (!cards.length) {
+        const empty = document.createElement("p");
+        empty.className = "helper";
+        empty.textContent = "No reviews yet. Be the first to share your thoughts.";
+        cards.push(empty);
       }
-    )}
-  </div>
-
-</div>
-            `).join("")
-          : `<p class="helper">
-               No reviews yet. Be the first to share your thoughts.
-             </p>`;
+      reviewsList.replaceChildren(...cards);
     }
   );
 };
 window.saveFinishedBookReview = async function (book) {
+  return runCircleOperation(async operation => {
   const user = auth.currentUser;
-  const clubId = window.currentClubId;
+  const clubId = operation.clubId;
   const input = document.getElementById("finishedBookReviewInput");
 const ratingInput = document.getElementById("finishedBookReviewRating");
 const rating = Number(ratingInput?.value || 0);
@@ -3661,18 +4556,19 @@ const rating = Number(ratingInput?.value || 0);
   if (!book || !book.title) return alert("Book not found.");
   if (!input || !input.value.trim()) return alert("Write a review first.");
 if (!rating) return alert("Choose a star rating first.");
+  const profile = await circleStep(operation, () => readPublicProfile(operation.uid));
   const reviewRef = ref(
   database,
   `clubs/${clubId}/finishedBookReviews/${book.title}/${user.uid}`
 );
 
-  await set(reviewRef, {
+  await circleStep(operation, () => set(reviewRef, {
   userId: user.uid,
-  name: user.displayName || user.email || "Reader",
+  name: profile.username || "Reader",
   rating,
   text: input.value.trim(),
   createdAt: Date.now()
-});
+}));
 
   const reviewText = input.value.trim();
 
@@ -3681,46 +4577,58 @@ input.value = "";
 const reviewsList = document.getElementById("finishedBookReviewsList");
 
 if (reviewsList) {
-  reviewsList.innerHTML = `
-    <div class="finished-review-card">
-      <strong>${user.displayName || user.email || "Reader"}</strong>
-      <p>${reviewText}</p>
-    </div>
-  `;
+  const card = document.createElement("div");
+  card.className = "finished-review-card";
+  const name = document.createElement("strong");
+  name.textContent = profile.username || "Reader";
+  const text = document.createElement("p");
+  text.textContent = reviewText;
+  card.append(name, text);
+  reviewsList.replaceChildren(card);
 } else {
   alert("Reviews list not found.");
 }
 
 showToast("Review posted!");
+  });
 };
 window.openReaderProfile = async function (uid) {
   const modal = document.getElementById("readerProfileModal");
   const content = document.getElementById("readerProfileContent");
 
   if (!modal || !content) return;
+  const view = friendshipSession.beginView(uid);
+  if (!view) return;
+  const valid = () => friendshipSession.isViewCurrent(view) &&
+    content.isConnected && document.getElementById("readerProfileContent") === content;
+  content.replaceChildren();
+  modal.style.display = "none";
 
-  const userSnapshot = await get(ref(database, "users/" + uid));
-  const userData = userSnapshot.val() || {};
+  let userData;
+  try {
+    userData = await readPublicProfile(uid);
+  } catch (error) {
+    if (valid() || !isFriendshipPermissionDenied(error)) reportFriendshipFailure("profile-read", error);
+    if (valid()) {
+      friendshipMessage(content, "This reader's profile could not be loaded.");
+      modal.style.display = "flex";
+    }
+    return;
+  }
+  if (!valid()) return;
+  const displayName = userData.username;
 
-  const displayName =
-    userData.username ||
-    userData.email ||
-    "Reader";
-
-  const avatar =
-    userData.avatar || "📚";
+  const avatar = userData.avatar || "📚";
 
   content.innerHTML = `
     <div class="finished-detail-card">
 
       <div class="finished-detail-hero">
-        <div class="finished-detail-placeholder">
-          ${avatar}
-        </div>
+        <div class="finished-detail-placeholder"></div>
 
         <div>
           <p class="mini-label">Reader Profile</p>
-          <h2>${escapeHTML(displayName)}</h2>
+          <h2></h2>
           <p class="helper">Spine Society reader</p>
         </div>
       </div>
@@ -3739,23 +4647,26 @@ window.openReaderProfile = async function (uid) {
 
         <button
   class="secondary"
-  onclick="openReaderStacks('${uid}')">
+  onclick="openReaderStacks(${escapeInlineJson(uid)})">
   View Stacks
 </button>
       </section>
 
       <section class="finished-detail-section">
         <h3>Library</h3>
-        <p class="helper">Full library unlocks for friends.</p>
+        <p class="helper">Personal libraries are private and are not available from reader profiles.</p>
 
-        <button class="secondary">
+        <button class="secondary" type="button" disabled aria-disabled="true"
+          title="Personal libraries are private">
           View Library
         </button>
       </section>
 
     </div>
   `;
-loadReaderFriendStatus(uid);
+  content.querySelector(".finished-detail-placeholder").textContent = avatar;
+  content.querySelector("h2").textContent = displayName;
+loadReaderFriendStatus(uid, view);
   modal.style.display = "flex";
 };
 window.openReaderStacks = async function (uid) {
@@ -3791,38 +4702,47 @@ window.closeReaderStacks = function () {
   if (modal) modal.style.display = "none";
 };
 window.closeReaderProfileModal = function () {
+  friendshipSession.closeView();
   const modal = document.getElementById("readerProfileModal");
   if (modal) modal.style.display = "none";
 };
 
 window.sendFriendRequest = async function (uid) {
   const user = auth.currentUser;
+  const session = friendshipSession.current;
 
   if (!user) return alert("Please log in first.");
   if (!uid) return alert("Reader not found.");
   if (uid === user.uid) return alert("You can't add yourself.");
+  if (!friendshipSession.isCurrent(session)) return;
 
-  await set(ref(database, `users/${uid}/friendRequests/${user.uid}`), {
-    from: user.uid,
-    email: user.email || "",
-    createdAt: Date.now()
-  });
-
-  showToast("Friend request sent!");
+  try {
+    await set(ref(database, `users/${uid}/friendRequests/${user.uid}`), {
+      from: user.uid,
+      email: user.email || "",
+      createdAt: Date.now()
+    });
+    if (friendshipSession.isCurrent(session)) showToast("Friend request sent!");
+  } catch (error) {
+    const current = friendshipSession.isCurrent(session);
+    if (current || !isFriendshipPermissionDenied(error)) reportFriendshipFailure("send-request", error);
+    if (current) showToast("Friend request could not be sent.", "error");
+  }
 };
-window.listenForFriendRequests = function () {
-  const user = auth.currentUser;
-
-  if (!user) return;
+window.listenForFriendRequests = function (session = friendshipSession.current) {
+  if (!friendshipSession.isCurrent(session)) return;
 
   const container =
     document.getElementById("friendRequestsList");
 
   if (!container) return;
 
-  onValue(
-    ref(database, `users/${user.uid}/friendRequests`),
-    (snapshot) => {
+  const live = valid => valid() && container.isConnected &&
+    document.getElementById("friendRequestsList") === container;
+  friendshipSession.listen("requests", session,
+    (next, fail) => onValue(ref(database, `users/${session.uid}/friendRequests`), next, fail),
+    (snapshot, valid) => {
+      if (!live(valid)) return;
 
       const requests = snapshot.val() || {};
 
@@ -3839,51 +4759,78 @@ window.listenForFriendRequests = function () {
           <div class="book-item">
 
             <div class="item-title">
-              ${requests[uid].email || "Reader"}
+              ${escapeHTML(requests[uid].email || "Reader")}
             </div>
 
-            <button onclick="acceptFriendRequest('${uid}')">
+            <button onclick="acceptFriendRequest(${escapeInlineJson(uid)})">
               Accept
             </button>
 
           </div>
         `).join("");
-    }
+    },
+    (error, valid) => friendshipReadFailure("requests-list", error, () => live(valid),
+      container, "Friend requests could not be loaded.")
   );
 };
 window.acceptFriendRequest = async function (uid) {
   const user = auth.currentUser;
+  const session = friendshipSession.current;
 
-  if (!user) return;
+  if (!user || !uid || !friendshipSession.isCurrent(session)) return;
+  let acknowledged = 0;
+  const current = () => friendshipSession.isCurrent(session);
+  const stopIfObsolete = () => {
+    if (current()) return false;
+    if (acknowledged > 0 && acknowledged < 3) {
+      reportFriendshipFailure("accept-request", "session-ended", acknowledged);
+    }
+    return true;
+  };
+  try {
 
   await set(
     ref(database, `users/${user.uid}/friends/${uid}`),
     true
   );
+  acknowledged = 1;
+  if (stopIfObsolete()) return;
 
   await set(
     ref(database, `users/${uid}/friends/${user.uid}`),
     true
   );
+  acknowledged = 2;
+  if (stopIfObsolete()) return;
 
   await remove(
     ref(database, `users/${user.uid}/friendRequests/${uid}`)
   );
+  acknowledged = 3;
 
-  showToast("Friend added!");
+  if (current()) showToast("Friend added!");
+  } catch (error) {
+    if (current() || acknowledged > 0 || !isFriendshipPermissionDenied(error)) {
+      reportFriendshipFailure("accept-request", error, acknowledged);
+    }
+    if (current()) showToast(acknowledged > 0
+      ? "Friendship acceptance partially completed. No automatic repairs were made."
+      : "Friend request could not be accepted.", "error");
+  }
 };
-window.listenForFriends = function () {
-  const user = auth.currentUser;
-
-  if (!user) return;
+window.listenForFriends = function (session = friendshipSession.current) {
+  if (!friendshipSession.isCurrent(session)) return;
 
   const container = document.getElementById("friendsList");
 
   if (!container) return;
 
-  onValue(
-    ref(database, `users/${user.uid}/friends`),
-    async (snapshot) => {
+  const live = valid => valid() && container.isConnected &&
+    document.getElementById("friendsList") === container;
+  friendshipSession.listen("friends", session,
+    (next, fail) => onValue(ref(database, `users/${session.uid}/friends`), next, fail),
+    async (snapshot, valid) => {
+      if (!live(valid)) return;
       const friends = snapshot.val() || {};
       const friendIds = Object.keys(friends);
 
@@ -3896,15 +4843,20 @@ window.listenForFriends = function () {
       let html = "";
 
       for (const uid of friendIds) {
-        const userSnapshot =
-          await get(ref(database, `users/${uid}`));
+        if (!live(valid)) return;
+        let userData;
+        try {
+          userData = await readPublicProfile(uid);
+        } catch (error) {
+          if (!isFriendshipPermissionDenied(error)) throw error;
+          if (!live(valid)) return;
+          reportFriendshipFailure("friend-profile-read", error);
+          html += `<div class="book-item"><div class="item-title">Profile unavailable</div></div>`;
+          continue;
+        }
+        if (!live(valid)) return;
 
-        const userData = userSnapshot.val() || {};
-
-        const displayName =
-          userData.username ||
-          userData.email ||
-          "Reader";
+        const displayName = userData.username;
 
         html += `
           <div class="book-item">
@@ -3914,27 +4866,54 @@ window.listenForFriends = function () {
 
             <button
               class="secondary"
-              onclick="openReaderProfile('${uid}')">
+              onclick="openReaderProfile(${escapeInlineJson(uid)})">
               View Profile
             </button>
           </div>
         `;
       }
 
-      container.innerHTML = html;
-    }
+      if (live(valid)) container.innerHTML = html;
+    },
+    (error, valid) => friendshipReadFailure("friends-list", error, () => live(valid),
+      container, "Friends could not be loaded.")
   );
 };
+function clearBookmarkDisplays() {
+  currentBookmarkBooks = [];
+  const modal = document.getElementById("bookModal");
+  if (modal?.dataset.bookmarkView === "true") {
+    modal.style.display = "none";
+    document.getElementById("bookModalBody")?.replaceChildren();
+    delete modal.dataset.bookmarkView;
+  }
+  document.getElementById("bookmarksList")?.replaceChildren();
+  document.getElementById("nookDogEaredShelf")?.replaceChildren();
+}
+
+function stopBookmarkListener() {
+  bookmarksSessionToken += 1;
+  const unsubscribe = bookmarksUnsubscribe;
+  bookmarksUnsubscribe = null;
+  unsubscribe?.();
+}
+
 window.saveToBookmarks = async function (book) {
   const user = auth.currentUser;
+  const session = personalLibrarySession.current;
 
   if (!user) return alert("Please log in first.");
+  const isCurrent = () => user.emailVerified === true &&
+    auth.currentUser?.uid === user.uid &&
+    currentUser?.uid === user.uid &&
+    personalLibrarySession.isCurrent(session);
+  if (!isCurrent()) return alert("Please log in first.");
   if (!book || !book.title) return alert("Book not found.");
 
   const bookmarksRef = ref(database, `users/${user.uid}/bookmarks`);
   const snapshot = await get(bookmarksRef);
+  if (!isCurrent()) return;
   const existingBookmarks = snapshot.val() || {};
-
   const alreadySaved = Object.values(existingBookmarks).some(savedBook =>
     (savedBook.title || "").toLowerCase() === (book.title || "").toLowerCase() &&
     (savedBook.author || "").toLowerCase() === (book.author || "").toLowerCase()
@@ -3946,115 +4925,99 @@ window.saveToBookmarks = async function (book) {
   }
 
   const bookmarkRef = push(bookmarksRef);
-
+  if (!isCurrent()) return;
   await set(bookmarkRef, {
-  sourceBookId: book.id || "",
-  title: book.title || "",
-  author: book.author || "",
-  image: book.image || "",
-  category: book.category || "",
-
-  // Preserve the original length choice
-  lengthType: book.lengthType || "",
-  lengthCount: book.lengthCount || "",
-
-  savedAt: Date.now()
-});
-
-  showToast("Saved to Dog-Eared Pages 🔖");
+    sourceBookId: book.id || "",
+    title: book.title || "",
+    author: book.author || "",
+    image: book.image || "",
+    category: book.category || "",
+    // Preserve the original length choice.
+    lengthType: book.lengthType || "",
+    lengthCount: book.lengthCount || "",
+    savedAt: Date.now()
+  });
+  if (isCurrent()) showToast("Saved to Dog-Eared Pages 🔖");
 };
-window.listenForBookmarks = function () {
+
+window.listenForBookmarks = function (session = personalLibrarySession.current) {
+  stopBookmarkListener();
   const user = auth.currentUser;
-
-  if (!user) return;
-
-  const container =
-  document.getElementById("bookmarksList");
-
-const nookContainer =
-  document.getElementById("nookDogEaredShelf");
-
-if (!container && !nookContainer) return;
-
-  onValue(
-    ref(database, `users/${user.uid}/bookmarks`),
-    (snapshot) => {
-      const bookmarks = snapshot.val() || {};
-      const bookmarkIds = Object.keys(bookmarks);
-
-      if (!bookmarkIds.length) {
-  if (container) {
-    container.innerHTML =
-      `<p class="status">No dog-eared pages yet.</p>`;
+  if (!user || user.emailVerified !== true ||
+      !personalLibrarySession.isCurrent(session) || session.uid !== user.uid ||
+      currentUser?.uid !== user.uid) {
+    clearBookmarkDisplays();
+    return;
   }
+  const uid = user.uid;
+  const token = bookmarksSessionToken;
+  const isCurrent = () => bookmarksSessionToken === token &&
+    auth.currentUser?.uid === uid && currentUser?.uid === uid &&
+    personalLibrarySession.isCurrent(session);
+  const container = document.getElementById("bookmarksList");
+  const nookContainer = document.getElementById("nookDogEaredShelf");
+  if (!container && !nookContainer) return;
 
-  if (nookContainer) {
-    nookContainer.innerHTML =
-      `<p class="status">No dog-eared pages yet.</p>`;
-  }
-
-  return;
-}
-
-      container.innerHTML = `
-  <div class="bookshelf-row">
-    ${bookmarkIds.map(id => {
-      const savedBook = bookmarks[id];
-
-      const book = {
-        ...savedBook,
-        id: savedBook.sourceBookId || id
-      };
-
-      return renderLibrarySpine(book);
-    }).join("")}
-  </div>
-`;
-      if (nookContainer) {
-  const previewBookmarks = bookmarkIds.slice(0, 6);
-
-  nookContainer.innerHTML = previewBookmarks
-  .map(id => {
-    const savedBook = bookmarks[id];
-
-const book = {
-  ...savedBook,
-  id: savedBook.sourceBookId || id
-};
-
-return renderLibrarySpine(book);
-  })
-  .join("");
-}
+  const unsubscribe = onValue(ref(database, `users/${uid}/bookmarks`), snapshot => {
+    if (!isCurrent()) return;
+    const bookmarks = snapshot.val() || {};
+    const bookmarkIds = Object.keys(bookmarks);
+    currentBookmarkBooks = bookmarkIds.map(id => ({...bookmarks[id], id}));
+    if (!bookmarkIds.length) {
+      if (container) container.innerHTML = `<p class="status">No dog-eared pages yet.</p>`;
+      if (nookContainer) nookContainer.innerHTML = `<p class="status">No dog-eared pages yet.</p>`;
+      return;
     }
-  );
+    const renderBookmark = id => renderLibrarySpine({...bookmarks[id], id}, "bookmark");
+    if (container) {
+      container.innerHTML = `<div class="bookshelf-row">${bookmarkIds.map(renderBookmark).join("")}</div>`;
+    }
+    if (nookContainer) {
+      nookContainer.innerHTML = bookmarkIds.slice(0, 6).map(renderBookmark).join("");
+    }
+  }, () => {
+    if (!isCurrent()) return;
+    stopBookmarkListener();
+    clearBookmarkDisplays();
+    showToast("Dog-Eared Pages could not be loaded.", "error");
+  });
+  if (isCurrent()) bookmarksUnsubscribe = unsubscribe;
+  else unsubscribe();
 };
 window.openBookmarksPage = function () {
   showScreen("bookmarks");
 };
-window.loadReaderFriendStatus = function (uid) {
-  const user = auth.currentUser;
+window.loadReaderFriendStatus = function (uid, view = friendshipSession.view) {
   const statusBox = document.getElementById("readerFriendStatus");
 
-  if (!user || !uid || !statusBox) return;
+  if (!uid || !statusBox || !friendshipSession.isViewCurrent(view) || view.uid !== uid) return;
+  friendshipSession.stop("profile-status");
+  const live = () => friendshipSession.isViewCurrent(view) && statusBox.isConnected &&
+    document.getElementById("readerFriendStatus") === statusBox;
 
-  if (uid === user.uid) {
+  if (uid === view.session.uid) {
     statusBox.innerHTML = `<p class="helper">This is your profile.</p>`;
     return;
   }
 
-  onValue(ref(database, `users/${user.uid}/friends/${uid}`), (snapshot) => {
+  friendshipSession.listen("profile-status", view.session,
+    (next, fail) => onValue(ref(database, `users/${view.session.uid}/friends/${uid}`), next, fail),
+    (snapshot, valid) => {
+    if (!live() || !valid()) return;
     if (snapshot.exists()) {
       statusBox.innerHTML = `<p class="helper">✓ Friends</p>`;
     } else {
       statusBox.innerHTML = `
         <p class="helper">Not friends yet.</p>
-        <button onclick="sendFriendRequest('${uid}')">
+        <button onclick="sendFriendRequest(${escapeInlineJson(uid)})">
           Add Friend
         </button>
       `;
     }
-  });
+  },
+    (error, valid) => friendshipReadFailure("profile-status", error, () => live() && valid(),
+      statusBox, "Friend status could not be checked.")
+  );
 };
 window.setReviewRating = function (rating) {
   const input =
@@ -4073,25 +5036,28 @@ window.setReviewRating = function (rating) {
   }
 };
 window.saveFinishedBookRating = async function (book, rating) {
+  return runCircleOperation(async operation => {
   const user = auth.currentUser;
-  const clubId = window.currentClubId;
+  const clubId = operation.clubId;
 
   if (!user) return alert("Please log in first.");
   if (!clubId) return alert("Open a club first.");
   if (!book || !book.title) return alert("Book not found.");
 
-  await set(
+  const profile = await circleStep(operation, () => readPublicProfile(operation.uid));
+  await circleStep(operation, () => set(
     ref(database, `clubs/${clubId}/finishedBookRatings/${book.title}/${user.uid}`),
     {
       userId: user.uid,
-      name: user.displayName || user.email || "Reader",
+      name: profile.username || "Reader",
       rating,
       createdAt: Date.now()
     }
-  );
+  ));
 
   loadFinishedBookRatings(book);
 showToast(`Rated ${rating} stars!`);
+  });
 };
 window.loadFinishedBookRatings = function (book) {
   const clubId = window.currentClubId;
@@ -4099,8 +5065,7 @@ window.loadFinishedBookRatings = function (book) {
 
   if (!clubId || !book || !book.title || !summary) return;
 
-  onValue(
-    ref(database, `clubs/${clubId}/finishedBookRatings/${book.title}`),
+  listenCircle("finished-ratings", clubId, `finishedBookRatings/${book.title}`,
     (snapshot) => {
       const ratings = snapshot.val() || {};
       const ratingArray = Object.values(ratings);
@@ -4122,6 +5087,7 @@ window.loadFinishedBookRatings = function (book) {
   );
 };
 window.saveGoalEditor = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a club first.");
     return;
@@ -4137,18 +5103,19 @@ window.saveGoalEditor = async function () {
 
   const goalText = `Chapters ${start}–${end}`;
 
-  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+  await circleStep(operation, () => update(ref(database, `clubs/${operation.clubId}/featuredVolume`), {
   currentGoal: goalText,
   goalStart: start,
   goalEnd: end,
   updatedAt: Date.now(),
   checkins: {}
-});
+}));
 
   document.getElementById("readingGoalDisplay").textContent = goalText;
   document.getElementById("modalGoalDisplay").textContent = goalText;
 
   showToast("Reading goal updated.");
+  });
 };
 window.toggleDueDateEditor = function () {
   const editor = document.getElementById("dueDateEditor");
@@ -4159,6 +5126,7 @@ window.toggleDueDateEditor = function () {
 };
 
 window.saveDueDateEditor = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a club first.");
     return;
@@ -4176,16 +5144,17 @@ window.saveDueDateEditor = async function () {
     day: "numeric"
   });
 
-  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+  await circleStep(operation, () => update(ref(database, `clubs/${operation.clubId}/featuredVolume`), {
     dueDate,
     dueDateLabel: formattedDate,
     updatedAt: Date.now()
-  });
+  }));
 
   document.getElementById("readingDueDisplay").textContent = formattedDate;
   document.getElementById("modalDueDisplay").textContent = formattedDate;
 
   showToast("Due date updated.");
+  });
 };
 window.toggleTotalChaptersEditor = function () {
   const editor = document.getElementById("totalChaptersEditor");
@@ -4196,6 +5165,7 @@ window.toggleTotalChaptersEditor = function () {
 };
 
 window.saveTotalChaptersEditor = async function () {
+  return runCircleOperation(async operation => {
   if (!window.currentClubId) {
     alert("Open a club first.");
     return;
@@ -4209,10 +5179,10 @@ window.saveTotalChaptersEditor = async function () {
     return;
   }
 
-  await update(ref(database, `clubs/${window.currentClubId}/featuredVolume`), {
+  await circleStep(operation, () => update(ref(database, `clubs/${operation.clubId}/featuredVolume`), {
     totalChapters: Number(totalChapters),
     updatedAt: Date.now()
-  });
+  }));
 
   const modalTotal =
     document.getElementById("modalTotalChapterDisplay");
@@ -4229,8 +5199,10 @@ window.saveTotalChaptersEditor = async function () {
   }
 
   showToast("Total chapters updated.");
+  });
 };
 window.openFinishedBookDetails = function (book) {
+  if (!circleSession.isActive(circleSession.view)) return;
   const modal = document.getElementById("finishedBookModal");
   const content = document.getElementById("finishedBookModalContent");
 
@@ -4241,8 +5213,8 @@ window.openFinishedBookDetails = function (book) {
 
       <div class="finished-detail-hero">
         ${
-          book.image
-            ? `<img src="${escapeAttr(book.image)}" class="finished-detail-cover">`
+          safeImageSource(book.image)
+            ? `<img src="${escapeAttr(safeImageSource(book.image))}" class="finished-detail-cover">`
             : `<div class="finished-detail-placeholder">📚</div>`
         }
 
@@ -4257,11 +5229,11 @@ window.openFinishedBookDetails = function (book) {
   <h3>Club Rating</h3>
 
   <div class="rating-picker">
-    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 1)'>★</button>
-    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 2)'>★</button>
-    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 3)'>★</button>
-    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 4)'>★</button>
-    <button onclick='saveFinishedBookRating(${JSON.stringify(book)}, 5)'>★</button>
+    <button onclick="saveFinishedBookRating(${escapeInlineJson(book)}, 1)">★</button>
+    <button onclick="saveFinishedBookRating(${escapeInlineJson(book)}, 2)">★</button>
+    <button onclick="saveFinishedBookRating(${escapeInlineJson(book)}, 3)">★</button>
+    <button onclick="saveFinishedBookRating(${escapeInlineJson(book)}, 4)">★</button>
+    <button onclick="saveFinishedBookRating(${escapeInlineJson(book)}, 5)">★</button>
   </div>
 
   <p id="finishedBookRatingSummary" class="helper">
@@ -4292,7 +5264,7 @@ window.openFinishedBookDetails = function (book) {
     style="width:100%; min-height:90px; margin-top:10px;"
   ></textarea>
 
-  <button onclick='saveFinishedBookReview(${JSON.stringify(book)})'>
+  <button onclick="saveFinishedBookReview(${escapeInlineJson(book)})">
     Post Review
   </button>
 
@@ -4315,6 +5287,8 @@ modal.style.display = "flex";
 };
 
 window.closeFinishedBookModal = function () {
+  circleSession.stop("finished-reviews");
+  circleSession.stop("finished-ratings");
   const modal =
     document.getElementById("finishedBookModal");
 

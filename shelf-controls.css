@@ -1,0 +1,234 @@
+/* Personal bookshelf controls — intentionally scoped to the personal shelf. */
+#libraryGrid.personal-shelf-host,
+.nook-book-spines.personal-shelf-host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  overflow: visible;
+  padding: 0;
+}
+
+.personal-shelf-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 12px;
+  color: #ead9b2;
+  background: linear-gradient(180deg, rgba(68, 43, 28, .96), rgba(43, 29, 21, .98));
+  border: 1px solid rgba(197, 157, 91, .48);
+  border-bottom-color: rgba(22, 15, 11, .7);
+  border-radius: 7px 7px 2px 2px;
+  box-shadow:
+    inset 0 1px rgba(255, 235, 190, .08),
+    0 3px 9px rgba(17, 11, 8, .24);
+}
+
+.personal-shelf-tools button {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 13px;
+  color: #f0dfb9;
+  font: inherit;
+  font-size: .92rem;
+  line-height: 1.2;
+  background: linear-gradient(180deg, #67472d, #4a3020);
+  border: 1px solid #a27b43;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px rgba(255, 237, 194, .12),
+    0 2px 3px rgba(15, 10, 7, .3);
+  cursor: pointer;
+  transition: transform .16s ease, opacity .16s ease;
+}
+
+.personal-shelf-tools button:hover {
+  transform: translateY(-1px);
+}
+
+.personal-shelf-tools button:active {
+  transform: translateY(1px);
+}
+
+.personal-shelf-tools button:focus-visible {
+  outline: 2px solid #e0bd78;
+  outline-offset: 3px;
+}
+
+.personal-shelf-mode {
+  width: auto;
+  color: #f5e6c3 !important;
+  background: linear-gradient(180deg, #85633a, #644626) !important;
+  border-color: #c3a05c !important;
+}
+
+.personal-shelf-navigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.personal-shelf-navigation button {
+  width: 44px;
+  padding: 7px;
+  color: #e2c486;
+  font-size: 1.15rem;
+}
+
+.personal-shelf-status {
+  flex: 1 1 150px;
+  min-width: 0;
+  margin: 6px 0;
+  color: #d1bc95;
+  font-size: .85rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* Override the Nook's flex/hidden spine row only when it is this viewport. */
+.personal-shelf-viewport {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: clamp(170px, 24vw, 230px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: #9a7441 rgba(39, 26, 18, .62);
+  scrollbar-width: thin;
+  background:
+    linear-gradient(180deg, rgba(42, 27, 18, .14), rgba(17, 12, 9, .24)),
+    linear-gradient(180deg, #503520 0%, #38261b 70%, #79552e 71%, #604326 100%);
+  border: 1px solid rgba(187, 143, 75, .48);
+  border-radius: 2px 2px 5px 5px;
+  box-shadow:
+    inset 0 7px 12px rgba(13, 9, 6, .2),
+    inset 0 -5px 0 rgba(20, 13, 8, .2),
+    0 5px 12px rgba(18, 12, 8, .25);
+}
+
+.personal-shelf-viewport::-webkit-scrollbar {
+  height: 9px;
+}
+
+.personal-shelf-viewport::-webkit-scrollbar-track {
+  background: rgba(28, 19, 13, .55);
+}
+
+.personal-shelf-viewport::-webkit-scrollbar-thumb {
+  background: #987343;
+  border: 2px solid rgba(40, 27, 18, .85);
+  border-radius: 8px;
+}
+
+.personal-shelf-track {
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+  height: 100%;
+}
+
+.personal-shelf-book {
+  position: absolute;
+  bottom: 0;
+  flex: 0 0 auto;
+  z-index: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.personal-shelf-viewport .personal-shelf-book {
+  touch-action: pan-x pan-y;
+}
+
+.personal-shelf-book.is-held {
+  position: absolute;
+  z-index: 20;
+}
+
+.personal-shelf-book.needs-position-attention {
+  outline: 2px dashed #efbd77;
+  outline-offset: 3px;
+}
+
+.personal-shelf-attention-label {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  width: 220px;
+  color: #ffe0a6;
+  font: 600 13px/1.3 sans-serif;
+  white-space: normal;
+}
+
+.personal-shelf-attention {
+  min-height: 44px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  color: #ffe0a6;
+  background: #513620;
+  border: 1px solid #d2a565;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.personal-shelf-attention[hidden],
+.personal-shelf-attention-label[hidden] {
+  display: none;
+}
+
+.personal-shelf-viewport.is-arranging .personal-shelf-book {
+  touch-action: none;
+  cursor: grab;
+}
+
+.personal-shelf-viewport.is-arranging .personal-shelf-book:focus-visible {
+  outline: 2px solid #e1bf7d;
+  outline-offset: 3px;
+}
+
+.personal-shelf-viewport.is-arranging .personal-shelf-book.is-held {
+  cursor: grabbing;
+}
+
+@media (max-width: 560px) {
+  .personal-shelf-tools {
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .personal-shelf-mode {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px;
+  }
+
+  .personal-shelf-navigation {
+    flex: 0 0 auto;
+  }
+
+  .personal-shelf-status {
+    flex: 1 1 120px;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .personal-shelf-viewport {
+    height: 190px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .personal-shelf-tools button {
+    transition: none;
+  }
+}

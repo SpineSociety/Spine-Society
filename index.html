@@ -35,6 +35,7 @@
 <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
 
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="shelf-controls.css">
 
 </head>
 
@@ -1169,7 +1170,7 @@
 
 
       <div class="nook-circle-form-section">
-        <label for="joinClubId">Join a Circle</label>
+        <label for="joinClubId">Find a Circle</label>
 
         <input
           id="joinClubId"
@@ -1180,12 +1181,21 @@
           class="secondary"
           onclick="joinClubFromInput()"
         >
-          Join Circle
+          Check Circle
         </button>
+        <div
+          id="circleAccessStatus"
+          class="circle-access-status"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
       </div>
 
     </div>
 
+    <div id="circleInvitationInbox" class="circle-invitation-inbox" aria-live="polite"></div>
+    <div id="circleLeaveStatus" class="circle-access-status" aria-live="polite" hidden></div>
 
     <!-- EXISTING FIREBASE CIRCLES -->
     <div class="nook-circle-count">
@@ -1376,16 +1386,17 @@
   <div class="page-top club-header">
   <div></div>
   <div class="page-title">Current Read</div>
-  <button class="icon-button secondary" onclick="openShelfSettingsModal()">•••</button>
+  <button class="icon-button secondary" onclick="opencircleSettingsModal()">•••</button>
 </div>
 
   <div id="clubHero" style="display:none;"></div>
+  <div id="circleAccessManagement" class="circle-access-management"></div>
 
   <!-- MAIN CLUB ROOM -->
   <div id="currentPanel" class="club-room-panel active">
 
     <section class="club-featured-shell">
-  <button class="club-card-menu" onclick="openShelfSettingsModal()">•••</button>
+  <button class="club-card-menu" onclick="opencircleSettingsModal()">•••</button>
       <div id="nextReadArea">
         <p class="status">No next read set yet.</p>
       </div>
@@ -2117,7 +2128,7 @@ overflow-y: auto;
   </div>
 </div>
 <div
-  id="shelfSettingsModal"
+  id="circleSettingsModal"
   style="
     position:fixed;
     inset:0;
@@ -2146,7 +2157,7 @@ overflow-y: auto;
 
       <button
         class="secondary"
-        onclick="closeCircleSettingsModal()"
+        onclick="closecircleSettingsModal()"
         style="width:auto;min-height:auto;padding:8px 14px;"
       >
         Close
@@ -2163,11 +2174,11 @@ overflow-y: auto;
       Copy Invite Link
     </button>
 
-    <button class="danger" onclick="leaveCurrentCircle()">
+    <button class="danger" onclick="leaveCurrentcircle()">
       Leave Circle 
     </button>
 
-    <button class="danger" onclick="deleteCurrentCircle()">
+    <button class="danger" onclick="deleteCurrentcircle()">
       Delete Circle 
     </button>
   </div>

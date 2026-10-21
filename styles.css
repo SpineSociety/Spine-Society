@@ -7647,6 +7647,47 @@ z-index: 20 !important;
   outline:1px solid rgba(200,163,106,.7);
   outline-offset:3px;
 }
+
+.circle-access-status,
+.circle-invitation-inbox,
+.circle-access-management {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(200,163,106,.18);
+  border-radius: 14px;
+  background: rgba(20,17,15,.72);
+  color: var(--ink);
+}
+
+.circle-access-status[hidden] {
+  display: none;
+}
+
+.circle-access-status p,
+.circle-access-card p {
+  margin: 0 0 8px;
+}
+
+.circle-access-card {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid rgba(200,163,106,.16);
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+}
+
+.circle-access-card button {
+  width: auto;
+  justify-self: start;
+}
+
+.circle-invitation-inbox:empty,
+.circle-access-management:empty {
+  display: none;
+}
+
 /* ==========================================
    NOOK — COMPACT CREATE / JOIN BUTTON
 ========================================== */
