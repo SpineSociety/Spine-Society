@@ -462,6 +462,8 @@ window.signUpWithEmail = async function () {
 
   if (!validateLoginInputs()) return;
 
+  let createdUser = null;
+
   try {
     await setPersistence(auth, browserLocalPersistence);
 
@@ -470,11 +472,33 @@ window.signUpWithEmail = async function () {
       email,
       password
     );
+    createdUser = userCredential.user;
 
-    await sendEmailVerification(userCredential.user, {
-      url: "https://spinesociety.github.io/Spine-Society/",
-      handleCodeInApp: false
-    });
+    try {
+      await sendEmailVerification(createdUser, {
+        url: "https://spinesociety.github.io/Spine-Society/",
+        handleCodeInApp: false
+      });
+    } catch (emailError) {
+      const resendBtn = document.getElementById("resendVerificationBtn");
+      if (resendBtn) resendBtn.style.display = "block";
+
+      let signedOut = false;
+      try {
+        await signOutWithLibraryCleanup();
+        signedOut = true;
+      } catch (signOutError) {
+        console.error("Could not sign out after verification email failure:", signOutError);
+      }
+
+      showToast(
+        signedOut
+          ? "Your account was created, but the verification email could not be sent. Sign in with the same email and password, then choose Resend Verification Email. Do not create another account."
+          : "Your account was created, but the verification email could not be sent. Choose Resend Verification Email below to try again. Do not create another account.",
+        "error"
+      );
+      return;
+    }
 
     await signOutWithLibraryCleanup();
 
@@ -497,6 +521,23 @@ window.signUpWithEmail = async function () {
       resendBtn.style.display = "block";
     }
   } catch (error) {
+    if (error?.code === "auth/email-already-in-use") {
+      const resendBtn = document.getElementById("resendVerificationBtn");
+      if (resendBtn) resendBtn.style.display = "block";
+      showToast(
+        "An account already exists with this email. Sign in and choose Resend Verification Email if it is not verified; no new account was created.",
+        "error"
+      );
+      return;
+    }
+
+    if (createdUser && auth.currentUser?.uid === createdUser.uid) {
+      try {
+        await signOutWithLibraryCleanup();
+      } catch (signOutError) {
+        console.error("Could not sign out after registration failure:", signOutError);
+      }
+    }
     showToast(getAuthErrorMessage(error), "error");
   }
 };
