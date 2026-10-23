@@ -8,6 +8,16 @@ export function isVersionedCircleId(circleId) {
   return typeof circleId === "string" && CIRCLE_ID_PATTERN.test(circleId);
 }
 
+export function isVerifiedV2CircleOwner({
+  circleId, uid, emailVerified, ownerUid, membershipRole
+}) {
+  return isVersionedCircleId(circleId) &&
+    typeof uid === "string" && uid.length > 0 &&
+    emailVerified === true &&
+    ownerUid === uid &&
+    membershipRole === "owner";
+}
+
 export function routeCircleDatabasePath(path) {
   if (typeof path !== "string") return path;
   const parts = path.split("/");

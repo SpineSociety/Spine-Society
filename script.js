@@ -34,7 +34,10 @@ import { createPersonalShelves } from "./personal-shelves.mjs";
 import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
 import { createFriendshipSession, isFriendshipPermissionDenied, friendshipDiagnostic } from "./friendship-session.mjs";
 import { createCircleSession, circleStep, CIRCLE_SESSION_ENDED } from "./circle-session.mjs";
-import { routeCircleDatabasePath } from "./circle-paths.mjs";
+import {
+  isVerifiedV2CircleOwner,
+  routeCircleDatabasePath
+} from "./circle-paths.mjs";
 const firebaseConfig = {
   apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
   authDomain: "spine-society-b2a3c.firebaseapp.com",
@@ -164,6 +167,8 @@ function clearCircleDisplays() {
   ]) {
     document.getElementById(id)?.replaceChildren();
   }
+  const circlePageTitle = document.getElementById("circlePageTitle");
+  if (circlePageTitle) circlePageTitle.textContent = "Current Read";
   for (const id of ["discussionInput", "discussionInputClub", "checkInAmount",
     "finishedBookReviewInput", "totalChaptersInput", "modalTotalChaptersInput",
     "goalStartChapter", "goalEndChapter", "goalDueDateInput",
@@ -1733,6 +1738,7 @@ window.openClub = async function (clubId) {
   const user = auth.currentUser;
   let clubName;
   let ownerUid;
+  let membershipRole = null;
   if (!user || user.emailVerified !== true || currentUser?.uid !== user.uid ||
       typeof clubId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(clubId)) {
     showToast("This circle is not available to this account.", "error");
@@ -1747,6 +1753,7 @@ window.openClub = async function (clubId) {
       ref(database, `clubs/${clubId}/access/members/${user.uid}`)
     );
     const membership = membershipSnapshot.val();
+    membershipRole = membership?.role || null;
     if (!circleSession.isViewCurrent(view)) return false;
     if (!membershipSnapshot.exists() || !["owner", "member"].includes(membership?.role)) {
       circleUnavailable(view);
@@ -1774,6 +1781,26 @@ window.openClub = async function (clubId) {
     return false;
   }
 
+  const showOwnerBadge = isVerifiedV2CircleOwner({
+    circleId: clubId,
+    uid: user.uid,
+    emailVerified: user.emailVerified,
+    ownerUid,
+    membershipRole
+  });
+  const circlePageTitle = document.getElementById("circlePageTitle");
+  if (circlePageTitle) circlePageTitle.innerHTML = `
+    <span class="circle-page-name">${escapeHTML(clubName)}</span>
+    ${showOwnerBadge ? `
+      <span id="circleOwnerBadge" class="circle-owner-badge">
+        <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+          <path d="M2 5.1 6.1 8l2.9-5.2L11.9 8 16 5.1l-1.5 9.2h-11L2 5.1Z"></path>
+          <path d="M4 16h10"></path>
+        </svg>
+        <span>Owner</span>
+      </span>
+    ` : ""}
+  `;
   document.getElementById("clubHero").innerHTML = `
     <div class="club-emblem">📚</div>
     <div>
@@ -3083,6 +3110,10 @@ function listenToMembers(clubId) {
     if (!["owner", "member"].includes(members[view.session.uid]?.role)) {
       circleUnavailable(view);
       return;
+    }
+    if (members[view.session.uid]?.role !== "owner" ||
+      currentClubOwner !== view.session.uid) {
+      document.getElementById("circleOwnerBadge")?.remove();
     }
     const memberIds = Object.keys(members);
 

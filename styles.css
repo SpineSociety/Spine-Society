@@ -7922,3 +7922,53 @@ z-index: 20 !important;
   flex:0 0 auto !important;
   width:auto !important;
 }
+
+/* Circle name and canonical V2 owner marker */
+#clubScreen #circlePageTitle{
+  display:block;
+  margin:6px 0 14px;
+  font-size:clamp(1.6rem, 6vw, 2.2rem);
+}
+
+.circle-page-name{
+  overflow-wrap:anywhere;
+}
+
+.circle-owner-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  vertical-align:middle;
+  margin-left:6px;
+  padding:4px 8px;
+  border:1px solid rgba(200,163,106,.24);
+  border-radius:999px;
+  background:rgba(200,163,106,.08);
+  color:var(--gold-pale);
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.03em;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.circle-owner-badge svg{
+  width:13px;
+  height:13px;
+  flex:0 0 auto;
+  fill:currentColor;
+}
+
+.circle-owner-badge svg path:last-child{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.1;
+  stroke-linecap:round;
+}
+
+@media (max-width:380px){
+  .circle-owner-badge{
+    padding:4px 7px;
+    font-size:.65rem;
+  }
+}
