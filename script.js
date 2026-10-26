@@ -2648,7 +2648,7 @@ window.editCurrentcircleName = async function () {
   });
 };
 
-window.copyCurrentcircleInvite = async function () {
+window.copyCurrentCircleInvite = async function () {
   return runCircleOperation(async operation => {
   if (!window.currentClubId) return alert("Open a circle first.");
 
