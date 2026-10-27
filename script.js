@@ -3106,16 +3106,20 @@ function listenToMembers(clubId) {
 
   const view = circleSession.view;
   listenCircle("members", clubId, "access/members", async (snapshot, valid) => {
+    if (!valid()) return;
     const members = snapshot.val() || {};
     if (!["owner", "member"].includes(members[view.session.uid]?.role)) {
       circleUnavailable(view);
       return;
     }
+    const ownerUid = currentClubOwner;
     if (members[view.session.uid]?.role !== "owner" ||
-      currentClubOwner !== view.session.uid) {
+      ownerUid !== view.session.uid) {
       document.getElementById("circleOwnerBadge")?.remove();
     }
-    const memberIds = Object.keys(members);
+    const memberIds = Object.keys(members).filter(uid =>
+      ["owner", "member"].includes(members[uid]?.role)
+    );
 
     if (memberCount) {
       memberCount.textContent =
@@ -3128,32 +3132,46 @@ function listenToMembers(clubId) {
       return;
     }
 
+    const canonicalOwnerUid = typeof ownerUid === "string" &&
+      members[ownerUid]?.role === "owner" ? ownerUid : null;
+    const modalMemberIds = [...memberIds].sort((left, right) => {
+      const leftIsOwner = left === canonicalOwnerUid;
+      const rightIsOwner = right === canonicalOwnerUid;
+      if (leftIsOwner !== rightIsOwner) return leftIsOwner ? -1 : 1;
+      return left < right ? -1 : left > right ? 1 : 0;
+    });
+    const visibleMemberIds = memberIds.slice(0, 4);
+    const hiddenMemberCount = memberIds.length - visibleMemberIds.length;
+    const profiles = new Map();
+
+    for (const uid of new Set([...visibleMemberIds, ...modalMemberIds])) {
+      const userData = await readPublicProfile(uid);
+      if (!valid()) return;
+
+      const displayName = publicDisplayName(userData.username);
+      const avatarPhoto = safeImageSource(userData.avatarPhoto || "");
+      const avatarValue = userData.avatar || "📚";
+      const avatarHTML = avatarValue === "photo" && avatarPhoto
+        ? `<img src="${escapeAttr(avatarPhoto)}"
+            style="
+              width:100%;
+              height:100%;
+              border-radius:50%;
+              object-fit:cover;
+              display:block;
+            ">`
+        : escapeHTML(avatarValue === "photo"
+          ? displayName.charAt(0).toUpperCase()
+          : avatarValue);
+
+      profiles.set(uid, {displayName, avatarHTML});
+    }
+
     let previewHTML = "";
     let modalHTML = "";
 
-    const visibleMemberIds = memberIds.slice(0, 4);
-const hiddenMemberCount = memberIds.length - visibleMemberIds.length;
-
-for (const uid of visibleMemberIds) {
-      const userData = await readPublicProfile(uid);
-       if (!valid()) return;
-      const displayName = publicDisplayName(userData.username);
-
-const avatarPhoto = safeImageSource(userData.avatarPhoto || "");
-const avatarValue = userData.avatar || "📚";
-
-const avatarHTML =
-  avatarValue === "photo" && avatarPhoto
-    ? `<img src="${escapeAttr(avatarPhoto)}"
-        style="
-          width:100%;
-          height:100%;
-          border-radius:50%;
-          object-fit:cover;
-          display:block;
-        ">`
-    : escapeHTML(avatarValue === "photo" ? displayName.charAt(0).toUpperCase() : avatarValue);
-
+    for (const uid of visibleMemberIds) {
+      const {avatarHTML} = profiles.get(uid);
       previewHTML += `
         <div onclick="openMembersModal()" style="
           width:38px;
@@ -3170,50 +3188,70 @@ const avatarHTML =
           ${avatarHTML}
         </div>
       `;
+    }
+
+    for (const uid of modalMemberIds) {
+      const {displayName, avatarHTML} = profiles.get(uid);
+      const role = members[uid]?.role;
+      const isCanonicalOwner = uid === canonicalOwnerUid && role === "owner";
+      const roleHTML = isCanonicalOwner
+        ? `<span class="circle-owner-badge member-owner-badge">
+            <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M2 5.1 6.1 8l2.9-5.2L11.9 8 16 5.1l-1.5 9.2h-11L2 5.1Z"></path>
+              <path d="M4 16h10"></path>
+            </svg>
+            <span>Owner</span>
+          </span>`
+        : role === "member"
+          ? `<span class="circle-member-role">Member</span>`
+          : `<span class="circle-member-role member-role-unavailable">Role unavailable</span>`;
 
       modalHTML += `
-  <div class="book-item">
-    <div class="item-title">${avatarHTML} ${escapeHTML(displayName)}</div>
-    <div class="small">Reading circle member</div>
-
-    <button class="secondary" onclick="openReaderProfile(${escapeInlineJson(uid)})">
-      View Profile
-    </button>
-  </div>
-`;
+        <div class="book-item member-roster-row">
+          <div class="item-title member-roster-title">
+            ${avatarHTML}
+            <span class="member-roster-name">${escapeHTML(displayName)}</span>
+            ${roleHTML}
+          </div>
+          <button class="secondary" onclick="openReaderProfile(${escapeInlineJson(uid)})">
+            View Profile
+          </button>
+        </div>
+      `;
     }
-if (hiddenMemberCount > 0) {
-  previewHTML += `
-    <div onclick="openMembersModal()"
-      class="featured-reader-avatar"
-      style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-weight:700;
-      ">
-      +${hiddenMemberCount}
-    </div>
-  `;
-}
+
+    if (hiddenMemberCount > 0) {
+      previewHTML += `
+        <div onclick="openMembersModal()"
+          class="featured-reader-avatar"
+          style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+          ">
+          +${hiddenMemberCount}
+        </div>
+      `;
+    }
     currentMemberAvatarsHTML = previewHTML;
 
-if (preview) preview.innerHTML = previewHTML;
-if (modalList) modalList.innerHTML = modalHTML;
+    if (preview) preview.innerHTML = previewHTML;
+    if (modalList) modalList.innerHTML = modalHTML;
 
-const featuredReaderRow =
-  document.getElementById("featuredReaderRow");
+    const featuredReaderRow =
+      document.getElementById("featuredReaderRow");
 
-if (featuredReaderRow) {
-  featuredReaderRow.innerHTML = previewHTML;
-}
-const featuredReaderCount =
-  document.getElementById("featuredReaderCount");
+    if (featuredReaderRow) {
+      featuredReaderRow.innerHTML = previewHTML;
+    }
+    const featuredReaderCount =
+      document.getElementById("featuredReaderCount");
 
-if (featuredReaderCount) {
-  featuredReaderCount.innerHTML =
-  `<span class="member-count-icon">👥</span> ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
-}
+    if (featuredReaderCount) {
+      featuredReaderCount.innerHTML =
+        `<span class="member-count-icon">👥</span> ${memberIds.length} member${memberIds.length === 1 ? "" : "s"} reading`;
+    }
   });
 }
 

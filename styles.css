@@ -1704,6 +1704,48 @@ body::before {
   gap: 12px;
 }
 
+#membersModalList .member-roster-row {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#membersModalList .member-roster-title {
+  flex: 1 1 220px;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#membersModalList .member-roster-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#membersModalList .circle-owner-badge.member-owner-badge {
+  flex: 0 0 auto;
+  margin-left: 0;
+}
+
+#membersModalList .circle-member-role {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border: 1px solid rgba(200,163,106,.18);
+  border-radius: 999px;
+  background: rgba(200,163,106,.05);
+  color: var(--gold-soft);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#membersModalList .member-role-unavailable {
+  opacity: .72;
+}
+
 #membersModalList .item-title img {
   width: 54px !important;
   height: 54px !important;
@@ -7970,5 +8012,14 @@ z-index: 20 !important;
   .circle-owner-badge{
     padding:4px 7px;
     font-size:.65rem;
+  }
+
+  #membersModalList .member-roster-title {
+    gap: 6px;
+  }
+
+  #membersModalList .circle-member-role {
+    padding: 4px 7px;
+    font-size: .65rem;
   }
 }
