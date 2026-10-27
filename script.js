@@ -3490,6 +3490,47 @@ function ritualTypeLabel(type) {
     : type === "between-the-lines" ? "Between the Lines" : "Circle Ritual";
 }
 
+function safeCircleRitualAttributionName(value) {
+  if (typeof value !== "string") return null;
+  const name = value.trim();
+  if (!name || name.length > 80 || /[@<>\u0000-\u001f\u007f]/u.test(name)) return null;
+  return name;
+}
+
+function circleRitualAttributionText(prompt, name) {
+  if (!prompt || typeof prompt.sourceSuggestionId !== "string" ||
+      !/^[A-Za-z0-9_-]{8,64}$/.test(prompt.sourceSuggestionId) ||
+      typeof prompt.sourceSuggestionAuthorUid !== "string" ||
+      !prompt.sourceSuggestionAuthorUid || prompt.sourceSuggestionAuthorUid.length > 128) {
+    return null;
+  }
+  return `A little inspiration from ${safeCircleRitualAttributionName(name) || "a fellow reader"}`;
+}
+
+async function resolveCircleRitualAttribution(prompt, operation) {
+  const fallback = circleRitualAttributionText(prompt, null);
+  if (!fallback || !operation?.valid()) return null;
+  let name = null;
+  try {
+    const profile = await circleStep(operation, () => get(ref(
+      database, `users/${prompt.sourceSuggestionAuthorUid}/username`
+    )));
+    if (!operation.valid()) return null;
+    name = profile.val();
+  } catch {
+    if (!operation.valid()) return null;
+  }
+  return circleRitualAttributionText(prompt, name);
+}
+
+function updateCircleRitualResponseButton(response) {
+  const button = document.getElementById("ritualResponseSaveButton");
+  if (!button) return;
+  button.textContent = response && typeof response.text === "string"
+    ? "Update My Response"
+    : "Save My Response";
+}
+
 function renderCircleRitualResponses() {
   const list = document.getElementById("ritualResponsesList");
   if (!list) return;
@@ -3533,10 +3574,19 @@ function renderCircleRitualPrompt(ritualId, prompt) {
   const text = document.createElement("p");
   text.className = "ritual-prompt";
   text.textContent = prompt.prompt;
+  if (circleRitualAttributionText(prompt, null)) {
+    const attribution = document.createElement("p");
+    attribution.id = "ritualPromptAttribution";
+    attribution.className = "helper ritual-attribution";
+    attribution.hidden = true;
+    content.append(label, text, attribution);
+  } else {
+    content.append(label, text);
+  }
   const responses = document.createElement("div");
   responses.id = "ritualResponsesList";
   responses.className = "ritual-responses-list";
-  content.append(label, text, responses);
+  content.append(responses);
   renderCircleRitualResponses();
   document.getElementById("ritualStatusPill").textContent = "Now active";
   document.getElementById("ritualParticipation").hidden = false;
@@ -3544,6 +3594,7 @@ function renderCircleRitualPrompt(ritualId, prompt) {
   const response = currentCircleRitualResponses?.[currentUser?.uid];
   const input = document.getElementById("ritualResponseInput");
   if (input) input.value = typeof response?.text === "string" ? response.text : "";
+  updateCircleRitualResponseButton(response);
   return true;
 }
 
@@ -3658,6 +3709,18 @@ function listenToCircleRituals(clubId) {
         circleUnavailable(view);
         return;
       }
+      if (circleRitualAttributionText(currentCircleRitualPrompt, null)) {
+        const prompt = currentCircleRitualPrompt;
+        const operation = circleSession.capture();
+        resolveCircleRitualAttribution(prompt, operation).then(attribution => {
+          if (!attribution || !valid() || circleRitualListenerState !== state ||
+              currentCircleRitualId !== ritualId || currentCircleRitualPrompt !== prompt) return;
+          const credit = document.getElementById("ritualPromptAttribution");
+          if (!credit) return;
+          credit.textContent = attribution;
+          credit.hidden = false;
+        });
+      }
       renderCircleRitualSuggestions(currentCircleRitualSuggestions);
     });
     listenCircle("ritual-responses", clubId, `rituals/responses/${ritualId}`, (responseSnapshot, valid) => {
@@ -3667,6 +3730,7 @@ function listenToCircleRituals(clubId) {
       const ownResponse = currentCircleRitualResponses[currentUser?.uid];
       const input = document.getElementById("ritualResponseInput");
       if (input && typeof ownResponse?.text === "string") input.value = ownResponse.text;
+      updateCircleRitualResponseButton(ownResponse);
     });
   };
   listenCircle("ritual-active", clubId, "rituals/activeRitualId", (snapshot, valid) => {
@@ -3861,6 +3925,14 @@ window.saveCircleRitualResponse = function () {
       {applyLocally:false}
     ));
     if (!result.committed) throw new Error("Response was not acknowledged.");
+    const savedResponse = result.snapshot?.val?.();
+    if (savedResponse && operation.valid() && currentCircleRitualId === ritualId) {
+      currentCircleRitualResponses = {
+        ...currentCircleRitualResponses,
+        [operation.uid]:savedResponse
+      };
+      updateCircleRitualResponseButton(savedResponse);
+    }
     showCircleRitualStatus("Your response is saved for this circle.");
   });
 };
