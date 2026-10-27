@@ -1403,6 +1403,71 @@
       </div>
     </section>
 
+    <section id="circleRitualsCard" class="card circle-rituals-card">
+      <div class="card-header">
+        <div>
+          <div class="panel-kicker">A gentle circle practice</div>
+          <h2>Circle Rituals</h2>
+        </div>
+        <span class="ritual-status-pill" id="ritualStatusPill">No active ritual</span>
+      </div>
+      <p class="helper" id="ritualGuidance">
+        Share a small reading moment or a thoughtful reflection with your circle.
+      </p>
+      <div id="ritualActiveContent">
+        <p class="status">Checking for an active ritual…</p>
+      </div>
+      <div id="ritualParticipation" class="ritual-participation" hidden>
+        <label for="ritualResponseInput">Your response</label>
+        <p class="helper">Please avoid plot reveals and keep your response spoiler-safe.</p>
+        <textarea id="ritualResponseInput" maxlength="2400" rows="3"
+          placeholder="Write a few thoughtful lines…"></textarea>
+        <button type="button" class="primary" onclick="saveCircleRitualResponse()">
+          Save my response
+        </button>
+      </div>
+      <div id="ritualOwnerControls" class="ritual-owner-controls" hidden>
+        <h3>Prepare a ritual</h3>
+        <label for="ritualTypeSelect">Ritual type</label>
+        <select id="ritualTypeSelect">
+          <option value="sunday-bookmark">The Sunday Bookmark</option>
+          <option value="between-the-lines">Between the Lines</option>
+        </select>
+        <label for="ritualPromptInput">Spoiler-safe prompt</label>
+        <textarea id="ritualPromptInput" maxlength="600" rows="3"
+          placeholder="Invite a small, spoiler-safe reflection…"></textarea>
+        <button type="button" class="primary" onclick="publishCircleRitualFromForm()">
+          Publish ritual
+        </button>
+        <button type="button" class="secondary" id="closeCircleRitualButton"
+          onclick="closeActiveCircleRitual()" hidden>
+          Close active ritual
+        </button>
+      </div>
+      <div class="ritual-suggestion-form">
+        <h3>Suggest a future prompt</h3>
+        <p class="helper">Only you and the Circle Owner can read your suggestion.</p>
+        <label for="ritualSuggestionType">Suggestion type</label>
+        <select id="ritualSuggestionType">
+          <option value="sunday-bookmark">The Sunday Bookmark</option>
+          <option value="between-the-lines">Between the Lines</option>
+        </select>
+        <label for="ritualSuggestionInput">Your prompt idea</label>
+        <textarea id="ritualSuggestionInput" maxlength="600" rows="2"
+          placeholder="Share an idea for a future circle ritual…"></textarea>
+        <button type="button" class="secondary" onclick="submitCircleRitualSuggestion()">
+          Send private suggestion
+        </button>
+      </div>
+      <div id="ritualOwnerSuggestions" class="ritual-owner-suggestions" hidden>
+        <h3>Private member suggestions</h3>
+        <div id="ritualSuggestionList">
+          <p class="status">No suggestions yet.</p>
+        </div>
+      </div>
+      <div id="ritualStatus" class="circle-ritual-status" role="status" aria-live="polite" hidden></div>
+    </section>
+
     <div id="clubMarginaliaEmbed" class="club-room-embed">
       <section class="card">
         <div class="card-header">

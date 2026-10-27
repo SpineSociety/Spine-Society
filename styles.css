@@ -1253,6 +1253,149 @@ body::before {
   border: 1px solid rgba(200,163,106,.18);
   box-shadow: 0 22px 52px rgba(0,0,0,.48);
 }
+
+.circle-rituals-card {
+  margin: 18px 0;
+  border-color: rgba(200,163,106,.24);
+  background:
+    radial-gradient(circle at top right, rgba(200,163,106,.12), transparent 42%),
+    linear-gradient(180deg, rgba(34,26,19,.96), rgba(20,15,11,.96));
+}
+
+.circle-rituals-card .card-header {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.circle-rituals-card h2,
+.circle-rituals-card h3 {
+  margin: 0;
+  color: var(--gold-pale);
+}
+
+.circle-rituals-card h3 {
+  margin-top: 16px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.25rem;
+}
+
+.ritual-status-pill,
+.ritual-type-label {
+  color: var(--gold-soft);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.ritual-status-pill {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid rgba(200,163,106,.24);
+  border-radius: 999px;
+  background: rgba(200,163,106,.07);
+}
+
+.ritual-prompt {
+  margin: 8px 0 14px;
+  color: var(--cream, #f3e7d2);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.ritual-participation,
+.ritual-owner-controls,
+.ritual-suggestion-form,
+.ritual-owner-suggestions {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(200,163,106,.14);
+}
+
+.circle-rituals-card label {
+  display: block;
+  margin: 10px 0 6px;
+  color: var(--gold-pale);
+  font-size: .86rem;
+}
+
+.circle-rituals-card textarea,
+.circle-rituals-card select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.circle-rituals-card textarea {
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid rgba(200,163,106,.22);
+  border-radius: 16px;
+  background: rgba(255,255,255,.035);
+  color: var(--gold-pale);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.circle-rituals-card textarea::placeholder {
+  color: var(--muted);
+}
+
+.circle-rituals-card textarea:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 2px;
+}
+
+.ritual-responses-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ritual-responses-list h3 {
+  margin: 0;
+}
+
+.ritual-response,
+.ritual-suggestion {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(200,163,106,.15);
+  border-radius: 16px;
+  background: rgba(9,7,5,.36);
+  overflow-wrap: anywhere;
+}
+
+.ritual-response p,
+.ritual-suggestion p {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ritual-suggestion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.circle-ritual-status {
+  margin-top: 12px;
+  color: var(--gold-pale);
+  font-size: .88rem;
+}
+
+.circle-ritual-status p {
+  margin: 0 0 8px;
+}
+
+#circleRitualsCard [hidden] {
+  display: none !important;
+}
+
 .club-current-read {
   text-align: left;
 }
@@ -8021,5 +8164,26 @@ z-index: 20 !important;
   #membersModalList .circle-member-role {
     padding: 4px 7px;
     font-size: .65rem;
+  }
+}
+
+/* Keep Circle Ritual controls clear of the fixed navigation on phones. */
+@media (max-width:767px){
+  html:has(#clubScreen.active){
+    --circle-nav-inset:env(safe-area-inset-bottom, 0px);
+    scroll-padding-bottom:calc(96px + var(--circle-nav-inset));
+  }
+
+  html:has(#clubScreen.active) #mainNav{
+    bottom:calc(14px + var(--circle-nav-inset, 0px)) !important;
+  }
+
+  #clubScreen.active{
+    /* The app already reserves 110px; add only the home-indicator inset. */
+    padding-bottom:var(--circle-nav-inset, 0px) !important;
+  }
+
+  #clubScreen .circle-rituals-card :is(button, select, textarea){
+    scroll-margin-block-end:8px;
   }
 }

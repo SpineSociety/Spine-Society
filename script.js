@@ -72,6 +72,15 @@ let circleRequestRows = new Map();
 let circleRequestListenerKeys = new Set();
 let circleRequestRenderGeneration = 0;
 let circleLeaveState = null;
+let currentCircleRitualOwner = false;
+let currentCircleRitualId = null;
+let pendingCircleRitualPublish = null;
+let pendingCircleRitualSuggestion = null;
+let currentCircleRitualResponses = {};
+let currentCircleRitualPrompt = null;
+let currentCircleRitualSuggestions = {};
+let circleRitualInFlight = null;
+let circleRitualListenerState = null;
 let bookmarksUnsubscribe = null;
 let bookmarksSessionToken = 0;
 let avatarCropper = null;
@@ -143,6 +152,8 @@ function clearCircleDisplays() {
   currentClubBooks = [];
   currentCollectionBooks = [];
   currentClubOwner = null;
+  currentCircleRitualOwner = false;
+  clearCircleRitualUI();
   currentMemberAvatarsHTML = "";
   circleRequestRows = new Map();
   circleRequestListenerKeys = new Set();
@@ -241,11 +252,12 @@ const circleSession = createCircleSession({
   onReset:clearCircleDisplays,
   onAccountReset:clearCircleList,
   onUnexpected:operation => circleDiagnostic(operation),
-  onError:(error, {owner, valid}) => {
+  onError:(error, {owner, key, valid}) => {
     if (!valid()) {
       if (!isFriendshipPermissionDenied(error)) circleDiagnostic("obsolete-circle-listener", error);
       return;
     }
+    if (owner.session && recoverCircleRitualRead(error, {owner, key, valid})) return;
     if (owner.session) circleUnavailable(owner, error);
     else {
       clearCircleList();
@@ -1788,6 +1800,7 @@ window.openClub = async function (clubId) {
     ownerUid,
     membershipRole
   });
+  currentCircleRitualOwner = showOwnerBadge;
   const circlePageTitle = document.getElementById("circlePageTitle");
   if (circlePageTitle) circlePageTitle.innerHTML = `
     <span class="circle-page-name">${escapeHTML(clubName)}</span>
@@ -1840,6 +1853,7 @@ window.openClub = async function (clubId) {
    listenToNextRead(clubId);
    listenToBooksRead(clubId);
    listenToDiscussion(clubId);
+   listenToCircleRituals(clubId);
    listenToFeaturedVolumeProgress(clubId);
  if (!circleSession.isActive(view)) return false;
  showScreen("club");
@@ -3340,6 +3354,589 @@ function listenToDiscussion(clubId) {
     lists.forEach(list => {
       list.innerHTML = discussionHTML;
     });
+  });
+}
+
+function clearActiveCircleRitual() {
+  circleSession.stop("ritual-prompt");
+  circleSession.stop("ritual-responses");
+  currentCircleRitualId = null;
+  currentCircleRitualResponses = {};
+  currentCircleRitualPrompt = null;
+  for (const id of ["ritualActiveContent", "ritualResponsesList"]) {
+    document.getElementById(id)?.replaceChildren();
+  }
+  const response = document.getElementById("ritualResponseInput");
+  if (response) response.value = "";
+  for (const id of ["ritualParticipation", "closeCircleRitualButton"]) {
+    const element = document.getElementById(id);
+    if (element) element.hidden = true;
+  }
+}
+
+function resumeCircleRitualRead(state, pending) {
+  if (circleRitualListenerState !== state || state.recovery !== pending ||
+      !pending.operation.valid() || !pending.confirmed || !pending.hasNext ||
+      pending.nextId === pending.ritualId) return;
+  state.recovery = null;
+  const status = document.getElementById("ritualStatus");
+  status?.replaceChildren();
+  if (status) status.hidden = true;
+  try {
+    state.render(pending.nextId);
+  } catch (error) {
+    if (pending.operation.valid() && circleRitualListenerState === state)
+      circleUnavailable(state.view, error);
+  }
+}
+
+function recoverCircleRitualRead(error, {owner, key, valid}) {
+  const state = circleRitualListenerState;
+  if (!valid() || !isFriendshipPermissionDenied(error) ||
+      !["ritual-prompt", "ritual-responses"].includes(key) ||
+      state?.view !== owner || !/^v2_[A-Za-z0-9_-]{1,124}$/.test(owner.clubId) ||
+      !currentCircleRitualId) return false;
+  const operation = circleSession.capture();
+  if (!operation || operation.view !== owner) return false;
+  const pending = {
+    operation, ritualId:currentCircleRitualId, confirmed:false, hasNext:false
+  };
+  state.recovery = pending;
+  // A closing ritual can revoke these reads before the active-pointer event
+  // arrives. Quarantine old content immediately; keep canonical access watched.
+  clearActiveCircleRitual();
+  showCircleRitualStatus("Checking access to the current ritual…");
+  const current = () => operation.valid() &&
+    circleRitualListenerState === state && state.recovery === pending;
+  Promise.resolve().then(async () => {
+    const membership = await circleStep(operation, () => get(ref(
+      database, `clubs/${operation.clubId}/access/members/${operation.uid}`
+    )));
+    if (!current()) return;
+    const ownerSnapshot = await circleStep(operation, () => get(ref(
+      database, `clubs/${operation.clubId}/access/ownerUid`
+    )));
+    if (!current()) return;
+    const role = membership.val()?.role;
+    const ownerUid = ownerSnapshot.val();
+    if (!["owner", "member"].includes(role) ||
+        typeof ownerUid !== "string" || !ownerUid ||
+        (role === "owner" && ownerUid !== operation.uid)) {
+      circleUnavailable(owner);
+      return;
+    }
+    pending.confirmed = true;
+    // Do not infer closure from get(activeRitualId): SDK get() can return the
+    // existing listen cache before its pointer event. Wait for that listener.
+    showCircleRitualStatus(
+      "Ritual content is temporarily unavailable. Reopen this circle to retry if it does not update."
+    );
+    resumeCircleRitualRead(state, pending);
+  }).catch(failure => {
+    if (current()) circleUnavailable(owner, failure);
+  });
+  return true;
+}
+
+function clearCircleRitualUI() {
+  circleRitualListenerState = null;
+  clearActiveCircleRitual();
+  currentCircleRitualSuggestions = {};
+  circleRitualInFlight = null;
+  pendingCircleRitualPublish = null;
+  pendingCircleRitualSuggestion = null;
+  for (const id of ["ritualActiveContent", "ritualSuggestionList", "ritualStatus"]) {
+    document.getElementById(id)?.replaceChildren();
+  }
+  const status = document.getElementById("ritualStatus");
+  if (status) status.hidden = true;
+  const pill = document.getElementById("ritualStatusPill");
+  if (pill) pill.textContent = "No active ritual";
+  const participation = document.getElementById("ritualParticipation");
+  if (participation) participation.hidden = true;
+  const ownerControls = document.getElementById("ritualOwnerControls");
+  if (ownerControls) ownerControls.hidden = true;
+  const ownerSuggestions = document.getElementById("ritualOwnerSuggestions");
+  if (ownerSuggestions) ownerSuggestions.hidden = true;
+  const closeButton = document.getElementById("closeCircleRitualButton");
+  if (closeButton) closeButton.hidden = true;
+  for (const id of ["ritualResponseInput", "ritualPromptInput", "ritualSuggestionInput"]) {
+    const input = document.getElementById(id);
+    if (input) input.value = "";
+  }
+}
+
+function showCircleRitualStatus(message, actionLabel = "", action = null) {
+  const status = document.getElementById("ritualStatus");
+  if (!status) return;
+  status.replaceChildren();
+  const copy = document.createElement("p");
+  copy.textContent = message;
+  status.append(copy);
+  if (actionLabel && typeof action === "function") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = actionLabel;
+    button.addEventListener("click", action);
+    status.append(button);
+  }
+  status.hidden = false;
+}
+
+function ritualTypeLabel(type) {
+  return type === "sunday-bookmark"
+    ? "The Sunday Bookmark"
+    : type === "between-the-lines" ? "Between the Lines" : "Circle Ritual";
+}
+
+function renderCircleRitualResponses() {
+  const list = document.getElementById("ritualResponsesList");
+  if (!list) return;
+  list.replaceChildren();
+  const heading = document.createElement("h3");
+  heading.textContent = "Circle responses";
+  list.append(heading);
+  const entries = Object.entries(currentCircleRitualResponses || {});
+  if (!entries.length) {
+    const empty = document.createElement("p");
+    empty.className = "helper";
+    empty.textContent = "No responses yet. Add a few lines when you’re ready.";
+    list.append(empty);
+    return;
+  }
+  for (const [, response] of entries) {
+    if (!response || typeof response.text !== "string") continue;
+    const card = document.createElement("article");
+    card.className = "ritual-response";
+    const author = document.createElement("strong");
+    author.textContent = response.memberUid === currentUser?.uid ? "Your response" : "Circle member";
+    const text = document.createElement("p");
+    text.textContent = response.text;
+    card.append(author, text);
+    list.append(card);
+  }
+}
+
+function renderCircleRitualPrompt(ritualId, prompt) {
+  const content = document.getElementById("ritualActiveContent");
+  if (!content) return false;
+  content.replaceChildren();
+  if (!prompt || prompt.ritualId !== ritualId ||
+      !["sunday-bookmark", "between-the-lines"].includes(prompt.type) ||
+      typeof prompt.prompt !== "string" || prompt.spoilerSafe !== true) {
+    return false;
+  }
+  const label = document.createElement("div");
+  label.className = "ritual-type-label";
+  label.textContent = ritualTypeLabel(prompt.type);
+  const text = document.createElement("p");
+  text.className = "ritual-prompt";
+  text.textContent = prompt.prompt;
+  const responses = document.createElement("div");
+  responses.id = "ritualResponsesList";
+  responses.className = "ritual-responses-list";
+  content.append(label, text, responses);
+  renderCircleRitualResponses();
+  document.getElementById("ritualStatusPill").textContent = "Now active";
+  document.getElementById("ritualParticipation").hidden = false;
+  document.getElementById("closeCircleRitualButton").hidden = !currentCircleRitualOwner;
+  const response = currentCircleRitualResponses?.[currentUser?.uid];
+  const input = document.getElementById("ritualResponseInput");
+  if (input) input.value = typeof response?.text === "string" ? response.text : "";
+  return true;
+}
+
+function renderCircleRitualSuggestions(suggestions) {
+  const list = document.getElementById("ritualSuggestionList");
+  if (!list) return;
+  list.replaceChildren();
+  const entries = [];
+  for (const [authorUid, byId] of Object.entries(suggestions || {})) {
+    for (const [suggestionId, suggestion] of Object.entries(byId || {})) {
+      if (suggestion && typeof suggestion === "object") {
+        entries.push({authorUid, suggestionId, suggestion});
+      }
+    }
+  }
+  entries.sort((left, right) =>
+    (Number(left.suggestion.createdAt) || 0) - (Number(right.suggestion.createdAt) || 0)
+  );
+  if (!entries.length) {
+    const empty = document.createElement("p");
+    empty.className = "status";
+    empty.textContent = "No suggestions yet.";
+    list.append(empty);
+    return;
+  }
+  for (const {authorUid, suggestionId, suggestion} of entries) {
+    const article = document.createElement("article");
+    article.className = "ritual-suggestion";
+    const type = document.createElement("div");
+    type.className = "ritual-type-label";
+    type.textContent = `${ritualTypeLabel(suggestion.type)} · ${suggestion.status || "pending"}`;
+    const prompt = document.createElement("p");
+    prompt.textContent = suggestion.prompt || "";
+    article.append(type, prompt);
+    if (suggestion.status === "pending") {
+      const actions = document.createElement("div");
+      actions.className = "ritual-suggestion-actions";
+      const alreadyActive = currentCircleRitualPrompt?.sourceSuggestionAuthorUid === authorUid &&
+        currentCircleRitualPrompt?.sourceSuggestionId === suggestionId;
+      const use = document.createElement("button");
+      use.type = "button";
+      use.className = "primary";
+      use.textContent = alreadyActive ? "Confirm selected" : "Publish this prompt";
+      use.disabled = !alreadyActive && !!currentCircleRitualId;
+      use.addEventListener("click", () => alreadyActive
+        ? reviewCircleRitualSuggestion(authorUid, suggestionId, "selected")
+        : publishCircleRitual(suggestion.type, suggestion.prompt, {authorUid, suggestionId})
+      );
+      const decline = document.createElement("button");
+      decline.type = "button";
+      decline.className = "secondary";
+      decline.textContent = "Decline";
+      decline.addEventListener("click", () =>
+        reviewCircleRitualSuggestion(authorUid, suggestionId, "declined")
+      );
+      actions.append(use, decline);
+      article.append(actions);
+    }
+    list.append(article);
+  }
+}
+
+function listenToCircleRituals(clubId) {
+  const view = circleSession.view;
+  const state = {view, recovery:null, render:null};
+  circleRitualListenerState = state;
+  const ownerControls = document.getElementById("ritualOwnerControls");
+  const ownerSuggestions = document.getElementById("ritualOwnerSuggestions");
+  if (ownerControls) ownerControls.hidden = !currentCircleRitualOwner;
+  if (ownerSuggestions) ownerSuggestions.hidden = !currentCircleRitualOwner;
+  if (currentCircleRitualOwner) {
+    listenCircle("ritual-suggestions", clubId, "rituals/suggestions", snapshot => {
+      currentCircleRitualSuggestions = snapshot.val() || {};
+      renderCircleRitualSuggestions(currentCircleRitualSuggestions);
+    });
+  }
+  state.render = ritualId => {
+    if (circleRitualListenerState !== state || !circleSession.isActive(view)) return;
+    clearActiveCircleRitual();
+    const content = document.getElementById("ritualActiveContent");
+    content?.replaceChildren();
+    const participation = document.getElementById("ritualParticipation");
+    if (participation) participation.hidden = true;
+    const closeButton = document.getElementById("closeCircleRitualButton");
+    if (closeButton) closeButton.hidden = true;
+    if (ritualId === null) {
+      const pill = document.getElementById("ritualStatusPill");
+      if (pill) pill.textContent = "No active ritual";
+      renderCircleRitualSuggestions(currentCircleRitualSuggestions);
+      const empty = document.createElement("p");
+      empty.className = "status";
+      empty.textContent = "No active ritual right now.";
+      content?.append(empty);
+      return;
+    }
+    if (typeof ritualId !== "string" || !/^[A-Za-z0-9_-]{8,64}$/.test(ritualId)) {
+      circleUnavailable(view);
+      return;
+    }
+    currentCircleRitualId = ritualId;
+    renderCircleRitualSuggestions(currentCircleRitualSuggestions);
+    const pill = document.getElementById("ritualStatusPill");
+    if (pill) pill.textContent = "Loading ritual…";
+    listenCircle("ritual-prompt", clubId, `rituals/prompts/${ritualId}`, (promptSnapshot, valid) => {
+      if (!valid()) return;
+      if (!promptSnapshot.exists()) {
+        circleUnavailable(view);
+        return;
+      }
+      currentCircleRitualPrompt = promptSnapshot.val();
+      if (!renderCircleRitualPrompt(ritualId, currentCircleRitualPrompt)) {
+        circleUnavailable(view);
+        return;
+      }
+      renderCircleRitualSuggestions(currentCircleRitualSuggestions);
+    });
+    listenCircle("ritual-responses", clubId, `rituals/responses/${ritualId}`, (responseSnapshot, valid) => {
+      if (!valid()) return;
+      currentCircleRitualResponses = responseSnapshot.val() || {};
+      renderCircleRitualResponses();
+      const ownResponse = currentCircleRitualResponses[currentUser?.uid];
+      const input = document.getElementById("ritualResponseInput");
+      if (input && typeof ownResponse?.text === "string") input.value = ownResponse.text;
+    });
+  };
+  listenCircle("ritual-active", clubId, "rituals/activeRitualId", (snapshot, valid) => {
+    if (!valid() || circleRitualListenerState !== state) return;
+    const pending = state.recovery;
+    if (pending) {
+      pending.hasNext = true;
+      pending.nextId = snapshot.val();
+      resumeCircleRitualRead(state, pending);
+    } else state.render(snapshot.val());
+  });
+}
+
+function ritualOperation(action) {
+  if (circleRitualListenerState?.recovery) {
+    showCircleRitualStatus("Please wait for ritual access to be confirmed, or reopen this circle to retry.");
+    return Promise.resolve();
+  }
+  const operation = circleSession.capture();
+  if (!operation || currentUser?.uid !== operation.uid) return Promise.resolve();
+  if (circleRitualInFlight?.operation.valid()) {
+    showCircleRitualStatus("A ritual change is still awaiting confirmation. Please wait before trying another change.");
+    return circleRitualInFlight.promise;
+  }
+  const pending = {operation,promise:null};
+  circleRitualInFlight = pending;
+  pending.promise = Promise.resolve().then(() =>
+    operation.valid() ? action(operation) : undefined
+  ).catch(error => {
+    if (error === CIRCLE_SESSION_ENDED || !operation.valid()) return;
+    if (isFriendshipPermissionDenied(error)) {
+      circleUnavailable(operation.view, error);
+      return;
+    }
+    circleDiagnostic("circle-ritual-operation", error);
+    showCircleRitualStatus(
+      "That change could not be fully confirmed. Some steps may already be saved; retry to safely continue.",
+      "Retry",
+      () => {
+        if (operation.valid()) return ritualOperation(action);
+      }
+    );
+  }).finally(() => {
+    if (circleRitualInFlight === pending) circleRitualInFlight = null;
+  });
+  return pending.promise;
+}
+
+function ritualPromptMatches(actual, expected) {
+  if (!actual || typeof actual !== "object") return false;
+  const keys = Object.keys(expected).sort();
+  return Object.keys(actual).sort().join("|") === keys.join("|") &&
+    keys.every(key => actual[key] === expected[key]);
+}
+
+async function publishCircleRitual(type, promptText, sourceSuggestion = null) {
+  return ritualOperation(async operation => {
+    const prompt = String(promptText || "").trim();
+    if (!currentCircleRitualOwner || !["sunday-bookmark", "between-the-lines"].includes(type) ||
+        !prompt || prompt.length > 600) {
+      showCircleRitualStatus("Choose a ritual type and enter a prompt of 600 characters or fewer.");
+      return;
+    }
+    const pending = pendingCircleRitualPublish;
+    if (pending && (pending.clubId !== operation.clubId || pending.uid !== operation.uid ||
+        pending.type !== type || pending.prompt !== prompt ||
+        pending.sourceSuggestionId !== (sourceSuggestion?.suggestionId || null) ||
+        pending.sourceAuthorUid !== (sourceSuggestion?.authorUid || null))) {
+      showCircleRitualStatus("Retry or finish the pending publish before preparing another ritual.");
+      return;
+    }
+    const state = pending || {
+      clubId:operation.clubId,
+      uid:operation.uid,
+      ritualId:push(ref(database, `clubs/${operation.clubId}/rituals/prompts`)).key,
+      type,
+      prompt,
+      sourceSuggestionId:sourceSuggestion?.suggestionId || null,
+      sourceAuthorUid:sourceSuggestion?.authorUid || null,
+      publishedAt:Date.now()
+    };
+    if (!state.ritualId || !/^[A-Za-z0-9_-]{8,64}$/.test(state.ritualId)) {
+      throw new Error("Could not create a valid ritual identifier.");
+    }
+    pendingCircleRitualPublish = state;
+    const record = {
+      ritualId:state.ritualId,
+      type:state.type,
+      prompt:state.prompt,
+      spoilerSafe:true,
+      publishedBy:state.uid,
+      publishedAt:state.publishedAt,
+      ...(state.sourceSuggestionId ? {
+        sourceSuggestionId:state.sourceSuggestionId,
+        sourceSuggestionAuthorUid:state.sourceAuthorUid
+      } : {})
+    };
+    const promptPath = `clubs/${state.clubId}/rituals/prompts/${state.ritualId}`;
+    const existing = await circleStep(operation, () => get(ref(database, promptPath)));
+    if (existing.exists()) {
+      if (!ritualPromptMatches(existing.val(), record)) {
+        throw new Error("The pending ritual ID belongs to a different record.");
+      }
+    } else {
+      await circleStep(operation, () => set(ref(database, promptPath), record));
+    }
+    const activePath = `clubs/${state.clubId}/rituals/activeRitualId`;
+    const active = await circleStep(operation, () => get(ref(database, activePath)));
+    if (active.val() !== state.ritualId) {
+      if (active.exists()) {
+        showCircleRitualStatus("Close the current ritual before publishing another one.");
+        return;
+      }
+      const result = await circleStep(operation, () => runTransaction(
+        ref(database, activePath),
+        value => operation.valid() && value === null ? state.ritualId : undefined,
+        {applyLocally:false}
+      ));
+      if (!result.committed) {
+        const confirmed = await circleStep(operation, () => get(ref(database, activePath)));
+        if (confirmed.val() !== state.ritualId) {
+          showCircleRitualStatus("Another ritual became active first. Review it before retrying.");
+          return;
+        }
+      }
+    }
+    let reviewConfirmed = true;
+    if (state.sourceSuggestionId && state.sourceAuthorUid) {
+      reviewConfirmed = await confirmCircleRitualSuggestionReview(
+        operation, state.sourceAuthorUid, state.sourceSuggestionId, "selected"
+      );
+    }
+    pendingCircleRitualPublish = null;
+    const promptInput = document.getElementById("ritualPromptInput");
+    if (promptInput) promptInput.value = "";
+    showCircleRitualStatus(reviewConfirmed
+      ? "Your ritual is active. Members can now respond."
+      : "Your ritual is active, but the suggestion was already reviewed differently. Its original record was preserved.");
+  });
+}
+
+window.publishCircleRitualFromForm = function () {
+  return publishCircleRitual(
+    document.getElementById("ritualTypeSelect")?.value,
+    document.getElementById("ritualPromptInput")?.value
+  );
+};
+
+window.closeActiveCircleRitual = function () {
+  return ritualOperation(async operation => {
+    const expectedId = currentCircleRitualId;
+    if (!currentCircleRitualOwner || !expectedId) return;
+    const path = `clubs/${operation.clubId}/rituals/activeRitualId`;
+    const result = await circleStep(operation, () => runTransaction(
+      ref(database, path),
+      value => operation.valid() && value === expectedId ? null : undefined,
+      {applyLocally:false}
+    ));
+    if (!result.committed) {
+      const current = await circleStep(operation, () => get(ref(database, path)));
+      if (current.exists()) {
+        showCircleRitualStatus("The active ritual changed before it could be closed. Refresh and review it.");
+        return;
+      }
+    }
+    showCircleRitualStatus("Ritual closed. Its prompt and responses remain preserved.");
+  });
+};
+
+window.saveCircleRitualResponse = function () {
+  return ritualOperation(async operation => {
+    const ritualId = currentCircleRitualId;
+    const input = document.getElementById("ritualResponseInput");
+    const text = input?.value.trim() || "";
+    if (!ritualId || !text || text.length > 2400) {
+      showCircleRitualStatus("Write a response of up to 2,400 characters.");
+      return;
+    }
+    const path = `clubs/${operation.clubId}/rituals/responses/${ritualId}/${operation.uid}`;
+    const result = await circleStep(operation, () => runTransaction(
+      ref(database, path),
+      existing => {
+        if (!operation.valid()) return undefined;
+        const createdAt = existing?.createdAt ?? Date.now();
+        return {
+          memberUid:operation.uid,
+          text,
+          createdAt,
+          updatedAt:Math.max(Date.now(), createdAt)
+        };
+      },
+      {applyLocally:false}
+    ));
+    if (!result.committed) throw new Error("Response was not acknowledged.");
+    showCircleRitualStatus("Your response is saved for this circle.");
+  });
+};
+
+window.submitCircleRitualSuggestion = function () {
+  return ritualOperation(async operation => {
+    const type = document.getElementById("ritualSuggestionType")?.value;
+    const input = document.getElementById("ritualSuggestionInput");
+    const prompt = input?.value.trim() || "";
+    if (!["sunday-bookmark", "between-the-lines"].includes(type) || !prompt || prompt.length > 600) {
+      showCircleRitualStatus("Choose a ritual type and enter an idea of 600 characters or fewer.");
+      return;
+    }
+    let state = pendingCircleRitualSuggestion;
+    if (state && (state.clubId !== operation.clubId || state.uid !== operation.uid ||
+        state.type !== type || state.prompt !== prompt)) {
+      showCircleRitualStatus("Retry your pending suggestion before sending another one.");
+      return;
+    }
+    if (!state) {
+      state = {
+        clubId:operation.clubId,
+        uid:operation.uid,
+        suggestionId:push(ref(
+          database, `clubs/${operation.clubId}/rituals/suggestions/${operation.uid}`
+        )).key,
+        type,
+        prompt,
+        createdAt:Date.now()
+      };
+      pendingCircleRitualSuggestion = state;
+    }
+    const value = {
+      authorUid:state.uid,
+      type:state.type,
+      prompt:state.prompt,
+      createdAt:state.createdAt,
+      status:"pending"
+    };
+    const path = `clubs/${state.clubId}/rituals/suggestions/${state.uid}/${state.suggestionId}`;
+    const existing = await circleStep(operation, () => get(ref(database, path)));
+    if (existing.exists()) {
+      if (!ritualPromptMatches(existing.val(), value)) {
+        throw new Error("The pending suggestion ID belongs to a different record.");
+      }
+    } else {
+      await circleStep(operation, () => set(ref(database, path), value));
+    }
+    pendingCircleRitualSuggestion = null;
+    input.value = "";
+    showCircleRitualStatus("Your suggestion was sent privately to the Circle Owner.");
+  });
+};
+
+async function confirmCircleRitualSuggestionReview(operation, authorUid, suggestionId, status) {
+  const path = `clubs/${operation.clubId}/rituals/suggestions/${authorUid}/${suggestionId}`;
+  const existing = await circleStep(operation, () => get(ref(database, path)));
+  if (!existing.exists()) return false;
+  if (existing.val().status === status) return true;
+  if (existing.val().status !== "pending") return false;
+  await circleStep(operation, () => set(ref(database, `${path}/status`), status));
+  return true;
+}
+
+async function reviewCircleRitualSuggestion(authorUid, suggestionId, status) {
+  return ritualOperation(async operation => {
+    if (!currentCircleRitualOwner ||
+        !/^[A-Za-z0-9_-]{1,128}$/.test(authorUid || "") ||
+        !/^[A-Za-z0-9_-]{8,64}$/.test(suggestionId || "") ||
+        !["selected", "declined"].includes(status)) return;
+    const confirmed = await confirmCircleRitualSuggestionReview(operation, authorUid, suggestionId, status);
+    showCircleRitualStatus(!confirmed
+      ? "This suggestion was already reviewed differently. Its saved record was preserved."
+      : status === "selected"
+      ? "Suggestion marked as selected."
+      : "Suggestion declined.");
   });
 }
 
