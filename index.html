@@ -21,21 +21,18 @@
 
 
 <meta name="theme-color" content="#160e0a" />
+<link rel="icon" href="data:," />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <title>Spine Society</title>
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/cropperjs/dist/cropper.min.css"
-/>
-
+<link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css">
 <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="shelf-controls.css">
+<link rel="stylesheet" href="reader-host.css">
 
 </head>
 
@@ -1646,73 +1643,242 @@
 </section>
 
 <section id="profileScreen" class="screen">
-          <div class="page-top">
-            <div class="page-title">Reader Profile</div>
-            <button class="icon-button secondary" onclick="showScreen('nook')">⌂</button>
+<div id="goldenReaderHost"></div>
+<div id="readerEditPanel" class="reader-profile-fidelity" hidden>
+  <div class="reader-edit-shell">
+    <header class="reader-edit-masthead">
+      <div class="reader-edit-brand" aria-label="The Spine Society">
+        <span class="reader-edit-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M5 4.5c2.4-.8 4.8-.3 7 1.1v14c-2.2-1.4-4.6-1.9-7-1.1z"/>
+            <path d="M19 4.5c-2.4-.8-4.8-.3-7 1.1v14c2.2-1.4 4.6-1.9 7-1.1z"/>
+            <path d="M8 8h1.5M14.5 8H16"/>
+          </svg>
+        </span>
+        <span>The Spine Society</span>
+      </div>
+      <span class="reader-edit-offline" id="readerReleaseStatus"><i aria-hidden="true"></i>Reader Release 1</span>
+    </header>
+
+    <main class="reader-edit-main">
+      <button type="button" id="readerEditBack" class="reader-edit-back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h11"/></svg>
+        <span>Back</span>
+      </button>
+      <div class="reader-edit-heading">
+        <div class="reader-edit-eyebrow">Your Reading Room</div>
+        <h1 id="readerEditHeading" tabindex="-1">Edit Profile</h1>
+        <p>Make this corner feel a little more like you.</p>
+      </div>
+
+      <form id="readerEditForm" class="reader-edit-form" novalidate>
+        <fieldset class="reader-edit-picture">
+          <legend>Profile picture</legend>
+          <div class="reader-edit-picture-actions" role="group" aria-label="Profile picture choices">
+            <button type="button" id="readerUploadPhoto" aria-pressed="false">Upload Photo</button>
+            <button type="button" id="readerChooseAvatar" aria-pressed="true">Choose Avatar</button>
+            <button type="button" id="readerUseInitials" aria-pressed="false">Use Initials</button>
           </div>
+          <input id="readerPhotoInput" class="reader-edit-visually-hidden" type="file"
+            accept="image/png,image/jpeg,image/gif,image/webp"
+            aria-label="Choose a PNG, JPEG, GIF, or WebP profile photo">
+          <select id="readerAvatarValue" class="reader-edit-visually-hidden" aria-hidden="true" tabindex="-1">
+            <option value="🌿">Fern green</option>
+            <option value="🕯️">Terracotta</option>
+            <option value="📚">Blue ink</option>
+            <option value="🌙">Dried plum</option>
+            <option value="☕">Coffee reader</option>
+            <option value="🦉">Wise owl</option>
+            <option value="🖋️">Marginalia writer</option>
+          </select>
+          <p class="reader-edit-help">Choose a portrait, upload a photo, or preview your initials. Photo changes apply only after Save Changes.</p>
+          <div class="reader-edit-portrait-row">
+            <span id="readerAvatarPreview" class="reader-edit-avatar" role="img" aria-label="Profile portrait"></span>
+            <img id="readerPhotoPreview" alt="Uncommitted profile photo preview" hidden>
+            <span id="readerPortraitCaption">Fern green avatar</span>
+          </div>
+          <div id="readerAvatarChoices" class="reader-edit-avatar-choices" role="group" aria-label="Avatar styles">
+            <button type="button" data-style="fern" data-value="🌿" aria-label="Fern green avatar" aria-pressed="true">EF</button>
+            <button type="button" data-style="clay" data-value="🕯️" aria-label="Terracotta avatar" aria-pressed="false">EF</button>
+            <button type="button" data-style="ink" data-value="📚" aria-label="Blue ink avatar" aria-pressed="false">EF</button>
+            <button type="button" data-style="plum" data-value="🌙" aria-label="Dried plum avatar" aria-pressed="false">EF</button>
+          </div>
+          <p id="readerPhotoStatus" class="reader-edit-status" role="status" aria-live="polite">New profile photo writes are disabled. Existing legacy photos remain unchanged.</p>
+        </fieldset>
 
-          <section class="card">
-            <div class="card-header"><h2>Reader Alias</h2></div>
-            <p class="helper" id="accountEmail">Signed in.</p>
-            <input id="usernameInput" placeholder="Choose your Reader Alias" />
-            <button onclick="saveUsername()">Save Reader Alias</button>
-            
-            <p class="helper" id="currentUsername">No Reader Alias set yet.</p>
-            <div class="card-header"><h2>Reader Avatar</h2></div>
+        <div class="reader-edit-field">
+          <label for="readerDisplayName">Display name</label>
+          <input id="readerDisplayName" name="displayName" autocomplete="name" maxlength="50">
+          <p class="reader-edit-help">Preview only for this session. Reader Alias is the only saved name.</p>
+        </div>
+        <div class="reader-edit-field">
+          <label for="readerUsername">Username</label>
+          <input id="readerUsername" name="username" autocomplete="nickname" autocapitalize="none" spellcheck="false" maxlength="80" required
+            aria-describedby="readerUsernameHelp readerUsernameError">
+          <p class="reader-edit-help" id="readerUsernameHelp">Saved as your existing Reader Alias. Alias uniqueness is not guaranteed.</p>
+          <span id="readerUsernameError" class="reader-edit-error" role="status" aria-live="polite"></span>
+        </div>
 
-<select id="avatarInput">
-  <option value="📚">📚 Book Lover</option>
-  <option value="🕯️">🕯️ Cozy Reader</option>
-  <option value="🌙">🌙 Night Reader</option>
-  <option value="☕">☕ Coffee Reader</option>
-  <option value="🦉">🦉 Wise Owl</option>
-  <option value="🌿">🌿 Soft Scholar</option>
-  <option value="🖋️">🖋️ Marginalia Writer</option>
-</select>
+        <div class="reader-edit-field">
+          <label for="readerBio">Between the Pages <span class="reader-edit-counter"><span id="readerBioCount">0</span>/160</span></label>
+          <textarea id="readerBio" name="bio" maxlength="160" rows="3" aria-describedby="readerBioHelp readerBioCount"></textarea>
+          <p class="reader-edit-help" id="readerBioHelp">Saved to your Spine Society account when you choose Save Changes.</p>
+        </div>
 
-<button onclick="saveAvatar()">Save Avatar</button>
-<input
-  type="file"
-  id="avatarUpload"
-  accept="image/*"
-  onchange="openCropper(event)"
->
+        <section class="reader-edit-section" aria-labelledby="readerGenresTitle">
+          <h2 id="readerGenresTitle">Favorite Genres</h2>
+          <p class="reader-edit-help">Choose up to three supported genres for your Reader profile.</p>
+          <div class="reader-edit-genres">
+            <label><input type="checkbox" name="genre" value="Literary fiction"><span>Literary fiction</span></label>
+            <label><input type="checkbox" name="genre" value="Historical fiction"><span>Historical fiction</span></label>
+            <label><input type="checkbox" name="genre" value="Mystery"><span>Mystery</span></label>
+            <label><input type="checkbox" name="genre" value="Poetry"><span>Poetry</span></label>
+            <label><input type="checkbox" name="genre" value="Fantasy"><span>Fantasy</span></label>
+            <label><input type="checkbox" name="genre" value="Memoir"><span>Memoir</span></label>
+            <label><input type="checkbox" name="genre" value="Romance"><span>Romance</span></label>
+            <label><input type="checkbox" name="genre" value="Nature writing"><span>Nature writing</span></label>
+          </div>
+          <span id="readerGenresError" class="reader-edit-error" role="status" aria-live="polite"></span>
+        </section>
 
+        <section class="reader-edit-section" aria-labelledby="readerBookTitle">
+          <h2 id="readerBookTitle">Currently Reading</h2>
+          <label for="readerCurrentBook">Choose a book, or leave it blank</label>
+          <select id="readerCurrentBook" name="currentBookId">
+            <option value="">Nothing just now</option>
+          </select>
+          <p class="reader-edit-help" id="readerBookHelp">Choose only from books in this account's collection.</p>
+          <label class="reader-edit-check"><input id="readerShareBook" type="checkbox"><span>Share my Currently Reading with friends</span></label>
+          <p class="reader-edit-help">Preview only. This setting does not control access or sharing.</p>
+        </section>
 
+        <section class="reader-edit-section" aria-labelledby="readerPrivacyTitle">
+          <h2 id="readerPrivacyTitle">Privacy Preview</h2>
+          <p class="reader-edit-help">These examples do not change real access permissions.</p>
+          <div class="reader-edit-privacy-row">
+            <label for="readerBioPrivacy">Biography <small>Who could see this in a future design?</small></label>
+            <select id="readerBioPrivacy"><option value="friends">Friends only</option><option value="verified">Verified readers</option></select>
+          </div>
+          <div class="reader-edit-privacy-row">
+            <label for="readerGenrePrivacy">Favorite genres <small>Default is friends-only.</small></label>
+            <select id="readerGenrePrivacy"><option value="friends">Friends only</option><option value="verified">Verified readers</option></select>
+          </div>
+          <div class="reader-edit-privacy-row">
+            <span>Profile identity <small>Name, username and portrait</small></span>
+            <span class="reader-edit-privacy-value">Verified readers</span>
+          </div>
+        </section>
 
-<div id="avatarPreview" style="margin-top:12px;">
-  <img
-    id="profileAvatar"
-    src=""
-    style="
-      width:90px;
-      height:90px;
-      border-radius:50%;
-      object-fit:cover;
-      display:none;
-      border:1px solid rgba(200,163,106,.35);
-    "
-  />
+        <p id="readerEditStatus" class="reader-edit-status" role="status" aria-live="polite"></p>
+        <div class="reader-edit-actions">
+          <button type="button" id="readerCancelAll">Cancel</button>
+          <button type="submit" id="readerSaveChanges">Save Changes</button>
+        </div>
+      </form>
+      <aside class="reader-edit-disclosure" aria-labelledby="readerEditReleaseTitle">
+        <h2 id="readerEditReleaseTitle">Reader Release 1</h2>
+        <p id="readerEditPersistenceDisclosure">Reader Alias, preset avatar, biography, genres, and Currently Reading save to your Spine Society account. Display Name and initials are preview-only; new profile-photo uploads are disabled. Privacy choices do not change access.</p>
+      </aside>
+    </main>
+  </div>
 </div>
-<p class="helper" id="currentAvatar">Current Avatar: 📚</p>
-<div class="card-header">
-  <h2>Friend Requests</h2>
-</div>
+<div id="readerLegacyPanel" hidden>
+  <style>
+    #readerLegacyPanel[hidden] { display: none !important; }
+    #readerLegacyPanel { width: min(100%, 680px); margin: 0 auto; padding: 14px 0 36px; }
+    #readerLegacyPanel .reader-editor-top,
+    #readerLegacyPanel .reader-editor-actions { display: flex; gap: 10px; }
+    #readerLegacyPanel .reader-editor-top { align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    #readerLegacyPanel .reader-editor-actions > button { flex: 1; min-width: 0; }
+    #readerLegacyPanel .reader-editor-status { min-height: 1.35em; margin-top: 10px; }
+    #readerLegacyPanel .reader-editor-preview { display: flex; align-items: center; gap: 14px; margin: 12px 0; }
+    #readerLegacyPanel #profileAvatar,
+    #readerLegacyPanel #avatarEmojiPreview {
+      width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+      border: 1px solid rgba(200,163,106,.45); box-shadow: 0 5px 18px rgba(0,0,0,.3);
+    }
+    #readerLegacyPanel #profileAvatar[hidden],
+    #readerLegacyPanel #avatarEmojiPreview[hidden],
+    #readerLegacyPanel #photoDraftPreview[hidden] { display: none !important; }
+    #readerLegacyPanel #avatarEmojiPreview {
+      display: grid; place-items: center; color: var(--gold-pale);
+      background: radial-gradient(circle at 35% 25%, rgba(228,201,139,.2), transparent 48%), #17130e;
+      font-size: 1.8rem;
+    }
+    #readerLegacyPanel #photoDraftPreview {
+      display: block; width: min(100%, 180px); max-height: 180px; object-fit: contain;
+      margin: 12px 0; border: 1px solid rgba(200,163,106,.35); border-radius: 14px;
+      background: rgba(0,0,0,.18);
+    }
+    #readerLegacyPanel .reader-editor-note { border-left: 2px solid var(--gold-soft); padding-left: 12px; }
+    @media (max-width: 420px) {
+      #readerLegacyPanel .reader-editor-actions { flex-wrap: wrap; }
+      #readerLegacyPanel .reader-editor-actions > button { flex-basis: calc(50% - 10px); }
+    }
+  </style>
+  <div class="reader-editor-top">
+    <h1>Reader Profile</h1>
+    <button type="button" id="readerBack" class="secondary" style="width:auto;">← Your Reading Room</button>
+  </div>
+  <p class="helper" id="accountEmail">Signed in.</p>
+  <span id="currentUsername" hidden></span>
+  <p class="helper reader-editor-note" role="note">
+    Legacy alias and avatar controls are retained for compatibility. Use the Reader editor for biography, genres, and Currently Reading.
+  </p>
 
-<div id="friendRequestsList">
-  <p class="status">No friend requests yet.</p>
-</div>
+  <section class="card" aria-labelledby="readerAliasHeading">
+    <div class="card-header"><h2 id="readerAliasHeading">Reader Alias</h2></div>
+    <label for="usernameInput">Your alias</label>
+    <input id="usernameInput" autocomplete="nickname" aria-describedby="aliasHelp aliasStatus" />
+    <p class="helper" id="aliasHelp">Reader Aliases are not guaranteed to be unique.</p>
+    <div class="reader-editor-actions">
+      <button type="button" id="aliasSave">Save Reader Alias</button>
+      <button type="button" id="aliasCancel" class="secondary">Cancel alias</button>
+    </div>
+    <p class="helper reader-editor-status" id="aliasStatus" role="status" aria-live="polite"></p>
+  </section>
 
-<div class="card-header">
-  <h2>Friends</h2>
-</div>
+  <section class="card" aria-labelledby="readerAvatarHeading">
+    <div class="card-header"><h2 id="readerAvatarHeading">Reader Avatar</h2></div>
+    <div class="reader-editor-preview" id="avatarPreview">
+      <img id="profileAvatar" alt="Saved profile photo" hidden />
+      <span id="avatarEmojiPreview" aria-hidden="true">📚</span>
+      <p class="helper" id="currentAvatar">Saved avatar: 📚</p>
+    </div>
+    <label for="avatarInput">Choose an avatar</label>
+    <select id="avatarInput" aria-describedby="avatarStatus">
+      <option value="" disabled>Choose an avatar</option>
+      <option value="📚">📚 Book Lover</option>
+      <option value="🕯️">🕯️ Cozy Reader</option>
+      <option value="🌙">🌙 Night Reader</option>
+      <option value="☕">☕ Coffee Reader</option>
+      <option value="🦉">🦉 Wise Owl</option>
+      <option value="🌿">🌿 Soft Scholar</option>
+      <option value="🖋️">🖋️ Marginalia Writer</option>
+    </select>
+    <div class="reader-editor-actions">
+      <button type="button" id="avatarSave">Save Avatar</button>
+      <button type="button" id="avatarCancel" class="secondary">Cancel avatar</button>
+    </div>
+    <p class="helper reader-editor-status" id="avatarStatus" role="status" aria-live="polite"></p>
+  </section>
 
-<div id="friendsList">
-  <p class="status">No friends yet.</p>
-</div>
+  <section class="card" aria-labelledby="readerPhotoHeading">
+    <div class="card-header"><h2 id="readerPhotoHeading">Profile Photo</h2></div>
+    <p class="helper">Choose a PNG, JPEG, GIF, or WebP image up to 2 MiB. Preview it before saving.</p>
+    <label for="avatarUpload">Choose a photo</label>
+    <input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/gif,image/webp" aria-describedby="photoStatus" />
+    <img id="photoDraftPreview" alt="Uncommitted profile photo preview" hidden />
+    <div class="reader-editor-actions">
+      <button type="button" id="photoSave">Save photo</button>
+      <button type="button" id="photoCancel" class="secondary">Cancel photo</button>
+    </div>
+    <p class="helper reader-editor-status" id="photoStatus" role="status" aria-live="polite"></p>
+  </section>
 
-<button class="danger" onclick="logoutUser()">Log Out</button>
-          </section>
+  <button type="button" class="secondary" id="legacyReaderCancelAll">Cancel changes and return</button>
+
+</div>
         </section>
       </div>
     </div>
@@ -1787,19 +1953,6 @@ overflow-y: auto;
 
 </div>
 <div id="memberList" style="display:none;"></div>
-<div id="cropModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="width:min(100%,420px);max-height:90vh;overflow-y:auto;border-radius:28px;background:#120c08;padding:20px;border:1px solid rgba(200,163,106,.25);">
-    <h2>Adjust Avatar</h2>
-    <p class="helper">Move and zoom your photo to fit the circle.</p>
-
-    <div style="height:360px;border-radius:18px;overflow:hidden;background:#050403;">
-      <img id="cropImage" style="display:block;max-width:100%;" />
-    </div>
-
-    <button onclick="saveCroppedAvatar()">Save Cropped Avatar</button>
-    <button class="secondary" onclick="closeCropModal()">Cancel</button>
-  </div>
-</div>
 <div
   id="bookModal"
   style="
@@ -2466,6 +2619,51 @@ overflow-y: auto;
     <div id="readerProfileContent">
       Loading...
     </div>
+  </div>
+</div>
+<div
+  id="friendsModal"
+  role="dialog"
+  aria-modal="true"
+  aria-hidden="true"
+  aria-labelledby="friendsModalHeading"
+  style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(14px);
+    z-index:9999;
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    overflow-y:auto;
+    padding:80px 20px 120px;
+  "
+>
+  <div style="
+    width:min(100%,420px);
+    border-radius:32px;
+    padding:24px;
+    background:linear-gradient(180deg, rgba(26,18,13,.98), rgba(10,8,6,.98));
+    border:1px solid rgba(200,163,106,.18);
+  ">
+    <div class="page-top">
+      <div class="page-title" id="friendsModalHeading">Friends</div>
+      <button class="icon-button secondary" type="button"
+        onclick="closeFriendsModal()" aria-label="Close Friends">✕</button>
+    </div>
+    <p class="helper" id="friendsSecurityNotice" role="note">
+      Friend request and profile actions are paused in this isolated review while deployed Firebase rules remain unverified.
+    </p>
+    <div class="card-header"><h2>Friend Requests</h2></div>
+    <div id="friendRequestsList">
+      <p class="status">No friend requests yet.</p>
+    </div>
+    <div class="card-header"><h2>Friends</h2></div>
+    <div id="friendsList">
+      <p class="status">No friends yet.</p>
+    </div>
+    <button class="danger" type="button" onclick="logoutUser()">Log Out</button>
   </div>
 </div>
 <div id="readerStacksModal" style="

@@ -29,6 +29,9 @@ import {
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { createReaderBridge } from "./reader-bridge.mjs";
+import { deletePersonalBookSafely } from "./reader-current-book-delete.mjs";
+import { validateReaderProfile } from "./reader-profile-data.mjs";
 import { escapeHtml, safeImageUrl } from "./security-utils.mjs";
 import { createPersonalShelves } from "./personal-shelves.mjs";
 import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
@@ -38,7 +41,7 @@ import {
   isVerifiedV2CircleOwner,
   routeCircleDatabasePath
 } from "./circle-paths.mjs";
-const firebaseConfig = {
+const productionFirebaseConfig = {
   apiKey: "AIzaSyBd88e6kcNUTytSkLy14uQq5-fQti4dawE",
   authDomain: "spine-society-b2a3c.firebaseapp.com",
   databaseURL: "https://spine-society-b2a3c-default-rtdb.firebaseio.com/",
@@ -48,17 +51,26 @@ const firebaseConfig = {
   appId: "1:873293049506:web:11e8406d7d6d38bfb8b1fb",
   measurementId: "G-FPB0PRLR5G"
 };
-
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(productionFirebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 const storage = getStorage(app);
+// Friends code/data remain preserved, but this release candidate performs no
+// Friends reads or writes until the rules are verified and the feature is approved.
+const FRIENDS_ACTIONS_ENABLED = false;
 const ref = (databaseInstance, path) => firebaseRef(
   databaseInstance,
   databaseInstance === database ? routeCircleDatabasePath(path) : path
 );
 let currentUser = null;
+let readerAccountGeneration = 0;
+const readerRoom = createReaderBridge({
+  subscribe: (path, callback, onError) => onValue(ref(database, path), callback, onError),
+  profilePath: uid => "users/" + uid,
+  formatName: value => publicDisplayName(value),
+  notify: message => showToast(message, "info"),
+});
 let currentLibraryBooks = [];
 let currentBookmarkBooks = [];
 let currentLibraryFilter = "All";
@@ -493,7 +505,7 @@ window.signUpWithEmail = async function () {
 
     try {
       await sendEmailVerification(createdUser, {
-        url: "https://spinesociety.github.io/Spine-Society/",
+        url: window.location.origin + window.location.pathname,
         handleCodeInApp: false
       });
     } catch (emailError) {
@@ -754,7 +766,7 @@ window.sendPasswordReset = async function () {
 
   try {
     await sendPasswordResetEmail(auth, email, {
-      url: "https://spinesociety.github.io/Spine-Society/",
+      url: window.location.origin + window.location.pathname,
       handleCodeInApp: false
     });
 
@@ -787,7 +799,7 @@ window.resendVerificationEmail = async function () {
     }
 
     await sendEmailVerification(userCredential.user, {
-      url: "https://spinesociety.github.io/Spine-Society/",
+      url: window.location.origin + window.location.pathname,
       handleCodeInApp: false
     });
 
@@ -813,12 +825,12 @@ window.logoutUser = async function () {
 };
 
 window.saveUsername = async function () {
-  if (!currentUser) return alert("Please log in first.");
+  if (!currentUser) return { ok: false, message: "Please log in first." };
 
   const username = document.getElementById("usernameInput").value.trim();
-  if (!username) return alert("Enter a Reader Alias.");
+  if (!username) return { ok: false, message: "Enter a Reader Alias." };
   if (isEmailShapedUsername(username)) {
-    return alert("Choose a Reader Alias that is not an email address.");
+    return { ok: false, message: "Choose a Reader Alias that is not an email address." };
   }
 
   await update(ref(database, "users/" + currentUser.uid), {
@@ -828,14 +840,15 @@ window.saveUsername = async function () {
   });
 
   document.getElementById("currentUsername").textContent = "Reader Alias: " + username;
-  alert("Reader Alias saved.");
+  return { ok: true, username };
 };
 
 
 window.saveAvatar = async function () {
-  if (!currentUser) return alert("Please log in first.");
+  if (!currentUser) return { ok: false, message: "Please log in first." };
 
   const avatar = document.getElementById("avatarInput").value;
+  if (!avatar) return { ok: false, message: "Choose one of the listed avatars first." };
 
   await update(ref(database, "users/" + currentUser.uid), {
     avatar,
@@ -845,32 +858,76 @@ window.saveAvatar = async function () {
   document.getElementById("currentAvatar").textContent =
     "Current Avatar: " + avatar;
 
-  showToast("Avatar saved.");
+  return { ok: true, avatar };
 };
-window.saveAvatarPhotoUrl = async function () {
-  if (!currentUser) return alert("Please log in first.");
 
-  const photoURL = document.getElementById("avatarPhotoUrl").value.trim();
-  const safePhotoURL = safeImageSource(photoURL);
-
-  if (!safePhotoURL) return alert("Enter a valid HTTPS, HTTP, or supported image URL first.");
-
-  await update(ref(database, "users/" + currentUser.uid), {
-    avatar: "photo",
-    avatarPhoto: safePhotoURL,
-    updatedAt: Date.now()
-  });
-
-  document.getElementById("currentAvatar").textContent =
-    "Current Avatar: Photo";
-
-  const previewImage = document.createElement("img");
-  previewImage.src = safePhotoURL;
-  previewImage.style.cssText = "width:70px;height:70px;border-radius:50%;object-fit:cover;";
-  document.getElementById("avatarPreview").replaceChildren(previewImage);
-
-  alert("Profile photo saved.");
+window.saveReaderPhotoDraft = async function (photoData, expectedUid) {
+  return {
+    ok: false,
+    message: "New profile-photo uploads are unavailable in Reader Release 1."
+  };
 };
+
+window.saveReaderProfileDraft = async function ({
+  username,
+  avatar,
+  photo = "",
+  expectedUid,
+  updateAvatar = true,
+  readerProfile,
+} = {}) {
+  if (!currentUser || !expectedUid || currentUser.uid !== expectedUid ||
+      currentUser.emailVerified !== true) {
+    return { ok: false, message: "The signed-in reader changed. Reopen the editor and try again." };
+  }
+  if (typeof username !== "string" || !username.trim() || username.trim().length > 80 ||
+      isEmailShapedUsername(username)) {
+    return { ok: false, message: "Enter a valid Reader Alias." };
+  }
+  if (updateAvatar) {
+    const allowedAvatars = new Set(["🌿", "🕯️", "📚", "🌙", "☕", "🦉", "🖋️"]);
+    if (avatar === "photo") {
+      return { ok: false, message: "New profile-photo uploads are unavailable in Reader Release 1." };
+    }
+    if (typeof avatar !== "string" || !allowedAvatars.has(avatar)) {
+      return { ok: false, message: "Choose a supported preset avatar." };
+    }
+  }
+  if (photo) {
+    return { ok: false, message: "New profile-photo uploads are unavailable in Reader Release 1." };
+  }
+
+  let validatedReaderProfile;
+  if (readerProfile !== undefined) {
+    const librarySnapshot = await get(ref(database, `users/${expectedUid}/library`));
+    if (currentUser?.uid !== expectedUid) {
+      return { ok: false, message: "The signed-in reader changed. Reopen the editor and try again." };
+    }
+    const library = librarySnapshot.val() || {};
+    const validation = validateReaderProfile(readerProfile, new Set(Object.keys(library)));
+    if (!validation.ok) return { ok: false, message: validation.message };
+    validatedReaderProfile = validation.value;
+  }
+
+  const patch = { username: username.trim() };
+  if (updateAvatar) {
+    patch.avatar = avatar;
+    if (avatar === "photo" && photo) patch.avatarPhoto = photo;
+  }
+  if (validatedReaderProfile) patch.readerProfile = validatedReaderProfile;
+  patch.updatedAt = Date.now();
+  await update(ref(database, "users/" + expectedUid), patch);
+  if (currentUser?.uid !== expectedUid) {
+    return { ok: false, message: "The account changed while saving. Reopen the editor to confirm its current state." };
+  }
+  document.getElementById("currentUsername").textContent = "Reader Alias: " + username.trim();
+  if (updateAvatar) {
+    document.getElementById("currentAvatar").textContent =
+      avatar === "photo" ? "Saved profile photo" : "Saved avatar: " + avatar;
+  }
+  return { ok: true, username: username.trim(), ...(updateAvatar ? { avatar } : {}) };
+};
+
 async function ensureUserRecord(user) {
   await update(ref(database, "users/" + user.uid), {
     email: user.email || "",
@@ -1033,89 +1090,6 @@ window.createClub = async function () {
   }
   }, true);
 };
-let cropper;
-
-window.openCropper = async function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (!currentUser) return alert("Please log in first.");
-
-  const reader = new FileReader();
-
-  reader.onload = async function(e) {
-    const photoData = safeImageSource(e.target.result);
-    if (!photoData) {
-      alert("Choose a PNG, JPEG, GIF, or WebP image.");
-      return;
-    }
-
-    await update(ref(database, "users/" + currentUser.uid), {
-      avatar: "photo",
-      avatarPhoto: photoData,
-      updatedAt: Date.now()
-    });
-
-    const avatar = document.getElementById("profileAvatar");
-    if (avatar) {
-      avatar.src = photoData;
-      avatar.style.display = "block";
-    }
-
-    document.getElementById("currentAvatar").textContent = "Current Avatar: Photo";
-    showToast("Avatar photo saved.");
-  };
-
-  reader.readAsDataURL(file);
-};
-
-window.closeCropModal = function() {
-  document.getElementById("cropModal").style.display = "none";
-
-  if (cropper) {
-    cropper.destroy();
-    cropper = null;
-  }
-};
-
-window.saveCroppedAvatar = async function() {
-  if (!currentUser) return alert("Please log in first.");
-
-  if (!cropper) {
-    alert("The crop tool is still loading. Wait one second, then tap Save Cropped Avatar again.");
-    return;
-  }
-
-  const canvas = cropper.getCroppedCanvas({
-    width: 300,
-    height: 300
-  });
-
-  if (!canvas) {
-    alert("Crop failed. Try choosing the photo again.");
-    return;
-  }
-
-  const croppedImage = canvas.toDataURL("image/jpeg", 0.8);
-
-  await update(ref(database, "users/" + currentUser.uid), {
-    avatar: "photo",
-    avatarPhoto: croppedImage,
-    updatedAt: Date.now()
-  });
-
-  const avatar = document.getElementById("profileAvatar");
-  if (avatar) {
-    avatar.src = croppedImage;
-    avatar.style.display = "block";
-  }
-
-  document.getElementById("currentAvatar").textContent = "Current Avatar: Photo";
-
-  closeCropModal();
-  showToast("Cropped avatar saved.");
-};
-
-
 function extractClubId(input) {
   try {
     if (input.includes("?club=")) return new URL(input).searchParams.get("club");
@@ -2052,8 +2026,10 @@ async function signOutWithLibraryCleanup() {
     }
     if (user?.uid === friendshipUser?.uid && friendshipSession.canRecover(friendshipEnd, user)) {
       const recovered = friendshipSession.begin(user);
-      listenForFriendRequests(recovered);
-      listenForFriends(recovered);
+      if (FRIENDS_ACTIONS_ENABLED) {
+        listenForFriendRequests(recovered);
+        listenForFriends(recovered);
+      }
     }
     if (user?.uid === circleUser?.uid && circleSession.canRecover(circleEnd, user)) {
       circleSession.begin(user);
@@ -4551,7 +4527,14 @@ window.deletePersonalBook = async function (bookId) {
 
   if (!confirm("Delete this book from My Library?")) return;
 
-  await set(ref(database, "users/" + currentUser.uid + "/library/" + bookId), null);
+  const uid = currentUser.uid;
+  await deletePersonalBookSafely({
+    uid,
+    bookId,
+    runTransaction,
+    ref: path => ref(database, path),
+    set,
+  });
 
   alert("Book deleted from My Library.");
 };
@@ -4894,7 +4877,54 @@ function showToast(message, type = "success") {
     toast.classList.remove("show");
   }, 4000);
 }
+let friendsModalReturnFocus = null;
+window.openFriendsModal = function () {
+  if (!FRIENDS_ACTIONS_ENABLED) {
+    showToast("Friends are coming soon.", "info");
+    return;
+  }
+  if (!currentUser?.uid || currentUser.emailVerified !== true) {
+    showToast("Sign in to open Friends.", "info");
+    return;
+  }
+  const modal = document.getElementById("friendsModal");
+  if (!modal) return;
+  friendsModalReturnFocus = document.activeElement;
+  modal.style.display = "flex";
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("friends-modal-open");
+  modal.querySelector('[aria-label="Close Friends"]')?.focus({ preventScroll: true });
+};
+window.closeFriendsModal = function ({ restoreFocus = true } = {}) {
+  const modal = document.getElementById("friendsModal");
+  if (!modal) return;
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("friends-modal-open");
+  if (restoreFocus) {
+    const roomButton = document.getElementById("goldenReaderHost")
+      ?.shadowRoot?.querySelector('[data-action="friends"]');
+    const prior = friendsModalReturnFocus instanceof HTMLElement &&
+      friendsModalReturnFocus.isConnected
+      ? friendsModalReturnFocus
+      : roomButton;
+    prior?.focus({ preventScroll: true });
+  }
+  friendsModalReturnFocus = null;
+};
+const friendsModalElement = document.getElementById("friendsModal");
+friendsModalElement?.addEventListener("click", event => {
+  if (event.target === friendsModalElement) window.closeFriendsModal();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && friendsModalElement?.style.display === "flex") {
+    window.closeFriendsModal();
+  }
+});
 onAuthStateChanged(auth, async (user) => {
+  readerAccountGeneration++;
+  readerRoom.clear();
+  window.closeFriendsModal({ restoreFocus: false });
   circleSession.begin(user);
   const friendship = friendshipSession.begin(user);
   const session = personalLibrarySession.begin(user?.uid ?? null);
@@ -4942,7 +4972,6 @@ hideLibraryLoader();
 
 return;
 }
-  await wait(1500);
 if (!personalLibrarySession.isCurrent(session)) return;
 
 hideLibraryLoader();
@@ -4961,6 +4990,7 @@ mainNav.style.display = "grid";
 
     const userData = await readPublicProfile(user.uid);
     if (!personalLibrarySession.isCurrent(session)) return;
+    await readerRoom.bind(user);
 
     document.getElementById("usernameInput").value =
       userData.username === "Reader" ? "" : userData.username;
@@ -4991,9 +5021,11 @@ mainNav.style.display = "grid";
 listenToUserClubs();
 listenForCircleInvitations(circleSession.current);
 listenToPersonalLibrary(session);
-listenForFriendRequests(friendship);
-listenForFriends(friendship);
-    listenForBookmarks(session);
+if (FRIENDS_ACTIONS_ENABLED) {
+  listenForFriendRequests(friendship);
+  listenForFriends(friendship);
+}
+listenForBookmarks(session);
 handleInviteLink();
 showScreen("nook");
 
@@ -5371,7 +5403,11 @@ if (reviewsList) {
 showToast("Review posted!");
   });
 };
-window.openReaderProfile = async function (uid) {
+window.openReaderProfile = async function (uid, source = "") {
+  if (source === "friends" && !FRIENDS_ACTIONS_ENABLED) {
+    showToast("Friends are coming soon.", "info");
+    return;
+  }
   const modal = document.getElementById("readerProfileModal");
   const content = document.getElementById("readerProfileContent");
 
@@ -5487,6 +5523,10 @@ window.closeReaderProfileModal = function () {
 };
 
 window.sendFriendRequest = async function (uid) {
+  if (!FRIENDS_ACTIONS_ENABLED) {
+    showToast("Friends are coming soon.", "info");
+    return;
+  }
   const user = auth.currentUser;
   const session = friendshipSession.current;
 
@@ -5509,6 +5549,7 @@ window.sendFriendRequest = async function (uid) {
   }
 };
 window.listenForFriendRequests = function (session = friendshipSession.current) {
+  if (!FRIENDS_ACTIONS_ENABLED) return;
   if (!friendshipSession.isCurrent(session)) return;
 
   const container =
@@ -5541,7 +5582,8 @@ window.listenForFriendRequests = function (session = friendshipSession.current) 
               ${escapeHTML(requests[uid].email || "Reader")}
             </div>
 
-            <button onclick="acceptFriendRequest(${escapeInlineJson(uid)})">
+            <button onclick="acceptFriendRequest(${escapeInlineJson(uid)})"
+              ${FRIENDS_ACTIONS_ENABLED ? "" : 'disabled aria-disabled="true" title="Disabled in this isolated security review"'}>
               Accept
             </button>
 
@@ -5553,6 +5595,10 @@ window.listenForFriendRequests = function (session = friendshipSession.current) 
   );
 };
 window.acceptFriendRequest = async function (uid) {
+  if (!FRIENDS_ACTIONS_ENABLED) {
+    showToast("Friends are coming soon.", "info");
+    return;
+  }
   const user = auth.currentUser;
   const session = friendshipSession.current;
 
@@ -5598,6 +5644,7 @@ window.acceptFriendRequest = async function (uid) {
   }
 };
 window.listenForFriends = function (session = friendshipSession.current) {
+  if (!FRIENDS_ACTIONS_ENABLED) return;
   if (!friendshipSession.isCurrent(session)) return;
 
   const container = document.getElementById("friendsList");
@@ -5645,7 +5692,8 @@ window.listenForFriends = function (session = friendshipSession.current) {
 
             <button
               class="secondary"
-              onclick="openReaderProfile(${escapeInlineJson(uid)})">
+              onclick="openReaderProfile(${escapeInlineJson(uid)}, 'friends')"
+              ${FRIENDS_ACTIONS_ENABLED ? "" : 'disabled aria-disabled="true" title="Disabled in this isolated security review"'}>
               View Profile
             </button>
           </div>
@@ -5767,6 +5815,12 @@ window.openBookmarksPage = function () {
   showScreen("bookmarks");
 };
 window.loadReaderFriendStatus = function (uid, view = friendshipSession.view) {
+  if (!FRIENDS_ACTIONS_ENABLED) {
+    friendshipSession.stop("profile-status");
+    const unavailable = document.getElementById("readerFriendStatus");
+    if (unavailable) unavailable.textContent = "Friends are coming soon.";
+    return;
+  }
   const statusBox = document.getElementById("readerFriendStatus");
 
   if (!uid || !statusBox || !friendshipSession.isViewCurrent(view) || view.uid !== uid) return;
@@ -5788,7 +5842,8 @@ window.loadReaderFriendStatus = function (uid, view = friendshipSession.view) {
     } else {
       statusBox.innerHTML = `
         <p class="helper">Not friends yet.</p>
-        <button onclick="sendFriendRequest(${escapeInlineJson(uid)})">
+        <button onclick="sendFriendRequest(${escapeInlineJson(uid)})"
+          ${FRIENDS_ACTIONS_ENABLED ? "" : 'disabled aria-disabled="true" title="Disabled in this isolated security review"'}>
           Add Friend
         </button>
       `;
