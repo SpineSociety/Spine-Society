@@ -1,0 +1,520 @@
+/* Applied only while the real application's existing Reader screen is active.
+   The approved page CSS itself lives in the shadow root, not the shared cascade. */
+body.golden-reader-active,
+body.golden-reader-active > .app-shell,
+body.golden-reader-active .phone-frame,
+body.golden-reader-active .app-content,
+body.golden-reader-active #mainApp,
+body.golden-reader-active #profileScreen {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #140d09 !important;
+  min-height: 100dvh;
+  overflow: visible !important;
+}
+body.golden-reader-active .phone-frame::before,
+body.golden-reader-active .phone-frame::after,
+body.golden-reader-active .app-content::before,
+body.golden-reader-active .app-content::after { display: none !important; }
+#goldenReaderHost[hidden], #readerLegacyPanel[hidden] { display: none !important; }
+body.friends-modal-open,
+body.golden-reader-active.friends-modal-open { overflow: hidden !important; }
+#friendsModal button:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+  filter: saturate(.45);
+  box-shadow: none !important;
+}
+/* Historical inactive screens are transparent absolute layers, not display:none.
+   Hide those layers only in Reader so their offscreen shelves cannot enlarge it. */
+body.golden-reader-active #mainApp .screen:not(.active) { display: none !important; }
+body.golden-reader-active #readerLegacyPanel {
+  padding: 24px 18px 120px;
+  max-width: 780px;
+  margin: auto;
+}
+/* Same five historical buttons and event listeners; approved navigation skin. */
+body.golden-reader-active #mainNav {
+  box-sizing: border-box !important;
+  position: fixed !important;
+  z-index: 100 !important;
+  width: min(100%, 1040px) !important;
+  max-width: 1040px !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: 0 !important;
+  transform: translateX(-50%) !important;
+  padding: 8px 15px max(10px, env(safe-area-inset-bottom)) !important;
+  background: rgba(24,16,11,.97) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(208,173,112,.39) !important;
+  border-radius: 0 !important;
+  backdrop-filter: blur(14px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 0 !important;
+}
+body.golden-reader-active #mainNav .nav-btn {
+  box-sizing: border-box !important;
+  min-height: 55px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 2px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  color: #a99c86 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  font: 10px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  cursor: pointer;
+}
+body.golden-reader-active #mainNav .nav-btn .icon {
+  width: 19px; height: 19px; fill: none; stroke: currentColor;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+body.golden-reader-active #mainNav #profileTab {
+  border: 1px solid rgba(208,173,112,.32) !important;
+  background: linear-gradient(180deg, rgba(135,88,42,.31), rgba(80,52,29,.28)) !important;
+  color: #e6c27e !important;
+}
+/* Restored Phase B1 Golden Reading Room editor, isolated from the approved room. */
+#readerEditPanel[hidden] { display: none !important; }
+#readerEditPanel.reader-profile-fidelity {
+  --reader-edit-serif: "Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+  --edit-espresso: #21150f;
+  --edit-espresso-deep: #160e0a;
+  --edit-walnut: #4c3020;
+  --edit-walnut-light: #70482d;
+  --edit-ivory: #f3e8d2;
+  --edit-muted: #c9b89a;
+  --edit-gold: #d0ad70;
+  --edit-gold-dim: #987448;
+  --edit-line: rgba(208,173,112,.36);
+  --edit-line-soft: rgba(208,173,112,.18);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  color: var(--edit-ivory);
+  font: 15px/1.5 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(ellipse at 83% 7%,rgba(184,126,61,.19),transparent 24rem),
+    radial-gradient(ellipse at 12% 38%,rgba(114,71,40,.19),transparent 29rem),
+    linear-gradient(135deg,#24170f,#1b120d 50%,#21150f);
+  isolation: isolate;
+}
+#readerEditPanel *,
+#readerEditPanel *::before,
+#readerEditPanel *::after { box-sizing: border-box; }
+#readerEditPanel button,
+#readerEditPanel input,
+#readerEditPanel textarea,
+#readerEditPanel select { font: inherit; }
+#readerEditPanel button { color: inherit; }
+#readerEditPanel button:focus-visible,
+#readerEditPanel input:focus-visible,
+#readerEditPanel textarea:focus-visible,
+#readerEditPanel select:focus-visible {
+  outline: 2px solid var(--edit-gold);
+  outline-offset: 3px;
+}
+#readerEditPanel .reader-edit-shell {
+  width: min(100%,1040px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 24px calc(108px + env(safe-area-inset-bottom));
+}
+#readerEditPanel .reader-edit-masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 62px;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--edit-line-soft);
+}
+#readerEditPanel .reader-edit-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  color: var(--edit-ivory);
+  font: 600 16px/1 var(--reader-edit-serif,Georgia,serif);
+  letter-spacing: .04em;
+}
+#readerEditPanel .reader-edit-brand-mark {
+  display: grid;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--edit-gold-dim);
+  border-radius: 50%;
+  color: var(--edit-gold);
+}
+#readerEditPanel .reader-edit-brand-mark svg { width: 19px; height: 19px; }
+#readerEditPanel .reader-edit-offline {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid rgba(208,173,112,.31);
+  border-radius: 99px;
+  color: #ded0b7;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+#readerEditPanel .reader-edit-offline i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #aab18b;
+}
+#readerEditPanel .reader-edit-main {
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 22px 0 18px;
+}
+#readerEditPanel .reader-edit-back {
+  display: inline-flex;
+  width: auto;
+  min-height: 40px;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--edit-gold);
+  box-shadow: none;
+  cursor: pointer;
+}
+#readerEditPanel .reader-edit-back svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+#readerEditPanel .reader-edit-heading { margin: 0 0 25px; }
+#readerEditPanel .reader-edit-eyebrow {
+  color: var(--edit-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+}
+#readerEditPanel .reader-edit-heading h1 {
+  margin: 5px 0;
+  color: var(--edit-ivory);
+  font: 500 clamp(2.15rem,8vw,3.15rem)/1.02 var(--reader-edit-serif,Georgia,serif);
+  letter-spacing: -.025em;
+}
+#readerEditPanel .reader-edit-heading h1:focus { outline: none; }
+#readerEditPanel .reader-edit-heading p {
+  margin: 0;
+  color: var(--edit-muted);
+  font: italic 1rem/1.45 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel .reader-edit-form {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 21px;
+  border: 1px solid var(--edit-line);
+  border-radius: 17px;
+  background: linear-gradient(145deg,rgba(61,43,32,.72),rgba(31,23,18,.88));
+  box-shadow: 0 18px 40px rgba(0,0,0,.15);
+}
+#readerEditPanel .reader-edit-picture {
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 0 0 18px;
+  border: 0;
+  border-bottom: 1px solid var(--edit-line-soft);
+}
+#readerEditPanel .reader-edit-picture legend {
+  width: 100%;
+  padding: 0 0 11px;
+  color: #e2d5bd;
+  font-size: 13px;
+  font-weight: 600;
+}
+#readerEditPanel .reader-edit-picture-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+#readerEditPanel .reader-edit-picture-actions button,
+#readerEditPanel .reader-edit-actions button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border: 1px solid var(--edit-line);
+  border-radius: 10px;
+  background: rgba(22,16,12,.55);
+  color: var(--edit-muted);
+  cursor: pointer;
+  transition: background .18s ease,border-color .18s ease,transform .18s ease;
+}
+#readerEditPanel .reader-edit-picture-actions button[aria-pressed="true"] {
+  border-color: var(--edit-gold);
+  background: var(--edit-gold);
+  color: #241a11;
+}
+#readerEditPanel .reader-edit-picture-actions button:last-child { grid-column: 1 / -1; }
+#readerEditPanel .reader-edit-help {
+  margin: 7px 0 0;
+  color: #b5a58b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+#readerEditPanel .reader-edit-portrait-row {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  gap: 13px;
+  margin: 12px 0 10px;
+  color: var(--edit-muted);
+  font: 13px/1.4 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel .reader-edit-avatar,
+#readerEditPanel #readerPhotoPreview {
+  display: grid;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(241,231,212,.48);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%,rgba(255,255,255,.22),transparent 35%),
+    linear-gradient(145deg,var(--reader-edit-avatar-color,#586149),#211a15 84%);
+  box-shadow: inset 0 0 0 4px rgba(16,12,10,.28);
+  color: #f2e5cb;
+  font: 600 1.4rem/1 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel #readerPhotoPreview { object-fit: cover; }
+#readerEditPanel .reader-edit-avatar[hidden] { display: none !important; }
+#readerEditPanel #readerPhotoPreview[hidden] { display: none !important; }
+#readerEditPanel .reader-edit-avatar-choices { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 11px; }
+#readerEditPanel .reader-edit-avatar-choices button {
+  --avatar-color: #586149;
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: linear-gradient(145deg,var(--avatar-color),#211a15);
+  color: var(--edit-ivory);
+  font: 600 1.1rem/1 var(--reader-edit-serif,Georgia,serif);
+  cursor: pointer;
+}
+#readerEditPanel .reader-edit-avatar-choices button[data-style="fern"] { --avatar-color: #586149; }
+#readerEditPanel .reader-edit-avatar-choices button[data-style="clay"] { --avatar-color: #815444; }
+#readerEditPanel .reader-edit-avatar-choices button[data-style="ink"] { --avatar-color: #42545b; }
+#readerEditPanel .reader-edit-avatar-choices button[data-style="plum"] { --avatar-color: #69545f; }
+#readerEditPanel .reader-edit-avatar-choices button[aria-pressed="true"] {
+  border-color: var(--edit-gold);
+  box-shadow: 0 0 0 3px rgba(208,173,112,.17);
+}
+#readerEditPanel .reader-edit-field { min-width: 0; margin: 0 0 18px; }
+#readerEditPanel .reader-edit-field > label,
+#readerEditPanel .reader-edit-section > label:not(.reader-edit-check) {
+  display: block;
+  margin: 0 0 7px;
+  color: #e2d5bd;
+  font-size: 13px;
+  font-weight: 600;
+}
+#readerEditPanel input:not([type="checkbox"]):not([type="file"]),
+#readerEditPanel textarea,
+#readerEditPanel select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(208,173,112,.38);
+  border-radius: 9px;
+  background: #211914;
+  color: var(--edit-ivory);
+  font: inherit;
+}
+#readerEditPanel input::placeholder,
+#readerEditPanel textarea::placeholder { color: #9c8e78; }
+#readerEditPanel textarea { min-height: 96px; resize: vertical; }
+#readerEditPanel .reader-edit-counter { float: right; color: #b5a58b; font-size: 12px; font-weight: 400; }
+#readerEditPanel .reader-edit-section {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--edit-line-soft);
+}
+#readerEditPanel .reader-edit-section h2 {
+  margin: 0 0 12px;
+  color: var(--edit-ivory);
+  font: 500 1.35rem/1.15 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel .reader-edit-genres { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#readerEditPanel .reader-edit-genres label { position: relative; margin: 0; }
+#readerEditPanel .reader-edit-genres input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+#readerEditPanel .reader-edit-genres span {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px solid var(--edit-line);
+  border-radius: 999px;
+  color: #d0c2a9;
+  cursor: pointer;
+}
+#readerEditPanel .reader-edit-genres input:checked + span {
+  border-color: var(--edit-gold);
+  background: var(--edit-gold);
+  color: #241a11;
+}
+#readerEditPanel .reader-edit-genres input:focus-visible + span { outline: 2px solid var(--edit-gold); outline-offset: 3px; }
+#readerEditPanel .reader-edit-check {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 7px 12px;
+  border: 1px solid var(--edit-line);
+  border-radius: 999px;
+  background: rgba(22,16,12,.55);
+  color: #e2d5bd;
+  font-size: 13px;
+  cursor: pointer;
+}
+#readerEditPanel .reader-edit-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+#readerEditPanel .reader-edit-check input:focus-visible + span { outline: 2px solid var(--edit-gold); outline-offset: 3px; }
+#readerEditPanel .reader-edit-check input:checked + span { color: var(--edit-ivory); }
+#readerEditPanel .reader-edit-privacy-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(135px,190px);
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--edit-line-soft);
+}
+#readerEditPanel .reader-edit-privacy-row:last-child { border-bottom: 0; }
+#readerEditPanel .reader-edit-privacy-row label { margin: 0; color: #e2d5bd; font-size: 13px; font-weight: 600; }
+#readerEditPanel .reader-edit-privacy-row small { display: block; margin-top: 2px; color: #ab9b81; font-weight: 400; }
+#readerEditPanel .reader-edit-privacy-row select { padding: 9px; font-size: 13px; }
+#readerEditPanel .reader-edit-privacy-value { color: #b5a58b; font-size: 12px; text-align: right; }
+#readerEditPanel .reader-edit-error { display: block; min-height: 0; margin-top: 5px; color: #e4aaa1; font-size: 12px; }
+#readerEditPanel .reader-edit-status { min-height: 20px; margin: 9px 0 0; color: #d6c69e; font-size: 13px; }
+#readerEditPanel .reader-edit-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 21px; }
+#readerEditPanel .reader-edit-actions button { width: auto; min-width: 82px; flex: none; }
+#readerEditPanel .reader-edit-actions #readerCancelAll {
+  border-color: transparent;
+  background: transparent;
+  color: var(--edit-muted);
+}
+#readerEditPanel .reader-edit-actions #readerSaveChanges {
+  border-color: var(--edit-gold);
+  background: var(--edit-gold);
+  color: #1b130c;
+  min-width: 150px;
+  font-weight: 650;
+}
+#readerEditPanel .reader-edit-disclosure {
+  max-width: 700px;
+  margin: 17px auto 0;
+  padding: 16px 18px;
+  border: 1px solid var(--edit-line);
+  border-radius: 17px;
+  background: linear-gradient(145deg,rgba(61,43,32,.72),rgba(31,23,18,.88));
+  box-shadow: 0 18px 40px rgba(0,0,0,.15);
+}
+#readerEditPanel .reader-edit-disclosure h2 {
+  margin: 0 0 8px;
+  color: var(--edit-ivory);
+  font: 500 1.2rem/1.15 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel .reader-edit-disclosure p {
+  margin: 0;
+  color: #b7a88d;
+  font: 12px/1.5 var(--reader-edit-serif,Georgia,serif);
+}
+#readerEditPanel .reader-edit-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  clip-path: inset(50%) !important;
+}
+body.reader-editor-open #profileScreen,
+body.reader-editor-open #readerEditPanel { overflow: visible !important; }
+@media (min-width:700px) {
+  #readerEditPanel .reader-edit-shell { padding-inline: 38px; }
+  #readerEditPanel .reader-edit-main { padding-top: 34px; }
+  #readerEditPanel .reader-edit-form { padding: 22px; }
+}
+@media (max-width:420px) {
+  #readerEditPanel .reader-edit-shell { padding-inline: 16px; }
+  #readerEditPanel .reader-edit-masthead { min-height: 62px; padding-top: 12px; }
+  #readerEditPanel .reader-edit-brand { gap: 8px; font-size: 14px; }
+  #readerEditPanel .reader-edit-offline { gap: 5px; padding: 5px 7px; font-size: 9px; letter-spacing: .06em; }
+  #readerEditPanel .reader-edit-main { padding-top: 23px; }
+  #readerEditPanel .reader-edit-form { padding: 17px; }
+  #readerEditPanel .reader-edit-privacy-row { grid-template-columns: minmax(0,1fr) 135px; gap: 8px; }
+  #readerEditPanel .reader-edit-actions { gap: 7px; }
+  #readerEditPanel .reader-edit-actions button { flex: none; }
+  #readerEditPanel .reader-edit-actions #readerSaveChanges { min-width: 138px; }
+  #readerEditPanel .reader-edit-disclosure { padding: 16px 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #readerEditPanel *, #readerEditPanel *::before, #readerEditPanel *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media (min-width: 760px) {
+  body.golden-reader-active #mainNav {
+    border-inline: 1px solid rgba(198,163,101,.25) !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding-inline: 28px !important;
+  }
+  body.golden-reader-active #mainNav .nav-btn { font-size: 11px !important; }
+}
+@media (max-width: 420px) {
+  body.golden-reader-active #mainNav { padding-inline: 7px !important; }
+  body.golden-reader-active #mainNav .nav-btn { font-size: 9px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.golden-reader-active { scroll-behavior: auto !important; }
+}
