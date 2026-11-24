@@ -1691,7 +1691,7 @@
             <option value="🦉">Wise owl</option>
             <option value="🖋️">Marginalia writer</option>
           </select>
-          <p class="reader-edit-help">Choose a portrait, upload a photo, or preview your initials. Photo changes apply only after Save Changes.</p>
+          <p class="reader-edit-help">Choose a portrait or initials color. New photo uploads remain disabled.</p>
           <div class="reader-edit-portrait-row">
             <span id="readerAvatarPreview" class="reader-edit-avatar" role="img" aria-label="Profile portrait"></span>
             <img id="readerPhotoPreview" alt="Uncommitted profile photo preview" hidden>
@@ -1708,8 +1708,10 @@
 
         <div class="reader-edit-field">
           <label for="readerDisplayName">Display name</label>
-          <input id="readerDisplayName" name="displayName" autocomplete="name" maxlength="50">
-          <p class="reader-edit-help">Preview only for this session. Reader Alias is the only saved name.</p>
+          <input id="readerDisplayName" name="displayName" autocomplete="name" maxlength="80"
+            aria-describedby="readerDisplayNameHelp readerDisplayNameError">
+          <p class="reader-edit-help" id="readerDisplayNameHelp">Saved separately from your Reader Alias and visible to verified readers.</p>
+          <span id="readerDisplayNameError" class="reader-edit-error" role="status" aria-live="polite"></span>
         </div>
         <div class="reader-edit-field">
           <label for="readerUsername">Username</label>
@@ -1777,7 +1779,7 @@
       </form>
       <aside class="reader-edit-disclosure" aria-labelledby="readerEditReleaseTitle">
         <h2 id="readerEditReleaseTitle">Reader Release 1</h2>
-        <p id="readerEditPersistenceDisclosure">Reader Alias, preset avatar, biography, genres, and Currently Reading save to your Spine Society account. Display Name and initials are preview-only; new profile-photo uploads are disabled. Privacy choices do not change access.</p>
+        <p id="readerEditPersistenceDisclosure">Reader Alias, Display Name, preset avatar, initials color, biography, genres, and Currently Reading save to your Spine Society account. New profile-photo uploads are disabled. Privacy choices do not change access.</p>
       </aside>
     </main>
   </div>

@@ -1,6 +1,12 @@
 import { mountGoldenView } from "./golden-view.mjs";
-import { createReaderProfileEditor } from "./reader-profile-editor.mjs";
-import { DEFAULT_READER_PROFILE } from "./reader-profile-data.mjs";
+import {
+  createReaderProfileEditor,
+  readerAvatarStyleForValue,
+} from "./reader-profile-editor.mjs";
+import {
+  DEFAULT_READER_PROFILE,
+  normalizeReaderLibrary,
+} from "./reader-profile-data.mjs";
 import { safeImageUrl } from "./security-utils.mjs";
 
 function displayAlias(value) {
@@ -15,13 +21,15 @@ export function createReaderBridge({
   profilePath,
   formatName,
   notify,
+  isPermissionDenied,
 }) {
   const host = document.getElementById("goldenReaderHost");
   const editor = document.getElementById("readerEditPanel");
   let identity = null;
   let profile = {};
   let libraryBooks = [];
-  let libraryReady = Promise.resolve([]);
+  let libraryStatus = "idle";
+  let libraryReady = Promise.resolve();
   let resolveLibraryReady = null;
   let stop = null;
   let generation = 0;
@@ -30,7 +38,7 @@ export function createReaderBridge({
   async function paint(token = generation, uid = identity) {
     const view = await ready;
     if (!uid || token !== generation || identity !== uid) return;
-    const name = formatName(profile.username);
+    const name = formatName(profile.displayName || profile.username);
     const readerProfile = profile.readerProfile || DEFAULT_READER_PROFILE;
     const bookId = readerProfile.currentlyReadingBookId;
     const book = libraryBooks.find(item => item.id === bookId) || null;
@@ -38,11 +46,17 @@ export function createReaderBridge({
       name,
       alias: displayAlias(profile.username),
       avatar: profile.avatar || "",
+      avatarStyle: readerAvatarStyleForValue(profile.avatar, profile.avatarStyle),
       photo: profile.avatar === "photo" &&
         typeof profile.avatarPhoto === "string" &&
         safeImageUrl(profile.avatarPhoto) || "",
     });
-    view.setReaderData({ profile: readerProfile, book, missingBook: Boolean(bookId && !book) });
+    view.setReaderData({
+      profile: readerProfile,
+      book,
+      missingBook: libraryStatus === "ready" && Boolean(bookId && !book),
+      libraryUnavailable: libraryStatus === "error",
+    });
   }
 
   const editorController = createReaderProfileEditor({
@@ -51,9 +65,11 @@ export function createReaderBridge({
     getIdentity: () => identity,
     getProfile: () => profile,
     getOwnedBooks: async uid => {
-      if (identity !== uid) return [];
+      if (identity !== uid) return { books: [], status: "stale" };
       await libraryReady;
-      return identity === uid ? libraryBooks : [];
+      return identity === uid
+        ? { books: libraryBooks, status: libraryStatus }
+        : { books: [], status: "stale" };
     },
     saveProfile: async changes => {
       return window.saveReaderProfileDraft(changes);
@@ -62,8 +78,9 @@ export function createReaderBridge({
       const { library, ...profilePatch } = patch;
       profile = { ...profile, ...profilePatch };
       if (Array.isArray(library)) {
-        libraryBooks = library;
-        resolveLibraryReady?.(libraryBooks);
+        libraryBooks = normalizeReaderLibrary(library);
+        libraryStatus = "ready";
+        resolveLibraryReady?.();
         resolveLibraryReady = null;
       }
       return paint();
@@ -120,32 +137,45 @@ export function createReaderBridge({
       identity = user.uid;
       profile = {};
       libraryBooks = [];
+      libraryStatus = "loading";
       const token = generation;
       libraryReady = new Promise(resolve => { resolveLibraryReady = resolve; });
-      const unsubscribe = ["username", "avatar", "avatarPhoto", "readerProfile"].map(field =>
+      const unsubscribe = [
+        "username",
+        "displayName",
+        "avatar",
+        "avatarStyle",
+        "avatarPhoto",
+        "readerProfile",
+      ].map(field =>
         subscribe(`${profilePath(user.uid)}/${field}`, snapshot => {
           profile[field] = snapshot.val();
           void paint(token, user.uid);
-        }, () => {
+        }, error => {
           if (token !== generation) return;
+          if ((field === "displayName" || field === "avatarStyle") &&
+              isPermissionDenied?.(error)) {
+            profile[field] = null;
+            void paint(token, user.uid);
+            return;
+          }
           this.clear();
           notify("Reader information could not be loaded. No profile changes were made.");
         }));
       unsubscribe.push(subscribe(`${profilePath(user.uid)}/library`, snapshot => {
         if (token !== generation || identity !== user.uid) return;
-        const records = snapshot.val() || {};
-        libraryBooks = Object.entries(records).map(([id, record]) => ({
-          ...(record && typeof record === "object" ? record : {}),
-          id,
-        })).filter(book => typeof book.title === "string");
-        resolveLibraryReady?.(libraryBooks);
+        libraryBooks = normalizeReaderLibrary(snapshot.val());
+        libraryStatus = "ready";
+        resolveLibraryReady?.();
         resolveLibraryReady = null;
         void paint(token, user.uid);
       }, () => {
         if (token !== generation) return;
         libraryBooks = [];
-        resolveLibraryReady?.(libraryBooks);
+        libraryStatus = "error";
+        resolveLibraryReady?.();
         resolveLibraryReady = null;
+        notify("Your collection could not be verified. Reader profile changes are paused.");
         void paint(token, user.uid);
       }));
       stop = () => unsubscribe.forEach(fn => fn?.());
@@ -155,12 +185,13 @@ export function createReaderBridge({
       generation++;
       stop?.();
       stop = null;
-      resolveLibraryReady?.([]);
+      resolveLibraryReady?.();
       resolveLibraryReady = null;
-      libraryReady = Promise.resolve([]);
+      libraryReady = Promise.resolve();
       identity = null;
       profile = {};
       libraryBooks = [];
+      libraryStatus = "idle";
       closeEditor();
       ready.then(view => {
         if (!identity) {
@@ -168,6 +199,7 @@ export function createReaderBridge({
             name: "Reader",
             alias: "No reader signed in",
             avatar: "",
+            avatarStyle: "",
             photo: "",
           });
           view.setReaderData({ profile: {}, book: null, missingBook: false });

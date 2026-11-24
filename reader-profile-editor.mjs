@@ -1,7 +1,10 @@
 import {
   DEFAULT_READER_PROFILE,
   PROFILE_GENRES,
+  isSupportedAvatarStyle,
+  normalizeReaderLibrary,
   profileForDisplay,
+  validateReaderDisplayName,
   validateReaderProfile,
 } from "./reader-profile-data.mjs";
 import { safeImageUrl } from "./security-utils.mjs";
@@ -16,9 +19,16 @@ const AVATAR_STYLES = {
   plum: { value: "🌙", color: "#69545f", label: "Dried plum" },
 };
 const VALUE_TO_STYLE = new Map([
-  ["🌿", "fern"], ["🕯️", "clay"], ["📚", "fern"], ["🌙", "plum"],
+  ["🌿", "fern"], ["🕯️", "clay"], ["📚", "ink"], ["🌙", "plum"],
   ["☕", "clay"], ["🦉", "ink"], ["🖋️", "plum"],
 ]);
+
+export function readerAvatarStyleForValue(value, savedStyle) {
+  return isSupportedAvatarStyle(savedStyle)
+    ? savedStyle
+    : VALUE_TO_STYLE.get(value) || "fern";
+}
+
 export function validateReaderAlias(value) {
   const alias = typeof value === "string" ? value.trim() : "";
   if (!alias) return { ok: false, message: "Enter a Reader Alias." };
@@ -47,7 +57,7 @@ function initialsFor(value) {
 
 function displayNameFromAlias(value) {
   const alias = typeof value === "string" ? value.trim() : "";
-  return alias || "Reader";
+  return alias && !/@.*[.]/u.test(alias) ? alias : "Reader";
 }
 
 function readAsDataUrl(file) {
@@ -76,7 +86,9 @@ async function verifyImage(dataUrl) {
 function defaultPreviewSettings(uid, profile) {
   return {
     uid,
-    displayName: displayNameFromAlias(profile.username),
+    displayName: typeof profile.displayName === "string" && profile.displayName.trim()
+      ? profile.displayName.trim()
+      : displayNameFromAlias(profile.username),
     shareCurrentlyReading: false,
     bioPrivacy: "friends",
     genrePrivacy: "friends",
@@ -102,9 +114,11 @@ export function createReaderProfileEditor({
   const caption = document.getElementById("readerPortraitCaption");
   const avatarChoices = document.getElementById("readerAvatarChoices");
   const aliasError = document.getElementById("readerUsernameError");
+  const displayNameError = document.getElementById("readerDisplayNameError");
   const genreError = document.getElementById("readerGenresError");
   const editStatus = document.getElementById("readerEditStatus");
   const photoStatus = document.getElementById("readerPhotoStatus");
+  const bookHelp = document.getElementById("readerBookHelp");
   const previewSettingsByUid = new Map();
   const releaseStatus = document.getElementById("readerReleaseStatus");
   const releaseStatusText = Array.from(releaseStatus?.childNodes || [])
@@ -120,6 +134,7 @@ export function createReaderProfileEditor({
   let sessionGeneration = 0;
   let photoGeneration = 0;
   let saveInProgress = false;
+  let libraryStatus = "idle";
 
   const savedProfile = () => getProfile?.() || {};
   const identity = () => getIdentity?.() || null;
@@ -138,10 +153,16 @@ export function createReaderProfileEditor({
     document.getElementById("readerUploadPhoto").setAttribute("aria-pressed", String(mode === "photo"));
     document.getElementById("readerChooseAvatar").setAttribute("aria-pressed", String(mode === "preset"));
     document.getElementById("readerUseInitials").setAttribute("aria-pressed", String(mode === "initials"));
-    avatarChoices.hidden = mode !== "preset";
+    avatarChoices.hidden = mode !== "preset" && mode !== "initials";
     avatarChoices.querySelectorAll("button[data-style]").forEach(button => {
       button.textContent = initialsFor(name);
-      button.setAttribute("aria-pressed", String(mode === "preset" && button.dataset.style === style));
+      button.setAttribute("aria-pressed", String(
+        (mode === "preset" || mode === "initials") && button.dataset.style === style,
+      ));
+      button.setAttribute(
+        "aria-label",
+        `${AVATAR_STYLES[button.dataset.style]?.label || "Avatar"} ${mode === "initials" ? "initials color" : "avatar"}`,
+      );
     });
   }
 
@@ -151,45 +172,64 @@ export function createReaderProfileEditor({
     photoGeneration++;
   }
 
-  function populateBooks(books) {
+  function populateBooks(books, savedBookId = "") {
     const select = document.getElementById("readerCurrentBook");
     select.querySelectorAll('option:not([value=""])').forEach(option => option.remove());
-    for (const book of [...books].sort((a, b) => a.title.localeCompare(b.title))) {
-      if (typeof book.id !== "string" || typeof book.title !== "string") continue;
+    const normalizedBooks = normalizeReaderLibrary(books);
+    for (const book of normalizedBooks) {
       const option = document.createElement("option");
       option.value = book.id;
-      option.textContent = `${book.title} — ${typeof book.author === "string" ? book.author : "Unknown author"}`;
+      option.textContent = `${book.title} — ${book.author || "Unknown author"}`;
       select.append(option);
     }
+    if (savedBookId && !normalizedBooks.some(book => book.id === savedBookId)) {
+      const unavailable = document.createElement("option");
+      unavailable.value = savedBookId;
+      unavailable.textContent = libraryStatus === "ready"
+        ? "Previously saved book is unavailable"
+        : "Saved book selection could not be verified";
+      unavailable.disabled = true;
+      unavailable.dataset.unavailable = "true";
+      select.append(unavailable);
+    }
+    select.disabled = libraryStatus !== "ready";
+    return normalizedBooks;
   }
 
-  function loadProfile(books = []) {
+  function loadProfile(books = [], state = "ready") {
     const uid = identity();
     if (!uid) return;
+    libraryStatus = state;
     const profile = savedProfile();
     let previewSettings = previewSettingsByUid.get(uid);
     if (!previewSettings) {
       previewSettings = defaultPreviewSettings(uid, profile);
       previewSettingsByUid.set(uid, previewSettings);
     }
+    const storedDisplayName = typeof profile.displayName === "string"
+      ? validateReaderDisplayName(profile.displayName) : { ok: false };
+    if (storedDisplayName.ok) previewSettings.displayName = storedDisplayName.value;
     const savedReaderProfile = profileForDisplay(
       profile.readerProfile || DEFAULT_READER_PROFILE,
     );
-    const ownedIds = new Set(books.map(book => book.id));
-    const selectedBookId = ownedIds.has(savedReaderProfile.currentlyReadingBookId)
-      ? savedReaderProfile.currentlyReadingBookId : "";
+    const normalizedBooks = normalizeReaderLibrary(books);
+    const ownedIds = new Set(normalizedBooks.map(book => book.id));
+    const savedBookId = savedReaderProfile.currentlyReadingBookId;
+    const selectedBookId = savedBookId || "";
     displayNameInput.value = previewSettings.displayName;
     aliasInput.value = typeof profile.username === "string" ? profile.username : "";
     document.getElementById("readerBio").value = savedReaderProfile.biography;
     document.getElementById("readerBioCount").textContent = String(savedReaderProfile.biography.length);
-    populateBooks(books);
+    populateBooks(normalizedBooks, savedBookId);
     form.querySelectorAll('input[name="genre"]').forEach(input => {
       input.checked = savedReaderProfile.favoriteGenres.includes(GENRE_ID_BY_LABEL.get(input.value));
     });
-    document.getElementById("readerCurrentBook").value = selectedBookId;
-    document.getElementById("readerBookHelp").textContent =
-      savedReaderProfile.currentlyReadingBookId && !selectedBookId
-        ? "The saved book is no longer in this reader's collection. Choose another book or clear this selection."
+    document.getElementById("readerCurrentBook").value =
+      ownedIds.has(selectedBookId) || selectedBookId ? selectedBookId : "";
+    bookHelp.textContent = libraryStatus !== "ready"
+      ? "Your collection could not be verified. Profile changes will not be saved until it loads."
+      : savedBookId && !ownedIds.has(savedBookId)
+        ? "The saved book is unavailable. Choose another book or select Nothing just now before saving."
         : "Choose only from books in this account's collection.";
     document.getElementById("readerShareBook").checked = Boolean(previewSettings.shareCurrentlyReading);
     document.getElementById("readerBioPrivacy").value = previewSettings.bioPrivacy;
@@ -197,11 +237,12 @@ export function createReaderProfileEditor({
 
     savedPhoto = profile.avatar === "photo" && safeProfileImage(profile.avatarPhoto)
       ? profile.avatarPhoto : "";
-    const mappedStyle = VALUE_TO_STYLE.get(profile.avatar) || "fern";
-    currentStyle = mappedStyle;
-    currentMode = savedPhoto ? "photo" : !profile.avatar || /^[A-Z]{1,3}$/u.test(profile.avatar)
+    currentStyle = readerAvatarStyleForValue(profile.avatar, profile.avatarStyle);
+    currentMode = savedPhoto ? "photo" : !profile.avatar || profile.avatar === "initials" ||
+      /^[A-Z]{1,3}$/u.test(profile.avatar)
       ? "initials" : "preset";
     portraitTouched = false;
+    avatarValue.value = AVATAR_STYLES[currentStyle].value;
     const initialButton = avatarChoices.querySelector(`[data-style="${currentStyle}"]`);
     if (AVATAR_STYLES[currentStyle] && initialButton) {
       avatarValue.value = AVATAR_STYLES[currentStyle].value;
@@ -211,9 +252,11 @@ export function createReaderProfileEditor({
         avatarValue.value = profile.avatar;
       }
     }
-    setPortrait({ name: previewSettings.displayName, mode: currentMode, style: currentStyle, photo: savedPhoto });
+    setPortrait({ name: displayNameInput.value, mode: currentMode, style: currentStyle, photo: savedPhoto });
     aliasError.textContent = "";
+    displayNameError.textContent = "";
     genreError.textContent = "";
+    displayNameInput.removeAttribute("aria-invalid");
     editStatus.textContent = "";
     photoStatus.textContent =
       "New profile photo writes are disabled. Existing legacy photos remain unchanged.";
@@ -235,9 +278,20 @@ export function createReaderProfileEditor({
     const uid = identity();
     if (!uid) return;
     const token = ++sessionGeneration;
-    const books = await Promise.resolve(getOwnedBooks?.(uid) || []);
+    let ownedBooksResult = [];
+    try {
+      ownedBooksResult = await Promise.resolve(getOwnedBooks?.(uid) || []);
+    } catch {
+      ownedBooksResult = { books: [], status: "error" };
+    }
     if (token !== sessionGeneration || uid !== identity()) return;
-    loadProfile(books);
+    const books = Array.isArray(ownedBooksResult)
+      ? ownedBooksResult
+      : Array.isArray(ownedBooksResult?.books) ? ownedBooksResult.books : [];
+    const state = Array.isArray(ownedBooksResult)
+      ? "ready"
+      : ownedBooksResult?.status || "ready";
+    loadProfile(books, state);
     host.hidden = true;
     panel.hidden = false;
     document.body.classList.add("reader-editor-open");
@@ -291,6 +345,7 @@ export function createReaderProfileEditor({
   async function submit(event) {
     event.preventDefault();
     aliasError.textContent = "";
+    displayNameError.textContent = "";
     genreError.textContent = "";
     editStatus.textContent = "";
     const alias = validateReaderAlias(aliasInput.value);
@@ -301,9 +356,19 @@ export function createReaderProfileEditor({
       return;
     }
     aliasInput.removeAttribute("aria-invalid");
-    const displayName = displayNameInput.value.trim() || alias.value;
-    if (portraitTouched && currentMode === "initials") {
-      editStatus.textContent = "Initials are preview-only. Choose one of the seven preset avatars to save changes.";
+    const displayNameResult = validateReaderDisplayName(
+      displayNameInput.value.trim() || alias.value,
+    );
+    if (!displayNameResult.ok) {
+      displayNameError.textContent = displayNameResult.message;
+      displayNameInput.setAttribute("aria-invalid", "true");
+      displayNameInput.focus();
+      return;
+    }
+    displayNameInput.removeAttribute("aria-invalid");
+    const displayName = displayNameResult.value;
+    if (libraryStatus !== "ready") {
+      editStatus.textContent = "Your collection is unavailable. Nothing was saved; reload and try again.";
       return;
     }
     if (portraitTouched && currentMode === "photo" && photoDraft && photoDraft !== savedPhoto) {
@@ -324,8 +389,26 @@ export function createReaderProfileEditor({
       return;
     }
     const old = savedProfile();
-    const ownedBooks = await Promise.resolve(getOwnedBooks?.(uid) || []);
+    let ownedBooksResult;
+    try {
+      ownedBooksResult = await Promise.resolve(getOwnedBooks?.(uid) || []);
+    } catch {
+      ownedBooksResult = { books: [], status: "error" };
+    }
     if (token !== sessionGeneration || uid !== identity()) return;
+    const ownedBooksState = Array.isArray(ownedBooksResult)
+      ? "ready"
+      : ownedBooksResult?.status || "ready";
+    if (ownedBooksState !== "ready") {
+      libraryStatus = ownedBooksState;
+      bookHelp.textContent = "Your collection could not be verified. Nothing was saved; reload and try again.";
+      document.getElementById("readerCurrentBook").disabled = true;
+      editStatus.textContent = "Your collection is unavailable. Nothing was saved; reload and try again.";
+      return;
+    }
+    const ownedBooks = normalizeReaderLibrary(
+      Array.isArray(ownedBooksResult) ? ownedBooksResult : ownedBooksResult?.books,
+    );
     const profileResult = validateReaderProfile({
       biography: document.getElementById("readerBio").value,
       favoriteGenres: selectedGenreIds,
@@ -336,11 +419,27 @@ export function createReaderProfileEditor({
       return;
     }
     const readerProfile = profileResult.value;
-    const avatarToSave = portraitTouched && currentMode === "preset"
-      ? avatarValue.value : (old.avatar || "");
-    const updateAvatar = portraitTouched && currentMode === "preset" &&
-      avatarToSave !== (old.avatar || "");
+    const oldAvatarStyle = readerAvatarStyleForValue(old.avatar, old.avatarStyle);
+    const avatarToSave = portraitTouched && currentMode === "initials"
+      ? "initials"
+      : portraitTouched && currentMode === "preset"
+        ? avatarValue.value : (old.avatar || "");
+    const avatarStyleToSave = currentMode === "initials" || currentMode === "preset"
+      ? currentStyle : oldAvatarStyle;
+    const updateAvatarStyle = portraitTouched &&
+      (currentMode === "preset" || currentMode === "initials") &&
+      (avatarStyleToSave !== oldAvatarStyle ||
+        (currentMode === "initials" && !isSupportedAvatarStyle(old.avatarStyle)));
+    const updateAvatar = portraitTouched &&
+      (currentMode === "preset" || currentMode === "initials") &&
+      (avatarToSave !== (old.avatar || "") || updateAvatarStyle);
+    const oldDisplayName = validateReaderDisplayName(old.displayName);
+    const previousDisplayName = oldDisplayName.ok
+      ? oldDisplayName.value
+      : displayNameFromAlias(old.username);
+    const displayNameChanged = displayName !== previousDisplayName;
     const changed = alias.value !== (old.username || "") ||
+      displayNameChanged ||
       updateAvatar ||
       JSON.stringify(readerProfile) !== JSON.stringify(profileForDisplay(
         old.readerProfile || DEFAULT_READER_PROFILE,
@@ -356,7 +455,11 @@ export function createReaderProfileEditor({
         saveResult = await saveProfile?.({
           expectedUid: uid,
           username: alias.value,
+          displayName,
+          updateDisplayName: displayNameChanged,
           avatar: avatarToSave,
+          avatarStyle: avatarStyleToSave,
+          updateAvatarStyle,
           updateAvatar,
           readerProfile,
         });
@@ -377,7 +480,7 @@ export function createReaderProfileEditor({
 
     const previewSettings = {
       ...(previewSettingsByUid.get(uid) || { uid }),
-      displayName: displayName || alias.value,
+      displayName,
       shareCurrentlyReading: document.getElementById("readerShareBook").checked &&
         Boolean(document.getElementById("readerCurrentBook").value),
       bioPrivacy: document.getElementById("readerBioPrivacy").value,
@@ -386,7 +489,9 @@ export function createReaderProfileEditor({
     previewSettingsByUid.set(uid, previewSettings);
     await onSaved?.({
       username: saveResult?.username || alias.value,
+      displayName: saveResult?.displayName || displayName,
       avatar: saveResult?.avatar || avatarToSave,
+      avatarStyle: saveResult?.avatarStyle || avatarStyleToSave,
       avatarPhoto: saveResult?.avatarPhoto ?? savedPhoto,
       readerProfile: saveResult?.readerProfile || readerProfile,
       library: saveResult?.library,
@@ -411,7 +516,7 @@ export function createReaderProfileEditor({
   avatarChoices.addEventListener("click", event => {
     const button = event.target.closest("button[data-style]");
     if (!button) return;
-    currentMode = "preset";
+    if (currentMode !== "initials") currentMode = "preset";
     currentStyle = button.dataset.style;
     avatarValue.value = button.dataset.value;
     portraitTouched = true;

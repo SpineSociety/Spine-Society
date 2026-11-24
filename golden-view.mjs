@@ -20,6 +20,12 @@ const SAMPLE_BIO = "";
 const SAMPLE_GENRES = [];
 const SAMPLE_BOOK = { title: "", author: "", cover: "", color: "#67513a" };
 const GENRES_BY_ID = new Map(PROFILE_GENRES.map(genre => [genre.id, genre]));
+const AVATAR_STYLE_COLORS = Object.freeze({
+  fern: "#586149",
+  clay: "#815444",
+  ink: "#42545b",
+  plum: "#69545f",
+});
 
 function adaptCss(text) {
   return text
@@ -34,6 +40,7 @@ const ADAPTER_CSS = `
 .room-document { display: block; position: relative; }
 .room-document[data-screen="room"] .masthead { display: none; }
 .reading-empty-state { margin: 0; text-align: center; color: #ead8b4; font: italic 1rem/1.5 var(--serif); }
+.identity .avatar[data-avatar-style] { background-image: radial-gradient(circle at 35% 27%, rgba(255,237,183,.28), transparent 36%), linear-gradient(145deg, var(--reader-avatar-color, #465044), #1b211a 80%); }
 .avatar-photo { overflow: hidden; padding: 0; }
 .avatar-image { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
 .friends-entry:disabled { opacity: 1; cursor: default; }
@@ -140,7 +147,7 @@ export async function mountGoldenView(host) {
     if (action === "edit" || action === "friends") callback(action);
   });
 
-  function setIdentity({ name = "", alias = "", avatar = "", photo = "" } = {}) {
+  function setIdentity({ name = "", alias = "", avatar = "", avatarStyle = "", photo = "" } = {}) {
     const nameEl = root.querySelector('[data-testid="text-display-name"]');
     const aliasEl = root.querySelector('[data-testid="text-username"]');
     const shown = String(name || "Reader");
@@ -150,6 +157,8 @@ export async function mountGoldenView(host) {
     const slot = root.querySelector("[data-golden-avatar]");
     slot.replaceChildren();
     slot.classList.remove("avatar-photo");
+    slot.removeAttribute("data-avatar-style");
+    slot.style.removeProperty("--reader-avatar-color");
     if (photo && safeProfileImage(photo)) {
       slot.classList.add("avatar-photo");
       slot.setAttribute("aria-label", "Custom profile photo");
@@ -157,12 +166,22 @@ export async function mountGoldenView(host) {
       img.className = "avatar-image"; img.alt = ""; img.src = String(photo);
       slot.append(img);
     } else {
+      const style = AVATAR_STYLE_COLORS[avatarStyle] ? avatarStyle : "fern";
+      slot.dataset.avatarStyle = style;
+      slot.style.setProperty("--reader-avatar-color", AVATAR_STYLE_COLORS[style]);
       const text = String(avatar || "").trim();
-      slot.textContent = text ? Array.from(text).slice(0, 3).join("") : initialsOf(shown);
+      slot.textContent = text && text !== "initials"
+        ? Array.from(text).slice(0, 3).join("")
+        : initialsOf(shown);
       slot.setAttribute("aria-label", `Profile portrait for ${shown || "reader"}`);
     }
   }
-  function setReaderData({ profile = {}, book = null, missingBook = false } = {}) {
+  function setReaderData({
+    profile = {},
+    book = null,
+    missingBook = false,
+    libraryUnavailable = false,
+  } = {}) {
     const saved = profileForDisplay(profile);
     root.querySelector('[data-testid="text-biography"]').textContent = saved.biography;
 
@@ -185,9 +204,11 @@ export async function mountGoldenView(host) {
     if (!book || typeof book.title !== "string" || typeof book.author !== "string") {
       shelf.hidden = true;
       empty.hidden = false;
-      empty.textContent = missingBook
-        ? "The saved book is no longer in this reader's collection."
-        : "Nothing just now.";
+      empty.textContent = libraryUnavailable
+        ? "The collection could not be loaded. Your saved selection was not changed."
+        : missingBook
+          ? "The saved book is no longer in this reader's collection."
+          : "Nothing just now.";
       return;
     }
     shelf.hidden = false;

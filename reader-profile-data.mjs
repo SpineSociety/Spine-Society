@@ -15,12 +15,74 @@ export const DEFAULT_READER_PROFILE = Object.freeze({
   currentlyReadingBookId: "",
 });
 
+export const READER_AVATAR_STYLES = Object.freeze([
+  "fern",
+  "clay",
+  "ink",
+  "plum",
+]);
+
+const AVATAR_STYLE_IDS = new Set(READER_AVATAR_STYLES);
+const AVATAR_VALUES = new Set(["🌿", "🕯️", "📚", "🌙", "☕", "🦉", "🖋️", "initials"]);
+const EMAIL_SHAPE = /@.*[.]/u;
 const FIELD_NAMES = new Set([
   "biography",
   "favoriteGenres",
   "currentlyReadingBookId",
 ]);
 const GENRE_IDS = new Set(PROFILE_GENRES.map(({ id }) => id));
+
+export function validateReaderDisplayName(value) {
+  if (typeof value !== "string") {
+    return { ok: false, message: "Enter a display name." };
+  }
+  const displayName = value.trim();
+  if (!displayName || displayName.length > 80) {
+    return { ok: false, message: "Use a display name between 1 and 80 characters." };
+  }
+  if (EMAIL_SHAPE.test(displayName)) {
+    return { ok: false, message: "Display names cannot be email addresses." };
+  }
+  return { ok: true, value: displayName };
+}
+
+export function isSupportedAvatarStyle(value) {
+  return typeof value === "string" && AVATAR_STYLE_IDS.has(value);
+}
+
+export function isSupportedReaderAvatar(value) {
+  return typeof value === "string" &&
+    (AVATAR_VALUES.has(value) || /^[A-Z]{1,3}$/.test(value));
+}
+
+export function normalizeReaderLibrary(value) {
+  if (!value || typeof value !== "object") return [];
+  const entries = Array.isArray(value)
+    ? value.map(record => [record?.id, record])
+    : Object.entries(value);
+  const seenIds = new Set();
+  return entries
+    .flatMap(([id, record]) => {
+      if (typeof id !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(id) ||
+          seenIds.has(id) ||
+          !record || typeof record !== "object" || Array.isArray(record) ||
+          (record.id != null && record.id !== id)) {
+        return [];
+      }
+      const title = typeof record.title === "string" ? record.title.trim() : "";
+      if (!title) return [];
+      seenIds.add(id);
+      return [{
+        ...record,
+        id,
+        title,
+        author: typeof record.author === "string" && record.author.trim()
+          ? record.author.trim()
+          : "Unknown author",
+      }];
+    })
+    .sort((left, right) => left.title.localeCompare(right.title));
+}
 
 export function validateReaderProfile(value, ownedBookIds) {
   if (!value || typeof value !== "object" || Array.isArray(value) ||
