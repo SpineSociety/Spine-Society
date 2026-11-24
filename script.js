@@ -852,8 +852,27 @@ window.resendVerificationEmail = async function () {
   }
 };
 window.logoutUser = async function () {
-  await signOutWithLibraryCleanup();
+  const button = document.getElementById("readerLogoutButton");
+  if (button) {
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+  }
+  try {
+    await signOutWithLibraryCleanup();
+    return true;
+  } catch {
+    showToast("Unable to log out. Please try again.", "error");
+    return false;
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
+  }
 };
+document.getElementById("readerLogoutButton")?.addEventListener("click", () => {
+  void window.logoutUser();
+});
 
 window.saveUsername = async function () {
   if (!currentUser) return { ok: false, message: "Please log in first." };
