@@ -31,7 +31,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { createReaderBridge } from "./reader-bridge.mjs";
 import { deletePersonalBookSafely } from "./reader-current-book-delete.mjs";
-import { validateReaderProfile } from "./reader-profile-data.mjs";
+import {
+  isSupportedAvatarStyle,
+  isSupportedReaderAvatar,
+  validateReaderDisplayName,
+  validateReaderProfile
+} from "./reader-profile-data.mjs";
 import { escapeHtml, safeImageUrl } from "./security-utils.mjs";
 import { createPersonalShelves } from "./personal-shelves.mjs";
 import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
@@ -70,6 +75,7 @@ const readerRoom = createReaderBridge({
   profilePath: uid => "users/" + uid,
   formatName: value => publicDisplayName(value),
   notify: message => showToast(message, "info"),
+  isPermissionDenied: isFriendshipPermissionDenied,
 });
 let currentLibraryBooks = [];
 let currentBookmarkBooks = [];
@@ -385,21 +391,46 @@ function publicDisplayName(value) {
   return name && !isEmailShapedUsername(name) ? name : "Reader";
 }
 
+function initialsForReader(value) {
+  const words = String(value || "").trim().split(/\s+/u).filter(Boolean);
+  return words.slice(0, 2).map(word => Array.from(word)[0]).join("").toUpperCase() || "?";
+}
+
 async function readPublicProfile(uid) {
-  const [usernameSnapshot, avatarSnapshot, photoSnapshot] = await Promise.all([
+  const [usernameSnapshot, displayNameSnapshot, avatarSnapshot, avatarStyleSnapshot, photoSnapshot] = await Promise.all([
     get(ref(database, `users/${uid}/username`)).catch(error => {
       // The candidate withholds legacy email-shaped aliases from other readers.
       // Do not treat unexpected failures as missing names.
       if (!isFriendshipPermissionDenied(error)) throw error;
       return { val: () => null };
     }),
+    get(ref(database, `users/${uid}/displayName`)).catch(error => {
+      // Older Reader Release 1 rules do not yet contain this optional field.
+      if (!isFriendshipPermissionDenied(error)) throw error;
+      return { val: () => null };
+    }),
     get(ref(database, `users/${uid}/avatar`)),
+    get(ref(database, `users/${uid}/avatarStyle`)).catch(error => {
+      if (!isFriendshipPermissionDenied(error)) throw error;
+      return { val: () => null };
+    }),
     get(ref(database, `users/${uid}/avatarPhoto`))
   ]);
+  const username = publicDisplayName(usernameSnapshot.val());
+  const rawDisplayName = displayNameSnapshot.val();
+  const displayName = typeof rawDisplayName === "string" &&
+    rawDisplayName.trim() && !isEmailShapedUsername(rawDisplayName)
+    ? rawDisplayName.trim()
+    : username;
   const rawAvatar = avatarSnapshot.val();
   return {
-    username: publicDisplayName(usernameSnapshot.val()),
-    avatar: typeof rawAvatar === "string" && rawAvatar ? rawAvatar : "",
+    username,
+    displayName,
+    avatar: rawAvatar === "initials"
+      ? initialsForReader(displayName)
+      : typeof rawAvatar === "string" && rawAvatar ? rawAvatar : "",
+    avatarStyle: isSupportedAvatarStyle(avatarStyleSnapshot.val())
+      ? avatarStyleSnapshot.val() : "",
     avatarPhoto: safeImageSource(photoSnapshot.val()) || ""
   };
 }
@@ -870,10 +901,14 @@ window.saveReaderPhotoDraft = async function (photoData, expectedUid) {
 
 window.saveReaderProfileDraft = async function ({
   username,
+  displayName,
   avatar,
+  avatarStyle,
   photo = "",
   expectedUid,
   updateAvatar = true,
+  updateAvatarStyle = false,
+  updateDisplayName = false,
   readerProfile,
 } = {}) {
   if (!currentUser || !expectedUid || currentUser.uid !== expectedUid ||
@@ -884,13 +919,22 @@ window.saveReaderProfileDraft = async function ({
       isEmailShapedUsername(username)) {
     return { ok: false, message: "Enter a valid Reader Alias." };
   }
+  let validatedDisplayName;
+  if (updateDisplayName) {
+    validatedDisplayName = validateReaderDisplayName(displayName);
+    if (!validatedDisplayName.ok) {
+      return { ok: false, message: validatedDisplayName.message };
+    }
+  }
   if (updateAvatar) {
-    const allowedAvatars = new Set(["🌿", "🕯️", "📚", "🌙", "☕", "🦉", "🖋️"]);
     if (avatar === "photo") {
       return { ok: false, message: "New profile-photo uploads are unavailable in Reader Release 1." };
     }
-    if (typeof avatar !== "string" || !allowedAvatars.has(avatar)) {
+    if (!isSupportedReaderAvatar(avatar) || avatar === "photo") {
       return { ok: false, message: "Choose a supported preset avatar." };
+    }
+    if (updateAvatarStyle && !isSupportedAvatarStyle(avatarStyle)) {
+      return { ok: false, message: "Choose one of the supported avatar colors." };
     }
   }
   if (photo) {
@@ -910,9 +954,10 @@ window.saveReaderProfileDraft = async function ({
   }
 
   const patch = { username: username.trim() };
+  if (updateDisplayName && validatedDisplayName) patch.displayName = validatedDisplayName.value;
   if (updateAvatar) {
     patch.avatar = avatar;
-    if (avatar === "photo" && photo) patch.avatarPhoto = photo;
+    if (updateAvatarStyle) patch.avatarStyle = avatarStyle;
   }
   if (validatedReaderProfile) patch.readerProfile = validatedReaderProfile;
   patch.updatedAt = Date.now();
@@ -921,11 +966,20 @@ window.saveReaderProfileDraft = async function ({
     return { ok: false, message: "The account changed while saving. Reopen the editor to confirm its current state." };
   }
   document.getElementById("currentUsername").textContent = "Reader Alias: " + username.trim();
+  if (validatedDisplayName) {
+    document.getElementById("nookReaderName").textContent = validatedDisplayName.value;
+  }
   if (updateAvatar) {
     document.getElementById("currentAvatar").textContent =
       avatar === "photo" ? "Saved profile photo" : "Saved avatar: " + avatar;
   }
-  return { ok: true, username: username.trim(), ...(updateAvatar ? { avatar } : {}) };
+  return {
+    ok: true,
+    username: username.trim(),
+    ...(validatedDisplayName ? { displayName: validatedDisplayName.value } : {}),
+    ...(updateAvatar ? { avatar } : {}),
+    ...(updateAvatarStyle ? { avatarStyle } : {}),
+  };
 };
 
 async function ensureUserRecord(user) {
@@ -4996,7 +5050,7 @@ mainNav.style.display = "grid";
       userData.username === "Reader" ? "" : userData.username;
     document.getElementById("currentUsername").textContent =
       "Reader Alias: " + userData.username;
-    document.getElementById("nookReaderName").textContent = userData.username;
+    document.getElementById("nookReaderName").textContent = userData.displayName;
 
     if (userData.avatar === "photo") {
       const avatar = document.getElementById("profileAvatar");
