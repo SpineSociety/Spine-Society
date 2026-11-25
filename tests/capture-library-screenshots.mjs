@@ -179,18 +179,30 @@ async function capture(url, screen, width, height) {
           const activeRect = active?.getBoundingClientRect();
           const books = ids.map(id => document.querySelector(\`#libraryGrid [data-book-id="\${id}"]\`));
           const rects = books.map(book => book?.getBoundingClientRect());
+          const longTitleBook = document.querySelector('#libraryGrid [data-book-id="book-small"] .library-book-spine');
+          const longTitle = longTitleBook?.querySelector(".library-spine-title");
+          const titleRange = document.createRange();
+          if (longTitle) titleRange.selectNodeContents(longTitle);
+          const titleRect = titleRange.getBoundingClientRect();
+          const coverRect = longTitleBook?.getBoundingClientRect();
           return {
             present: books.every(Boolean),
             fullyVisible: rects.every(rect => rect &&
               rect.top >= viewportRect.top && rect.bottom <= viewportRect.bottom &&
-              rect.top >= activeRect.top && rect.bottom <= activeRect.bottom)
+              rect.top >= activeRect.top && rect.bottom <= activeRect.bottom),
+            longTitleClass: longTitle?.classList.contains("library-spine-title--long") === true,
+            fullTitle: longTitle?.textContent.trim() === "Small Notes from Elsewhere",
+            titleContained: Boolean(titleRect.width && coverRect &&
+              titleRect.left >= coverRect.left - 1 &&
+              titleRect.right <= coverRect.right + 1)
           };
         })()`,
         returnByValue: true,
       }, sessionId);
       const visible = stackVisibility.result?.value;
-      if (!visible?.present || !visible?.fullyVisible) {
-        throw new Error(`The full three-book stack is clipped at ${width}px: ${JSON.stringify(visible)}`);
+      if (!visible?.present || !visible?.fullyVisible || !visible?.longTitleClass ||
+          !visible?.fullTitle || !visible?.titleContained) {
+        throw new Error(`The full three-book stack or its long title is clipped at ${width}px: ${JSON.stringify(visible)}`);
       }
     }
     const screenshot = await command("Page.captureScreenshot", {

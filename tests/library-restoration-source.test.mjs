@@ -94,3 +94,11 @@ test("Phone layouts keep the dock outside content and Dog-Eared titles face forw
   assert.match(css, /padding: 0 16px !important/);
   assert.match(css, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
 });
+
+test("long bookshelf titles stay on their covers and remain complete in book details", () => {
+  assert.match(script, /Array\.from\(String\(book\.title \|\| ""\)\)\.length > 22/);
+  assert.match(script, /class="library-spine-title\$\{titleClass\}"/);
+  assert.match(css, /#collectionScreen \.library-spine-title--long \{[^}]*width: calc\(var\(--book-height, 196px\) - 24px\);[^}]*font-size: 9px;/s);
+  assert.match(script, /onclick="openBookModal\(\$\{escapeInlineJson\(book\.id\)\}, \$\{escapeInlineJson\(source\)\}\)"/);
+  assert.match(script, /<h2>\$\{escapeHTML\(book\.title \|\| "Untitled Book"\)\}<\/h2>/);
+});

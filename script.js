@@ -2340,6 +2340,9 @@ function renderLibrarySpine(book, source = "library") {
     .split("")
     .reduce((total, character) => total + character.charCodeAt(0), 0);
   const palette = palettes[paletteSeed % palettes.length];
+  const titleClass = Array.from(String(book.title || "")).length > 22
+    ? " library-spine-title--long"
+    : "";
 
   return `
     <div
@@ -2354,7 +2357,7 @@ function renderLibrarySpine(book, source = "library") {
         flex:0 0 ${dimensions.width}px;
       "
     >
-      <div class="library-spine-title">
+      <div class="library-spine-title${titleClass}">
         ${escapeHTML(book.title)}
       </div>
 

@@ -79,7 +79,10 @@ function renderSpine(book) {
   spine.title = book.title;
   spine.addEventListener("click", event => event.preventDefault());
   const title = document.createElement("div");
-  title.className = "library-spine-title";
+  const titleClass = Array.from(String(book.title || "")).length > 22
+    ? " library-spine-title--long"
+    : "";
+  title.className = `library-spine-title${titleClass}`;
   title.textContent = book.title;
   const author = document.createElement("div");
   author.className = "library-spine-author";

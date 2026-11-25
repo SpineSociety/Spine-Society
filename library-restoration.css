@@ -595,6 +595,15 @@
   transform: translate(-50%, -50%) rotate(-90deg);
   transform-origin: 50% 50%;
 }
+#collectionScreen .library-spine-title--long {
+  box-sizing: border-box;
+  width: calc(var(--book-height, 196px) - 24px);
+  max-width: calc(var(--book-height, 196px) - 24px);
+  padding-inline: 2px;
+  font-size: 9px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
 #collectionScreen .library-spine-author,
 #collectionScreen .library-spine-status,
 #bookmarksScreen .library-spine-author,
