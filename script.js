@@ -1,3 +1,4 @@
+import { filterLibraryBooks, countLibraryBookStatuses } from "./library-view-state.mjs";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -35,6 +36,7 @@ import { isValidNewProfilePhotoDataUrl } from "./reader-profile-photo.mjs";
 import { escapeHtml, safeImageUrl } from "./security-utils.mjs";
 import { createPersonalShelves } from "./personal-shelves.mjs";
 import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
+import { createLibraryArrangementSession } from "./library-arrangement-session.mjs";
 import { createFriendshipSession, isFriendshipPermissionDenied, friendshipDiagnostic } from "./friendship-session.mjs";
 import { createCircleSession, circleStep, CIRCLE_SESSION_ENDED } from "./circle-session.mjs";
 import {
@@ -74,7 +76,9 @@ const readerRoom = createReaderBridge({
 });
 let currentLibraryBooks = [];
 let currentBookmarkBooks = [];
+let libraryArrangementSession = null;
 let currentLibraryFilter = "All";
+let currentLibrarySearch = "";
 let currentCollectionBooks = [];
 let currentClubBooks = [];
 let currentClubOwner = null;
@@ -479,13 +483,39 @@ function showScreen(screenName) {
     screen.classList.add("active");
   }
 
-  const tab = document.getElementById(screenName + "Tab");
+  const navigationTab = screenName === "collection" || screenName === "bookmarks"
+    ? "stacks"
+    : screenName;
+  const tab = document.getElementById(navigationTab + "Tab");
   if (tab) {
     tab.classList.add("active");
   }
 
+  if (screenName === "collection" || screenName === "bookmarks") {
+    document.querySelectorAll(".phase3g-collection-tabs").forEach((navigation) => {
+      navigation.querySelectorAll("[data-library-view]").forEach((button) => {
+        const selected = button.dataset.libraryView === screenName;
+        button.classList.toggle("is-active", selected);
+        if (selected) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+    });
+  }
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+window.showLibraryView = function (viewName) {
+  const view = viewName === "bookmarks" ? "bookmarks" : "collection";
+  showScreen(view);
+  document.querySelectorAll(".phase3g-collection-tabs").forEach((navigation) => {
+    navigation.querySelectorAll("[data-library-view]").forEach((button) => {
+      const selected = button.dataset.libraryView === view;
+      button.classList.toggle("is-active", selected);
+      if (selected) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
+  });
+};
 window.toggleNookCircleForm = function () {
   const form = document.getElementById("nookCircleForm");
   const button = document.getElementById("nookCircleToggle");
@@ -2023,16 +2053,22 @@ const personalShelves = createPersonalShelves({
   getBooks: () => currentLibraryBooks,
   getUid: () => currentUser?.uid,
   getSession: () => personalLibrarySession?.current ?? null,
+  getSavedArrangement: () => libraryArrangementSession?.saved ?? null,
   dimensions: getBookSpineDimensions,
   renderSpine: renderLibrarySpine,
-  savePosition: (uid, bookId, shelfX, session) =>
-    saveExistingPersonalBookPosition({
-      session, bookId, shelfX,
-      isCurrent: candidate => candidate?.uid === uid && personalLibrarySession.isCurrent(candidate),
-      hasBook: personalLibrarySession.hasBook,
-      transact: (owner, id, updater, options) =>
-        runTransaction(ref(database, `users/${owner}/library/${id}`), updater, options)
-    })
+  saveArrangement: (uid, scene, session) =>
+    libraryArrangementSession.save(session, scene, (owner, updater, options) =>
+      runTransaction(ref(database, `users/${owner}/shelfArrangementV1`), updater, options))
+});
+libraryArrangementSession = createLibraryArrangementSession({
+  getAuthUid: () => auth.currentUser?.uid,
+  subscribe: (uid, callback, onError) =>
+    onValue(ref(database, `users/${uid}/shelfArrangementV1`), callback, onError),
+  onSnapshot: () => {
+    if (currentLibraryBooks.length) renderMyLibrary();
+  },
+  onReset: () => personalShelves.resetSession(),
+  onError: () => showToast("Your bookshelf arrangement could not be loaded. Your existing book positions are unchanged.", "error")
 });
 personalLibrarySession = createPersonalLibrarySession({
   getAuthUid: () => auth.currentUser?.uid,
@@ -2040,6 +2076,9 @@ personalLibrarySession = createPersonalLibrarySession({
     onValue(ref(database, `users/${uid}/library`), callback, onError),
   onReset: () => {
     currentLibraryBooks = [];
+    currentLibrarySearch = "";
+    const search = document.getElementById("librarySearchInput");
+    if (search) search.value = "";
     const bookModal = document.getElementById("bookModal");
     if (bookModal && bookModal.dataset.circleView !== "true") {
       bookModal.style.display = "none";
@@ -2088,6 +2127,7 @@ async function signOutWithLibraryCleanup() {
   const friendshipUser = auth.currentUser;
   const friendshipEnd = friendshipSession.end();
   personalLibrarySession.end();
+  libraryArrangementSession.end();
   stopBookmarkListener();
   clearBookmarkDisplays();
   try {
@@ -2098,6 +2138,8 @@ async function signOutWithLibraryCleanup() {
     if (personalLibrarySession.current === null &&
         user && user.emailVerified && currentUser?.uid === user.uid) {
       listenToPersonalLibrary(personalLibrarySession.begin(user.uid));
+      const arrangement = libraryArrangementSession.begin(user.uid);
+      if (arrangement) libraryArrangementSession.listen(arrangement);
       listenForBookmarks(personalLibrarySession.current);
     }
     if (user?.uid === friendshipUser?.uid && friendshipSession.canRecover(friendshipEnd, user)) {
@@ -2167,20 +2209,42 @@ function listenToCollectionBooks(clubId) {
 function renderMyLibrary() {
   const library = document.getElementById("libraryGrid");
   if (!library) return;
-  const filteredBooks = currentLibraryFilter === "All"
-    ? currentLibraryBooks
-    : currentLibraryBooks.filter(book =>
-      (book.status || "Want to Read") === currentLibraryFilter);
-  personalShelves.render(library, "collection", filteredBooks);
+  const filteredBooks = filterLibraryBooks(currentLibraryBooks, currentLibraryFilter, currentLibrarySearch);
+  const counts = countLibraryBookStatuses(currentLibraryBooks);
+  const totalCount = document.getElementById("phase3g-book-count");
+  if (totalCount) totalCount.textContent = `${currentLibraryBooks.length} ${currentLibraryBooks.length === 1 ? "BOOK" : "BOOKS"}`;
+  document.querySelectorAll("#collectionScreen [data-filter-count]").forEach((count) => {
+    count.textContent = String(counts[count.dataset.filterCount] ?? 0);
+  });
+  const resultCount = document.getElementById("libraryResultCount");
+  if (resultCount) {
+    resultCount.textContent = `${filteredBooks.length} of ${currentLibraryBooks.length} ${currentLibraryBooks.length === 1 ? "book" : "books"}`;
+  }
+  const hasActiveSearch = currentLibrarySearch.trim().length > 0;
+  const hasActiveFilter = currentLibraryFilter !== "All";
+  personalShelves.render(library, "collection", filteredBooks, {
+    emptyMessage: currentLibraryBooks.length && (hasActiveSearch || hasActiveFilter)
+      ? "No books match these filters."
+      : "Your collection is waiting for its books."
+  });
 }
 window.setLibraryFilter = function (filter, button) {
   currentLibraryFilter = filter;
 
-  document.querySelectorAll("#collectionScreen .library-tabs button")
-  .forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll("#collectionScreen .phase3g-reading-filters button").forEach((tab) => {
+    tab.classList.remove("active");
+    tab.setAttribute("aria-pressed", "false");
+  });
 
-  button.classList.add("active");
+  if (button) {
+    button.classList.add("active");
+    button.setAttribute("aria-pressed", "true");
+  }
 
+  renderMyLibrary();
+};
+window.setLibrarySearch = function (query) {
+  currentLibrarySearch = String(query || "");
   renderMyLibrary();
 };
 function renderSpineCard(book) {
@@ -2271,14 +2335,20 @@ function getBookSpineDimensions(book) {
 }
 function renderLibrarySpine(book, source = "library") {
   const dimensions = getBookSpineDimensions(book);
+  const palettes = ["palette-olive", "palette-oxblood", "palette-blue", "palette-plum", "palette-umber", "palette-forest"];
+  const paletteSeed = String(book.id || book.title || "book")
+    .split("")
+    .reduce((total, character) => total + character.charCodeAt(0), 0);
+  const palette = palettes[paletteSeed % palettes.length];
 
   return `
     <div
-      class="library-book-spine"
+      class="library-book-spine ${palette}"
       title="${escapeAttr(book.title)}"
       onclick="openBookModal(${escapeInlineJson(book.id)}, ${escapeInlineJson(source)})"
       style="
         cursor:pointer;
+        --book-height:${dimensions.height}px;
         width:${dimensions.width}px;
         height:${dimensions.height}px;
         flex:0 0 ${dimensions.width}px;
@@ -5046,6 +5116,7 @@ onAuthStateChanged(auth, async (user) => {
   circleSession.begin(user);
   const friendship = friendshipSession.begin(user);
   const session = personalLibrarySession.begin(user?.uid ?? null);
+  const arrangement = libraryArrangementSession.begin(user?.uid ?? null);
   stopBookmarkListener();
   clearBookmarkDisplays();
   const authScreen = document.getElementById("authScreen");
@@ -5141,6 +5212,7 @@ mainNav.style.display = "grid";
 listenToUserClubs();
 listenForCircleInvitations(circleSession.current);
 listenToPersonalLibrary(session);
+if (user.emailVerified && arrangement) libraryArrangementSession.listen(arrangement);
 if (FRIENDS_ACTIONS_ENABLED) {
   listenForFriendRequests(friendship);
   listenForFriends(friendship);
@@ -5910,6 +5982,8 @@ window.listenForBookmarks = function (session = personalLibrarySession.current) 
     const bookmarks = snapshot.val() || {};
     const bookmarkIds = Object.keys(bookmarks);
     currentBookmarkBooks = bookmarkIds.map(id => ({...bookmarks[id], id}));
+    const bookmarkCount = document.getElementById("phase3g-bookmark-count");
+    if (bookmarkCount) bookmarkCount.textContent = `${bookmarkIds.length} SAVED`;
     if (!bookmarkIds.length) {
       if (container) container.innerHTML = `<p class="status">No dog-eared pages yet.</p>`;
       if (nookContainer) nookContainer.innerHTML = `<p class="status">No dog-eared pages yet.</p>`;
@@ -5932,7 +6006,7 @@ window.listenForBookmarks = function (session = personalLibrarySession.current) 
   else unsubscribe();
 };
 window.openBookmarksPage = function () {
-  showScreen("bookmarks");
+  window.showLibraryView("bookmarks");
 };
 window.loadReaderFriendStatus = function (uid, view = friendshipSession.view) {
   if (!FRIENDS_ACTIONS_ENABLED) {

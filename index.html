@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="shelf-controls.css">
 <link rel="stylesheet" href="reader-host.css">
+<link rel="stylesheet" href="library-restoration.css">
 
 </head>
 
@@ -1101,236 +1102,171 @@
 </div>
 
 <div id="mainApp" style="display:none;">
-        <section id="nookScreen" class="screen active">
+        <section id="nookScreen" class="screen active phase4b1-nook-view" aria-labelledby="phase4b1-nook-title">
+          <header class="phase4b1-brandbar">
+            <div class="phase4b1-wordmark" aria-label="Spine Society">
+              <span class="phase4b1-bookmark-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+              <span>SPINE <i>SOCIETY</i></span>
+            </div>
+            <div class="phase4b1-private-status">
+              <span class="phase4b1-status-dot" aria-hidden="true"></span>
+              YOUR PRIVATE READING ROOM
+            </div>
+            <span class="phase4b1-info-icon" role="img" aria-label="Information">i</span>
+          </header>
 
-  <div class="nook-header">
-  <div class="nook-welcome">
-    <p class="nook-greeting">Good evening,</p>
-    <h2 id="nookReaderName">Reader</h2>
+          <header class="phase4b1-nook-intro">
+            <div class="phase4b1-nook-intro-copy">
+              <h1 id="phase4b1-nook-title">My Nook</h1>
+              <p class="phase4b1-nook-welcome">Your own little library.</p>
+              <p class="phase4b1-nook-description">A quiet corner for the stories you keep close, and the pages you return to.</p>
+              <p class="phase4b1-nook-greeting">Good evening, <span id="nookReaderName">Reader</span>.</p>
+            </div>
+            <div class="phase4b1-nook-stamp" aria-label="The reading room, established just now and arranged by you">
+              <span>THE READING ROOM</span>
+              <b>EST.<br>JUST NOW</b>
+              <span class="phase4b1-stamp-rule"></span>
+              <small>ARRANGED BY YOU</small>
+            </div>
+          </header>
 
-    <p class="nook-welcome-message">
-      Welcome back to your Nook.
-    </p>
+          <section class="phase4b1-nook-home" aria-label="Your personal reading nook">
+            <section class="nook-collection-section phase4b1-nook-card" aria-labelledby="phase4b1-shelf-heading">
+              <div class="phase4b1-nook-shelf-heading">
+                <h2 id="phase4b1-shelf-heading">From Your Shelves</h2>
+                <span class="phase4b1-nook-lamp" aria-hidden="true">
+                  <span class="phase4b1-lamp-shade"></span>
+                  <span class="phase4b1-lamp-stem"></span>
+                  <span class="phase4b1-lamp-base"></span>
+                </span>
+              </div>
+              <p class="phase4b1-nook-copy">A miniature of the first six books on your shelves, always in their place.</p>
+              <div class="nook-bookshelf">
+                <div id="nookCollectionShelf" class="nook-book-spines" aria-label="Miniature view of your first six books">
+                  <p class="status">Your shelf is waiting for its books.</p>
+                </div>
+              </div>
+              <div class="phase4b1-nook-foot"><span aria-hidden="true">✧</span> A familiar place to begin</div>
+            </section>
+
+            <a class="phase4b1-nook-room-card"
+               href="#collectionScreen"
+               onclick="showScreen('collection'); return false;"
+               aria-label="Open My Collection">
+              <p class="phase4b1-section-kicker"><span>02</span> MAKE YOURSELF AT HOME</p>
+              <h2>A little room<br>for what stays.</h2>
+              <p>Start with the books closest to hand, or wander through the whole library.</p>
+              <span class="phase4b1-nook-actions">
+                <span class="phase4b1-primary-link">View My Collection <span aria-hidden="true">→</span></span>
+                <span class="phase4b1-quiet-link">Browse your personal bookshelves</span>
+              </span>
+              <span class="phase4b1-nook-ornament" aria-hidden="true">✧</span>
+            </a>
+          </section>
+
+          <section class="nook-circles-section" aria-labelledby="nook-circles-title">
+            <div class="nook-section-heading">
+              <div>
+                <p class="phase4b1-section-kicker">03 · STORIES SHARED TOGETHER</p>
+                <h2 id="nook-circles-title">Your Circles</h2>
+                <p class="nook-section-subtitle">Book clubs you belong to, gathered in one quiet corner.</p>
+              </div>
+              <button
+                type="button"
+                class="nook-create-join-btn"
+                onclick="toggleNookCircleForm()"
+                aria-expanded="false"
+                id="nookCircleToggle"
+              >＋ Create / Join</button>
+            </div>
+            <div id="nookCircleForm" class="nook-circle-form">
+              <div class="nook-circle-form-section">
+                <label for="newClubName">Create a Circle</label>
+                <input id="newClubName" placeholder="New circle name" />
+                <button onclick="createClub()">Create Circle</button>
+              </div>
+              <div class="nook-circle-form-divider"><span>or</span></div>
+              <div class="nook-circle-form-section">
+                <label for="joinClubId">Find a Circle</label>
+                <input id="joinClubId" placeholder="Paste invite code or link" />
+                <button class="secondary" onclick="joinClubFromInput()">Check Circle</button>
+                <div id="circleAccessStatus" class="circle-access-status" role="status" aria-live="polite" hidden></div>
+              </div>
+            </div>
+            <div id="circleInvitationInbox" class="circle-invitation-inbox" aria-live="polite"></div>
+            <div id="circleLeaveStatus" class="circle-access-status" aria-live="polite" hidden></div>
+            <div class="nook-circle-count"><span id="clubCount" class="small"></span></div>
+            <div id="clubList"><p class="status">Loading circles...</p></div>
+          </section>
+
+          <footer class="phase4b1-page-footer">
+            <span>SPINE SOCIETY <i>·</i> A ROOM OF YOUR OWN</span>
+            <span>SHELVES, AND STILL ROOM TO GROW.</span>
+          </footer>
+        </section>
+
+<section id="collectionScreen" class="screen phase3g-collection-screen" aria-labelledby="phase3g-collection-title">
+  <div class="phase3g-view-back">
+    <button type="button" class="phase3g-back-link" onclick="showScreen('nook')">← Return to My Nook</button>
   </div>
-
-  <button
-    class="icon-button secondary"
-    aria-label="Favorites"
-  >
-    ♡
-  </button>
-</div>
-
-
-  <!-- YOUR CIRCLES -->
-  <section class="nook-circles-section">
-
-    <div class="nook-section-heading">
-      <div>
-        <h2>Your Circles</h2>
-        <p class="nook-section-subtitle">
-          Stories are better shared.
-        </p>
-      </div>
-
-      <button
-        type="button"
-        class="nook-create-join-btn"
-        onclick="toggleNookCircleForm()"
-        aria-expanded="false"
-        id="nookCircleToggle"
-      >
-        ＋ Create / Join
-      </button>
+  <header class="phase3g-library-heading">
+    <div class="phase3g-library-title-row">
+      <h1 id="phase3g-collection-title">My Collection</h1>
+      <span id="phase3g-book-count" class="phase3g-count-pill">0 BOOKS</span>
+      <button type="button" class="icon-button secondary phase3g-add-book" onclick="openAddLibraryBookModal()" aria-label="Add Book">＋</button>
     </div>
-
-
-    <!-- CREATE / JOIN DRAWER -->
-    <div id="nookCircleForm" class="nook-circle-form">
-
-      <div class="nook-circle-form-section">
-        <label for="newClubName">Create a Circle</label>
-
-        <input
-          id="newClubName"
-          placeholder="New circle name"
-        />
-
-        <button onclick="createClub()">
-          Create Circle
-        </button>
-      </div>
-
-
-      <div class="nook-circle-form-divider">
-        <span>or</span>
-      </div>
-
-
-      <div class="nook-circle-form-section">
-        <label for="joinClubId">Find a Circle</label>
-
-        <input
-          id="joinClubId"
-          placeholder="Paste invite code or link"
-        />
-
-        <button
-          class="secondary"
-          onclick="joinClubFromInput()"
-        >
-          Check Circle
-        </button>
-        <div
-          id="circleAccessStatus"
-          class="circle-access-status"
-          role="status"
-          aria-live="polite"
-          hidden
-        ></div>
-      </div>
-
+    <p>A few well-loved volumes, with room for what comes next.</p>
+  </header>
+  <nav class="phase3g-collection-tabs" aria-label="Library pages">
+    <button type="button" class="is-active" aria-current="page" data-library-view="collection" onclick="showLibraryView('collection')">My Collection</button>
+    <button type="button" data-library-view="bookmarks" onclick="showLibraryView('bookmarks')">Dog-Eared Pages</button>
+  </nav>
+  <section class="phase3g-library-stage" aria-label="Search, arrange, and browse your collection">
+    <div id="libraryGrid">
+      <p class="status">Your collection is waiting for its books.</p>
     </div>
-
-    <div id="circleInvitationInbox" class="circle-invitation-inbox" aria-live="polite"></div>
-    <div id="circleLeaveStatus" class="circle-access-status" aria-live="polite" hidden></div>
-
-    <!-- EXISTING FIREBASE CIRCLES -->
-    <div class="nook-circle-count">
-      <span id="clubCount" class="small"></span>
+    <label class="phase3g-search-wrap" for="librarySearchInput">
+      <span class="phase3g-search-symbol" aria-hidden="true">⌕</span>
+      <input
+        id="librarySearchInput"
+        type="search"
+        autocomplete="off"
+        aria-label="Search your collection by title or author"
+        placeholder="Find a title or author"
+        oninput="setLibrarySearch(this.value)"
+      />
+    </label>
+    <div class="library-tabs phase3g-reading-filters" role="group" aria-label="Filter My Collection by reading status">
+      <button class="active" aria-pressed="true" data-filter="All" onclick="setLibraryFilter('All', this)">All Books <span data-filter-count="All">0</span></button>
+      <button aria-pressed="false" data-filter="In Progress" onclick="setLibraryFilter('In Progress', this)">In Progress <span data-filter-count="In Progress">0</span></button>
+      <button aria-pressed="false" data-filter="Completed" onclick="setLibraryFilter('Completed', this)">Completed <span data-filter-count="Completed">0</span></button>
     </div>
-
-        <div id="clubList">
-      <p class="status">Loading circles...</p>
-    </div>
-
+    <p id="libraryResultCount" class="phase3g-result-count" aria-live="polite"></p>
   </section>
-
-
-  <!-- MY COLLECTION -->
-  <section class="nook-collection-section">
-
-    <div class="nook-collection-heading">
-      <div>
-        <h2>My Collection</h2>
-        <p>All the books that are part of your story.</p>
-      </div>
-
-      <button
-        type="button"
-        class="nook-view-all"
-        onclick="showScreen('collection')"
-      >
-        View All →
-      </button>
-    </div>
-
-    <div class="nook-bookshelf">
-      <div id="nookCollectionShelf" class="nook-book-spines">
-        <p class="status">Your shelf is waiting for its books.</p>
-      </div>
-    </div>
-
-  </section>
-    <!-- DOG-EARED PAGES -->
-    <section class="nook-dogear-section">
-
-      <div class="nook-collection-heading">
-        <div>
-          <h2>Dog-Eared Pages</h2>
-          <p>Books you’ve tucked away for another day.</p>
-        </div>
-
-        <button
-          type="button"
-          class="nook-view-all"
-          onclick="openBookmarksPage()"
-        >
-          View All →
-        </button>
-      </div>
-
-      <div class="nook-bookshelf">
-        <div id="nookDogEaredShelf" class="nook-book-spines">
-          <p class="status">No dog-eared pages yet.</p>
-        </div>
-      </div>
-
-    </section>
+  <p class="phase3g-shelf-caption">SHELVES, AND STILL ROOM TO GROW</p>
 </section>
 
-<section id="collectionScreen" class="screen">
-  <div class="page-top">
-
-    <button
-      class="icon-button secondary"
-      onclick="showScreen('nook')"
-      aria-label="Back to Nook"
-    >
-      ←
-    </button>
-
-    <div class="page-title">
-      My Collection
-    </div>
-
-    <button
-      class="icon-button secondary"
-      onclick="openAddLibraryBookModal()"
-      aria-label="Add Book"
-    >
-      ＋
-    </button>
-
-  </div>
-
-  <div class="library-tabs">
-  <button class="active" onclick="setLibraryFilter('All', this)">All</button>
-  <button onclick="setLibraryFilter('In Progress', this)">In Progress</button>
-  <button onclick="setLibraryFilter('Completed', this)">Completed</button>
-</div>
-
-  <section class="bookshelf-case">
-
-  <div id="libraryGrid">
-    <p class="status">
-      Your collection is waiting for its books.
-    </p>
-  </div>
-
-</section>
-</section>
 <!-- DOG-EARED PAGES SCREEN -->
-<section id="bookmarksScreen" class="screen">
-
-  <div class="page-top">
-
-    <button
-      class="icon-button secondary"
-      onclick="showScreen('nook')"
-      aria-label="Back to Nook"
-    >
-      ←
-    </button>
-
-    <div class="page-title">
-      Dog-Eared Pages
-    </div>
-
-    <div style="width:44px;"></div>
-
+<section id="bookmarksScreen" class="screen phase3g-bookmarks-screen" aria-labelledby="phase3g-bookmarks-title">
+  <div class="phase3g-view-back">
+    <button type="button" class="phase3g-back-link" onclick="showScreen('nook')">← Return to My Nook</button>
   </div>
-
-  <section class="bookshelf-case">
-
-    <div id="bookmarksList">
-      <p class="status">
-        No dog-eared pages yet.
-      </p>
+  <header class="phase3g-library-heading">
+    <div class="phase3g-library-title-row">
+      <h1 id="phase3g-bookmarks-title">Dog-Eared Pages</h1>
+      <span id="phase3g-bookmark-count" class="phase3g-count-pill">0 SAVED</span>
     </div>
-
+    <p>Books you’ve saved from other readers’ profiles, kept apart from your own shelves.</p>
+  </header>
+  <nav class="phase3g-collection-tabs" aria-label="Library pages">
+    <button type="button" data-library-view="collection" onclick="showLibraryView('collection')">My Collection</button>
+    <button type="button" class="is-active" aria-current="page" data-library-view="bookmarks" onclick="showLibraryView('bookmarks')">Dog-Eared Pages</button>
+  </nav>
+  <section class="bookshelf-case phase3g-bookmarks-case" aria-label="Dog-Eared Pages bookshelf">
+    <div id="bookmarksList">
+      <p class="status">No dog-eared pages yet.</p>
+    </div>
   </section>
-
 </section>
 <section id="randomizerScreen" class="screen">
 
