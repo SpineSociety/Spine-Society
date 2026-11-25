@@ -1,0 +1,34 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        "username": {
+          ".write": "auth != null && auth.uid === $uid && auth.token.email_verified === true",
+          ".validate": "newData.isString() && newData.val().length > 0 && !newData.val().matches(/.*@.*[.].*/)"
+        },
+        "avatar": {
+          ".read": "auth != null && auth.token.email_verified === true",
+          ".write": "auth != null && auth.uid === $uid && auth.token.email_verified === true",
+          ".validate": "newData.isString() && (newData.val() === data.val() || newData.val() === 'initials' || newData.val().matches(/^[A-Z]{1,3}$/) || newData.val() === '📚' || newData.val() === '🕯️' || newData.val() === '🌙' || newData.val() === '☕' || newData.val() === '🦉' || newData.val() === '🌿' || newData.val() === '🖋️' || (newData.val() === 'photo' && newData.parent().child('avatarPhoto').exists()))"
+        },
+        "avatarPhoto": {
+          ".read": "auth != null && auth.token.email_verified === true",
+          ".write": "auth != null && auth.uid === $uid && auth.token.email_verified === true && (!newData.exists() || (data.exists() && newData.val() === data.val()) || (newData.isString() && newData.val().length <= 400000 && newData.val().matches(/^data:image\\/jpeg;base64,([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/)))",
+          ".validate": "(data.exists() && newData.val() === data.val()) || (newData.isString() && newData.val().length <= 400000 && newData.val().matches(/^data:image\\/jpeg;base64,([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/))"
+        },
+        "displayName": {
+          ".read": "auth != null && auth.token.email_verified === true && (auth.uid === $uid || !data.exists() || (data.isString() && !data.val().matches(/.*@.*[.].*/)))",
+          ".write": "auth != null && auth.uid === $uid && auth.token.email_verified === true",
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80 && !newData.val().matches(/.*@.*[.].*/)"
+        },
+        "avatarStyle": {
+          ".read": "auth != null && auth.token.email_verified === true",
+          ".write": "auth != null && auth.uid === $uid && auth.token.email_verified === true",
+          ".validate": "newData.isString() && (newData.val() === 'fern' || newData.val() === 'clay' || newData.val() === 'ink' || newData.val() === 'plum')"
+        }
+      }
+    }
+  }
+}

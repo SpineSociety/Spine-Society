@@ -28,8 +28,8 @@
 
 <title>Spine Society</title>
 
-<link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css">
-<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="shelf-controls.css">
 <link rel="stylesheet" href="reader-host.css">
@@ -1696,11 +1696,39 @@
             <option value="🦉">Wise owl</option>
             <option value="🖋️">Marginalia writer</option>
           </select>
-          <p class="reader-edit-help">Choose a portrait or initials color. New photo uploads remain disabled.</p>
+          <p class="reader-edit-help">Move and zoom to crop your photo to 300 × 300. Photos are shared with signed-in, verified readers.</p>
           <div class="reader-edit-portrait-row">
             <span id="readerAvatarPreview" class="reader-edit-avatar" role="img" aria-label="Profile portrait"></span>
             <img id="readerPhotoPreview" alt="Uncommitted profile photo preview" hidden>
             <span id="readerPortraitCaption">Fern green avatar</span>
+          </div>
+          <div id="readerPhotoCropDialog" class="reader-photo-crop-dialog" role="dialog"
+            aria-modal="true" aria-labelledby="readerPhotoCropHeading"
+            aria-describedby="readerPhotoCropInstructions" hidden>
+            <section class="reader-photo-crop-panel">
+              <h2 id="readerPhotoCropHeading">Adjust Avatar</h2>
+              <p id="readerPhotoCropInstructions" class="reader-edit-help">
+                Move and zoom your photo to fit the square. Your saved portrait is displayed as a circle.
+              </p>
+              <div class="reader-photo-crop-stage">
+                <img id="readerPhotoCropImage" alt="Photo being manually cropped">
+              </div>
+              <div class="reader-photo-crop-controls" role="group" aria-label="Position and zoom controls">
+                <button type="button" id="readerPhotoZoomOut" aria-label="Zoom out">−</button>
+                <button type="button" id="readerPhotoZoomIn" aria-label="Zoom in">+</button>
+                <button type="button" id="readerPhotoMoveUp" aria-label="Move photo up">↑</button>
+                <button type="button" id="readerPhotoMoveLeft" aria-label="Move photo left">←</button>
+                <button type="button" id="readerPhotoMoveDown" aria-label="Move photo down">↓</button>
+                <button type="button" id="readerPhotoMoveRight" aria-label="Move photo right">→</button>
+              </div>
+              <p id="readerPhotoCropStatus" class="reader-edit-status" role="status" aria-live="polite">
+                Move and zoom the photo, then choose Use This Crop.
+              </p>
+              <div class="reader-photo-crop-actions">
+                <button type="button" id="readerPhotoCropCancel">Cancel</button>
+                <button type="button" id="readerPhotoCropSave" disabled>Use This Crop</button>
+              </div>
+            </section>
           </div>
           <div id="readerAvatarChoices" class="reader-edit-avatar-choices" role="group" aria-label="Avatar styles">
             <button type="button" data-style="fern" data-value="🌿" aria-label="Fern green avatar" aria-pressed="true">EF</button>
@@ -1708,7 +1736,7 @@
             <button type="button" data-style="ink" data-value="📚" aria-label="Blue ink avatar" aria-pressed="false">EF</button>
             <button type="button" data-style="plum" data-value="🌙" aria-label="Dried plum avatar" aria-pressed="false">EF</button>
           </div>
-          <p id="readerPhotoStatus" class="reader-edit-status" role="status" aria-live="polite">New profile photo writes are disabled. Existing legacy photos remain unchanged.</p>
+          <p id="readerPhotoStatus" class="reader-edit-status" role="status" aria-live="polite">Choose a preset or initials to remove a saved photo.</p>
         </fieldset>
 
         <div class="reader-edit-field">
@@ -1784,7 +1812,7 @@
       </form>
       <aside class="reader-edit-disclosure" aria-labelledby="readerEditReleaseTitle">
         <h2 id="readerEditReleaseTitle">Reader Release 1</h2>
-        <p id="readerEditPersistenceDisclosure">Reader Alias, Display Name, preset avatar, initials color, biography, genres, and Currently Reading save to your Spine Society account. New profile-photo uploads are disabled. Privacy choices do not change access.</p>
+        <p id="readerEditPersistenceDisclosure">Reader Alias, Display Name, avatar, profile photo, biography, genres, and Currently Reading save to your Spine Society account. Profile photos are visible to signed-in, verified readers.</p>
       </aside>
     </main>
   </div>

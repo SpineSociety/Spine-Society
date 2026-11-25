@@ -1,0 +1,5 @@
+database-debug.log
+tests/firebase/database-debug.log
+tests/firebase/firebase-debug.log
+tests/firebase/ui-debug.log
+tests/firebase/.firebase/

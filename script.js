@@ -23,12 +23,6 @@ import {
   onValue,
   runTransaction
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import {
-  getStorage,
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { createReaderBridge } from "./reader-bridge.mjs";
 import { deletePersonalBookSafely } from "./reader-current-book-delete.mjs";
 import {
@@ -37,6 +31,7 @@ import {
   validateReaderDisplayName,
   validateReaderProfile
 } from "./reader-profile-data.mjs";
+import { isValidNewProfilePhotoDataUrl } from "./reader-profile-photo.mjs";
 import { escapeHtml, safeImageUrl } from "./security-utils.mjs";
 import { createPersonalShelves } from "./personal-shelves.mjs";
 import { createPersonalLibrarySession, saveExistingPersonalBookPosition } from "./personal-library-session.mjs";
@@ -60,7 +55,6 @@ const app = initializeApp(productionFirebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
-const storage = getStorage(app);
 // Friends code/data remain preserved, but this release candidate performs no
 // Friends reads or writes until the rules are verified and the feature is approved.
 const FRIENDS_ACTIONS_ENABLED = false;
@@ -70,6 +64,7 @@ const ref = (databaseInstance, path) => firebaseRef(
 );
 let currentUser = null;
 let readerAccountGeneration = 0;
+const discussionProfilePhotoCache = new Map();
 const readerRoom = createReaderBridge({
   subscribe: (path, callback, onError) => onValue(ref(database, path), callback, onError),
   profilePath: uid => "users/" + uid,
@@ -380,6 +375,11 @@ function safeImageSource(value) {
   return safeImageUrl(value, window.location.href);
 }
 
+function profilePhotoForDisplay(profile) {
+  if (profile?.avatar !== "photo") return "";
+  return safeImageSource(profile.avatarPhoto || "") || "";
+}
+
 function isEmailShapedUsername(value) {
   return typeof value === "string" &&
     /@.*[.]/u.test(value.trim());
@@ -423,6 +423,7 @@ async function readPublicProfile(uid) {
     ? rawDisplayName.trim()
     : username;
   const rawAvatar = avatarSnapshot.val();
+  const rawPhoto = photoSnapshot.val();
   return {
     username,
     displayName,
@@ -431,7 +432,7 @@ async function readPublicProfile(uid) {
       : typeof rawAvatar === "string" && rawAvatar ? rawAvatar : "",
     avatarStyle: isSupportedAvatarStyle(avatarStyleSnapshot.val())
       ? avatarStyleSnapshot.val() : "",
-    avatarPhoto: safeImageSource(photoSnapshot.val()) || ""
+    avatarPhoto: safeImageSource(rawPhoto) || ""
   };
 }
 
@@ -911,19 +912,12 @@ window.saveAvatar = async function () {
   return { ok: true, avatar };
 };
 
-window.saveReaderPhotoDraft = async function (photoData, expectedUid) {
-  return {
-    ok: false,
-    message: "New profile-photo uploads are unavailable in Reader Release 1."
-  };
-};
-
 window.saveReaderProfileDraft = async function ({
   username,
   displayName,
   avatar,
   avatarStyle,
-  photo = "",
+  photoDataUrl = "",
   expectedUid,
   updateAvatar = true,
   updateAvatarStyle = false,
@@ -947,17 +941,19 @@ window.saveReaderProfileDraft = async function ({
   }
   if (updateAvatar) {
     if (avatar === "photo") {
-      return { ok: false, message: "New profile-photo uploads are unavailable in Reader Release 1." };
-    }
-    if (!isSupportedReaderAvatar(avatar) || avatar === "photo") {
+      if (!isValidNewProfilePhotoDataUrl(photoDataUrl)) {
+        return { ok: false, message: "Choose a valid photo before saving." };
+      }
+    } else if (!isSupportedReaderAvatar(avatar)) {
       return { ok: false, message: "Choose a supported preset avatar." };
     }
     if (updateAvatarStyle && !isSupportedAvatarStyle(avatarStyle)) {
       return { ok: false, message: "Choose one of the supported avatar colors." };
     }
   }
-  if (photo) {
-    return { ok: false, message: "New profile-photo uploads are unavailable in Reader Release 1." };
+  if (photoDataUrl && (!updateAvatar || avatar !== "photo" ||
+      !isValidNewProfilePhotoDataUrl(photoDataUrl))) {
+    return { ok: false, message: "Choose a valid photo before saving." };
   }
 
   let validatedReaderProfile;
@@ -976,14 +972,19 @@ window.saveReaderProfileDraft = async function ({
   if (updateDisplayName && validatedDisplayName) patch.displayName = validatedDisplayName.value;
   if (updateAvatar) {
     patch.avatar = avatar;
+    patch.avatarPhoto = avatar === "photo" ? photoDataUrl : null;
     if (updateAvatarStyle) patch.avatarStyle = avatarStyle;
   }
   if (validatedReaderProfile) patch.readerProfile = validatedReaderProfile;
   patch.updatedAt = Date.now();
+  if (currentUser?.uid !== expectedUid || currentUser.emailVerified !== true) {
+    return { ok: false, message: "The signed-in reader changed. Reopen the editor and try again." };
+  }
   await update(ref(database, "users/" + expectedUid), patch);
-  if (currentUser?.uid !== expectedUid) {
+  if (currentUser?.uid !== expectedUid || currentUser.emailVerified !== true) {
     return { ok: false, message: "The account changed while saving. Reopen the editor to confirm its current state." };
   }
+  if (updateAvatar) discussionProfilePhotoCache.delete(expectedUid);
   document.getElementById("currentUsername").textContent = "Reader Alias: " + username.trim();
   if (validatedDisplayName) {
     document.getElementById("nookReaderName").textContent = validatedDisplayName.value;
@@ -998,6 +999,8 @@ window.saveReaderProfileDraft = async function ({
     ...(validatedDisplayName ? { displayName: validatedDisplayName.value } : {}),
     ...(updateAvatar ? { avatar } : {}),
     ...(updateAvatarStyle ? { avatarStyle } : {}),
+    ...(photoDataUrl ? { avatarPhoto: photoDataUrl } : {}),
+    ...(updateAvatar && avatar !== "photo" ? { avatarPhoto: "" } : {}),
   };
 };
 
@@ -3212,7 +3215,7 @@ function listenToMembers(clubId) {
       if (!valid()) return;
 
       const displayName = publicDisplayName(userData.username);
-      const avatarPhoto = safeImageSource(userData.avatarPhoto || "");
+      const avatarPhoto = profilePhotoForDisplay(userData);
       const avatarValue = userData.avatar || "📚";
       const avatarHTML = avatarValue === "photo" && avatarPhoto
         ? `<img src="${escapeAttr(avatarPhoto)}"
@@ -3340,15 +3343,28 @@ function listenToDiscussion(clubId) {
       return;
     }
 
-    const discussionHTML = comments.map(comment => `
+    const discussionHTML = comments.map(comment => {
+      const rawLegacyPhoto = typeof comment.authorAvatarPhoto === "string"
+        ? comment.authorAvatarPhoto : "";
+      const legacyPhoto = /^users\//u.test(rawLegacyPhoto)
+        ? "" : safeImageSource(rawLegacyPhoto);
+      const fallbackAvatar = escapeHTML(
+        comment.authorAvatar && comment.authorAvatar !== "photo"
+          ? comment.authorAvatar
+          : (comment.authorAlias || "R").charAt(0).toUpperCase()
+      );
+      const avatarMarkup = comment.authorAvatar === "photo" && legacyPhoto
+        ? `<img src="${escapeAttr(legacyPhoto)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+        : comment.authorAvatar === "photo" && comment.authorId
+          ? `<span data-reader-avatar-fallback>${fallbackAvatar}</span>
+             <img data-reader-avatar-uid="${escapeAttr(comment.authorId)}"
+               alt="" hidden style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+          : fallbackAvatar;
+      return `
       <div class="note-card" onclick="toggleReactionPicker(${escapeInlineJson(comment.id)})">
         <div class="comment-row">
           <div class="comment-avatar">
-  ${
-    comment.authorAvatar === "photo" && safeImageSource(comment.authorAvatarPhoto)
-      ? `<img src="${escapeAttr(safeImageSource(comment.authorAvatarPhoto))}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
-      : escapeHTML(comment.authorAvatar || (comment.authorAlias || "R").charAt(0).toUpperCase())
-  }
+            ${avatarMarkup}
 </div>
 
           <div class="comment-content">
@@ -3398,11 +3414,41 @@ function listenToDiscussion(clubId) {
           </div>
         </div>
       </div>
-    `).join("");
+    `;
+    }).join("");
 
     lists.forEach(list => {
       list.innerHTML = discussionHTML;
+      hydrateDiscussionPhotos(list);
     });
+  });
+}
+
+function hydrateDiscussionPhotos(list) {
+  const sessionGenerationAtStart = readerAccountGeneration;
+  list.querySelectorAll("img[data-reader-avatar-uid]").forEach(image => {
+    const uid = image.dataset.readerAvatarUid;
+    if (!uid || currentUser?.emailVerified !== true) return;
+    let photoPromise = discussionProfilePhotoCache.get(uid);
+    if (!photoPromise) {
+      photoPromise = Promise.all([
+        get(ref(database, `users/${uid}/avatar`)),
+        get(ref(database, `users/${uid}/avatarPhoto`)),
+      ]).then(([avatarSnapshot, photoSnapshot]) => {
+        if (avatarSnapshot.val() !== "photo") return "";
+        return safeImageSource(photoSnapshot.val()) || "";
+      }).catch(() => "");
+      discussionProfilePhotoCache.set(uid, photoPromise);
+    }
+    void photoPromise.then(source => {
+      if (!source || !image.isConnected ||
+          sessionGenerationAtStart !== readerAccountGeneration ||
+          image.dataset.readerAvatarUid !== uid) return;
+      image.src = source;
+      image.hidden = false;
+      const fallback = image.parentElement?.querySelector("[data-reader-avatar-fallback]");
+      if (fallback) fallback.hidden = true;
+    }).catch(() => {});
   });
 }
 
@@ -4424,7 +4470,6 @@ window.postDiscussionComment = async function () {
       authorId: operation.uid,
       authorAlias: userData.username,
       authorAvatar: userData.avatar || "📚",
-      authorAvatarPhoto: userData.avatarPhoto || "",
       createdAt: Date.now()
     }));
 
@@ -4526,7 +4571,6 @@ window.postDiscussionCommentFromClub = async function () {
   authorId: operation.uid,
   authorAlias: userData.username,
   authorAvatar: userData.avatar || "📚",
-  authorAvatarPhoto: userData.avatarPhoto,
 createdAt: Date.now()
 }));
   input.value = "";
@@ -4996,6 +5040,7 @@ document.addEventListener("keydown", event => {
 });
 onAuthStateChanged(auth, async (user) => {
   readerAccountGeneration++;
+  discussionProfilePhotoCache.clear();
   readerRoom.clear();
   window.closeFriendsModal({ restoreFocus: false });
   circleSession.begin(user);
@@ -5063,6 +5108,8 @@ mainNav.style.display = "grid";
 
     const userData = await readPublicProfile(user.uid);
     if (!personalLibrarySession.isCurrent(session)) return;
+    const currentPhotoSource = profilePhotoForDisplay(userData);
+    if (!personalLibrarySession.isCurrent(session)) return;
     await readerRoom.bind(user);
 
     document.getElementById("usernameInput").value =
@@ -5075,9 +5122,9 @@ mainNav.style.display = "grid";
       const avatar = document.getElementById("profileAvatar");
 
       if (avatar) {
-        if (userData.avatarPhoto) avatar.src = userData.avatarPhoto;
+        if (currentPhotoSource) avatar.src = currentPhotoSource;
         else avatar.removeAttribute("src");
-        avatar.style.display = userData.avatarPhoto ? "block" : "none";
+        avatar.style.display = currentPhotoSource ? "block" : "none";
       }
 
       document.getElementById("currentAvatar").textContent =
