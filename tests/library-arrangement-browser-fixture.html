@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Private bookshelf interaction check</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../library-restoration.css">
+  <style>
+    html, body { margin: 0; min-height: 100%; color: #f0e4d0; background: #080706; }
+    #mainApp { min-height: 100vh; }
+    .app-content { padding: 12px; }
+    #collectionScreen { display: block; max-width: 720px; margin: 0 auto; }
+    .phase3g-library-stage { display: grid; gap: 10px; }
+    #libraryGrid { display: contents; }
+    .personal-shelf-tools { grid-row: 1; }
+    .personal-shelf-status { grid-row: 5; }
+    .personal-shelf-viewport { grid-row: 7; }
+    .library-book-spine { position: relative; width: 100%; height: 100%; border: 1px solid #ba9a66; background: linear-gradient(90deg,#79583c,#322117); }
+    .library-spine-title { position:absolute; inset:50% auto auto 50%; color:#f3e3c5; transform:translate(-50%,-50%) rotate(-90deg); font:10px Georgia,serif; white-space:nowrap; }
+    #testReport { white-space: pre-wrap; margin: 12px; color: #dec18b; font: 12px/1.45 monospace; }
+  </style>
+</head>
+<body>
+  <main id="mainApp">
+    <div class="app-content">
+      <section id="collectionScreen" class="active" aria-label="Bookshelf test">
+        <div class="phase3g-library-stage"><div id="libraryGrid"></div></div>
+      </section>
+    </div>
+  </main>
+  <pre id="testReport" role="status">Starting mobile checks…</pre>
+  <script type="module">
+    import { createPersonalShelves } from "../personal-shelves.mjs";
+    import { serializeArrangement } from "../library-arrangement-model.mjs";
+
+    const books = [
+      { id: "book-a", title: "The Quiet Shelf", shelfX: 0, width: 60, height: 180 },
+      { id: "book-b", title: "A Lantern in Winter", shelfX: 75, width: 66, height: 190 },
+      { id: "book-c", title: "Rooms of Paper", shelfX: 159, width: 72, height: 200 },
+      { id: "book-d", title: "The Copper Garden", shelfX: 300, width: 58, height: 175 },
+    ];
+    const dimensions = book => ({ width: book.width, height: book.height });
+    let saved = null;
+    let saves = 0;
+    const savedPosition = id => Object.values(saved?.positions || {}).find(position => position.bookId === id);
+    const token = { uid: "fictional-reader" };
+    const shelves = createPersonalShelves({
+      getBooks: () => books,
+      getUid: () => token.uid,
+      getSession: () => token,
+      getSavedArrangement: () => saved,
+      dimensions,
+      renderSpine: book => `<div class="library-book-spine"><span class="library-spine-title">${book.title}</span></div>`,
+      saveArrangement: async (_uid, scene, _session) => {
+        saved = { ...serializeArrangement(scene), revision: (saved?.revision || 0) + 1 };
+        saves++;
+        return structuredClone(saved);
+      },
+    });
+    const host = document.getElementById("libraryGrid");
+    const report = document.getElementById("testReport");
+    const checks = [];
+    let phase = "initialize";
+    const check = (condition, label) => {
+      if (!condition) throw new Error(label);
+      checks.push(label);
+    };
+    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    async function waitSaved(count) {
+      for (let i = 0; i < 100 && saves < count; i++) await wait(10);
+      if (saves < count) throw new Error("Timed out waiting for the local save callback");
+    }
+    try {
+      shelves.render(host, "collection", books);
+      const viewport = host.querySelector(".personal-shelf-viewport");
+      const arrangeButton = [...host.querySelectorAll("button")].find(button => button.textContent === "Arrange");
+      arrangeButton.click();
+      const bookC = host.querySelector('[data-book-id="book-c"]');
+      phase = "unsupported lean";
+      bookC.click();
+      host.querySelector('[aria-label="Lean right"]').click();
+      await wait(80);
+      check(saved === null, "unsupported lean leaves the database untouched");
+      const bookB = host.querySelector('[data-book-id="book-b"]');
+      bookC.click();
+      phase = "supported lean";
+      bookB.click();
+      host.querySelector('[aria-label="Lean left"]').click();
+      await waitSaved(1);
+      check(savedPosition("book-b")?.orientation === "lean-left", "supported lean is selectable and saved");
+
+      const bookD = host.querySelector('[data-book-id="book-d"]');
+      phase = "cross-shelf drag";
+      const rect = bookD.getBoundingClientRect();
+      const viewRect = viewport.getBoundingClientRect();
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height / 2;
+      bookD.dispatchEvent(new PointerEvent("pointerdown", { bubbles:true, pointerId:3, isPrimary:true, button:0, clientX:startX, clientY:startY }));
+      await wait(450);
+      const dropX = viewRect.left + 440;
+      const dropY = viewRect.top + 20;
+      bookD.dispatchEvent(new PointerEvent("pointermove", { bubbles:true, pointerId:3, isPrimary:true, clientX:dropX, clientY:dropY }));
+      bookD.dispatchEvent(new PointerEvent("pointerup", { bubbles:true, pointerId:3, isPrimary:true, clientX:dropX, clientY:dropY }));
+      await waitSaved(2);
+      check(savedPosition("book-d")?.shelfId === "shelf-2", "pointer drag moves a book across shelf rows");
+
+      const currentD = host.querySelector('[data-book-id="book-d"]');
+      phase = "keyboard shelf move";
+      currentD.focus();
+      currentD.dispatchEvent(new KeyboardEvent("keydown", { key:"ArrowDown", bubbles:true }));
+      await waitSaved(3);
+      check(savedPosition("book-d")?.shelfId === "shelf-1", "keyboard arrow movement changes shelf accessibly");
+
+      shelves.render(host, "collection", books);
+      phase = "reload persistence";
+      const persisted = saved;
+      shelves.resetSession();
+      shelves.render(host, "collection", books);
+      check(Object.values(persisted.positions).some(position => position.bookId === "book-b" && position.orientation === "lean-left") &&
+        Object.values(persisted.positions).some(position => position.bookId === "book-d" && position.shelfId === "shelf-1") &&
+        host.querySelectorAll(".personal-shelf-rail").length === 2,
+      "serialized orientation and shelf placement remain available after re-render");
+      host.querySelectorAll("button")[1].click();
+      check(viewport.scrollWidth >= viewport.clientWidth, "bookshelf supports horizontal overflow on a narrow screen");
+      check(document.documentElement.scrollWidth <= window.innerWidth + 1,
+        `page has no horizontal clipping at ${window.innerWidth}px (document ${document.documentElement.scrollWidth}, body ${document.body.scrollWidth}; wide ${[...document.querySelectorAll("*")].filter(el => el.getBoundingClientRect().right > window.innerWidth + 1).map(el => `${el.tagName}.${el.className?.baseVal || el.className}`).slice(0, 6).join(",")})`);
+      check([...host.querySelectorAll(".personal-shelf-action")].every(button =>
+        button.getBoundingClientRect().left >= 0 && button.getBoundingClientRect().right <= window.innerWidth + 1),
+      "arrangement controls remain within the mobile viewport");
+
+      const actionHost = document.createElement("div");
+      actionHost.id = "integratedInteractionCheck";
+      document.querySelector(".phase3g-library-stage").append(actionHost);
+      let actionSaved = null;
+      let actionSaves = 0;
+      const actionShelves = createPersonalShelves({
+        getBooks: () => books,
+        getUid: () => token.uid,
+        getSession: () => token,
+        getSavedArrangement: () => actionSaved,
+        dimensions,
+        renderSpine: book => `<div class="library-book-spine"><span class="library-spine-title">${book.title}</span></div>`,
+        saveArrangement: async (_uid, scene) => {
+          actionSaved = { ...serializeArrangement(scene), revision: (actionSaved?.revision || 0) + 1 };
+          actionSaves++;
+          return structuredClone(actionSaved);
+        },
+      });
+      const actionPosition = id => Object.values(actionSaved?.positions || {}).find(position => position.bookId === id);
+      async function waitActionSaved(count) {
+        for (let i = 0; i < 100 && actionSaves < count; i++) await wait(10);
+        if (actionSaves < count) {
+          throw new Error(`Timed out waiting for the integrated save callback (${actionHost.querySelector(".personal-shelf-status")?.textContent || "no status"}).`);
+        }
+        for (let i = 0; i < 100 &&
+          actionHost.querySelector(".personal-shelf-status")?.textContent === "Saving arrangement…"; i++) {
+          await wait(10);
+        }
+      }
+      actionShelves.render(actionHost, "collection", books);
+      [...actionHost.querySelectorAll(".personal-shelf-mode")].find(button => button.textContent === "Arrange").click();
+      phase = "both supported lean directions";
+      actionHost.querySelector('[data-book-id="book-b"]').click();
+      actionHost.querySelector('[aria-label="Lean left"]').click();
+      await waitActionSaved(1);
+      check(actionPosition("book-b")?.orientation === "lean-left", "integrated UI saves a supported left lean");
+      actionHost.querySelector('[data-book-id="book-b"]').click();
+      actionHost.querySelector('[aria-label="Stand upright"]').click();
+      await waitActionSaved(2);
+      actionHost.querySelector('[data-book-id="book-b"]').click();
+      actionHost.querySelector('[aria-label="Lean right"]').click();
+      await waitActionSaved(3);
+      check(actionPosition("book-b")?.orientation === "lean-right", "integrated UI saves a supported right lean");
+
+      phase = "horizontal placement and separation";
+      actionHost.querySelector('[data-book-id="book-d"]').click();
+      actionHost.querySelector('[aria-label="Lay flat"]').click();
+      await waitActionSaved(4);
+      check(actionPosition("book-d")?.orientation === "horizontal" &&
+        Boolean(actionPosition("book-d")?.stackId),
+      "integrated UI saves horizontal placement with stack membership");
+      actionHost.querySelector('[data-book-id="book-d"]').click();
+      actionHost.querySelector('[aria-label="Separate stack"]').click();
+      await waitActionSaved(5);
+      check(!Object.keys(actionSaved.stacks || {}).length &&
+        actionPosition("book-d")?.orientation === "upright",
+      "integrated UI separates a horizontal book back to its saved position");
+
+      phase = "three-book stack and reload";
+      for (const id of ["book-b", "book-c", "book-a"]) {
+        actionHost.querySelector(`[data-book-id="${id}"]`).click();
+      }
+      actionHost.querySelector('[aria-label="Stack selected"]').click();
+      await waitActionSaved(6);
+      const tripleStackId = actionPosition("book-a")?.stackId;
+      check(Boolean(tripleStackId) && Object.keys(actionSaved.stacks[tripleStackId].members).length === 3,
+        "integrated UI saves a stack of three books");
+      actionShelves.resetSession();
+      actionShelves.render(actionHost, "collection", books);
+      check(Object.values(actionSaved.positions).filter(position => position.stackId === tripleStackId).length === 3,
+        "three-book stack membership survives a reload");
+      [...actionHost.querySelectorAll(".personal-shelf-mode")].find(button => button.textContent === "Arrange").click();
+      actionHost.querySelector('[data-book-id="book-b"]').click();
+      actionHost.querySelector('[aria-label="Separate stack"]').click();
+      await waitActionSaved(7);
+      check(!Object.keys(actionSaved.stacks || {}).length &&
+        ["book-a", "book-b", "book-c"].every(id => actionPosition(id)?.orientation !== "horizontal"),
+      "integrated UI separates the complete three-book stack");
+
+      phase = "cross-shelf placement and gaps";
+      actionHost.querySelector('[data-book-id="book-d"]').dispatchEvent(
+        new KeyboardEvent("keydown", { key:"ArrowUp", bubbles:true }));
+      await waitActionSaved(8);
+      check(actionPosition("book-d")?.shelfId === "shelf-2",
+        "keyboard movement persists a cross-shelf placement");
+      const beforeRight = actionPosition("book-d").x;
+      actionHost.querySelector('[data-book-id="book-d"]').dispatchEvent(
+        new KeyboardEvent("keydown", { key:"ArrowRight", bubbles:true }));
+      await waitActionSaved(9);
+      check(actionPosition("book-d").x === beforeRight + 24,
+        "keyboard repositioning saves the coordinate that creates an intentional gap");
+
+      phase = "cross-shelf stacking and reload";
+      actionHost.querySelector('[data-book-id="book-a"]').click();
+      actionHost.querySelector('[data-book-id="book-d"]').click();
+      actionHost.querySelector('[aria-label="Stack selected"]').click();
+      await waitActionSaved(10);
+      const crossShelfStackId = actionPosition("book-a")?.stackId;
+      check(Boolean(crossShelfStackId) && actionPosition("book-a")?.shelfId === "shelf-2",
+        "integrated UI stacks a book from another shelf onto the selected shelf");
+      actionShelves.resetSession();
+      actionShelves.render(actionHost, "collection", books);
+      check(Object.values(actionSaved.positions).filter(position => position.stackId === crossShelfStackId).length === 2,
+        "cross-shelf stack members survive a reload");
+
+      const oversizedHost = document.createElement("div");
+      oversizedHost.id = "oversizedBrowseCheck";
+      document.querySelector(".phase3g-library-stage").append(oversizedHost);
+      const oversizedBooks = Array.from({ length: 301 }, (_, index) => ({
+        id: `large-book-${index}`, title: `Large Collection Book ${index}`,
+        width: 22, height: 150,
+      }));
+      let oversizedSaves = 0;
+      const oversizedShelves = createPersonalShelves({
+        getBooks: () => oversizedBooks,
+        getUid: () => token.uid,
+        getSession: () => token,
+        dimensions,
+        renderSpine: book => `<div class="library-book-spine"><span class="library-spine-title">${book.title}</span></div>`,
+        saveArrangement: async () => { oversizedSaves += 1; throw new Error("Oversized browse must not save."); },
+      });
+      phase = "large collection browse";
+      oversizedShelves.render(oversizedHost, "collection", oversizedBooks);
+      await wait(40);
+      const oversizedViewport = oversizedHost.querySelector(".personal-shelf-viewport");
+      const firstLargeBook = oversizedHost.querySelector('[data-book-id="large-book-0"]');
+      const firstLargeBookRect = firstLargeBook.getBoundingClientRect();
+      const oversizedViewportRect = oversizedViewport.getBoundingClientRect();
+      check(oversizedHost.querySelectorAll("[data-book-id]").length === 301 &&
+        ![...oversizedHost.querySelectorAll("button")].some(button => button.textContent === "Arrange") &&
+        oversizedHost.querySelector(".personal-shelf-status")?.textContent.includes("Browse and search remain available") &&
+        oversizedSaves === 0 &&
+        oversizedViewport.scrollTop > 0 &&
+        firstLargeBookRect.bottom > oversizedViewportRect.top &&
+        firstLargeBookRect.top < oversizedViewportRect.bottom,
+      "collections above 300 show shelf one on open and remain browseable without arrangement writes");
+
+      const invalidHost = document.createElement("div");
+      invalidHost.id = "invalidArrangementBrowseCheck";
+      document.querySelector(".phase3g-library-stage").append(invalidHost);
+      const corrupt = structuredClone(saved);
+      corrupt.positions["slot-005"] = { ...corrupt.positions["slot-001"] };
+      const invalidShelves = createPersonalShelves({
+        getBooks: () => books,
+        getUid: () => token.uid,
+        getSession: () => token,
+        getSavedArrangement: () => corrupt,
+        dimensions,
+        renderSpine: book => `<div class="library-book-spine"><span class="library-spine-title">${book.title}</span></div>`,
+        saveArrangement: async () => { throw new Error("Corrupt arrangement must not be overwritten."); },
+      });
+      phase = "invalid saved arrangement browse";
+      invalidShelves.render(invalidHost, "collection", books);
+      check(invalidHost.querySelectorAll("[data-book-id]").length === books.length &&
+        ![...invalidHost.querySelectorAll("button")].some(button => button.textContent === "Arrange") &&
+        invalidHost.querySelector(".personal-shelf-status")?.textContent.includes("saved copy was not changed"),
+      "invalid saved arrangements preserve book access and are not overwritten");
+
+      report.textContent = `PASS ${window.innerWidth}px: ${checks.join("; ")}`;
+      document.documentElement.dataset.result = "pass";
+    } catch (error) {
+      report.textContent = `FAIL ${window.innerWidth}px (${phase}, saves=${saves}): ${error?.stack || error?.message || error}`;
+      document.documentElement.dataset.result = "fail";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,854 @@
+/* Approved My Nook and library visual restoration.
+   Scope is limited to Nook, My Collection, Dog-Eared Pages, and their shared nav. */
+
+#mainApp:has(#nookScreen.active) {
+  background:
+    radial-gradient(ellipse at 76% 4%, rgba(123, 78, 39, .2), transparent 34rem),
+    radial-gradient(ellipse at 8% 56%, rgba(77, 52, 35, .18), transparent 35rem),
+    #211710 !important;
+}
+
+#mainApp:has(#collectionScreen.active),
+#mainApp:has(#bookmarksScreen.active) {
+  background:
+    radial-gradient(ellipse at 76% 4%, rgba(123, 78, 39, .16), transparent 34rem),
+    radial-gradient(ellipse at 8% 56%, rgba(77, 52, 35, .13), transparent 35rem),
+    #100b08 !important;
+}
+
+#mainApp:has(#nookScreen.active) .app-content,
+#mainApp:has(#collectionScreen.active) .app-content,
+#mainApp:has(#bookmarksScreen.active) .app-content {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 5vw, 76px) calc(116px + env(safe-area-inset-bottom, 0px));
+  background: transparent !important;
+}
+
+#mainApp:has(#nookScreen.active) .screen,
+#mainApp:has(#collectionScreen.active) .screen,
+#mainApp:has(#bookmarksScreen.active) .screen {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-top: 0 !important;
+}
+
+#nookScreen.phase4b1-nook-view {
+  --nook-ink: #f0e4d0;
+  --nook-muted: #ad9a7f;
+  --nook-subtle: #7f6b57;
+  --nook-espresso: #211710;
+  --nook-panel: #100b08;
+  --nook-walnut: #68452c;
+  --nook-brass: #c39a5a;
+  --nook-line: rgba(214, 184, 138, .18);
+  display: none;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 0;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 0 18px !important;
+  overflow: visible;
+  color: var(--nook-ink);
+  background: transparent;
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#nookScreen.phase4b1-nook-view.active { display: grid; }
+
+#nookScreen .phase4b1-brandbar {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--nook-line);
+}
+
+#nookScreen .phase4b1-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--nook-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  white-space: nowrap;
+}
+
+#nookScreen .phase4b1-wordmark i { color: var(--nook-brass); font-style: normal; font-weight: 500; }
+#nookScreen .phase4b1-bookmark-mark { display: flex; height: 21px; align-items: end; gap: 2px; transform: skewY(-10deg); }
+#nookScreen .phase4b1-bookmark-mark span { width: 4px; border: 1px solid var(--nook-brass); border-bottom: 0; border-radius: 2px 2px 0 0; }
+#nookScreen .phase4b1-bookmark-mark span:nth-child(1) { height: 14px; }
+#nookScreen .phase4b1-bookmark-mark span:nth-child(2) { height: 20px; }
+#nookScreen .phase4b1-bookmark-mark span:nth-child(3) { height: 17px; }
+
+#nookScreen .phase4b1-private-status {
+  display: grid;
+  grid-template-columns: 5px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  justify-self: end;
+  width: min(100%, 130px);
+  color: var(--nook-muted);
+  font: 8px/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .1em;
+  text-align: right;
+}
+
+#nookScreen .phase4b1-status-dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #a8a06e;
+  box-shadow: 0 0 0 3px rgba(168, 160, 110, .12);
+}
+
+#nookScreen .phase4b1-info-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid rgba(195, 154, 90, .5);
+  border-radius: 50%;
+  color: #d8c39b;
+  font: italic 16px/1 Georgia, "Times New Roman", serif;
+}
+
+#nookScreen .phase4b1-nook-intro {
+  display: flex;
+  min-height: 282px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin: 0;
+  padding: 49px 4px 42px;
+}
+
+#nookScreen .phase4b1-nook-intro-copy { min-width: 0; max-width: 560px; }
+#nookScreen .phase4b1-nook-intro h1 {
+  margin: 0;
+  color: var(--nook-ink);
+  font: 500 clamp(42px, 6vw, 70px)/.99 "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  letter-spacing: -.045em;
+}
+#nookScreen .phase4b1-nook-welcome {
+  margin: 8px 0 0;
+  color: #d8b984;
+  font: italic 500 clamp(21px, 2.5vw, 27px)/1.2 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  letter-spacing: -.02em;
+}
+#nookScreen .phase4b1-nook-description {
+  max-width: 390px;
+  margin: 11px 0 0;
+  color: #b4a28b;
+  font: 14px/1.7 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+#nookScreen .phase4b1-nook-greeting {
+  margin: 10px 0 0;
+  color: #9d896b;
+  font: 9px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .05em;
+}
+#nookScreen .phase4b1-nook-stamp {
+  display: flex;
+  width: 128px;
+  height: 128px;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 9%;
+  border: 1px solid rgba(195, 154, 90, .48);
+  border-radius: 50%;
+  color: var(--nook-brass);
+  background: radial-gradient(circle, rgba(195, 154, 90, .1), transparent 72%);
+  font: 7px/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+  text-align: center;
+  transform: rotate(7deg);
+}
+#nookScreen .phase4b1-nook-stamp b {
+  margin: 8px 0;
+  color: var(--nook-ink);
+  font: 600 14px/1.2 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  letter-spacing: .08em;
+}
+#nookScreen .phase4b1-stamp-rule { width: 29px; height: 1px; margin-bottom: 7px; background: var(--nook-brass); }
+#nookScreen .phase4b1-nook-stamp small { font-size: 6px; }
+
+#nookScreen .phase4b1-nook-home {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  align-items: stretch;
+  gap: clamp(22px, 5vw, 72px);
+  padding: 0 0 30px;
+}
+
+#nookScreen .phase4b1-nook-card,
+#nookScreen .phase4b1-nook-room-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(195, 154, 90, .23);
+  background:
+    radial-gradient(ellipse at 92% 12%, rgba(218, 173, 100, .15), transparent 30%),
+    linear-gradient(145deg, rgba(99, 67, 41, .4), rgba(43, 31, 23, .94) 70%);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .16), inset 0 1px rgba(238, 203, 148, .05);
+}
+#nookScreen .phase4b1-nook-card { padding: 22px 18px 17px; }
+#nookScreen .phase4b1-nook-card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #8e623a, #d1aa68 40%, #6e492d);
+  content: "";
+}
+#nookScreen .phase4b1-nook-shelf-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 3px 7px 0; }
+#nookScreen .phase4b1-nook-shelf-heading h2 {
+  margin: 0;
+  color: #d0b17d;
+  font: italic 500 15px/1.2 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  letter-spacing: .02em;
+}
+#nookScreen .phase4b1-nook-copy { max-width: 430px; margin: 0; color: var(--nook-muted); font: 12px/1.6 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+#nookScreen .phase4b1-nook-lamp { position: relative; display: flex; width: 24px; height: 25px; flex: 0 0 auto; flex-direction: column; align-items: center; justify-content: end; margin: -2px 3px 0 0; }
+#nookScreen .phase4b1-nook-lamp::before {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 31px;
+  height: 26px;
+  background: radial-gradient(ellipse, rgba(230, 182, 106, .23), rgba(211, 158, 84, .08) 38%, transparent 73%);
+  filter: blur(2px);
+  transform: translateX(-50%);
+  content: "";
+}
+#nookScreen .phase4b1-lamp-shade { z-index: 1; width: 15px; height: 8px; border: 1px solid rgba(222, 183, 116, .78); border-radius: 8px 8px 2px 2px; background: linear-gradient(180deg, #d7b270, #886039); }
+#nookScreen .phase4b1-lamp-stem { z-index: 1; width: 2px; height: 8px; background: linear-gradient(90deg, #6e4a2c, #c19b5e, #684528); }
+#nookScreen .phase4b1-lamp-base { z-index: 1; width: 13px; height: 3px; border-radius: 50%; background: linear-gradient(90deg, #78502e, #c09a5e, #78502e); }
+#nookScreen .nook-bookshelf {
+  position: relative;
+  height: 128px;
+  margin: 18px 0 12px;
+  padding: 14px 15px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 161, 106, .2);
+  border-radius: 12px 12px 5px 5px;
+  background: linear-gradient(180deg, rgba(31, 22, 15, .72), rgba(9, 7, 6, .92)), #0a0807;
+  box-shadow: inset 0 1px rgba(255, 230, 190, .035);
+}
+#nookScreen .nook-bookshelf::after {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  left: 10px;
+  height: 9px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, rgba(231, 190, 130, .12), transparent 45%), var(--nook-walnut);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .35);
+  content: "";
+  pointer-events: none;
+}
+#nookScreen #nookCollectionShelf > .personal-shelf-tools,
+#nookScreen #nookCollectionShelf > .personal-shelf-status,
+#nookScreen #nookCollectionShelf > .personal-shelf-attention { display: none !important; }
+#nookScreen #nookCollectionShelf { display: block !important; width: 100% !important; height: 100% !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+#nookScreen #nookCollectionShelf .personal-shelf-viewport { position: relative; width: 100%; height: 100% !important; min-height: 0; overflow: hidden !important; border: 0; border-radius: 0; background: transparent; box-shadow: none; scrollbar-width: none; }
+#nookScreen #nookCollectionShelf .personal-shelf-track { display: flex !important; width: 100% !important; height: 100% !important; min-height: 0; align-items: flex-end; gap: 13px; overflow: hidden; padding: 0 2px 8px !important; }
+#nookScreen #nookCollectionShelf .personal-shelf-book { position: relative !important; left: auto !important; bottom: 0 !important; display: flex; min-width: 24px !important; max-width: 34px !important; flex: 0 0 auto !important; align-items: flex-end; margin: 0 !important; overflow: hidden; transform: none !important; cursor: default; pointer-events: none; }
+#nookScreen #nookCollectionShelf .personal-shelf-book { transform: scaleX(1.28) !important; transform-origin: center bottom; }
+#nookScreen #nookCollectionShelf .library-book-spine {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: 0 0 100% !important;
+  margin: 0 !important;
+  padding: 5px 3px !important;
+  border: 1px solid rgba(241, 223, 193, .31) !important;
+  border-bottom: 0 !important;
+  border-radius: 4px 4px 1px 1px !important;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, .13), transparent 18%),
+    linear-gradient(180deg, var(--spine-light, #405849), var(--spine-dark, #142019)) !important;
+  box-shadow: inset 2px 0 rgba(255, 255, 255, .09), inset -3px 0 rgba(0, 0, 0, .22), 3px 0 rgba(0, 0, 0, .2) !important;
+}
+#nookScreen #nookCollectionShelf .library-spine-title { font: 600 7px/1.05 Georgia, "Times New Roman", serif !important; letter-spacing: .02em; text-transform: uppercase; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+#nookScreen #nookCollectionShelf .library-spine-author,
+#nookScreen #nookCollectionShelf .library-spine-status { display: none !important; }
+#nookScreen .phase4b1-nook-foot { display: flex; align-items: center; gap: 8px; margin: 0; color: #a9906d; font: italic 11px/1.4 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+#nookScreen .phase4b1-nook-foot span { color: var(--nook-brass); font-size: 12px; }
+
+#nookScreen .phase4b1-nook-room-card {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(27px, 4vw, 46px);
+  color: var(--nook-ink);
+  text-decoration: none;
+  background: radial-gradient(ellipse at 90% 10%, rgba(141, 93, 45, .2), transparent 54%), linear-gradient(145deg, #36251a, #281b14 76%);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .18);
+}
+#nookScreen .phase4b1-section-kicker { margin: 0; color: var(--nook-brass); font: 8px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .12em; }
+#nookScreen .phase4b1-nook-room-card h2 { margin: 17px 0 12px; color: var(--nook-ink); font: 500 clamp(32px, 4.2vw, 48px)/1.08 "Iowan Old Style", "Palatino Linotype", Georgia, serif; letter-spacing: -.03em; }
+#nookScreen .phase4b1-nook-room-card > p:not(.phase4b1-section-kicker) { max-width: 350px; margin: 0; color: var(--nook-muted); font: 15px/1.7 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+#nookScreen .phase4b1-nook-room-card:focus-visible { outline: 2px solid #dfbd7d; outline-offset: 3px; }
+#nookScreen .phase4b1-nook-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 17px; }
+#nookScreen .phase4b1-primary-link { display: inline-flex; min-height: 42px; align-items: center; gap: 10px; padding: 11px 15px; border: 1px solid var(--nook-brass); color: #281b12; background: var(--nook-brass); font: 700 11px/1.2 "Avenir Next", Avenir, "Segoe UI", sans-serif; }
+#nookScreen .phase4b1-primary-link span { font: 16px/.7 Georgia, serif; }
+#nookScreen .phase4b1-quiet-link { color: #c9af84; font: 9px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .03em; }
+#nookScreen .phase4b1-nook-ornament { position: absolute; right: 25px; bottom: 15px; color: #a9844e; font: 30px Georgia, serif; opacity: .7; }
+
+#nookScreen .nook-circles-section {
+  position: relative;
+  overflow: visible;
+  min-height: 280px;
+  margin: 0 0 28px;
+  padding: 30px clamp(21px, 4vw, 50px) 25px;
+  border: 1px solid rgba(195, 154, 90, .2);
+  background: linear-gradient(140deg, rgba(68, 46, 30, .84), rgba(39, 27, 19, .97));
+}
+#nookScreen .nook-circles-section::before { position: absolute; inset: 0; pointer-events: none; content: ""; opacity: .35; background: radial-gradient(ellipse at 94% 0%, rgba(177, 126, 66, .2), transparent 42%); }
+#nookScreen .nook-section-heading { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+#nookScreen .nook-section-heading > div { min-width: 0; }
+#nookScreen .nook-section-heading h2 { margin: 12px 0 7px; color: var(--nook-ink); font: 500 32px/1.1 "Iowan Old Style", "Palatino Linotype", Georgia, serif; letter-spacing: -.025em; }
+#nookScreen .nook-section-subtitle { margin: 0; color: var(--nook-muted); font: 13px/1.5 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+#nookScreen .nook-create-join-btn { min-height: 42px; flex: 0 0 auto; padding: 8px 12px; border: 1px solid rgba(196, 161, 106, .4); color: #ead9b2; background: rgba(24, 16, 11, .72); cursor: pointer; font: 9px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .04em; touch-action: manipulation; }
+#nookScreen .nook-create-join-btn:focus-visible { outline: 2px solid #dfbd7d; outline-offset: 2px; }
+#nookScreen .nook-circle-count { position: relative; margin: 12px 0; color: #bda477; font: 600 8px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .05em; }
+#nookScreen #clubList,
+#nookScreen #circleInvitationInbox,
+#nookScreen #circleLeaveStatus { position: relative; color: var(--nook-muted); }
+#nookScreen #clubList .status { margin: 0; padding: 14px 16px; border: 1px solid rgba(200, 163, 106, .16); color: #c3ad8e; background: rgba(10, 7, 5, .38); font: italic 13px/1.55 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+#nookScreen .phase4b1-page-footer { min-height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-top: 1px solid var(--nook-line); color: #927858; font: 8px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .09em; }
+#nookScreen .phase4b1-page-footer i { color: var(--nook-brass); font-style: normal; }
+
+#collectionScreen,
+#bookmarksScreen {
+  color: #f0e4d0;
+  background: transparent;
+}
+#collectionScreen .phase3g-view-back,
+#bookmarksScreen .phase3g-view-back { margin: 18px 0 12px; }
+#collectionScreen .phase3g-back-link,
+#bookmarksScreen .phase3g-back-link {
+  min-height: 40px;
+  padding: 7px 0;
+  border: 0;
+  color: #c9af84;
+  background: transparent;
+  font: 10px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .04em;
+}
+#collectionScreen .phase3g-library-heading,
+#bookmarksScreen .phase3g-library-heading { margin: 0 0 18px; }
+#collectionScreen .phase3g-library-title-row,
+#bookmarksScreen .phase3g-library-title-row { display: flex; align-items: center; gap: 12px; }
+#collectionScreen .phase3g-library-title-row h1,
+#bookmarksScreen .phase3g-library-title-row h1 { flex: 1 1 auto; margin: 0; color: #f0e4d0; font: 500 clamp(34px, 6vw, 52px)/1.04 "Iowan Old Style", "Palatino Linotype", Georgia, serif; letter-spacing: -.035em; }
+.phase3g-count-pill { flex: 0 0 auto; padding: 5px 9px; border: 1px solid rgba(196, 161, 106, .36); border-radius: 999px; color: #c9af84; font: 8px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .07em; }
+#collectionScreen .phase3g-library-heading > p,
+#bookmarksScreen .phase3g-library-heading > p { margin: 8px 0 0; color: #b4a28b; font: 13px/1.55 Georgia, "Times New Roman", serif; }
+#collectionScreen .phase3g-add-book { width: 42px !important; min-height: 42px !important; flex: 0 0 auto; border-color: rgba(196, 161, 106, .34) !important; color: #dfbd7d !important; background: rgba(15, 11, 8, .86) !important; }
+
+.phase3g-collection-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 0 0 16px;
+  padding: 4px;
+  border: 1px solid rgba(196, 161, 106, .34);
+  border-radius: 4px;
+  background: rgba(13, 10, 7, .78);
+}
+.phase3g-collection-tabs button {
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 2px;
+  color: #c2ae8c;
+  background: transparent;
+  font: 600 10px/1.25 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .025em;
+}
+.phase3g-collection-tabs button.is-active { color: #1a1209; background: #c4a16a; }
+
+#collectionScreen .phase3g-library-stage { display: grid; gap: 10px; margin: 0; }
+#collectionScreen #libraryGrid { display: contents; }
+#collectionScreen .personal-shelf-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
+  grid-row: 1;
+}
+.personal-shelf-navigation { display: flex; justify-content: flex-end; gap: 7px; }
+.personal-shelf-arrangement-actions {
+  grid-row: 6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+}
+.personal-shelf-arrangement-actions[hidden] { display: none !important; }
+.personal-shelf-action {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid rgba(196, 161, 106, .34);
+  border-radius: 3px;
+  color: #dfc99e;
+  background: rgba(18, 13, 9, .9);
+  font: 600 9px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  touch-action: manipulation;
+}
+.personal-shelf-action:disabled { opacity: .5; }
+.personal-shelf-action:focus-visible,
+.personal-shelf-scroll:focus-visible,
+.personal-shelf-viewport:focus-visible {
+  outline: 2px solid #dfbd7d;
+  outline-offset: 2px;
+}
+.personal-shelf-action:not(:disabled):active { color: #1a1209; background: #c4a16a; }
+.personal-shelf-mode-group {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid rgba(196, 161, 106, .34);
+  border-radius: 4px;
+  background: rgba(13, 10, 7, .78);
+}
+.personal-shelf-mode-group .personal-shelf-mode {
+  min-height: 37px;
+  padding: 8px 17px;
+  border: 0;
+  border-radius: 2px;
+  color: #c2ae8c;
+  background: transparent;
+  font: 600 10px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .03em;
+}
+.personal-shelf-mode-group .personal-shelf-mode.is-active { color: #1a1209; background: #c4a16a; }
+.personal-shelf-mode-group .personal-shelf-mode:focus-visible { outline: 2px solid #dfbd7d; outline-offset: 2px; }
+
+#collectionScreen .phase3g-search-wrap {
+  grid-row: 2;
+  display: flex !important;
+  min-width: 0;
+  min-height: 40px;
+  align-items: center;
+  gap: 9px;
+  margin: 1px 0 0 !important;
+  padding: 0 3px;
+  border-bottom: 1px solid rgba(196, 161, 106, .3);
+  color: #b99660;
+}
+#collectionScreen .phase3g-search-symbol { flex: 0 0 auto; color: #b99660; font: 19px/1 Georgia, "Times New Roman", serif; }
+#collectionScreen .phase3g-search-wrap input { min-width: 0; min-height: 38px; padding: 7px 2px !important; border: 0 !important; border-radius: 0 !important; outline-offset: 2px; color: #f0e4d0 !important; background: transparent !important; font: 13px/1.4 Georgia, "Times New Roman", serif !important; box-shadow: none !important; }
+#collectionScreen .phase3g-search-wrap input::placeholder { color: #917c5b; opacity: 1; }
+#collectionScreen .phase3g-reading-filters {
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  width: 100%;
+  margin: 2px 0 0;
+  padding: 0 0 3px;
+  border: 0;
+  border-bottom: 1px solid rgba(200, 163, 106, .18);
+  background: transparent;
+}
+#collectionScreen .phase3g-reading-filters button {
+  display: flex;
+  min-width: 0;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 !important;
+  padding: 7px 4px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: #a58a5e !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font: 600 9px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace !important;
+  white-space: nowrap;
+}
+#collectionScreen .phase3g-reading-filters button.active { border-bottom-color: #d1aa68 !important; color: #f0e4d0 !important; }
+#collectionScreen [data-filter-count] { color: inherit; font-size: 8px; opacity: .8; }
+#collectionScreen .phase3g-result-count,
+#collectionScreen .phase3g-shelf-status { margin: 0; color: #b4a28b; font: italic 11px/1.5 Georgia, "Times New Roman", serif; }
+#collectionScreen .phase3g-result-count { grid-row: 4; }
+#collectionScreen .personal-shelf-status { grid-row: 5; min-height: 18px; margin: 0; color: #c5a66f; font: italic 11px/1.5 Georgia, "Times New Roman", serif; }
+#collectionScreen .personal-shelf-attention { grid-row: 6; }
+#collectionScreen .personal-shelf-viewport {
+  grid-row: 7;
+  width: 100%;
+  min-height: 320px;
+  max-height: min(70vh, 620px);
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid rgba(196, 161, 106, .2);
+  border-bottom: 9px solid #68452c;
+  border-radius: 12px 12px 5px 5px;
+  background: linear-gradient(180deg, rgba(31, 22, 15, .72), rgba(9, 7, 6, .92)), #0a0807;
+  box-shadow: inset 0 1px rgba(255, 230, 190, .035);
+  scrollbar-color: #68452c #100b08;
+}
+#collectionScreen .personal-shelf-track { position: relative; min-height: 780px; padding: 0 !important; }
+#collectionScreen .personal-shelf-rail {
+  position: absolute;
+  z-index: 0;
+  height: 13px;
+  border-top: 1px solid rgba(227, 192, 137, .3);
+  border-bottom: 7px solid #68452c;
+  background: linear-gradient(180deg, rgba(232, 202, 158, .13), rgba(31, 19, 12, .9));
+  box-shadow: 0 5px 9px rgba(0, 0, 0, .48);
+  pointer-events: none;
+}
+#collectionScreen .personal-shelf-rail span {
+  position: absolute;
+  top: -15px;
+  left: 8px;
+  color: #8e795d;
+  font: 7px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+#collectionScreen .personal-shelf-book { position: absolute; z-index: 1; display: flex; align-items: flex-end; touch-action: none; }
+#collectionScreen .personal-shelf-book.is-held { z-index: 10; }
+#collectionScreen .personal-shelf-book.is-selected { filter: drop-shadow(0 0 8px rgba(217, 179, 107, .7)); }
+#collectionScreen .personal-shelf-book.is-dragging { opacity: .88; }
+#collectionScreen .personal-shelf-book.is-lean-left { transform: rotate(-3deg); transform-origin: 50% 100%; }
+#collectionScreen .personal-shelf-book.is-lean-right { transform: rotate(3deg); transform-origin: 50% 100%; }
+#collectionScreen .personal-shelf-book .library-book-spine {
+  position: relative;
+  display: flex;
+  min-height: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  flex: 0 0 100% !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  padding: 8px 4px !important;
+  overflow: hidden;
+  border: 1px solid rgba(241, 223, 193, .31) !important;
+  border-bottom: 0 !important;
+  border-radius: 5px 5px 1px 1px !important;
+  color: #f1dfc1;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, .13), transparent 18%),
+    linear-gradient(180deg, var(--spine-light, #405849), var(--spine-dark, #142019)) !important;
+  box-shadow: inset 2px 0 rgba(255, 255, 255, .09), inset -3px 0 rgba(0, 0, 0, .22), 3px 0 rgba(0, 0, 0, .2) !important;
+  transform: none !important;
+}
+#collectionScreen .personal-shelf-book.is-horizontal .library-book-spine {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: var(--spine-thickness) !important;
+  height: var(--spine-length) !important;
+  flex: 0 0 auto !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center !important;
+}
+#collectionScreen .personal-shelf-book .library-book-spine::before,
+#bookmarksScreen .library-book-spine::before {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 4px;
+  width: 2px;
+  border-radius: 50%;
+  background: rgba(238, 211, 167, .24);
+  content: "";
+}
+#collectionScreen .library-spine-title,
+#bookmarksScreen .library-spine-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: calc(var(--book-height, 196px) - 10px);
+  max-height: none;
+  overflow: hidden;
+  color: #f0dfc3;
+  font: 600 10.5px/1.14 Georgia, serif;
+  letter-spacing: .12px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: normal;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+#collectionScreen .library-spine-title--long {
+  box-sizing: border-box;
+  width: calc(var(--book-height, 196px) - 24px);
+  max-width: calc(var(--book-height, 196px) - 24px);
+  padding-inline: 2px;
+  font-size: 9px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+#collectionScreen .library-spine-author,
+#collectionScreen .library-spine-status,
+#bookmarksScreen .library-spine-author,
+#bookmarksScreen .library-spine-status {
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+  color: rgba(241, 223, 193, .74);
+  font: 7px/1.05 Georgia, serif;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+#collectionScreen .library-spine-status,
+#bookmarksScreen .library-spine-status { font-size: 6px; color: rgba(241, 223, 193, .62); }
+
+.palette-olive { --spine-light: #384636; --spine-dark: #151e16; }
+.palette-oxblood { --spine-light: #713d2c; --spine-dark: #29140f; }
+.palette-blue { --spine-light: #40505e; --spine-dark: #161c23; }
+.palette-plum { --spine-light: #65404e; --spine-dark: #25141b; }
+.palette-umber { --spine-light: #73583b; --spine-dark: #251a11; }
+.palette-forest { --spine-light: #405849; --spine-dark: #142019; }
+
+#collectionScreen .phase3g-shelf-caption { margin: 12px 0 0; color: #9d896b; font: 8px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .12em; }
+#bookmarksScreen .phase3g-bookmarks-case { min-height: 180px; padding: 12px 10px 0; overflow: hidden; border: 1px solid rgba(196, 161, 106, .2); background: linear-gradient(180deg, rgba(24, 17, 11, .7), rgba(8, 7, 6, .92)), #080706; }
+#bookmarksScreen #bookmarksList .bookshelf-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-start; gap: 8px; min-width: 0; margin: 0 0 14px; padding: 10px 0 8px; border-bottom: 9px solid #68452c; }
+#bookmarksScreen .library-book-spine { position: relative; display: flex; min-height: 0 !important; flex: 0 0 auto; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 4px 9px; overflow: hidden; border: 1px solid rgba(241, 223, 193, .31); border-bottom: 0; border-radius: 5px 5px 1px 1px; background: linear-gradient(90deg, rgba(255, 255, 255, .13), transparent 18%), linear-gradient(180deg, var(--spine-light, #405849), var(--spine-dark, #142019)); box-shadow: inset 2px 0 rgba(255, 255, 255, .09), inset -3px 0 rgba(0, 0, 0, .22), 3px 0 rgba(0, 0, 0, .2); color: #f1dfc1; }
+
+/* Dog-Eared books follow the approved face-front title/author/genre reference. */
+#bookmarksScreen #bookmarksList .library-book-spine {
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px 12px;
+  border-radius: 8px 10px 10px 8px;
+  text-align: center;
+}
+#bookmarksScreen #bookmarksList .library-spine-title {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: -webkit-box;
+  width: 100%;
+  max-height: 8.4em;
+  overflow: hidden;
+  color: #f3e5cb;
+  font: 600 11px/1.08 Georgia, "Times New Roman", serif;
+  letter-spacing: .015em;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  transform: none;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
+}
+#bookmarksScreen #bookmarksList .library-spine-author,
+#bookmarksScreen #bookmarksList .library-spine-status {
+  position: relative;
+  max-width: 100%;
+  color: rgba(241, 223, 193, .82);
+  font: 8px/1.2 Georgia, "Times New Roman", serif;
+  text-align: center;
+  text-overflow: clip;
+  white-space: normal;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  overflow-wrap: anywhere;
+}
+#bookmarksScreen #bookmarksList .library-spine-author { max-height: 2.4em; }
+#bookmarksScreen #bookmarksList .library-spine-status { color: rgba(241, 223, 193, .7); font-size: 7px; }
+
+@media (max-width: 760px) {
+  .phone-frame:has(#nookScreen.active) #mainNav,
+  .phone-frame:has(#collectionScreen.active) #mainNav,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 4px;
+    padding: 6px;
+    border: 1px solid rgba(214, 184, 138, .24);
+    border-radius: 24px;
+    background: rgba(14, 11, 8, .92);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .54);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .phone-frame:has(#nookScreen.active) #mainNav .nav-btn,
+  .phone-frame:has(#collectionScreen.active) #mainNav .nav-btn,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav .nav-btn {
+    min-width: 0;
+    min-height: 52px;
+    margin: 0;
+    padding: 6px 2px;
+    border: 1px solid transparent;
+    border-radius: 17px;
+    color: #aa967b;
+    background: transparent;
+    font: 9px/1.1 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    touch-action: manipulation;
+  }
+  .phone-frame:has(#nookScreen.active) #mainNav .nav-btn.active,
+  .phone-frame:has(#collectionScreen.active) #mainNav .nav-btn.active,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav .nav-btn.active {
+    border-color: rgba(195, 154, 90, .55);
+    color: #f0e4d0;
+    background: linear-gradient(180deg, rgba(195, 154, 90, .18), rgba(195, 154, 90, .06));
+  }
+}
+
+/* On phones, reserve a real row for navigation instead of painting it over content. */
+@media (max-width: 760px) {
+  .phone-frame:has(#mainApp[style*="block"] #nookScreen.active),
+  .phone-frame:has(#mainApp[style*="block"] #collectionScreen.active),
+  .phone-frame:has(#mainApp[style*="block"] #bookmarksScreen.active) {
+    display: flex;
+    height: 100dvh;
+    min-height: 0;
+    max-height: 100dvh;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .app-content:has(#mainApp[style*="block"] #nookScreen.active),
+  .app-content:has(#mainApp[style*="block"] #collectionScreen.active),
+  .app-content:has(#mainApp[style*="block"] #bookmarksScreen.active) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    padding: 0 16px !important;
+    overflow: hidden;
+  }
+
+  #mainApp[style*="block"]:has(#nookScreen.active),
+  #mainApp[style*="block"]:has(#collectionScreen.active),
+  #mainApp[style*="block"]:has(#bookmarksScreen.active) {
+    display: flex !important;
+    width: 100%;
+    height: auto;
+    min-height: 0 !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow: hidden !important;
+  }
+
+  #mainApp[style*="block"]:has(#nookScreen.active) > .screen.active,
+  #mainApp[style*="block"]:has(#collectionScreen.active) > .screen.active,
+  #mainApp[style*="block"]:has(#bookmarksScreen.active) > .screen.active {
+    flex: 1 1 auto;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scroll-padding-bottom: 20px;
+    padding-bottom: 22px !important;
+  }
+
+  .phone-frame:has(#nookScreen.active) #mainNav,
+  .phone-frame:has(#collectionScreen.active) #mainNav,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 auto;
+    margin: 0 auto calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+
+  #collectionScreen .personal-shelf-arrangement-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  #collectionScreen .personal-shelf-arrangement-actions .personal-shelf-action {
+    width: auto;
+    min-width: 0;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 760px) {
+  #mainApp:has(#nookScreen.active) .app-content,
+  #mainApp:has(#collectionScreen.active) .app-content,
+  #mainApp:has(#bookmarksScreen.active) .app-content { padding-right: clamp(13px, 4vw, 24px); padding-left: clamp(13px, 4vw, 24px); }
+  #nookScreen .phase4b1-brandbar { min-height: 64px; }
+  #nookScreen .phase4b1-brandbar { grid-template-columns: max-content minmax(0, 1fr) 32px; gap: 9px; }
+  #nookScreen .phase4b1-private-status { width: min(100%, 130px); font-size: 7px; letter-spacing: .08em; }
+  #nookScreen .phase4b1-info-icon { width: 30px; height: 30px; }
+  #nookScreen .phase4b1-nook-intro { min-height: 238px; padding: 40px 0 34px; gap: 10px; }
+  #nookScreen .phase4b1-nook-stamp { width: 94px; height: 94px; margin-right: 0; font-size: 5px; }
+  #nookScreen .phase4b1-nook-stamp b { font-size: 11px; }
+  #nookScreen .phase4b1-nook-description { max-width: 270px; font-size: 13px; }
+  #nookScreen .phase4b1-nook-home { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-bottom: 28px; }
+  #nookScreen .phase4b1-nook-room-card { min-height: 280px; padding: 27px 24px; }
+  #nookScreen .nook-circles-section { margin-bottom: 26px; }
+}
+
+@media (max-width: 420px) {
+  #mainApp:has(#nookScreen.active) .app-content,
+  #mainApp:has(#collectionScreen.active) .app-content,
+  #mainApp:has(#bookmarksScreen.active) .app-content { padding-right: 12px; padding-left: 12px; }
+  #nookScreen .phase4b1-brandbar { min-height: 64px; }
+  #nookScreen .phase4b1-private-status { max-width: 118px; font-size: 7px; }
+  #nookScreen .phase4b1-wordmark { gap: 7px; font-size: 9px; }
+  #nookScreen .phase4b1-nook-intro { min-height: 230px; align-items: center; padding: 34px 0 29px; }
+  #nookScreen .phase4b1-nook-intro h1 { font-size: clamp(39px, 11vw, 48px); }
+  #nookScreen .phase4b1-nook-stamp { width: 82px; height: 82px; }
+  #nookScreen .phase4b1-nook-description { max-width: 240px; font-size: 12px; }
+  #nookScreen .phase4b1-nook-card { padding: 19px 14px 15px; }
+  #nookScreen .nook-bookshelf { height: 120px; padding: 12px 11px 12px; }
+  #nookScreen #nookCollectionShelf .personal-shelf-track { gap: 13px; }
+  #nookScreen #nookCollectionShelf .library-spine-title { font-size: 7px !important; }
+  #nookScreen .nook-section-heading { gap: 10px; }
+  #nookScreen .nook-section-heading h2 { font-size: 28px; }
+  #nookScreen .nook-create-join-btn { padding-inline: 9px; }
+  #nookScreen .nook-circles-section { padding: 23px 17px 20px; }
+  #nookScreen .phase4b1-page-footer { align-items: flex-start; flex-direction: column; justify-content: center; padding: 14px 0; }
+  #collectionScreen .phase3g-reading-filters button { font-size: 8px !important; }
+  #collectionScreen .personal-shelf-mode-group { min-width: 0; }
+  #collectionScreen .personal-shelf-mode-group .personal-shelf-mode { padding: 8px 14px; }
+  .personal-shelf-arrangement-actions { gap: 5px; }
+  .personal-shelf-action { min-height: 38px; padding: 7px 8px; font-size: 8px; }
+  #collectionScreen .personal-shelf-viewport { max-height: 62vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nookScreen.phase4b1-nook-view,
+  #nookScreen.phase4b1-nook-view *,
+  #collectionScreen *,
+  #bookmarksScreen *,
+  .phone-frame:has(#nookScreen.active) #mainNav,
+  .phone-frame:has(#collectionScreen.active) #mainNav,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav,
+  .phone-frame:has(#nookScreen.active) #mainNav *,
+  .phone-frame:has(#collectionScreen.active) #mainNav *,
+  .phone-frame:has(#bookmarksScreen.active) #mainNav * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

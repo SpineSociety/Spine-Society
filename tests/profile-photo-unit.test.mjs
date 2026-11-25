@@ -163,7 +163,13 @@ test("candidate rules preserve verified-reader reads and restrict new photo writ
     candidate.rules.users.$uid.avatarPhoto[".write"];
   expected.rules.users.$uid.avatarPhoto[".validate"] =
     candidate.rules.users.$uid.avatarPhoto[".validate"];
-  assert.deepEqual(candidate, expected, "Only the three approved avatar/photo rule leaves may differ.");
+  expected.rules.users.$uid.shelfArrangementV1 =
+    candidate.rules.users.$uid.shelfArrangementV1;
+  assert.deepEqual(
+    candidate,
+    expected,
+    "Only approved avatar/photo leaves and the isolated arrangement rule may differ from Reader 1.1.",
+  );
   assert.deepEqual(
     candidate.rules.users.$uid.displayName,
     baseline.rules.users.$uid.displayName,

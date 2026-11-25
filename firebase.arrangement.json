@@ -1,0 +1,21 @@
+{
+  "database": {
+    "rules": "rules/reader-release-1-1-2-rtdb-rules.json"
+  },
+  "emulators": {
+    "hub": {
+      "host": "127.0.0.1"
+    },
+    "database": {
+      "host": "127.0.0.1",
+      "port": 9125
+    },
+    "logging": {
+      "host": "127.0.0.1"
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  }
+}
