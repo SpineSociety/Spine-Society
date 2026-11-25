@@ -171,6 +171,7 @@ export async function mountGoldenView(host) {
       slot.style.setProperty("--reader-avatar-color", AVATAR_STYLE_COLORS[style]);
       const text = String(avatar || "").trim();
       slot.textContent = text && text !== "initials"
+        && text !== "photo"
         ? Array.from(text).slice(0, 3).join("")
         : initialsOf(shown);
       slot.setAttribute("aria-label", `Profile portrait for ${shown || "reader"}`);

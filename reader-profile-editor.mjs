@@ -8,9 +8,13 @@ import {
   validateReaderProfile,
 } from "./reader-profile-data.mjs";
 import { safeImageUrl } from "./security-utils.mjs";
+import {
+  loadProfilePhotoForCrop,
+  prepareCroppedProfilePhoto,
+  validateProfilePhotoFile,
+} from "./reader-profile-photo.mjs";
 
-const PHOTO_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
-export const MAX_PROFILE_PHOTO_BYTES = 2 * 1024 * 1024;
+export { MAX_PROFILE_PHOTO_INPUT_BYTES } from "./reader-profile-photo.mjs";
 const GENRE_ID_BY_LABEL = new Map(PROFILE_GENRES.map(({ id, label }) => [label, id]));
 const AVATAR_STYLES = {
   fern: { value: "🌿", color: "#586149", label: "Fern green" },
@@ -38,12 +42,7 @@ export function validateReaderAlias(value) {
 }
 
 export function validateProfilePhoto(file) {
-  if (!file) return { ok: false, message: "Choose a photo first." };
-  if (!PHOTO_TYPES.has(file.type)) return { ok: false, message: "Choose a PNG, JPEG, GIF, or WebP image." };
-  if (file.size <= 0 || file.size > MAX_PROFILE_PHOTO_BYTES) {
-    return { ok: false, message: "Choose an image smaller than 2 MiB." };
-  }
-  return { ok: true };
+  return validateProfilePhotoFile(file);
 }
 
 function safeProfileImage(value) {
@@ -58,29 +57,6 @@ function initialsFor(value) {
 function displayNameFromAlias(value) {
   const alias = typeof value === "string" ? value.trim() : "";
   return alias && !/@.*[.]/u.test(alias) ? alias : "Reader";
-}
-
-function readAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => resolve(reader.result), { once: true });
-    reader.addEventListener("error", () => reject(reader.error || new Error("Photo could not be read.")), { once: true });
-    reader.readAsDataURL(file);
-  });
-}
-
-async function verifyImage(dataUrl) {
-  const image = new Image();
-  image.src = dataUrl;
-  try {
-    await image.decode();
-  } catch {
-    throw new Error("Photo could not be decoded. Choose a valid image.");
-  }
-  if (!image.naturalWidth || !image.naturalHeight ||
-      image.naturalWidth > 4096 || image.naturalHeight > 4096) {
-    throw new Error("Choose a readable image no larger than 4096 pixels on either side.");
-  }
 }
 
 function defaultPreviewSettings(uid, profile) {
@@ -109,6 +85,11 @@ export function createReaderProfileEditor({
   const displayNameInput = document.getElementById("readerDisplayName");
   const photoInput = document.getElementById("readerPhotoInput");
   const photoPreview = document.getElementById("readerPhotoPreview");
+  const cropDialog = document.getElementById("readerPhotoCropDialog");
+  const cropImage = document.getElementById("readerPhotoCropImage");
+  const cropSaveButton = document.getElementById("readerPhotoCropSave");
+  const cropCancelButton = document.getElementById("readerPhotoCropCancel");
+  const cropStatus = document.getElementById("readerPhotoCropStatus");
   const avatarPreview = document.getElementById("readerAvatarPreview");
   const avatarValue = document.getElementById("readerAvatarValue");
   const caption = document.getElementById("readerPortraitCaption");
@@ -127,6 +108,9 @@ export function createReaderProfileEditor({
     releaseStatusText.textContent = "Reader Release 1";
   }
   let photoDraft = "";
+  let photoDraftDataUrl = "";
+  let cropper = null;
+  let cropSaveInProgress = false;
   let savedPhoto = "";
   let currentMode = "preset";
   let currentStyle = "fern";
@@ -147,7 +131,7 @@ export function createReaderProfileEditor({
     photoPreview.src = mode === "photo" ? photo : "";
     photoPreview.hidden = mode !== "photo" || !photo;
     caption.textContent = mode === "photo"
-      ? (photoDraft ? "Photo preview · new photo saving disabled" : "Saved photo")
+      ? (photoDraft ? "Photo preview · ready to save" : "Saved photo")
       : mode === "initials" ? `Initials · ${initialsFor(name)}`
         : `${AVATAR_STYLES[style]?.label || AVATAR_STYLES.fern.label} avatar`;
     document.getElementById("readerUploadPhoto").setAttribute("aria-pressed", String(mode === "photo"));
@@ -168,8 +152,122 @@ export function createReaderProfileEditor({
 
   function clearPhotoDraft() {
     photoDraft = "";
+    photoDraftDataUrl = "";
     photoInput.value = "";
     photoGeneration++;
+  }
+
+  function destroyCropper() {
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    cropImage.removeAttribute("src");
+  }
+
+  function closeCropDialog({ restoreFocus = true } = {}) {
+    if (cropSaveInProgress) return false;
+    const wasOpen = !cropDialog.hidden;
+    destroyCropper();
+    cropDialog.hidden = true;
+    cropSaveButton.disabled = true;
+    photoInput.value = "";
+    document.removeEventListener("keydown", handleCropKeydown);
+    if (restoreFocus && wasOpen) {
+      document.getElementById("readerUploadPhoto").focus({ preventScroll: true });
+    }
+    return true;
+  }
+
+  function handleCropKeydown(event) {
+    if (cropDialog.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeCropDialog();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const controls = [...cropDialog.querySelectorAll("button:not(:disabled)")];
+    if (!controls.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function openCropDialog(source) {
+    const CropperConstructor = window.Cropper;
+    if (typeof CropperConstructor !== "function") {
+      throw new Error("The photo crop tool is unavailable. Reload and try again.");
+    }
+    destroyCropper();
+    cropDialog.hidden = false;
+    cropSaveButton.disabled = true;
+    cropStatus.textContent = "Move and zoom the photo, then choose Use This Crop.";
+    cropImage.src = source;
+    document.addEventListener("keydown", handleCropKeydown);
+    cropCancelButton.focus({ preventScroll: true });
+    try {
+      cropper = new CropperConstructor(cropImage, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: "move",
+        autoCropArea: 1,
+        movable: true,
+        zoomable: true,
+        scalable: false,
+        rotatable: false,
+        responsive: true,
+        background: false,
+        guides: true,
+        cropBoxMovable: false,
+        cropBoxResizable: false,
+        toggleDragModeOnDblclick: false,
+        ready() {
+          if (!cropDialog.hidden && cropper) cropSaveButton.disabled = false;
+        },
+      });
+    } catch (error) {
+      closeCropDialog({ restoreFocus: false });
+      throw error;
+    }
+  }
+
+  async function savePhotoCrop() {
+    if (!cropper || cropSaveInProgress) return;
+    const uid = identity();
+    const session = sessionGeneration;
+    const request = photoGeneration;
+    cropSaveInProgress = true;
+    cropSaveButton.disabled = true;
+    cropCancelButton.disabled = true;
+    cropStatus.textContent = "Preparing your cropped photo…";
+    try {
+      const prepared = await prepareCroppedProfilePhoto(cropper);
+      if (session !== sessionGeneration || request !== photoGeneration || uid !== identity()) return;
+      photoDraft = prepared.preview;
+      photoDraftDataUrl = prepared.dataUrl;
+      currentMode = "photo";
+      portraitTouched = true;
+      photoStatus.textContent =
+        "Manual crop ready · 300 × 300 · shared with verified readers.";
+      setPortrait({ mode: "photo", style: currentStyle, photo: photoDraft });
+      cropSaveInProgress = false;
+      cropCancelButton.disabled = false;
+      closeCropDialog();
+    } catch (error) {
+      cropStatus.textContent = error?.message || "The photo could not be prepared.";
+      cropSaveButton.disabled = false;
+      cropCancelButton.disabled = false;
+    } finally {
+      cropSaveInProgress = false;
+      if (!cropDialog.hidden) cropSaveButton.disabled = false;
+    }
   }
 
   function populateBooks(books, savedBookId = "") {
@@ -199,6 +297,8 @@ export function createReaderProfileEditor({
   function loadProfile(books = [], state = "ready") {
     const uid = identity();
     if (!uid) return;
+    cropSaveInProgress = false;
+    closeCropDialog({ restoreFocus: false });
     libraryStatus = state;
     const profile = savedProfile();
     let previewSettings = previewSettingsByUid.get(uid);
@@ -235,6 +335,7 @@ export function createReaderProfileEditor({
     document.getElementById("readerBioPrivacy").value = previewSettings.bioPrivacy;
     document.getElementById("readerGenrePrivacy").value = previewSettings.genrePrivacy;
 
+    clearPhotoDraft();
     savedPhoto = profile.avatar === "photo" && safeProfileImage(profile.avatarPhoto)
       ? profile.avatarPhoto : "";
     currentStyle = readerAvatarStyleForValue(profile.avatar, profile.avatarStyle);
@@ -259,12 +360,14 @@ export function createReaderProfileEditor({
     displayNameInput.removeAttribute("aria-invalid");
     editStatus.textContent = "";
     photoStatus.textContent =
-      "New profile photo writes are disabled. Existing legacy photos remain unchanged.";
+      "Profile photos are visible to signed-in, verified readers.";
   }
 
   function close({ restoreFocus = true } = {}) {
     if (saveInProgress) return false;
     sessionGeneration++;
+    cropSaveInProgress = false;
+    closeCropDialog({ restoreFocus: false });
     clearPhotoDraft();
     if (panel.contains(document.activeElement)) document.activeElement.blur();
     panel.hidden = true;
@@ -311,34 +414,22 @@ export function createReaderProfileEditor({
   async function selectPhoto(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    photoInput.value = "";
     const validation = validateProfilePhoto(file);
     if (!validation.ok) {
-      clearPhotoDraft();
-      currentMode = savedPhoto ? "photo" : "preset";
       photoStatus.textContent = validation.message;
-      setPortrait({ mode: currentMode, style: currentStyle, photo: savedPhoto });
       return;
     }
     const uid = identity();
     const session = sessionGeneration;
     const request = ++photoGeneration;
     try {
-      const dataUrl = await readAsDataUrl(file);
+      const loaded = await loadProfilePhotoForCrop(file);
       if (session !== sessionGeneration || request !== photoGeneration || uid !== identity()) return;
-      await verifyImage(dataUrl);
-      if (session !== sessionGeneration || request !== photoGeneration || uid !== identity()) return;
-      photoDraft = dataUrl;
-      currentMode = "photo";
-      portraitTouched = true;
-      photoStatus.textContent =
-        "Photo preview only. New profile photo writes are disabled; choose a preset to save other changes.";
-      setPortrait({ mode: "photo", style: currentStyle, photo: photoDraft });
+      openCropDialog(loaded.dataUrl);
     } catch (error) {
       if (session !== sessionGeneration || request !== photoGeneration || uid !== identity()) return;
-      clearPhotoDraft();
-      currentMode = savedPhoto ? "photo" : "preset";
       photoStatus.textContent = error?.message || "Photo preview could not be loaded.";
-      setPortrait({ mode: currentMode, style: currentStyle, photo: savedPhoto });
     }
   }
 
@@ -371,9 +462,10 @@ export function createReaderProfileEditor({
       editStatus.textContent = "Your collection is unavailable. Nothing was saved; reload and try again.";
       return;
     }
-    if (portraitTouched && currentMode === "photo" && photoDraft && photoDraft !== savedPhoto) {
-      photoStatus.textContent =
-        "This photo is preview-only and cannot be saved. Choose a preset avatar or cancel the photo preview.";
+    const photoToUpload = portraitTouched && currentMode === "photo"
+      ? photoDraftDataUrl : "";
+    if (portraitTouched && currentMode === "photo" && !photoToUpload && !savedPhoto) {
+      photoStatus.textContent = "Choose a photo before saving.";
       return;
     }
     const selectedGenreIds = [...form.querySelectorAll('input[name="genre"]:checked')]
@@ -420,19 +512,21 @@ export function createReaderProfileEditor({
     }
     const readerProfile = profileResult.value;
     const oldAvatarStyle = readerAvatarStyleForValue(old.avatar, old.avatarStyle);
-    const avatarToSave = portraitTouched && currentMode === "initials"
-      ? "initials"
-      : portraitTouched && currentMode === "preset"
-        ? avatarValue.value : (old.avatar || "");
+    const avatarToSave = portraitTouched && currentMode === "photo" && photoToUpload
+      ? "photo"
+      : portraitTouched && currentMode === "initials"
+        ? "initials"
+        : portraitTouched && currentMode === "preset"
+          ? avatarValue.value : (old.avatar || "");
     const avatarStyleToSave = currentMode === "initials" || currentMode === "preset"
       ? currentStyle : oldAvatarStyle;
     const updateAvatarStyle = portraitTouched &&
       (currentMode === "preset" || currentMode === "initials") &&
       (avatarStyleToSave !== oldAvatarStyle ||
         (currentMode === "initials" && !isSupportedAvatarStyle(old.avatarStyle)));
-    const updateAvatar = portraitTouched &&
+    const updateAvatar = Boolean(photoToUpload) || (portraitTouched &&
       (currentMode === "preset" || currentMode === "initials") &&
-      (avatarToSave !== (old.avatar || "") || updateAvatarStyle);
+      (avatarToSave !== (old.avatar || "") || updateAvatarStyle));
     const oldDisplayName = validateReaderDisplayName(old.displayName);
     const previousDisplayName = oldDisplayName.ok
       ? oldDisplayName.value
@@ -441,6 +535,7 @@ export function createReaderProfileEditor({
     const changed = alias.value !== (old.username || "") ||
       displayNameChanged ||
       updateAvatar ||
+      Boolean(photoToUpload) ||
       JSON.stringify(readerProfile) !== JSON.stringify(profileForDisplay(
         old.readerProfile || DEFAULT_READER_PROFILE,
       ));
@@ -449,8 +544,13 @@ export function createReaderProfileEditor({
     if (changed) {
       saveInProgress = true;
       form.setAttribute("aria-busy", "true");
-      const cancelButtons = [document.getElementById("readerEditBack"), document.getElementById("readerCancelAll")];
-      cancelButtons.forEach(button => { button.disabled = true; });
+      const busyControls = [
+        document.getElementById("readerEditBack"),
+        document.getElementById("readerCancelAll"),
+        document.getElementById("readerSaveChanges"),
+        document.getElementById("readerUploadPhoto"),
+      ];
+      busyControls.forEach(button => { button.disabled = true; });
       try {
         saveResult = await saveProfile?.({
           expectedUid: uid,
@@ -461,6 +561,7 @@ export function createReaderProfileEditor({
           avatarStyle: avatarStyleToSave,
           updateAvatarStyle,
           updateAvatar,
+          photoDataUrl: photoToUpload,
           readerProfile,
         });
         if (token !== sessionGeneration || uid !== identity()) return;
@@ -474,7 +575,7 @@ export function createReaderProfileEditor({
       } finally {
         saveInProgress = false;
         form.removeAttribute("aria-busy");
-        cancelButtons.forEach(button => { button.disabled = false; });
+        busyControls.forEach(button => { button.disabled = false; });
       }
     }
 
@@ -492,7 +593,8 @@ export function createReaderProfileEditor({
       displayName: saveResult?.displayName || displayName,
       avatar: saveResult?.avatar || avatarToSave,
       avatarStyle: saveResult?.avatarStyle || avatarStyleToSave,
-      avatarPhoto: saveResult?.avatarPhoto ?? savedPhoto,
+      avatarPhoto: saveResult?.avatarPhoto ??
+        (updateAvatar && avatarToSave !== "photo" ? "" : savedPhoto),
       readerProfile: saveResult?.readerProfile || readerProfile,
       library: saveResult?.library,
     });
@@ -503,12 +605,25 @@ export function createReaderProfileEditor({
   document.getElementById("readerEditBack").addEventListener("click", cancel);
   document.getElementById("readerCancelAll").addEventListener("click", cancel);
   document.getElementById("readerUploadPhoto").addEventListener("click", () => photoInput.click());
+  document.getElementById("readerPhotoZoomOut").addEventListener("click", () => cropper?.zoom(-0.1));
+  document.getElementById("readerPhotoZoomIn").addEventListener("click", () => cropper?.zoom(0.1));
+  document.getElementById("readerPhotoMoveUp").addEventListener("click", () => cropper?.move(0, -16));
+  document.getElementById("readerPhotoMoveDown").addEventListener("click", () => cropper?.move(0, 16));
+  document.getElementById("readerPhotoMoveLeft").addEventListener("click", () => cropper?.move(-16, 0));
+  document.getElementById("readerPhotoMoveRight").addEventListener("click", () => cropper?.move(16, 0));
+  cropSaveButton.addEventListener("click", savePhotoCrop);
+  cropCancelButton.addEventListener("click", () => closeCropDialog());
+  cropDialog.addEventListener("click", event => {
+    if (event.target === cropDialog) closeCropDialog();
+  });
   document.getElementById("readerChooseAvatar").addEventListener("click", () => {
     if (currentMode !== "preset") portraitTouched = true;
+    clearPhotoDraft();
     currentMode = "preset";
     setPortrait({ mode: currentMode, style: currentStyle });
   });
   document.getElementById("readerUseInitials").addEventListener("click", () => {
+    clearPhotoDraft();
     currentMode = "initials";
     portraitTouched = true;
     setPortrait({ mode: currentMode, style: currentStyle });
@@ -551,6 +666,8 @@ export function createReaderProfileEditor({
     close: () => close({ restoreFocus: false }),
     dispose() {
       sessionGeneration++;
+      cropSaveInProgress = false;
+      closeCropDialog({ restoreFocus: false });
       clearPhotoDraft();
       photoInput.removeEventListener("change", selectPhoto);
       form.removeEventListener("submit", submit);
