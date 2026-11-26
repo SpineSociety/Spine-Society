@@ -835,6 +835,48 @@
   #collectionScreen .personal-shelf-viewport { max-height: 62vh; }
 }
 
+/* Mobile Nook hotfix: use the existing bounded screen scroll area and dock row.
+   .app-content wraps #mainApp (it is not a descendant of #mainApp).
+   Inactive screens may contain children that explicitly enable pointer events;
+   hiding those layers prevents an invisible Reader host from taking Nook input. */
+@media (max-width: 760px) {
+  .phone-frame:has(#mainApp[style*="block"] #nookScreen.active),
+  .app-content:has(#mainApp[style*="block"] #nookScreen.active) {
+    background: #211710 !important;
+  }
+
+  .app-content:has(#mainApp[style*="block"] #nookScreen.active) {
+    padding: 0 !important;
+  }
+
+  #mainApp[style*="block"]:has(#nookScreen.active) > .screen:not(.active) {
+    display: none !important;
+  }
+
+  #mainApp[style*="block"] > #nookScreen.active {
+    box-sizing: border-box;
+    padding: 0 16px 22px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #nookScreen #nookCollectionShelf .personal-shelf-book {
+    max-height: 100%;
+  }
+
+  #nookScreen #nookCollectionShelf .library-spine-title {
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-size: 9px !important;
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #nookScreen.phase4b1-nook-view,
   #nookScreen.phase4b1-nook-view *,
